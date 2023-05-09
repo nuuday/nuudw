@@ -6,19 +6,19 @@
       "value": "Production"
     },
     "ProjectName": {
-      "value": "poferriesbi"
+      "value": "nuudw"
     },
     "AADAdminObjectID": {
-      "value": "fdbaee56-4d20-40c0-adac-bb0591e527ea"
+      "value": "f66a3776-90de-490f-96ca-2b6352efd968"
     },
     "AADAdminUPN": {
-      "value": "Ashish.Pandey@POferries.com"
+      "value": "nuudw-ag01-admin@nuuday.onmicrosoft.com"
     },
     "AzureDevOpsServicePrincipalObjectID": {
-      "value": "579afe7f-1766-4f13-8fad-2996600f26be"
+      "value": "9178cf7f-a324-49b2-b071-22590870ae93"
     },
     "KeyVaultName": {
-      "value": "kv-poferriesbi-prod"
+      "value": "nuudw-kv01-prod"
     },   
     "DeployAnalysisServices": {
       "value": true
@@ -26,18 +26,18 @@
     "AnalysisServicesInstances": {
       "value": [
         {
-          "InstanceName": "aaspoferriesbiprod",
+          "InstanceName": "nuudwaas01prod",
           "InstanceSKU": "S0"
         }
       ]
     },
     "SqlServerName": {
-      "value": "sql-poferriesbi-prod"
+      "value": "nuudw-sql01-prod"
     },
     "SqlServerAdminUserName": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/0eaca686-fa04-41e8-8962-a26cbb5e6571/resourceGroups/prod-bi-rg/providers/Microsoft.KeyVault/vaults/kv-poferriesbi-prod"
+          "id": "/subscriptions/83edb3a0-231c-4dbb-ba7e-c657086b78cb/resourceGroups/nuudw-rg01-prod/providers/Microsoft.KeyVault/vaults/nuudw-kv01-prod"
         },
         "secretName": "SQLUserName"
       }
@@ -45,7 +45,7 @@
     "SqlServerAdminPassword": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/0eaca686-fa04-41e8-8962-a26cbb5e6571/resourceGroups/prod-bi-rg/providers/Microsoft.KeyVault/vaults/kv-poferriesbi-prod"
+          "id": "/subscriptions/83edb3a0-231c-4dbb-ba7e-c657086b78cb/resourceGroups/nuudw-rg01-prod/providers/Microsoft.KeyVault/vaults/nuudw-kv01-prod"
         },
         "secretName": "SQLUserPassword"
       }
@@ -53,7 +53,7 @@
     "ServicePrincipalId": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/0eaca686-fa04-41e8-8962-a26cbb5e6571/resourceGroups/prod-bi-rg/providers/Microsoft.KeyVault/vaults/kv-poferriesbi-prod"
+          "id": "/subscriptions/83edb3a0-231c-4dbb-ba7e-c657086b78cb/resourceGroups/nuudw-rg01-prod/providers/Microsoft.KeyVault/vaults/nuudw-kv01-prod"
         },
         "secretName": "ServicePrincipalClientID"
       }
@@ -61,7 +61,7 @@
     "ServicePrincipalSec": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/0eaca686-fa04-41e8-8962-a26cbb5e6571/resourceGroups/prod-bi-rg/providers/Microsoft.KeyVault/vaults/kv-poferriesbi-prod"
+          "id": "/subscriptions/83edb3a0-231c-4dbb-ba7e-c657086b78cb/resourceGroups/nuudw-rg01-prod/providers/Microsoft.KeyVault/vaults/nuudw-kv01-prod"
         },
         "secretName": "ServicePrincipalClientSecret"
       }
@@ -70,7 +70,7 @@
       "value": false
     },
     "AutomationAccountName": {
-      "value": "aa-poferriesbi-prod"
+      "value": ""
     },
     "DeploySqlDatabases": {
       "value": true
@@ -78,7 +78,7 @@
     "SqlDatabases": {
       "value": 
         {
-          "DatabaseName": "POFerriesDW",
+          "DatabaseName": "nuudwsqldb01",
           "DatabaseMaxSize": 0,
           "SqlDatabaseCollation": "Danish_Norwegian_CI_AS",
           "DatabaseTier": {
@@ -90,7 +90,7 @@
       
     },
     "DataFactoryName": {
-      "value": "df-poferriesbi-prod"
+      "value": "nuudw-adf01-prod"
     },
     "DataFactoryGitAccountName": {
       "value": ""
