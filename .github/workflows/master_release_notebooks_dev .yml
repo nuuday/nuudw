@@ -11,13 +11,13 @@ jobs:
     name: Release ADB Notebooks to Development
     uses: ./.github/workflows/master_release_services.yml
     with:
-      DeployToDev: true 
+      DeployToDev: false 
       DeployToTest: false 
       DeployToProd: false 
       DeployIaC: false 
       DeploySSMS: false
       DeployADF: false
-      DeployADB: true
+      DeployADB: false
       DeployPBI: false
       DeployPBIModel: 'All' 
       DeployMetaData: false 
