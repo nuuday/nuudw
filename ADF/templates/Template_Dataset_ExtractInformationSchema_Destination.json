@@ -1,0 +1,82 @@
+{
+    "name": "Meta_ExtractInformationSchema_<%ADFLinkedServiceName%>",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "<%ADFLinkedServiceName%>",
+            "type": "LinkedServiceReference"
+        },
+        "type": "AzureSqlTable",
+        "typeProperties": {
+			"tableName": "meta.ExtractInformationSchema"
+        },
+        "structure": [
+            {
+                "name": "SourceSystemTypeName",
+                "type": "String"
+            },
+            {
+                "name": "TableCatalogName",
+                "type": "String"
+            },
+            {
+                "name": "SchemaName",
+                "type": "String"
+            },
+            {
+                "name": "TableName",
+                "type": "String"
+            },
+            {
+                "name": "ColumnName",
+                "type": "String"
+            },
+            {
+                "name": "OrdinalPositionNumber",
+                "type": "Int32"
+            },
+            {
+                "name": "DataTypeName",
+                "type": "String"
+            },
+            {
+                "name": "MaximumLenghtNumber",
+                "type": "String"
+            },
+            {
+                "name": "NumericPrecisionNumber",
+                "type": "Int32"
+            },
+            {
+                "name": "NumericScaleNumber",
+                "type": "Int32"
+            },
+            {
+                "name": "KeySequenceNumber",
+                "type": "Int32"
+            },
+            {
+                "name": "CreateTableFlag",
+                "type": "Boolean"
+            },
+            {
+                "name": "SourceObjectID",
+                "type": "Int32"
+            },
+            {
+                "name": "TruncateBeforeDeployFlag",
+                "type": "Boolean"
+            },
+            {
+                "name": "PreserveHistoryFlag",
+                "type": "Boolean"
+            },
+            {
+                "name": "NavisionFlag",
+                "type": "Boolean"
+            }
+        ],
+	  "folder": {
+            "name": "Meta"
+        }
+    }
+}

@@ -1,0 +1,15 @@
+﻿{
+    "name": "<%ADFControllerName%>",
+    "properties": {
+	"parameters": {        
+        "JobIsIncremental": {
+          "type": "Bool",
+          "defaultValue": "false",
+          "identity": "JobIsIncremental"
+        }
+      },
+	"folder": {
+         "name": "1.Controllers"
+        }    
+    }
+}

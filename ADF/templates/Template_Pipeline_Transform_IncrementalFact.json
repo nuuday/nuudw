@@ -1,0 +1,53 @@
+﻿{
+    "name": "Transform_<%ADFTableName%>",
+    "properties": {
+        "activities": [
+            {
+                "name": "SP_Transform<%ADFTableName%>",
+                "type": "SqlServerStoredProcedure",
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[meta].[ExecuteTransform]",
+                  "storedProcedureParameters": {
+                    "JobIsIncremental": {
+                      "value": "@pipeline().parameters.JobIsIncremental",
+                      "type": "Boolean"
+                        },
+                        "TableName": {
+                          "value": "<%ADFTableName%>",
+                          "type": "String"
+                        },
+                        "StoredProcedureName": {
+                          "value": "Transform_<%ADFTableName%>",
+                          "type": "String"
+                        },
+                        "DestinationSchema": {
+                          "value": "<%ADFSchemaName%>",
+                          "type": "String"
+                    }
+                  }
+		                      },
+                "linkedServiceName": {
+                    "referenceName": "<%ADFLinkedServiceName%>",
+                    "type": "LinkedServiceReference"                
+	     	}
+            }
+        ],
+      "parameters": {        
+        "JobIsIncremental": {
+          "type": "Bool",
+          "defaultValue": "false",
+          "identity": "JobIsIncremental"
+        }
+	},
+	  "folder": {
+            "name": "5.Transform"
+        }
+    }    
+}

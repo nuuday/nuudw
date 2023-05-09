@@ -1,0 +1,5 @@
+{
+  "name": "POFerriesDW",
+  "connectionString": "data source=sql-poferriesbi-dev.database.windows.net;initial catalog=POFerriesDW;user id=AdminUserDev;password=********",
+  "impersonationMode": "impersonateServiceAccount"
+}

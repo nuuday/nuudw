@@ -1,0 +1,59 @@
+﻿{
+    "name": "<%ADFPipelineName%>",
+    "properties": {
+        "activities": [
+            {
+                "name": "Copy_<%ADFTableName%>",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "<%ADFCopySourceType%>",
+                        "<%ADFSqlType%>": "<%ADFSQLScript%>"
+                    },
+                  "sink": {
+                    "type": "<%ADFAzureFileTypeName%>Sink",
+                    "writeBatchSize": "@pipeline().parameters.WriteBatchSize"                    
+                  },
+                    "enableStaging": false,
+                    "cloudDataMovementUnits": 0
+                },
+                "inputs": [
+                    {
+                        "referenceName": "<%ADFSourceDatasetName%>",
+                        "type": "DatasetReference",
+                         "parameters": {
+                            "TableName": "<%ADFSourceTable%>"
+                        }
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "<%ADFDestinationDatasetName%>",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "FileSystemName": "<%ADFFileSystem%>",
+                            "FolderName": "<%ADFFileFolder%>",
+                            "FileName": "<%ADFFileName%>"
+                        }
+                    }
+                ]
+            }
+        ],
+      "parameters": {        
+        "WriteBatchSize": {
+          "type": "Int",
+	  "defaultValue": 10000,
+          "identity": "WriteBatchSize"
+        }
+      },
+	  "folder": {
+            "name": "<%ADFFolderName%>"
+        }
+    }
+}

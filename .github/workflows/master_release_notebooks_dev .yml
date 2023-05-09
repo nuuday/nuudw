@@ -1,0 +1,24 @@
+name: Release ADB Notebooks to Development
+
+on:
+  push:
+    branches: 
+      - 'development'
+  workflow_dispatch:  
+
+jobs:
+  Deploy:
+    name: Release ADB Notebooks to Development
+    uses: ./.github/workflows/master_release_services.yml
+    with:
+      DeployToDev: true 
+      DeployToTest: false 
+      DeployToProd: false 
+      DeployIaC: false 
+      DeploySSMS: false
+      DeployADF: false
+      DeployADB: true
+      DeployPBI: false
+      DeployPBIModel: 'All' 
+      DeployMetaData: false 
+    secrets: inherit     

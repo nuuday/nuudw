@@ -1,0 +1,77 @@
+name: ADF Test
+
+
+on:
+  workflow_dispatch:
+   inputs:
+      Environment:
+        type: string
+        description: Which Environment to deploy to (dev, test, prod)
+        required: true
+
+jobs:
+  build:
+    name: Build ADF
+    environment: 'test'    
+    runs-on: windows-latest
+    steps:
+      # Checkout code
+    - uses: actions/checkout@v3
+
+      # Log into Azure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}     
+        enable-AzPSSession: true  
+
+ # Deploy Bicep file
+    - name: Use Node
+      uses: actions/setup-node@v2
+      with:
+         node-version: '14.x'
+    - name: npm install, build, and test example
+      working-directory: Automation\ADF\Package
+      run: |
+        npm install
+    - name: 'Validate ADF'
+      id: validate
+      working-directory: Automation\ADF\Package
+      run: |
+        'run build validate D:/a/dataestate/dataestate/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/df-dataestate-${{ inputs.Environment }}'
+
+    - name: 'Build ADF ARM Template'
+      id: build
+      working-directory: Automation\ADF\Package
+      run: |
+        'run build export D:/a/dataestate/dataestate/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/df-dataestate-${{ inputs.Environment }} "arm_template"'
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ADF
+        path: D:/a/dataestate/dataestate/Automation/ADF/Package/ # or path/to/artifact
+
+  deploy:
+    name: Deploy ADF
+    environment: 'test'
+    runs-on: windows-latest
+    needs: build
+    steps:  
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+      with:
+        name: ADF
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}     
+        enable-AzPSSession: true  
+    - name: Deploy ADF
+      uses: azure/arm-deploy@v1      
+      with:
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
+        template: ADF/ARMTemplateForFactory.json
+        parameters: ADF/ARMTemplateParametersForFactory.json
+        failOnStdErr: false  
+# Validates all of the Data Factory resources in the repository. You'll get the same validation errors as when "Validate All" is selected.
+# Enter the appropriate subscription and name for the source factory.

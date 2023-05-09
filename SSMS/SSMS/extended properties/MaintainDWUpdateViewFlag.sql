@@ -1,0 +1,1 @@
+﻿EXEC sp_addextendedproperty @name = N'MaintainDWUpdateViewFlag', @value = N'1'

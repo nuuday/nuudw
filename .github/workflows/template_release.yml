@@ -1,0 +1,125 @@
+name: Template Release
+
+on:
+  workflow_call:
+    inputs:
+      Environment:
+        type: string
+        description: Which Environment to deploy to (dev, test, prod)
+        required: true
+      DeployIaC:
+        type: boolean
+        description: Deploy IaC
+        default: true
+        required: true 
+      DeploySSMS:
+        type: boolean
+        description: Deploy SSMS
+        default: true
+        required: true
+      DeployADF:
+        type: boolean
+        description: Deploy ADF
+        default: true
+        required: true 
+      DeployADB:
+        type: boolean
+        description: Deploy ADB
+        default: true
+        required: true
+      DeployPBI:
+        type: boolean
+        description: Deploy Power BI Datasets
+        default: true
+        required: true
+      DeployPBIModel:
+        type: string
+        description: Deploy Power BI Datasets
+        default: 'All'
+        required: true
+      DeployMetaData:
+        type: boolean
+        description: Deploy Meta Data
+        default: true
+        required: true
+
+jobs:
+  deploy:
+    name: Release ${{ inputs.Service }} to ${{ inputs.Environment }} Environment
+    environment: ${{ inputs.Environment }}
+    
+    runs-on: windows-latest
+    steps:
+      # Checkout code
+    - uses: actions/checkout@v3
+
+      # Log into Azure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}     
+        enable-AzPSSession: true  
+
+ # Deploy Bicep file
+    - name: Deploy Infrastructure
+      if: ${{ inputs.DeployIaC == true }} 
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
+        template: ./Infrastructure/main.bicep
+        parameters: ./Infrastructure/main.${{ inputs.Environment }}.parameters.json
+        failOnStdErr: false  
+
+    - name: Deploy SSMS
+      if: ${{ inputs.DeploySSMS == true }}      
+      uses: azure/sql-action@v2
+      with:        
+        connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+        path: './SSMS/SSMS/SSMS.sqlproj'
+        action: 'publish'
+        build-arguments: '-c Release'                 # Optional build options passed to dotnet build
+
+    - name: Deploy ADF
+      if: ${{ inputs.DeployADF == true }} 
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+            ./Automation/ADF/Deploy.ps1 -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -DataFactoryName 'df-dataestate-${{ inputs.Environment }}' -IntegrationRuntimeName 'AzureGW-NAV01' -Path "./ADF" -SubscriptionID ${{ secrets.AZURE_SUBSCRIPTION_ID }} -ConnectionReplacements "" -TenantId ${{ secrets.AZURE_TENANT_ID }}
+        azPSVersion: "latest"
+
+    - name: Deploy ADB
+      if: ${{ inputs.DeployADB == true && inputs.Environment != 'dev'}} 
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Automation/ADB/Deploy.ps1 -BearerToken ${{ secrets.AZURE_DATABRICKS_BEARER_TOKEN }} -Environment '${{ inputs.Environment }}' -Region 'westeurope'
+          Invoke-AzDataFactoryV2Pipeline -ResourceGroupName '${{ secrets.AZURE_RESOURCE_GROUP_NAME }}' -DataFactoryName 'df-dataestate-${{ inputs.Environment }}' -PipelineName 'Create Databricks Workflows'
+        azPSVersion: "latest"
+
+    - name: Deploy ADB Notebooks
+      if: ${{ inputs.DeployADB == true && inputs.Environment == 'dev'}} 
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Automation/ADB/DeployNotebooks.ps1 -BearerToken ${{ secrets.AZURE_DATABRICKS_BEARER_TOKEN }} -Region 'westeurope'
+        azPSVersion: "latest"  
+
+    - name: Deploy PBI
+      if: ${{ inputs.DeployPBI == true && inputs.Environment != 'dev'}} 
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Automation/PBI/Deploy.ps1 -DatabricksWorkspaceID ${{ secrets.AZURE_DATABRICKS_WORKSPACE_ID }} -HttpPathSQLEndpoint ${{ secrets.AZURE_DATABRICKS_SQL_ENDPOINT }} -Environment ${{ inputs.Environment }} -ModelsToDeploy ${{ inputs.DeployPBIModel }} -PBIWorkspaceID ${{ secrets.AZURE_PBI_DATASET_WORKSPACE_ID }} -ClientId ${{ secrets.AZURE_SERVICE_PRINCIPAL_ID }} -ClientSecret ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }} -DatabricksAccessToken ${{ secrets.AZURE_DATABRICKS_BEARER_TOKEN }} -TenantId  ${{ secrets.AZURE_TENANT_ID }} 
+        azPSVersion: "latest"  
+
+    - name: Deploy Meta Data
+      if: ${{ inputs.DeployMetaData == true }} 
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Automation/SSMS/Deploy.ps1 -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -DataFactoryName 'df-dataestate-${{ inputs.Environment }}' -SubscriptionID ${{ secrets.AZURE_SUBSCRIPTION_ID }} -TenantId  ${{ secrets.AZURE_TENANT_ID }}
+        azPSVersion: "latest"  
+
+ 
+
+ 

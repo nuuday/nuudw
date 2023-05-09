@@ -1,0 +1,27 @@
+name: Release Platform
+
+on:
+  push:
+    branches: 
+      - 'release'
+  workflow_dispatch:        
+
+jobs:
+  Deploy:
+    name: Release Platform
+    uses: ./.github/workflows/master_release_services.yml
+    with:
+      DeployToDev: false 
+      DeployToTest: true 
+      DeployToProd: true 
+      DeployIaC: true 
+      DeploySSMS: true
+      DeployADF: true
+      DeployADB: true
+      DeployPBI: true 
+      DeployPBIModel: "All"
+      DeployMetaData: true 
+    secrets: inherit
+
+
+  

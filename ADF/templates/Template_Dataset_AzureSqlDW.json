@@ -1,0 +1,31 @@
+﻿{
+    "name": "<%ADFDatasetName%>",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "<%ADFLinkedServiceName%>",
+            "type": "LinkedServiceReference"
+        },
+        "parameters": {
+	    "SchemaName": {
+                "type": "string"
+            	},            
+	    "TableName": {
+                "type": "string"
+            	}
+        },
+        "type": "<%ADFDatasetType%>",
+        "typeProperties": {
+			"schema":{
+				 "value": "@dataset().SchemaName",
+                		 "type": "Expression"
+			},
+			"table":{
+				 "value": "@dataset().TableName",
+                		 "type": "Expression"
+			}
+        },
+		"folder": {
+            "name": "<%ADFFolderName%>"
+        }
+    }
+}

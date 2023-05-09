@@ -1,0 +1,24 @@
+{
+  "name": "Wrist Analytics",
+  "compatibilityLevel": 1500,
+  "model": {
+    "name": "POFerriesBI",
+    "description": "Tabular model at the 1500 compatibility level. Autogenereated by Kapacity Tabular Builder.",
+    "culture": "en-US",
+    "discourageImplicitMeasures": true,
+    "annotations": [
+      {
+        "name": "TabularEditor_SerializeOptions",
+        "value": "{\"IgnoreInferredObjects\":true,\"IgnoreInferredProperties\":true,\"IgnoreTimestamps\":true,\"SplitMultilineStrings\":true,\"PrefixFilenames\":false,\"LocalTranslations\":true,\"LocalPerspectives\":true,\"LocalRelationships\":true,\"Levels\":[\"Data Sources\",\"Roles\",\"Tables\",\"Tables/Annotations\",\"Tables/Columns\",\"Tables/Hierarchies\",\"Tables/Measures\",\"Tables/Partitions\"]}"
+      },
+      {
+        "name": "TabularEditor_Cultures",
+        "value": "[]"
+      },
+      {
+        "name": "TabularEditor_Perspectives",
+        "value": "[]"
+      }
+    ]
+  }
+}

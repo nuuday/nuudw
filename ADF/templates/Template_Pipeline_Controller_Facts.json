@@ -1,0 +1,25 @@
+﻿{
+    "name": "<%ADFControllerName%>",
+    "properties": {
+	"parameters": {        
+        "JobIsIncremental": {
+          "type": "Bool",
+          "defaultValue": "false",
+          "identity": "JobIsIncremental"
+        },
+	"DisableMaintainDW": {
+          "type": "Bool",
+          "defaultValue": "true",
+          "identity": "DisableMaintainDW"
+        },
+	"CleanUpPartitions": {
+          "type": "Bool",
+	  "defaultValue": "false",
+          "identity": "CleanUpPartitions"
+        }
+      },
+	"folder": {
+         "name": "1.Controllers"
+        }    
+    }
+}

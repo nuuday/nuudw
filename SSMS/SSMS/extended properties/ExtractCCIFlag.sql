@@ -1,0 +1,1 @@
+﻿EXEC sp_addextendedproperty @name = N'ExtractCCIFlag', @value = N'0'

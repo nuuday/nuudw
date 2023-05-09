@@ -1,0 +1,146 @@
+﻿{
+    "name": "<%ADFPipelineName%>",
+    "properties": {
+        "activities": [
+           {
+                "name": "SP_Truncate Table",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "storedProcedureName": "[meta].[ExtractTruncateTable]",
+                    "storedProcedureParameters": {
+                        "ExtractSchemaName": {
+                            "value": "<%ADFExtractSchemaName%>",
+                            "type": "String"
+                        },
+                        "TableName": {
+                            "value": "<%ADFTableName%>",
+                            "type": "String"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "<%ADFDestinationLinkedService%>",
+                    "type": "LinkedServiceReference"
+                }
+            }, 
+	    {
+                "name": "Lookup_MaxDop",
+                "type": "Lookup",
+                "dependsOn": [
+                    {
+                        "activity": "SP_Truncate Table",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+		"policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderQuery": "<%ADFPartitionSQLScript%>"
+                    },
+                    "dataset": {
+                        "referenceName": "<%ADFDestinationDatasetName%>",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "meta.SourceObjectPartition"                       
+                    	}
+                    },
+                    "firstRowOnly": false
+                }
+            },
+	    {
+                "name": "ForEach_Partition",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "Lookup_MaxDop",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('Lookup_MaxDop').output.value",
+                        "type": "Expression"
+                    },
+                    "isSequential": false,
+                    "activities": [
+		{
+                "name": "Copy_<%ADFTableName%>",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "<%ADFCopySourceType%>",
+                        "<%ADFSqlType%>": "<%ADFSQLScript%>"
+                    },
+                  "sink": {
+                    "type": "SqlSink",
+                    "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+                    "preCopyScript": ""
+                  },
+                    "enableStaging": false,
+                    "cloudDataMovementUnits": 0
+                },
+                 "inputs": [
+                    {
+                        "referenceName": "<%ADFSourceDatasetName%>",
+                        "type": "DatasetReference",
+                         "parameters": {
+                            "TableName": "<%ADFSourceTable%>"
+                        }
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "<%ADFDestinationDatasetName%>",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "<%ADFTargetTable%>"
+                        }
+                    }
+                ]
+                        }
+                    ]
+                }
+            }
+        ],
+      "parameters": {        
+        "JobIsIncremental": {
+          "type": "Bool",
+          "defaultValue": "false",
+          "identity": "JobIsIncremental"
+        },"WriteBatchSize": {
+          "type": "Int",
+	  "defaultValue": 10000,
+          "identity": "WriteBatchSize"
+        }
+      },
+	  "folder": {
+            "name": "<%ADFFolderName%>"
+        }
+    }
+}

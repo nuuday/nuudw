@@ -1,0 +1,176 @@
+﻿,{
+                		"name": "SP Maintain Extract Create Schemas <%ADFLinkedServiceName%>",
+                		"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+                    			{
+		                        "activity": "ForEach Object",
+                		        "dependencyConditions": [
+		                	      "Succeeded"
+                		        	]
+		                        }
+                		],
+                 		"policy": {
+                    		"timeout": "0.12:00:00",
+                    		"retry": 0,
+                    		"retryIntervalInSeconds": 30,
+                    		"secureOutput": false,
+                    		"secureInput": false
+                		},
+                		"typeProperties": {
+                    		"storedProcedureName": "[meta].[MaintainExtractCreateSchemas]",
+                		"storedProcedureParameters": {
+                        		"ExtractSchemaName": {
+                            		"value": "<%ADFExtractSchemaName%>",
+                            		"type": "String"
+                        			},
+					"PrintSQL": {
+                            		"value": "false",
+                            		"type": "Boolean"
+                        			}
+					}
+				},
+                		"linkedServiceName": {
+                    		"referenceName": "<%ADFLinkedServiceName%>",
+                    		"type": "LinkedServiceReference"
+                		}
+            		},
+		{
+                "name": "LKP <%ADFLinkedServiceName%> Objects",
+                "type": "Lookup",
+		"dependsOn": [
+                    {
+                        "activity": "SP Maintain Extract Create Schemas <%ADFLinkedServiceName%>",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],                       
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "AzureSqlSource",
+                        "sqlReaderQuery": "SELECT * FROM meta.TargetObjectDefinitions  WHERE TargetConnectionName= '<%ADFLinkedServiceName%>' AND SourceConnectionName = '<%ADFSourceLinkedServiceName%>'"
+                    },
+                    "dataset": {
+                        "referenceName": "<%ADFDatabaseName%>_DynamicDataset",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "meta.TargetObjectDefinitions"
+                        }
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "ForEach <%ADFLinkedServiceName%> Object",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "LKP <%ADFLinkedServiceName%> Objects",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('LKP <%ADFLinkedServiceName%> Objects').output.value",
+                        "type": "Expression"
+                    },
+                    "activities": [
+                        {
+                            "name": "Copy Information Schema <%ADFLinkedServiceName%>",
+                            "type": "Copy",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "source": {
+                                    "type": "AzureSqlSource",
+                                    "sqlReaderQuery": {
+                                        "value": "SELECT [SourceSystemTypeName]\n      ,[TableCatalogName]\n      ,[SchemaName]\n      ,[TableName]\n      ,[ColumnName]\n      ,[OrdinalPositionNumber]\n      ,[FullDataTypeName]\n      ,[NullableName]\n      ,[DataTypeName]\n      ,[MaximumLenghtNumber]\n      ,[NumericPrecisionNumber]\n      ,[NumericScaleNumber]\n      ,[KeySequenceNumber]\n      ,[ExtractSchemaName]\n      ,[ADFDataType]\n      ,[SourceObjectID]\n      ,[SourceConnectionID]\n      ,[OriginalDataTypeName]\n      ,1 AS [CreateTableFlag]\n      ,[TruncateBeforeDeployFlag]\n      ,'@{item().TargetPreserveHistoryFlag}' AS [PreserveHistoryFlag]\n     ,[NavisionFlag]\n  FROM [meta].[ExtractInformationSchemaDefinitions]\nWHERE\n\tSourceObjectID = '@{item().SourceObjectID}'",
+                                        "type": "Expression"
+                                    }
+                                },
+                                "sink": {
+                                    "type": "AzureSqlSink",
+                                    "preCopyScript": {
+                                        "value": "DELETE FROM meta.ExtractInformationSchema WHERE\n\tSourceObjectID = '@{item().SourceObjectID}'",
+                                        "type": "Expression"
+                                    },
+                                    "disableMetricsCollection": false
+                                },
+                                "enableStaging": false
+                            },
+                            "inputs": [
+                                {
+                                    "referenceName": "<%ADFDatabaseName%>_DynamicDataset",
+                                    "type": "DatasetReference",
+                                    "parameters": {
+                                        "TableName": "meta.ExtractInformationSchemaDefinitions"
+                                    }
+                                }
+                            ],
+                            "outputs": [
+                                {
+                                    "referenceName": "<%ADFLinkedServiceName%>_DynamicDataset",
+                                    "type": "DatasetReference",
+                                    "parameters": {
+                                        "TableName": "meta.ExtractInformationSchema"
+                                    }
+                                }
+                            ]
+                        },
+			{
+                		"name": "SP Maintain Extract <%ADFLinkedServiceName%>",
+                		"type": "SqlServerStoredProcedure",
+                		"dependsOn": [
+                    		{
+                        		"activity": "Copy Information Schema <%ADFLinkedServiceName%>",
+                        		"dependencyConditions": [
+                            		"Succeeded"
+                        		]
+                    		}
+                		],
+                		"policy": {
+                    		"timeout": "0.12:00:00",
+                    		"retry": 0,
+                    		"retryIntervalInSeconds": 30,
+                    		"secureOutput": false,
+                    		"secureInput": false
+                		},
+                		"typeProperties": {
+                    		"storedProcedureName": "[meta].[MaintainExtract]",
+                    		"storedProcedureParameters": {
+                        		"SourceObjectID": {
+                            		"value": "@{item().SourceObjectID}",
+                            		"type": "Int32"
+                        		},
+					"DropTable": {
+                            		"value": "true",
+                            		"type": "Boolean"
+                        		}
+                   		 }
+                		},
+                	"linkedServiceName": {
+                    		"referenceName": "<%ADFLinkedServiceName%>",
+                    		"type": "LinkedServiceReference"
+                		}
+            		}
+                    ]
+                }
+            }

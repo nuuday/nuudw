@@ -1,0 +1,173 @@
+﻿{
+    "name": "<%ADFPipelineName%>",
+    "properties": {
+        "activities": [           
+	    {
+                "name": "Lookup_LastValueLoaded",
+                "type": "Lookup",                
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderStoredProcedureName": "[meta].[PreIncrementalProcedure]",
+                        "storedProcedureParameters": {
+                        "TableName": {
+                            "value": "<%ADFTableName%>",
+                            "type": "String"
+                        },
+			"SourceConnectionName": {
+                            "value": "<%ADFConnectionName%>",
+                            "type": "String"
+                        },
+			"ExtractSchemaName": {
+                            "value": "<%ADFExtractSchemaName%>",
+                            "type": "String"
+                        },
+		    	"IsDateFlag":{
+                     		"value":"<%ADFIsDateFlag%>",
+                     		"type":"Boolean"
+                  	},
+                  	"IncrementalDefinition":{
+                    		"value":"<%ADFIncrementalDefinition%>",
+                     		"type":"String"
+                  	},
+                  	"ConnectionType":{
+                     		"value":"<%ADFConnectionType%>",
+                     		"type":"String"
+                  	},
+		  	"RollingWindowDays":{
+                     		"value":"<%ADFRollingWindowDays%>",
+	                        "type":"Int32"
+            	      	},
+			"JobIsIncremental": {
+                            "value": "@pipeline().parameters.JobIsIncremental",
+                            "type": "Boolean"
+                        }
+                       }
+                    },
+                    "dataset": {
+                        "referenceName": "<%ADFDestinationDatasetName%>",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "meta.SourceObjects"                   
+                    	}
+                    }
+                }
+            },
+            {
+                "name": "Copy_<%ADFTableName%>",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "Lookup_LastValueLoaded",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "<%ADFCopySourceType%>",
+                        "<%ADFSqlType%>": "<%ADFSQLScript%>"
+                    },
+                  "sink": {
+                    "type": "SqlSink",
+                    "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+                    "preCopyScript": "TRUNCATE TABLE [<%ADFExtractSchemaName%>].[<%ADFTableName%>]"
+                  },
+                    "enableStaging": false,
+                    "cloudDataMovementUnits": 0
+                },
+                "inputs": [
+                    {
+                        "referenceName": "<%ADFSourceDatasetName%>",
+                        "type": "DatasetReference",
+                         "parameters": {
+                            "TableName": "<%ADFSourceTable%>"
+                        }
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "<%ADFDestinationDatasetName%>",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "<%ADFTargetTable%>"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "SP_MergeToHistory",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "Copy_<%ADFTableName%>",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[meta].[PostIncrementalProcedure]",
+                    "storedProcedureParameters": {
+                        "TableName": {
+                            "value": "<%ADFTableName%>",
+                            "type": "String"
+                        },
+			"ExtractSchemaName": {
+                            "value": "<%ADFExtractSchemaName%>",
+                            "type": "String"
+                        },
+			"JobIsIncremental": {
+                            "value": "@pipeline().parameters.JobIsIncremental",
+                            "type": "Boolean"
+                        },
+			"SCD2Columns": {
+                            "value": "<%ADFSCD2Columns%>",
+                            "type": "String"
+                        },
+			"ExtractPattern": {
+                            "value": "Replacement",
+                            "type": "String"
+                        },
+			
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "<%ADFDestinationLinkedService%>",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+      "parameters": {
+        "JobIsIncremental": {
+          "type": "Bool",
+          "defaultValue": "false",
+          "identity": "JobIsIncremental"
+        },
+        "WriteBatchSize": {
+          "type": "Int",
+	  "defaultValue": 10000,
+          "identity": "WriteBatchSize"
+        }
+      },
+	  "folder": {
+            "name": "<%ADFFolderName%>"
+        }
+    }
+}

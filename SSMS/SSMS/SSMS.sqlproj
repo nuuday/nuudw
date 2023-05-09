@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build">
+  <Sdk Name="Microsoft.Build.Sql" Version="0.1.3-preview" />
+  <PropertyGroup>
+    <Name>reactions</Name>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <ModelCollation>1030,CI</ModelCollation>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <ProjectGuid>{f9c36a8e-b8e2-4096-aa90-ae0ea7cf5ed7}</ProjectGuid>
+    <DefaultCollation>Danish_Norwegian_CI_AS</DefaultCollation>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="meta\" />
+    <Folder Include="meta\Tables\" />
+    <Folder Include="dim\" />
+    <Folder Include="dim\Tables\" />
+    <Folder Include="meta\Views\" />
+    <Folder Include="dimView\" />
+    <Folder Include="dimView\Views\" />
+    <Folder Include="meta\Functions\" />
+    <Folder Include="meta\Stored Procedures\" />
+    <Folder Include="Security\" />
+    <Folder Include="extended properties" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
+    <Build Include="meta\Tables\BusinessMatrixIncrementalSetup.sql" />
+    <Build Include="meta\Tables\ExtractInformationSchema.sql" />
+    <Build Include="meta\Tables\SourceObjectKeyColumns.sql" />
+    <Build Include="meta\Tables\SourceObjectIncrementalSetup.sql" />
+    <Build Include="meta\Tables\SourceObjectFileSetup.sql" />
+    <Build Include="meta\Tables\SourceConnectionNavisionSetup.sql" />
+    <Build Include="meta\Tables\SourceColumns.sql" />
+    <Build Include="meta\Tables\SourceObjectSCD2Setup.sql" />
+    <Build Include="meta\Tables\DWRelations.sql" />
+    <Build Include="meta\Tables\SourceObjects.sql" />
+    <Build Include="meta\Tables\SourceConnections.sql" />
+    <Build Include="meta\Tables\BusinessMatrixPackageDependency.sql" />
+    <Build Include="meta\Tables\BusinessMatrix.sql" />
+    <Build Include="meta\Tables\FrameworkMetaData.sql" />
+    <Build Include="meta\Tables\Environments.sql" />
+    <Build Include="dim\Tables\Time.sql" />
+    <Build Include="meta\Views\ExtractInformationSchemaDefinitions.sql" />
+    <Build Include="meta\Views\TabularStudioDefinition.sql" />
+    <Build Include="meta\Views\SourceObjectKeyColumnDefinitions.sql" />
+    <Build Include="meta\Views\SourceObjectDefinitions.sql" />
+    <Build Include="meta\Views\DWRelationDefinitions.sql" />
+    <Build Include="meta\Views\ControllerDefinitions.sql" />
+    <Build Include="meta\Views\BusinessMatrixDefinitions.sql" />
+    <Build Include="meta\Views\ApplicationConnections.sql" />
+    <Build Include="meta\Views\Variables.sql" />
+    <Build Include="dimView\Views\Time.sql" />
+    <Build Include="meta\Functions\SplitCamelCase.sql" />
+    <Build Include="meta\Functions\RemoveNonASCII.sql" />
+    <Build Include="meta\Functions\GetVariableValue.sql" />
+    <Build Include="meta\Functions\SplitString.sql" />
+    <Build Include="meta\Stored Procedures\CreateTimeDimension.sql" />
+    <Build Include="meta\Stored Procedures\CreateCalendarDimension.sql" />
+    <Build Include="meta\Stored Procedures\PreDeploymentCleanup.sql" />
+    <Build Include="meta\Stored Procedures\ViewTableProperties.sql" />
+    <Build Include="meta\Stored Procedures\UpdateSourceObjectTables.sql" />
+    <Build Include="meta\Stored Procedures\UpdateVariables.sql" />
+    <Build Include="meta\Stored Procedures\UpdateFrameworkMetaData.sql" />
+    <Build Include="meta\Stored Procedures\GetLastValueLoaded.sql" />
+    <Build Include="meta\Stored Procedures\SetLastLoadedValue.sql" />
+    <Build Include="meta\Stored Procedures\MaintainExtractCreateTable.sql" />
+    <Build Include="meta\Stored Procedures\MaintainExtract.sql" />
+    <Build Include="meta\Stored Procedures\MaintainDWUpdateView.sql" />
+    <Build Include="meta\Stored Procedures\MaintainDWUpdateTable.sql" />
+    <Build Include="meta\Stored Procedures\MaintainDWFactIndexes.sql" />
+    <Build Include="meta\Stored Procedures\MaintainDWCreateTableAndView.sql" />
+    <Build Include="meta\Stored Procedures\MaintainDW.sql" />
+    <Build Include="meta\Stored Procedures\LoadSourceObjectHistory.sql" />
+    <Build Include="meta\Stored Procedures\LoadFact.sql" />
+    <Build Include="meta\Stored Procedures\LoadDimension.sql" />
+    <Build Include="meta\Stored Procedures\FactPatternsDelta.sql" />
+    <Build Include="meta\Stored Procedures\DropStageTablesFromBusinessMatrix.sql" />
+    <Build Include="meta\Stored Procedures\CreateTransformProcedures.sql" />
+    <Build Include="meta\Stored Procedures\CreateStageTablesFromBusinessMatrix.sql" />
+    <Build Include="meta\Stored Procedures\CreateFactSourceScript.sql" />
+    <Build Include="meta\Stored Procedures\CreateDWRelations.sql" />
+    <Build Include="Security\stage_temp.sql" />
+    <Build Include="Security\stage.sql" />
+    <Build Include="Security\meta.sql" />
+    <Build Include="Security\factView.sql" />
+    <Build Include="Security\fact.sql" />
+    <Build Include="Security\dimView.sql" />
+    <Build Include="Security\dim.sql" />
+    <Build Include="Security\bridgeView.sql" />
+    <Build Include="Security\bridge.sql" />
+    <Build Include="extended properties\BusinessKeySuffix.sql" />
+    <Build Include="extended properties\DatabaseNameDW.sql" />
+    <Build Include="extended properties\DatabaseNameExtract.sql" />
+    <Build Include="extended properties\DatabaseNameHistory.sql" />
+    <Build Include="extended properties\DatabaseNameMeta.sql" />
+    <Build Include="extended properties\DatabaseNameStage.sql" />
+    <Build Include="extended properties\DatabaseNameTabular.sql" />
+    <Build Include="extended properties\DefaultBit.sql" />
+    <Build Include="extended properties\DefaultDate.sql" />
+    <Build Include="extended properties\DefaultDimensionMemberID.sql" />
+    <Build Include="extended properties\DefaultNumber.sql" />
+    <Build Include="extended properties\DefaultString.sql" />
+    <Build Include="extended properties\FactLoadEngine.sql" />
+    <Build Include="extended properties\IsCloudFlag.sql" />
+    <Build Include="extended properties\SurrogateKeySuffix.sql" />
+    <Build Include="extended properties\SeparateHistoryLayerFlag.sql" />
+    <Build Include="meta\Stored Procedures\ScaleDatabase.sql" />
+    <Build Include="extended properties\EnterpriseEditionFlag.sql" />
+    <Build Include="extended properties\ExtractCCIFlag.sql" />
+    <Build Include="extended properties\ExtractCCIHistoryFlag.sql" />
+    <Build Include="extended properties\ExtractControllerPattern.sql" />
+    <Build Include="extended properties\FactCCIFlag.sql" />
+    <Build Include="extended properties\FactInMemoryFlag.sql" />
+    <Build Include="extended properties\LoadControllerPattern.sql" />
+    <Build Include="extended properties\MaintainDWDropTableFlag.sql" />
+    <Build Include="extended properties\MaintainDWDropViewFlag.sql" />
+    <Build Include="extended properties\MaintainDWUpdateViewFlag.sql" />
+    <Build Include="meta\Tables\SourceObjectPartition.sql" />
+    <Build Include="meta\Stored Procedures\ExtractTruncateTable.sql" />
+    <Build Include="extended properties\EnableAutoPartitionFlag.sql" />
+    <Build Include="extended properties\DefaultMaxDop.sql" />
+    <Build Include="meta\Tables\TargetObjectSCD2Setup.sql" />
+    <Build Include="meta\Tables\TargetObjects.sql" />
+    <Build Include="meta\Tables\TargetObjectFileSetup.sql" />
+    <Build Include="meta\Tables\TargetConnections.sql" />
+    <Build Include="meta\Tables\TargetAzureSQLDWSetup.sql" />
+    <Build Include="meta\Views\TargetObjectDefinitions.sql" />
+    <Build Include="meta\Stored Procedures\ReplaceSourceObjectHistory.sql" />
+    <Build Include="meta\Stored Procedures\MaintainTargetCreateTableScript.sql" />
+    <Build Include="meta\Stored Procedures\MaintainTargetCreateSourceScript.sql" />
+    <Build Include="meta\Stored Procedures\MaintainTargetCreateConnectionScript.sql" />
+    <Build Include="meta\Stored Procedures\MaintainExtractInformationSchemaFromJsonMeta.sql" />
+    <Build Include="meta\Stored Procedures\DeleteIncrementalRows.sql" />
+    <Build Include="meta\Functions\GetEasterSundayFromYear.sql" />
+    <Build Include="meta\Functions\GetEasterDaysFromYear.sql" />
+    <Build Include="extended properties\BPFVersion.sql" />
+    <Build Include="meta\Stored Procedures\MaintainTarget.sql" />
+    <Build Include="meta\Stored Procedures\MaintainExtractCreateSourceScript.sql" />
+    <Build Include="meta\Stored Procedures\MaintainExtractCreateSchemas.sql" />
+    <Build Include="meta\Stored Procedures\MaintainExtractCreatePartitionScript.sql" />
+    <Build Include="meta\Stored Procedures\FactPatternsReplacement.sql" />
+    <Build Include="dim\Tables\Calendar.sql" />
+    <Build Include="dimView\Views\Calendar.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include=".\master.dacpac">
+      <HintPath>.\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>True</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="PreDeploymentCleanup.sql" />
+  </ItemGroup>
+</Project>

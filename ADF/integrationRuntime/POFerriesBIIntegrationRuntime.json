@@ -1,0 +1,6 @@
+{
+	"name": "POFerriesBIIntegrationRuntime",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

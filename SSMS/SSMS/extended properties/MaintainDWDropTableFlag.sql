@@ -1,0 +1,1 @@
+﻿EXEC sp_addextendedproperty @name = N'MaintainDWDropTableFlag', @value = N'0'

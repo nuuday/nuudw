@@ -1,0 +1,111 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Environment": {
+      "value": "Test/QA"
+    },
+    "ProjectName": {
+      "value": "poferriesbi"
+    },
+    "AADAdminObjectID": {
+      "value": "fdbaee56-4d20-40c0-adac-bb0591e527ea"
+    },
+    "AADAdminUPN": {
+      "value": "Ashish.Pandey@POferries.com"
+    },
+    "AzureDevOpsServicePrincipalObjectID": {
+      "value": "81817529-99ce-4b70-9001-d8accda70a36"
+    },
+    "KeyVaultName": {
+      "value": "kv-poferriesbi-test"
+    },   
+    "DeployAnalysisServices": {
+      "value": true
+    },
+    "AnalysisServicesInstances": {
+      "value": [
+        {
+          "InstanceName": "aaspoferriesbitest",
+          "InstanceSKU": "S0"
+        }
+      ]
+    },
+    "SqlServerName": {
+      "value": "sql-poferriesbi-test"
+    },
+    "SqlServerAdminUserName": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/0eaca686-fa04-41e8-8962-a26cbb5e6571/resourceGroups/test-bi-rg/providers/Microsoft.KeyVault/vaults/kv-poferriesbi-test"
+        },
+        "secretName": "SQLUserName"
+      }
+    },
+    "SqlServerAdminPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/0eaca686-fa04-41e8-8962-a26cbb5e6571/resourceGroups/test-bi-rg/providers/Microsoft.KeyVault/vaults/kv-poferriesbi-test"
+        },
+        "secretName": "SQLUserPassword"
+      }
+    },
+    "ServicePrincipalId": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/0eaca686-fa04-41e8-8962-a26cbb5e6571/resourceGroups/test-bi-rg/providers/Microsoft.KeyVault/vaults/kv-poferriesbi-test"
+        },
+        "secretName": "ServicePrincipalClientID"
+      }
+    },
+    "ServicePrincipalSec": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/0eaca686-fa04-41e8-8962-a26cbb5e6571/resourceGroups/test-bi-rg/providers/Microsoft.KeyVault/vaults/kv-poferriesbi-test"
+        },
+        "secretName": "ServicePrincipalClientSecret"
+      }
+    },
+    "CreateAutomationAccount": {
+      "value": false
+    },
+    "AutomationAccountName": {
+      "value": "aa-poferriesbi-test"
+    },
+    "DeploySqlDatabases": {
+      "value": true
+    },
+    "SqlDatabases": {
+      "value": 
+        {
+          "DatabaseName": "POFerriesDW",
+          "DatabaseMaxSize": 0,
+          "SqlDatabaseCollation": "Danish_Norwegian_CI_AS",
+          "DatabaseTier": {
+            "Name": "GP_S_Gen5", 
+            "Tier": "GeneralPurpose",
+            "Capacity": 2
+          }
+        }        
+      
+    },
+    "DataFactoryName": {
+      "value": "df-poferriesbi-test"
+    },
+    "DataFactoryGitAccountName": {
+      "value": ""
+    },
+    "DataFactoryGitProjectName": {
+      "value": ""
+    },
+    "DataFactoryGitRepositoryName": {
+      "value": ""
+    },
+    "DataFactoryGitCollaborationBranch": {
+      "value": ""
+    },
+    "DataFactoryGitRootFolder": {
+      "value": ""
+    }
+    }
+  }

@@ -1,0 +1,150 @@
+﻿{
+  "name": "Transform_<%ADFTableName%>",
+  "properties": {
+    "activities": [
+      {
+        "name": "LKP Stored Procedures",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Truncate Table",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "7.00:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [],
+        "typeProperties": {
+          "source": {
+            "type": "AzureSqlSource",
+            "sqlReaderQuery": {
+              "value": "SELECT NAME AS StoredProcedureName FROM sys.procedures\nwhere NAME like '%Transform_<%ADFTableName%>[_]%'\nor\t  NAME = 'Transform_<%ADFTableName%>'",
+              "type": "Expression"
+            },
+            "queryTimeout": "02:00:00",
+            "partitionOption": "None"
+          },
+          "dataset": {
+            "referenceName": "<%ADFLinkedServiceName%>_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "sys.procedures"
+            }
+          },
+          "firstRowOnly": false
+        }
+      },
+      {
+        "name": "ForEach Transform Procedure",
+        "type": "ForEach",
+        "dependsOn": [
+          {
+            "activity": "LKP Stored Procedures",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "userProperties": [],
+        "typeProperties": {
+          "items": {
+            "value": "@activity('LKP Stored Procedures').output.value\r\n",
+            "type": "Expression"
+          },
+          "isSequential": true,
+          "activities": [
+            {
+              "name": "Exec Stored Procedures",
+              "type": "SqlServerStoredProcedure",
+              "dependsOn": [],
+              "policy": {
+                "timeout": "7.00:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "userProperties": [],
+              "typeProperties": {
+                "storedProcedureName": {
+                  "value": "[meta].[ExecuteTransform]",
+                  "type": "Expression"
+                },
+                "storedProcedureParameters": {
+                  "JobIsIncremental": {
+                    "value": "@pipeline().parameters.JobIsIncremental",
+                    "type": "Boolean"
+                  },
+                  "TableName": {
+                    "value": "<%ADFTableName%>",
+                    "type": "String"
+                  },
+                  "StoredProcedureName": {
+                    "value": "@item().StoredProcedureName",
+                    "type": "String"
+                  },
+                  "DestinationSchema": {
+                    "value": "<%ADFSchemaName%>",
+                    "type": "String"
+                  }
+                }
+              },
+              "linkedServiceName": {
+                "referenceName": "WristBIDW",
+                "type": "LinkedServiceReference"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "Truncate Table",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [],
+        "typeProperties": {
+          "storedProcedureName": "[meta].[ExtractTruncateTable]",
+          "storedProcedureParameters": {
+            "ExtractSchemaName": {
+              "value": "<%ADFStageSchemaName%>",
+              "type": "String"
+            },
+            "TableName": {
+              "value": "<%ADFTableName%>",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "<%ADFLinkedServiceName%>",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "bool",
+        "defaultValue": false
+      }
+
+    },
+    "folder": {
+      "name": "5.Transform"
+    },
+    "annotations": []
+  }
+}

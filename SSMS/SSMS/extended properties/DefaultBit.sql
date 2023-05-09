@@ -1,0 +1,1 @@
+﻿EXEC sp_addextendedproperty @name = N'DefaultBit', @value = N'0'

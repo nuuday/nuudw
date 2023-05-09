@@ -1,0 +1,1 @@
+﻿EXEC sp_addextendedproperty @name = N'MaintainDWDropViewFlag', @value = N'0'

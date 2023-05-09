@@ -1,0 +1,19 @@
+﻿{
+    "name": "<%ADFControllerName%>",
+    "properties": {
+	"parameters": {        
+        "JobIsIncremental": {
+          "type": "Bool",
+          "defaultValue": "false",
+          "identity": "JobIsIncremental"
+        },"WriteBatchSize": {
+          "type": "Int",
+	  "defaultValue": 10000,
+          "identity": "WriteBatchSize"
+        }	
+      },
+	"folder": {
+         "name": "1.Controllers/<%ADFControllerFolder%>"
+        }    
+    }
+}

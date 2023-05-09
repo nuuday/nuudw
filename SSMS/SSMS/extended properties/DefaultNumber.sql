@@ -1,0 +1,1 @@
+﻿EXEC sp_addextendedproperty @name = N'DefaultNumber', @value = N'0'

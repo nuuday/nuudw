@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseName>BPFIntroDW</TargetDatabaseName>
+    <BlockOnPossibleDataLoss>False</BlockOnPossibleDataLoss>
+    <IncludeTransactionalScripts>True</IncludeTransactionalScripts>
+    <ProfileVersionNumber>1</ProfileVersionNumber>
+    <DropObjectsNotInSource>False</DropObjectsNotInSource>
+    <DoNotDropLogins>True</DoNotDropLogins>
+    <DoNotDropPermissions>True</DoNotDropPermissions>
+    <DoNotDropUsers>True</DoNotDropUsers>
+    <DoNotDropServerRoleMembership>True</DoNotDropServerRoleMembership>
+    <DoNotDropServerRoles>True</DoNotDropServerRoles>
+    <DoNotDropRules>True</DoNotDropRules>
+    <DoNotDropRoleMembership>True</DoNotDropRoleMembership>
+    <DoNotDropCredentials>True</DoNotDropCredentials>
+    <DoNotDropDatabaseRoles>True</DoNotDropDatabaseRoles>
+    <DoNotDropApplicationRoles>True</DoNotDropApplicationRoles>
+    <DropIndexesNotInSource>False</DropIndexesNotInSource>
+    <ScriptDatabaseCompatibility>True</ScriptDatabaseCompatibility>
+    <IgnoreColumnOrder>True</IgnoreColumnOrder>
+  </PropertyGroup>
+</Project>
+ 
+ 
+ 

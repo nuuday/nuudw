@@ -1,0 +1,67 @@
+﻿{
+    "name": "<%ADFPipelineName%>",
+    "properties": {
+        "activities": [
+            {
+                "name": "Copy_<%ADFTableName%>",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "<%ADFCopySourceType%>"
+                    },
+                  "sink": {
+                    "type": "SqlSink",
+                    "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+                    "preCopyScript": "TRUNCATE TABLE [<%ADFExtractSchemaName%>].[<%ADFTableName%>]"
+                  },
+                    "enableStaging": false,
+                    "cloudDataMovementUnits": 0
+                },
+                 "inputs": [
+                    {
+                        "referenceName": "<%ADFSourceDatasetName%>",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "FileSystemName": "<%ADFSourceFileSystem%>",
+                            "FolderName": "<%ADFSourceFileFolder%>",
+                            "FileName": "<%ADFSourceFileName%>",
+                            "ColumnDelimiter": "<%ADFSourceFileColumnDelimiter%>",
+                            "TextQualifier": "<%ADFSourceFileTextQualifier%>",
+                            "IsHeaderPresent": "<%ADFSourceFileIsHeaderPresent%>",
+                            "Encoding": "<%ADFSourceFileEncoding%>"
+                        }
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "<%ADFDestinationDatasetName%>",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "<%ADFTargetTable%>"
+                        }
+                    }
+                ]
+            }
+        ],
+      "parameters": {        
+        "JobIsIncremental": {
+          "type": "Bool",
+          "defaultValue": "false",
+          "identity": "JobIsIncremental"
+        },"WriteBatchSize": {
+          "type": "Int",
+	  "defaultValue": 10000,
+          "identity": "WriteBatchSize"
+        }
+      },
+	  "folder": {
+            "name": "<%ADFFolderName%>"
+        }
+    }
+}

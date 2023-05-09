@@ -1,0 +1,155 @@
+name: Manual Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      DeployToDev:
+        type: boolean
+        description: Deploy to DEV environment (Only IaC and Notebooks)
+        default: false
+        required: true 
+      DeployToTest:
+        type: boolean
+        description: Deploy to TEST environment
+        default: true
+        required: true 
+      DeployToProd:
+        type: boolean
+        description: Deploy to PROD environment
+        default: true
+        required: true 
+      DeployIaC:
+        type: boolean
+        description: Include Infrastructure
+        default: true
+        required: true 
+      DeploySSMS:
+        type: boolean
+        description: Include SQL Database
+        default: true
+        required: true
+      DeployADF:
+        type: boolean
+        description: Include Data Factory
+        default: true
+        required: true 
+      DeployADB:
+        type: boolean
+        description: Include Databricks
+        default: true
+        required: true
+      DeployPBI:
+        type: boolean
+        description: Include Power BI Dataset
+        default: true
+        required: true
+      DeployPBIModel:
+        type: string
+        description: Power BI Dataset to include (All will deploy all models, Format needs to be ModelName1,ModelName2)
+        default: "All"
+        required: true
+      DeployMetaData:
+        type: boolean
+        description: Include Meta Data
+        default: true
+        required: true
+  workflow_call:
+    inputs:
+      DeployToDev:
+        type: boolean
+        description: Deploy to DEV environment (Only IaC and Notebooks)
+        default: false
+        required: true 
+      DeployToTest:
+        type: boolean
+        description: Deploy to TEST environment
+        default: true
+        required: true 
+      DeployToProd:
+        type: boolean
+        description: Deploy to PROD environment
+        default: true
+        required: true    
+      DeployIaC:
+        type: boolean
+        description: Deploy IaC
+        default: true
+        required: true 
+      DeploySSMS:
+        type: boolean
+        description: Deploy SSMS
+        default: true
+        required: true
+      DeployADF:
+        type: boolean
+        description: Deploy ADF
+        default: true
+        required: true 
+      DeployADB:
+        type: boolean
+        description: Deploy ADB
+        default: true
+        required: true
+      DeployPBI:
+        type: boolean
+        description: Deploy Power BI Datasets
+        default: true
+        required: true
+      DeployPBIModel:
+        type: string
+        description: Power BI Dataset to include (All will deploy all models, Format needs to be ModelName1,ModelName2)
+        default: "All"
+        required: true
+      DeployMetaData:
+        type: boolean
+        description: Deploy Meta Data
+        default: true
+        required: true      
+
+jobs:
+  Deploy_To_Dev:
+    name: Release to Dev
+    if: ${{ inputs.DeployToDev == true }} 
+    uses: ./.github/workflows/template_release.yml
+    with:
+      Environment: dev 
+      DeployIaC: ${{ inputs.DeployIaC}} 
+      DeploySSMS: false 
+      DeployADF: false 
+      DeployADB: ${{ inputs.DeployADB}} 
+      DeployPBI: false
+      DeployPBIModel: ${{ inputs.DeployPBIModel}} 
+      DeployMetaData: false
+    secrets: inherit
+
+  Deploy_To_Test:
+    name: Release to Test
+    if: ${{ inputs.DeployToTest == true }} 
+    uses: ./.github/workflows/template_release.yml
+    with:
+      Environment: test 
+      DeployIaC: ${{ inputs.DeployIaC}} 
+      DeploySSMS: ${{ inputs.DeploySSMS}} 
+      DeployADF: ${{ inputs.DeployADF}} 
+      DeployADB: ${{ inputs.DeployADB}} 
+      DeployPBI: ${{ inputs.DeployPBI}} 
+      DeployPBIModel: ${{ inputs.DeployPBIModel}} 
+      DeployMetaData: ${{ inputs.DeployMetaData}} 
+    secrets: inherit
+
+  Deploy_To_Prod:
+    name: Release to Prod
+    if: ${{ inputs.DeployToProd == true }} 
+    uses: ./.github/workflows/template_release.yml
+    with:
+      Environment: prod
+      DeployIaC: ${{ inputs.DeployIaC}} 
+      DeploySSMS: ${{ inputs.DeploySSMS}} 
+      DeployADF: ${{ inputs.DeployADF}} 
+      DeployADB: ${{ inputs.DeployADB}} 
+      DeployPBI: ${{ inputs.DeployPBI}} 
+      DeployPBIModel: ${{ inputs.DeployPBIModel}} 
+      DeployMetaData: ${{ inputs.DeployMetaData}} 
+    secrets: inherit
+
+  

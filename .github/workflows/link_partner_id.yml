@@ -1,0 +1,124 @@
+# *****************************************************************************************************************************************
+# Link Partner ID to customer account
+# https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/link-partner-id
+
+# Run this pipeline for each service connection, when the service connections use a separate dedicated service principal account
+# Partner ID is linked to the service principal defined in the Service Connections section under Project Settings
+
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# 1. Run the pipeline with the default settings
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# ShowPartnerId=true as the only parameter set to true
+# to see if there is any partner ID associated with the service principal
+
+# If there is no partner ID associated with the service principal, an error message will be shown as a result of the step
+# ERROR: ManagementPartnerNotFound: This user or service principal is not linked with a Partner ID
+# ***** Skip to #2 below to create a partner ID *****
+
+# If there is any partner ID, which is already associated with the service principal, another message will be shown as a result of the step
+# {
+#   "objectId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", 
+#   "partnerId": "2320848",
+#   "partnerName": "Kapacity A/S",
+#   "state": "Active",
+#   "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+# }
+# where objectId is the unique ID of the service principal object, partnerId is our partner ID, partnerName is our partner name,
+# tenantId is the unique ID of the customer's Azure Active Directory tenant
+# ***** Skip to #3 below to update the current partner ID *****
+
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# 2. Run the pipeline with the below settings to create a partner ID
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# CreatePartnerId=true, ShowPartnerId=true as the only parameters set to true
+# See the results of each step in the pipeline and make sure the partner ID has been created successfully
+
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# 3. Run the pipeline with the below settings to update the current partner ID
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# UpdatePartnerId=true, ShowPartnerId=true as the only parameters set to true
+# See the results of each step in the pipeline and make sure the partner ID has been updated successfully
+ 
+# *****************************************************************************************************************************************
+
+name: Link Partner ID
+
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        type: choice
+        description: Environment
+        required: true
+        options:
+        - Development
+        - Test
+        - Production
+      CreatePartnerId:   # Associates the partner ID to the service principal defined in the azure credentials.
+        type: boolean
+        default: false
+      UpdatePartnerId:   # Updates the associated partner ID for the service principal defined in the azure credentials.
+        type: boolean
+        default: false
+      DeletePartnerId:   # Deletes the associated partner ID from the service principal defined in the azure credentials.
+        type: boolean
+        default: false
+      ShowPartnerId:     # Shows the associated partner ID of the service principal defined in the azure credentials.
+        type: boolean
+        default: true
+
+env:
+  PartnerId: 2320848          # Partner ID of twoday kapacity
+
+jobs:
+  link:
+    name: Link subscription to Kapacity Partner ID
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.env }}
+    
+    steps:
+      # Log into Azure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}     
+        enable-AzPSSession: true
+
+    - name: Get Secrets
+      uses: Azure/get-keyvault-secrets@v1
+      with:
+        keyvault: "${{ secrets.KEYVAULTNAME }}" # name of key vault in Azure portal
+        secrets: 'SubscriptionID'  # comma separated list of secret keys to fetch from key vault 
+      id: GetSecretAction # ID for secrets that you will reference
+
+    - name: Create Partner ID
+      if: inputs.CreatePartnerId == true
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az extension add --name managementpartner
+          az managementpartner create --partner-id "$PartnerId" --subscription "${{ steps.GetSecretAction.outputs.SubscriptionID }}"
+
+    - name: Update Partner ID
+      if: inputs.UpdatePartnerId == true
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az extension add --name managementpartner
+          az managementpartner update --partner-id "$PartnerId" --subscription "${{ steps.GetSecretAction.outputs.SubscriptionID }}"
+
+    - name: Delete Partner ID
+      if: inputs.DeletePartnerId == true
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az extension add --name managementpartner
+          az managementpartner delete --partner-id "$PartnerId" --subscription "${{ steps.GetSecretAction.outputs.SubscriptionID }}"
+
+    - name: Show Partner ID
+      if: inputs.ShowPartnerId == true
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az extension add --name managementpartner
+          az managementpartner show --subscription "${{ steps.GetSecretAction.outputs.SubscriptionID }}"

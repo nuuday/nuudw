@@ -1,0 +1,75 @@
+﻿{
+    "name": "Load<%ADFSchemaName%>_<%ADFTableName%>",
+    "properties": {
+        "activities": [
+            {
+                "name": "SP_Load<%ADFSchemaName%><%ADFTableName%>",
+                "type": "SqlServerStoredProcedure",
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[meta].[LoadFact]",
+		    "storedProcedureParameters": {
+                        "Table": {
+                            "value": "<%ADFTableName%>",
+                            "type": "String"
+                        	},
+			"DestinationSchema": {
+                            "value": "<%ADFSchemaName%>",
+                            "type": "String"
+                        	},
+			"LoadPattern": {
+                            "value": "<%ADFLoadPattern%>",
+                            "type": "String"
+                        	},
+			"IncrementalFlag": {
+                            "value": "@pipeline().parameters.JobIsIncremental",
+                            "type": "Boolean"
+                        	},
+			"CleanUpPartitionsFlag": {
+                            "value": "@pipeline().parameters.CleanUpPartitions",
+                            "type": "Boolean"
+                        	},
+			"DisableMaintainDWFlag": {
+                            "value": "@pipeline().parameters.DisableMaintainDW",
+                            "type": "Boolean"
+                        	},
+			"PrintSQL": {
+                            "value": "false",
+                            "type": "Boolean"
+                        	}
+                	}
+                },
+                "linkedServiceName": {
+                    "referenceName": "<%ADFLinkedServiceName%>",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+      "parameters": {        
+        "JobIsIncremental": {
+          "type": "Bool",
+          "defaultValue": "false",
+          "identity": "JobIsIncremental"
+        	},
+	"DisableMaintainDW": {
+          "type": "Bool",
+          "defaultValue": "false",
+          "identity": "DisableMaintainDW"
+        	},
+	"CleanUpPartitions": {
+          "type": "Bool",
+          "defaultValue": "false",
+          "identity": "CleanUpPartitions"
+        	}
+	},
+	  "folder": {
+            "name": "<%ADFFolderName%>"
+        }
+    }    
+}

@@ -1,0 +1,163 @@
+{
+    "name": "Meta_SourceObjectDefinitions",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "<%ADFLinkedServiceName%>",
+            "type": "LinkedServiceReference"
+        },
+        "type": "AzureSqlTable",
+        "typeProperties": {
+			"tableName": "meta.SourceObjectDefinitions"
+        },
+        "structure": [
+            {
+                "name": "SourceObjectID",
+                "type": "Int32"
+            },
+            {
+                "name": "SchemaName",
+                "type": "String"
+            },
+            {
+                "name": "ObjectName",
+                "type": "String"
+            },
+            {
+                "name": "Name",
+                "type": "String"
+            },
+            {
+                "name": "ExtractPattern",
+                "type": "String"
+            },
+            {
+                "name": "ExtractSQLFilter",
+                "type": "String"
+            },
+            {
+                "name": "InitialCatalog",
+                "type": "String"
+            },
+            {
+                "name": "ConnectionString",
+                "type": "String"
+            },
+            {
+                "name": "ExtractSchemaName",
+                "type": "String"
+            },
+            {
+                "name": "ConnectionName",
+                "type": "String"
+            },
+            {
+                "name": "ConnectionType",
+                "type": "String"
+            },
+            {
+                "name": "ControllerName",
+                "type": "String"
+            },
+            {
+                "name": "StringColumnFilter",
+                "type": "String"
+            },
+            {
+                "name": "ExtractAllColumnsFlag",
+                "type": "Int32"
+            },
+            {
+                "name": "LoopFile",
+                "type": "Byte"
+            },
+            {
+                "name": "FileName",
+                "type": "String"
+            },
+            {
+                "name": "Folder",
+                "type": "String"
+            },
+            {
+                "name": "FileExtension",
+                "type": "String"
+            },
+            {
+                "name": "FileSpecification",
+                "type": "String"
+            },
+            {
+                "name": "PreserveHistoryFlag",
+                "type": "Boolean"
+            },
+            {
+                "name": "DataSource",
+                "type": "String"
+            },
+            {
+                "name": "NavisionFlag",
+                "type": "Boolean"
+            },
+            {
+                "name": "RemoveBracketsFlag",
+                "type": "Boolean"
+            },
+            {
+                "name": "NavisionCompany",
+                "type": "String"
+            },
+            {
+                "name": "NavisionTableName",
+                "type": "String"
+            },
+            {
+                "name": "ExtractPackageName",
+                "type": "String"
+            },
+            {
+                "name": "ExtractTableName",
+                "type": "String"
+            },
+            {
+                "name": "IncrementalValueColumnDefinition",
+                "type": "String"
+            },
+            {
+                "name": "IncrementalValueColumnDefinitionInExtract",
+                "type": "String"
+            },
+            {
+                "name": "IncrementalFlag",
+                "type": "Boolean"
+            },
+            {
+                "name": "ColumnStoreFlag",
+                "type": "String"
+            },
+            {
+                "name": "ColumnStoreHistoryFlag",
+                "type": "String"
+            },
+            {
+                "name": "SQLScript",
+                "type": "String"
+            },
+            {
+                "name": "IsDateFlag",
+                "type": "Boolean"
+            },
+            {
+                "name": "SCD2Columns",
+                "type": "String"
+            },
+	    {
+                "name": "DWDestinationFlag",
+                "type": "Boolean"
+            }
+        ],
+	  "folder": {
+            "name": "Meta"
+        }
+    }
+}
+

@@ -1,0 +1,202 @@
+﻿{
+    "name": "<%ADFPipelineName%>",
+    "properties": {
+        "activities": [
+            {
+                "name": "SP_UpdateSourceObjectTables",
+                "type": "SqlServerStoredProcedure",
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[meta].[UpdateSourceObjectTables]",
+                    "storedProcedureParameters": {
+                        "TableName": {
+                            "value": "<%ADFTableName%>",
+                            "type": "String"
+                        },
+			"SourceConnectionName": {
+                            "value": "<%ADFConnectionName%>",
+                            "type": "String"
+                        },
+			"ExtractSchemaName": {
+                            "value": "<%ADFExtractSchemaName%>",
+                            "type": "String"
+                        },
+		    	"IsDateFlag":{
+                     	    "value":"<%ADFIsDateFlag%>",
+                     	    "type":"Boolean"
+                  	},
+                  	"IncrementalDefinition":{
+                     	    "value":"<%ADFIncrementalDefinition%>",
+		            "type":"String"
+                  	},
+                  	"ConnectionType":{
+                     		"value":"<%ADFConnectionType%>",
+                     		"type":"String"
+                  	},
+		  	"RollingWindowDays":{
+                     		"value":"<%ADFRollingWindowDays%>",
+	                        "type":"Int32"
+            	      	}
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "<%ADFDestinationLinkedService%>",
+                    "type": "LinkedServiceReference"
+                }
+            },
+	    {
+                "name": "Lookup_LastValueLoaded",
+                "type": "Lookup",
+                "dependsOn": [
+                    {
+                        "activity": "SP_UpdateSourceObjectTables",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderStoredProcedureName": "[meta].[GetLastValueLoaded]",
+                        "storedProcedureParameters": {
+                            "TableName": {                          
+                                "value": "<%ADFTableName%>",
+      				"type": "String"
+                            },
+			"ExtractSchemaName": {
+                            "value": "<%ADFExtractSchemaName%>",
+                            "type": "String"
+                        },
+			"JobIsIncremental": {
+                            "value": "@pipeline().parameters.JobIsIncremental",
+                            "type": "Boolean"
+                        },
+                     "ConnectionType":{
+                        "value":"<%ADFConnectionType%>",
+                        "type":"String"
+                     }
+                        }
+                    },
+                    "dataset": {
+                        "referenceName": "<%ADFDestinationDatasetName%>",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "meta.SourceObjects"                    
+                    	}
+                    }
+                }
+            },
+            {
+                "name": "Copy_<%ADFTableName%>",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "Lookup_LastValueLoaded",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "<%ADFCopySourceType%>",
+                        "<%ADFSqlType%>": "<%ADFSQLScript%>"
+                    },
+                  "sink": {
+                    "type": "SqlSink",
+                    "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+                    "preCopyScript": "TRUNCATE TABLE [<%ADFExtractSchemaName%>].[<%ADFTableName%>]"
+                  },
+                    "enableStaging": false,
+                    "cloudDataMovementUnits": 0
+                },
+                 "inputs": [
+                    {
+                        "referenceName": "<%ADFSourceDatasetName%>",
+                        "type": "DatasetReference",
+                         "parameters": {
+                            "TableName": "<%ADFSourceTable%>"
+                        }
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "<%ADFDestinationDatasetName%>",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "<%ADFTargetTable%>"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "SP_SetLastValueLoaded",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "Copy_<%ADFTableName%>",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "[meta].[SetLastLoadedValue]",
+                    "storedProcedureParameters": {
+                        "TableName": {
+                            "value": "<%ADFTableName%>",
+                            "type": "String"
+                        },
+			"ExtractSchemaName": {
+                            "value": "<%ADFExtractSchemaName%>",
+                            "type": "String"
+                        },
+			"PrintSQL": {
+                            "value": "false",
+                            "type": "Boolean"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "<%ADFDestinationLinkedService%>",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+      "parameters": {
+        "JobIsIncremental": {
+          "type": "Bool",
+          "defaultValue": "false",
+          "identity": "JobIsIncremental"
+        },
+        "WriteBatchSize": {
+          "type": "Int",
+	  "defaultValue": 10000,
+          "identity": "WriteBatchSize"
+        }
+      },
+	  "folder": {
+            "name": "<%ADFFolderName%>"
+        }
+    }
+}

@@ -1,0 +1,1 @@
+﻿EXEC sp_addextendedproperty @name = N'FactCCIFlag', @value = N'1'

@@ -1,0 +1,1 @@
+﻿EXEC sp_addextendedproperty @name = N'BusinessKeySuffix', @value = N'Key'

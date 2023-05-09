@@ -1,0 +1,177 @@
+﻿{
+    "name": "ExtractInformationSchema_<%ADFLinkedServiceName%>",
+    "properties": {
+        "activities": [
+            	{
+                		"name": "SP Maintain Extract Create Schemas",
+                		"type": "SqlServerStoredProcedure",
+                 		"policy": {
+                    		"timeout": "0.12:00:00",
+                    		"retry": 0,
+                    		"retryIntervalInSeconds": 30,
+                    		"secureOutput": false,
+                    		"secureInput": false
+                		},
+                		"typeProperties": {
+                    		"storedProcedureName": "[meta].[MaintainExtractCreateSchemas]",
+                		"storedProcedureParameters": {
+                        		"ExtractSchemaName": {
+                            		"value": "<%ADFExtractSchemaName%>",
+                            		"type": "String"
+                        			},
+					"PrintSQL": {
+                            		"value": "false",
+                            		"type": "Boolean"
+                        			}
+					}
+				},
+                		"linkedServiceName": {
+                    		"referenceName": "<%ADFDatabaseName%>",
+                    		"type": "LinkedServiceReference"
+                		}
+            		},
+		{
+                "name": "LKP Objects",
+                "type": "Lookup",
+		"dependsOn": [
+                    {
+                        "activity": "SP Maintain Extract Create Schemas",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],                
+		"policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderQuery": "SELECT [SchemaName]\n      ,[ObjectName]\n ,[DWDestinationFlag] AS CreateTableFlag\n ,[SourceObjectID]\n ,[TruncateBeforeDeployFlag]\n ,[PreserveHistoryFlag]\n ,[NavisionFlag]\n FROM [meta].[SourceObjectDefinitions]\n  WHERE ConnectionName = '<%ADFLinkedServiceName%>'"
+                    },
+                    "dataset": {
+                        "referenceName": "<%ADFDatabaseName%>_DynamicDataset",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "meta.SourceObjectDefinitions"                        
+                    	}
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "ForEach Object",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "LKP Objects",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('LKP Objects').output.value",
+                        "type": "Expression"
+                    },
+                    "isSequential": false,
+                    "activities": [
+                        {
+                            "name": "Copy Information Schema",
+                            "type": "Copy",
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "source": {
+                                    "type": "SqlSource",
+                                    "sqlReaderQuery": {
+                                        "value": "SELECT DISTINCT 'AzureSqlDatabase' AS SourceSystemTypeName\t\n\t\t\t\t\t\t\t\t\t,   COLUMNS.[TABLE_CATALOG] AS TableCatalogName\n\t\t\t\t\t\t\t\t\t ,\t\n\t\t\t\t\t\t\t\t\t   COLUMNS.[TABLE_SCHEMA] AS SchemaName\n\t\t\t\t\t\t\t\t\t  ,COLUMNS.[TABLE_NAME] AS TableName\n\t\t\t\t\t\t\t\t\t  ,COLUMNS.[COLUMN_NAME] AS ColumnName\n\t\t\t\t\t\t\t\t\t  ,COLUMNS.[ORDINAL_POSITION] AS OrdinalPositionNumber\n\t\t\t\t\t\t\t\t\t  ,COLUMNS.[DATA_TYPE] AS DataTypeName\n\t\t\t\t\t\t\t\t\t  ,COLUMNS.[CHARACTER_MAXIMUM_LENGTH] AS MaximumLenghtNumber \n\t\t\t\t\t\t\t\t\t  ,CAST(COLUMNS.[NUMERIC_PRECISION] AS INT) AS NumericPrecisionNumber \n\t\t\t\t\t\t\t\t\t  ,COLUMNS.[NUMERIC_SCALE] AS NumericScaleNumber \n\t\t\t\t\t\t\t\t\t  ,KEY_COLUMN_USAGE.ORDINAL_POSITION AS KeySequenceNumber \n\t,'@{item().CreateTableFlag}' AS CreateTableFlag\t\n,@{item().SourceObjectID} AS SourceObjectID\n,'@{item().TruncateBeforeDeployFlag}' AS TruncateBeforeDeployFlag\n,'@{item().PreserveHistoryFlag}' AS PreserveHistoryFlag\n,'@{item().NavisionFlag}' AS NavisionFlag\t\t\t\t\t\t\t\nFROM \n\tINFORMATION_SCHEMA.COLUMNS\nLEFT JOIN\n\tINFORMATION_SCHEMA.TABLE_CONSTRAINTS\n\t\tON\n\t\t\tTABLE_CONSTRAINTS.TABLE_CATALOG = COLUMNS.TABLE_CATALOG\n\t\tAND\tTABLE_CONSTRAINTS.TABLE_SCHEMA = COLUMNS.TABLE_SCHEMA\n\t\tAND TABLE_CONSTRAINTS.TABLE_NAME = COLUMNS.TABLE_NAME\n\t\tAND TABLE_CONSTRAINTS.CONSTRAINT_TYPE = 'PRIMARY KEY'\nLEFT JOIN \n\tINFORMATION_SCHEMA.KEY_COLUMN_USAGE\nON\t\n\tKEY_COLUMN_USAGE.CONSTRAINT_NAME = TABLE_CONSTRAINTS.CONSTRAINT_NAME\n\tAND KEY_COLUMN_USAGE.COLUMN_NAME = COLUMNS.COLUMN_NAME\nWHERE \n\tCOLUMNS.TABLE_SCHEMA = '@{item().SchemaName}'\n\tAND COLUMNS.TABLE_NAME = '@{item().ObjectName}'",
+                                        "type": "Expression"
+                                    }
+                                },
+                                "sink": {
+                                    "type": "SqlSink",
+                                    "writeBatchSize": 10000,
+                                    "preCopyScript": {
+                                        "value": "DELETE FROM meta.ExtractInformationSchema WHERE SourceObjectID = '@{item().SourceObjectID}'",
+                                        "type": "Expression"
+                                    }
+                                },
+                                "enableStaging": false,
+                                "cloudDataMovementUnits": 0
+                		},
+                 		"inputs": [
+                    			{
+                        		"referenceName": "<%ADFLinkedServiceName%>_DynamicDataset",
+                        		"type": "DatasetReference",
+                         			"parameters": {
+                            				"TableName": "INFORMATION_SCHEMA.COLUMNS"
+                        				}
+                    			}
+                		],
+                		"outputs": [
+                    			{
+                        		"referenceName": "<%ADFDatabaseName%>_DynamicDataset",
+                        		"type": "DatasetReference",
+                        			"parameters": {
+                            				"TableName": "meta.ExtractInformationSchema"
+                        				}
+                    			}
+                		]
+                        },
+            		{
+                		"name": "SP Maintain Extract",
+                		"type": "SqlServerStoredProcedure",
+                		"dependsOn": [
+                    		{
+                        		"activity": "Copy Information Schema",
+                        		"dependencyConditions": [
+                            		"Succeeded"
+                        		]
+                    		}
+                		],
+                		"policy": {
+                    		"timeout": "0.12:00:00",
+                    		"retry": 0,
+                    		"retryIntervalInSeconds": 30,
+                    		"secureOutput": false,
+                    		"secureInput": false
+                		},
+                		"typeProperties": {
+                    		"storedProcedureName": "[meta].[MaintainExtract]",
+                    		"storedProcedureParameters": {
+                        		"SourceObjectID": {
+                            		"value": "@{item().SourceObjectID}",
+                            		"type": "Int32"
+                        		},
+					"DropTable": {
+                            		"value": "true",
+                            		"type": "Boolean"
+                        		}
+                   		 }
+                		},
+                	"linkedServiceName": {
+                    		"referenceName": "<%ADFDatabaseName%>",
+                    		"type": "LinkedServiceReference"
+                		}
+            		}
+                    ]
+                }
+            }
+	   <%ADFTargetConnections%>
+        ],
+	  "folder": {
+            "name": "6.Meta"
+        }
+    }
+}

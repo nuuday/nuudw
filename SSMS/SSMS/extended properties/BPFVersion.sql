@@ -1,0 +1,1 @@
+﻿EXEC sp_addextendedproperty @name = N'BPFVersion', @value = N'2.0.17'

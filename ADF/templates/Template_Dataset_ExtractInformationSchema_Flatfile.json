@@ -1,0 +1,44 @@
+{
+    "name": "Meta_<%ADFLinkedServiceName%>_<%ADFSourceFileType%>_DynamicDataSet",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "<%ADFLinkedServiceName%>",
+            "type": "LinkedServiceReference"
+        },
+        "parameters": {
+            "FileSystemName": {
+                "type": "string"
+            },
+            "FolderName": {
+                "type": "string"
+            },
+            "FileName": {
+                "type": "string"
+            }
+        },
+        "folder": {
+            "name": "<%ADFLinkedServiceName%>"
+        },
+        "annotations": [],
+        "type": "<%ADFSourceFileType%>",
+        "typeProperties": {
+            "location": {
+                "type": "<%ADFDatasetType%>",
+                "fileName": {
+                    "value": "@dataset().FileName",
+                    "type": "Expression"
+                },
+                "folderPath": {
+                    "value": "@dataset().FolderName",
+                    "type": "Expression"
+                },
+                "fileSystem": {
+                    "value": "@dataset().FileSystemName",
+                    "type": "Expression"
+                }
+            },
+            "compressionCodec": "none"
+        },
+        "schema": []
+    }
+}

@@ -1,0 +1,653 @@
+﻿{
+    "name": "ExtractInformationSchema_<%ADFLinkedServiceName%>",
+    "properties": {
+        "activities": [
+           	{
+                		"name": "SP Maintain Extract Create Schemas",
+                		"type": "SqlServerStoredProcedure",
+                 		"policy": {
+                    		"timeout": "0.12:00:00",
+                    		"retry": 0,
+                    		"retryIntervalInSeconds": 30,
+                    		"secureOutput": false,
+                    		"secureInput": false
+                		},
+                		"typeProperties": {
+                    		"storedProcedureName": "[meta].[MaintainExtractCreateSchemas]",
+                		"storedProcedureParameters": {
+                        		"ExtractSchemaName": {
+                            		"value": "<%ADFExtractSchemaName%>",
+                            		"type": "String"
+                        			},
+					"PrintSQL": {
+                            		"value": "false",
+                            		"type": "Boolean"
+                        			}
+					}
+				},
+                		"linkedServiceName": {
+                    		"referenceName": "<%ADFDatabaseName%>",
+                    		"type": "LinkedServiceReference"
+                		}
+            		},
+		{
+                "name": "LKP Objects",
+                "type": "Lookup",
+		"dependsOn": [
+                    {
+                        "activity": "SP Maintain Extract Create Schemas",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],       
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "AzureSqlSource",
+                        "sqlReaderQuery": "SELECT \n\tSourceObjectID\n        ,ConnectionType\n\t,FileExtension\n\t,FileSystem AS FileSystemName\n\t,FileName\n\t,concat(FileName,'.',FileExtension) AS FullFileName\n\t,Folder\n\t,TargetDestinationFlag\n\t,FileSpecification\n\t,RowSeparator\n\t,ColumnDelimiter\n\t,TextQualifier\n\t,IsHeaderPresent\n\t,Encoding\n\t,LoopFile\n  FROM [meta].[SourceObjectDefinitions]\n  WHERE ConnectionName = '<%ADFLinkedServiceName%>'"
+                    },
+                    "dataset": {
+                        "referenceName": "<%ADFDatabaseName%>_DynamicDataset",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "meta.SourceObjectDefinitions"                        
+                    	}
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "ForEach Object",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "LKP Objects",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('LKP Objects').output.value",
+                        "type": "Expression"
+                    },
+                    "isSequential": false,
+                    "activities": [
+                        {
+                            "name": "If Parquet",
+                            "type": "IfCondition",
+                            "dependsOn": [],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "expression": {
+                                    "value": "@equals(\ntoLower(item().FileExtension),'parquet'\n)",
+                                    "type": "Expression"
+                                },
+                                "ifTrueActivities": [
+                                    {
+                                        "name": "GetMetadata Parquet",
+                                        "type": "GetMetadata",
+                                        "dependsOn": [],
+                                        "policy": {
+                                            "timeout": "7.00:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "dataset": {
+                                                "referenceName": "<%ADFLinkedServiceName%>_Parquet_DynamicDataSet",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "FileSystemName": {
+                                                        "value": "@item().FileSystemName",
+                                                        "type": "Expression"
+                                                    },
+                                                    "FolderName": {
+                                                        "value": "@item().Folder",
+                                                        "type": "Expression"
+                                                    },
+                                                    "FileName": {
+                                                        "value": "@item().FullFileName",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            },
+                                            "fieldList": [
+                                                "itemName",
+                                                "structure",
+                                                "columnCount"
+                                            ],
+                                            "storeSettings": {
+                                                "type": "AzureBlobFSReadSettings",
+                                                "recursive": true
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "Maintain Extract Information Schema Parquet",
+                                        "type": "SqlServerStoredProcedure",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "GetMetadata Parquet",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "7.00:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "storedProcedureName": "[meta].[MaintainExtractInformationSchemaFromJsonMeta]",
+                                            "storedProcedureParameters": {
+                                                "JsonOutput": {
+                                                    "value": {
+                                                        "value": "@string(activity('GetMetadata Parquet').output)",
+                                                        "type": "Expression"
+                                                    },
+                                                    "type": "String"
+                                                },
+                                                "SourceObjectID": {
+                                                    "value": {
+                                                        "value": "@item().SourceObjectID",
+                                                        "type": "Expression"
+                                                    },
+                                                    "type": "Int32"
+                                                }
+                                            }
+                                        },
+                                        "linkedServiceName": {
+                                            "referenceName": "<%ADFDatabaseName%>",
+                                            "type": "LinkedServiceReference"
+                                        }
+                                    },
+				{
+                		"name": "SP Maintain Extract Parquet",
+                		"type": "SqlServerStoredProcedure",
+                		"dependsOn": [
+                    		{
+                        		"activity": "Maintain Extract Information Schema Parquet",
+                        		"dependencyConditions": [
+                            		"Succeeded"
+                        		]
+                    		}
+                		],
+                		"policy": {
+                    		"timeout": "0.12:00:00",
+                    		"retry": 0,
+                    		"retryIntervalInSeconds": 30,
+                    		"secureOutput": false,
+                    		"secureInput": false
+                		},
+                		"typeProperties": {
+                    		"storedProcedureName": "[meta].[MaintainExtract]",
+                    		"storedProcedureParameters": {
+                        		"SourceObjectID": {
+                            		"value": "@{item().SourceObjectID}",
+                            		"type": "Int32"
+                        		},
+					"DropTable": {
+                            		"value": "true",
+                            		"type": "Boolean"
+                        		}
+                   		 }
+                		},
+                		"linkedServiceName": {
+                    			"referenceName": "<%ADFDatabaseName%>",
+                    			"type": "LinkedServiceReference"
+                			}
+            			}
+                                ]
+                            }
+                        },
+                        {
+                            "name": "If Avro",
+                            "type": "IfCondition",
+                            "dependsOn": [],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "expression": {
+                                    "value": "@equals(\ntoLower(item().FileExtension),'avro'\n)",
+                                    "type": "Expression"
+                                },
+                                "ifTrueActivities": [
+                                    {
+                                        "name": "GetMetadata Avro",
+                                        "type": "GetMetadata",
+                                        "dependsOn": [],
+                                        "policy": {
+                                            "timeout": "7.00:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "dataset": {
+                                                "referenceName": "<%ADFLinkedServiceName%>_Avro_DynamicDataSet",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "FileSystemName": {
+                                                        "value": "@item().FileSystemName",
+                                                        "type": "Expression"
+                                                    },
+                                                    "FolderName": {
+                                                        "value": "@item().Folder",
+                                                        "type": "Expression"
+                                                    },
+                                                    "FileName": {
+                                                        "value": "@item().FullFileName",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            },
+                                            "fieldList": [
+                                                "itemName",
+                                                "structure",
+                                                "columnCount"
+                                            ],
+                                            "storeSettings": {
+                                                "type": "AzureBlobFSReadSettings",
+                                                "recursive": true
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "Maintain Extract Information Schema Avro",
+                                        "type": "SqlServerStoredProcedure",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "GetMetadata Avro",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "7.00:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "storedProcedureName": "[meta].[MaintainExtractInformationSchemaFromJsonMeta]",
+                                            "storedProcedureParameters": {
+                                                "JsonOutput": {
+                                                    "value": {
+                                                        "value": "@string(activity('GetMetadata Avro').output)",
+                                                        "type": "Expression"
+                                                    },
+                                                    "type": "String"
+                                                },
+                                                "SourceObjectID": {
+                                                    "value": {
+                                                        "value": "@item().SourceObjectID",
+                                                        "type": "Expression"
+                                                    },
+                                                    "type": "Int32"
+                                                }
+                                            }
+                                        },
+                                        "linkedServiceName": {
+                                            "referenceName": "<%ADFDatabaseName%>",
+                                            "type": "LinkedServiceReference"
+                                        }
+                                    },
+				{
+                		"name": "SP Maintain Extract Avro",
+                		"type": "SqlServerStoredProcedure",
+                		"dependsOn": [
+                    		{
+                        		"activity": "Maintain Extract Information Schema Avro",
+                        		"dependencyConditions": [
+                            		"Succeeded"
+                        		]
+                    		}
+                		],
+                		"policy": {
+                    		"timeout": "0.12:00:00",
+                    		"retry": 0,
+                    		"retryIntervalInSeconds": 30,
+                    		"secureOutput": false,
+                    		"secureInput": false
+                		},
+                		"typeProperties": {
+                    		"storedProcedureName": "[meta].[MaintainExtract]",
+                    		"storedProcedureParameters": {
+                        		"SourceObjectID": {
+                            		"value": "@{item().SourceObjectID}",
+                            		"type": "Int32"
+                        		},
+					"DropTable": {
+                            		"value": "true",
+                            		"type": "Boolean"
+                        		}
+                   		 }
+                		},
+                		"linkedServiceName": {
+                    			"referenceName": "<%ADFDatabaseName%>",
+                    			"type": "LinkedServiceReference"
+                			}
+            			}
+                                ]
+                            }
+                        },
+                        {
+                            "name": "If Orc",
+                            "type": "IfCondition",
+                            "dependsOn": [],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "expression": {
+                                    "value": "@equals(\ntoLower(item().FileExtension),'orc'\n)",
+                                    "type": "Expression"
+                                },
+                                "ifTrueActivities": [
+                                    {
+                                        "name": "GetMetadata Orc",
+                                        "type": "GetMetadata",
+                                        "dependsOn": [],
+                                        "policy": {
+                                            "timeout": "7.00:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "dataset": {
+                                                "referenceName": "<%ADFLinkedServiceName%>_Orc_DynamicDataSet",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "FileSystemName": {
+                                                        "value": "@item().FileSystemName",
+                                                        "type": "Expression"
+                                                    },
+                                                    "FolderName": {
+                                                        "value": "@item().Folder",
+                                                        "type": "Expression"
+                                                    },
+                                                    "FileName": {
+                                                        "value": "@item().FullFileName",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            },
+                                            "fieldList": [
+                                                "itemName",
+                                                "structure",
+                                                "columnCount"
+                                            ],
+                                            "storeSettings": {
+                                                "type": "AzureBlobFSReadSettings",
+                                                "recursive": true
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "Maintain Extract Information Schema Orc",
+                                        "type": "SqlServerStoredProcedure",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "GetMetadata Orc",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "7.00:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "storedProcedureName": "[meta].[MaintainExtractInformationSchemaFromJsonMeta]",
+                                            "storedProcedureParameters": {
+                                                "JsonOutput": {
+                                                    "value": {
+                                                        "value": "@string(activity('GetMetadata Orc').output)",
+                                                        "type": "Expression"
+                                                    },
+                                                    "type": "String"
+                                                },
+                                                "SourceObjectID": {
+                                                    "value": {
+                                                        "value": "@item().SourceObjectID",
+                                                        "type": "Expression"
+                                                    },
+                                                    "type": "Int32"
+                                                }
+                                            }
+                                        },
+                                        "linkedServiceName": {
+                                            "referenceName": "<%ADFDatabaseName%>",
+                                            "type": "LinkedServiceReference"
+                                        }
+                                    },
+				{
+                		"name": "SP Maintain Extract Orc",
+                		"type": "SqlServerStoredProcedure",
+                		"dependsOn": [
+                    		{
+                        		"activity": "Maintain Extract Information Schema Orc",
+                        		"dependencyConditions": [
+                            		"Succeeded"
+                        		]
+                    		}
+                		],
+                		"policy": {
+                    		"timeout": "0.12:00:00",
+                    		"retry": 0,
+                    		"retryIntervalInSeconds": 30,
+                    		"secureOutput": false,
+                    		"secureInput": false
+                		},
+                		"typeProperties": {
+                    		"storedProcedureName": "[meta].[MaintainExtract]",
+                    		"storedProcedureParameters": {
+                        		"SourceObjectID": {
+                            		"value": "@{item().SourceObjectID}",
+                            		"type": "Int32"
+                        		},
+					"DropTable": {
+                            		"value": "true",
+                            		"type": "Boolean"
+                        		}
+                   		 }
+                		},
+                		"linkedServiceName": {
+                    			"referenceName": "<%ADFDatabaseName%>",
+                    			"type": "LinkedServiceReference"
+                			}
+            			}
+                                ]
+                            }
+                        },
+                        {
+                            "name": "If Delimited Text",
+                            "type": "IfCondition",
+                            "dependsOn": [],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "expression": {
+                                    "value": "@equals(\ntoLower(item().FileExtension),'csv'\n)",
+                                    "type": "Expression"
+                                },
+                                "ifTrueActivities": [
+                                    {
+                                        "name": "GetMetadata DelimitedText",
+                                        "type": "GetMetadata",
+                                        "dependsOn": [],
+                                        "policy": {
+                                            "timeout": "7.00:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "dataset": {
+                                                "referenceName": "<%ADFLinkedServiceName%>_DelimitedText_DynamicDataSet",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "FileSystemName": {
+                                                        "value": "@item().FileSystemName",
+                                                        "type": "Expression"
+                                                    },
+                                                    "FolderName": {
+                                                        "value": "@item().Folder",
+                                                        "type": "Expression"
+                                                    },
+                                                    "FileName": {
+                                                        "value": "@item().FullFileName",
+                                                        "type": "Expression"
+                                                    },
+                                                    "ColumnDelimiter": {
+                                                        "value": "@item().ColumnDelimiter",
+                                                        "type": "Expression"
+                                                    },
+                                                    "TextQualifier": {
+                                                        "value": "@item().TextQualifier",
+                                                        "type": "Expression"
+                                                    },
+                                                    "IsHeaderPresent": {
+                                                        "value": "@item().IsHeaderPresent",
+                                                        "type": "Expression"
+                                                    },
+                                                    "Encoding": {
+                                                        "value": "@item().IsHeaderPresent",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            },
+                                            "fieldList": [
+                                                "itemName",
+                                                "structure",
+                                                "columnCount"
+                                            ],
+                                            "storeSettings": {
+                                                "type": "AzureBlobFSReadSettings",
+                                                "recursive": true
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "Maintain Extract Information Schema DelimitedText",
+                                        "type": "SqlServerStoredProcedure",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "GetMetadata DelimitedText",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "7.00:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "storedProcedureName": "[meta].[MaintainExtractInformationSchemaFromJsonMeta]",
+                                            "storedProcedureParameters": {
+                                                "JsonOutput": {
+                                                    "value": {
+                                                        "value": "@string(activity('GetMetadata DelimitedText').output)",
+                                                        "type": "Expression"
+                                                    },
+                                                    "type": "String"
+                                                },
+                                                "SourceObjectID": {
+                                                    "value": {
+                                                        "value": "@item().SourceObjectID",
+                                                        "type": "Expression"
+                                                    },
+                                                    "type": "Int32"
+                                                }
+                                            }
+                                        },
+                                        "linkedServiceName": {
+                                            "referenceName": "<%ADFDatabaseName%>",
+                                            "type": "LinkedServiceReference"
+                                        }
+                                    },
+                                    {
+                                        "name": "SP Maintain Extract DelimitedText",
+                                        "type": "SqlServerStoredProcedure",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "Maintain Extract Information Schema DelimitedText",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "storedProcedureName": "[meta].[MaintainExtract]",
+                                            "storedProcedureParameters": {
+                                                "SourceObjectID": {
+                            			    "value": "@{item().SourceObjectID}",
+                            			    "type": "Int32"
+                        			},
+						"DropTable": {
+                                                    "value": "true",
+                                                    "type": "Boolean"
+                                                }
+                                            }
+                                        },
+                                        "linkedServiceName": {
+                                            "referenceName": "<%ADFDatabaseName%>",
+                                            "type": "LinkedServiceReference"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+	   <%ADFTargetConnections%>
+        ],
+        "folder": {
+            "name": "6.Meta"
+        },
+        "annotations": []
+    }
+}
