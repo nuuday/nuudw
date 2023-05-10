@@ -33,25 +33,20 @@ on:
         description: Include Data Factory
         default: true
         required: true 
-      DeployPBI:
+      DeploySSAS:
         type: boolean
-        description: Include Power BI Dataset
+        description: Include SSAS
         default: true
         required: true
-      DeployPBIModel:
+      DeploySSASModel:
         type: string
-        description: Power BI Dataset to include (All will deploy all models, Format needs to be ModelName1,ModelName2)
+        description: SSAS models to include (All will deploy all models, Format needs to be ModelName1,ModelName2)
         default: "All"
         required: true
       DeployMetaData:
         type: boolean
         description: Include Meta Data
         default: true
-        required: true
-      DeploySSAS:
-        type: boolean
-        description: Include SSAS
-        default: "All"
         required: true
   workflow_call:
     inputs:
@@ -85,26 +80,21 @@ on:
         description: Deploy ADF
         default: true
         required: true 
-      DeployPBI:
+      DeploySSAS:
         type: boolean
-        description: Deploy Power BI Datasets
+        description: Deploy SSAS
         default: true
         required: true
-      DeployPBIModel:
+      DeploySSASModel:
         type: string
-        description: Power BI Dataset to include (All will deploy all models, Format needs to be ModelName1,ModelName2)
+        description: SSAS models to include (All will deploy all models, Format needs to be ModelName1,ModelName2)
         default: "All"
         required: true
       DeployMetaData:
         type: boolean
         description: Deploy Meta Data
         default: true
-        required: true 
-      DeploySSAS:
-        type: boolean
-        description: Include SSAS
-        default: "All"
-        required: true     
+        required: true   
 
 jobs:
   Deploy_To_Dev:
@@ -116,10 +106,9 @@ jobs:
       DeployIaC: ${{ inputs.DeployIaC}} 
       DeploySSMS: false 
       DeployADF: false 
-      DeployPBI: false
-      DeployPBIModel: ${{ inputs.DeployPBIModel}} 
-      DeployMetaData: false
       DeploySSAS: false
+      DeploySSASModel: ${{ inputs.DeploySSASModel}} 
+      DeployMetaData: false
     secrets: inherit
 
   Deploy_To_Test:
@@ -131,10 +120,9 @@ jobs:
       DeployIaC: ${{ inputs.DeployIaC}} 
       DeploySSMS: ${{ inputs.DeploySSMS}} 
       DeployADF: ${{ inputs.DeployADF}} 
-      DeployPBI: ${{ inputs.DeployPBI}} 
-      DeployPBIModel: ${{ inputs.DeployPBIModel}} 
-      DeployMetaData: ${{ inputs.DeployMetaData}}
       DeploySSAS: ${{ inputs.DeploySSAS}}
+      DeploySSASModel: ${{ inputs.DeploySSASModel}} 
+      DeployMetaData: ${{ inputs.DeployMetaData}}
     secrets: inherit
 
   Deploy_To_Prod:
@@ -146,10 +134,9 @@ jobs:
       DeployIaC: ${{ inputs.DeployIaC}} 
       DeploySSMS: ${{ inputs.DeploySSMS}} 
       DeployADF: ${{ inputs.DeployADF}} 
-      DeployPBI: ${{ inputs.DeployPBI}} 
-      DeployPBIModel: ${{ inputs.DeployPBIModel}} 
+      DeploySSAS: ${{ inputs.DeploySSAS}}
+      DeploySSASModel: ${{ inputs.DeploySSASModel}}
       DeployMetaData: ${{ inputs.DeployMetaData}}
-      DeploySSAS: ${{ inputs.DeploySSAS}} 
     secrets: inherit
 
   

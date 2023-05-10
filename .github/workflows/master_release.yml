@@ -17,11 +17,9 @@ jobs:
       DeployIaC: true 
       DeploySSMS: false
       DeployADF: false
-      DeployADB: false
-      DeployPBI: false
-      DeployPBIModel: false
-      DeployMetaData: false 
       DeploySSAS: false
+      DeploySSASModel: "All"
+      DeployMetaData: false 
     secrets: inherit
 
 

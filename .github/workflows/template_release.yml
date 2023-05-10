@@ -22,30 +22,20 @@ on:
         description: Deploy ADF
         default: true
         required: true 
-      DeployADB:
-        type: boolean
-        description: Deploy ADB
-        default: true
-        required: true
-      DeployPBI:
-        type: boolean
-        description: Deploy Power BI Datasets
-        default: true
-        required: true
-      DeployPBIModel:
+     DeploySSAS:
         type: string
-        description: Deploy Power BI Datasets
+        description: Deploy SSAS
+        default: true
+        required: true
+      DeploySSASModel:
+        type: string
+        description: Deploy SSAS Models
         default: 'All'
         required: true
       DeployMetaData:
         type: boolean
         description: Deploy Meta Data
         default: true
-        required: true
-      DeploySSAS:
-        type: string
-        description: Deploy SSAS
-        default: 'All'
         required: true
 
 jobs:
@@ -91,31 +81,6 @@ jobs:
         inlineScript: |
             ./Automation/ADF/Deploy.ps1 -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -DataFactoryName 'df-dataestate-${{ inputs.Environment }}' -IntegrationRuntimeName 'AzureGW-NAV01' -Path "./ADF" -SubscriptionID ${{ secrets.AZURE_SUBSCRIPTION_ID }} -ConnectionReplacements "" -TenantId ${{ secrets.AZURE_TENANT_ID }}
         azPSVersion: "latest"
-
-    - name: Deploy ADB
-      if: ${{ inputs.DeployADB == true && inputs.Environment != 'dev'}} 
-      uses: azure/powershell@v1
-      with:
-        inlineScript: |
-          ./Automation/ADB/Deploy.ps1 -BearerToken ${{ secrets.AZURE_DATABRICKS_BEARER_TOKEN }} -Environment '${{ inputs.Environment }}' -Region 'westeurope'
-          Invoke-AzDataFactoryV2Pipeline -ResourceGroupName '${{ secrets.AZURE_RESOURCE_GROUP_NAME }}' -DataFactoryName 'df-dataestate-${{ inputs.Environment }}' -PipelineName 'Create Databricks Workflows'
-        azPSVersion: "latest"
-
-    - name: Deploy ADB Notebooks
-      if: ${{ inputs.DeployADB == true && inputs.Environment == 'dev'}} 
-      uses: azure/powershell@v1
-      with:
-        inlineScript: |
-          ./Automation/ADB/DeployNotebooks.ps1 -BearerToken ${{ secrets.AZURE_DATABRICKS_BEARER_TOKEN }} -Region 'westeurope'
-        azPSVersion: "latest"  
-
-    - name: Deploy PBI
-      if: ${{ inputs.DeployPBI == true && inputs.Environment != 'dev'}} 
-      uses: azure/powershell@v1
-      with:
-        inlineScript: |
-          ./Automation/PBI/Deploy.ps1 -DatabricksWorkspaceID ${{ secrets.AZURE_DATABRICKS_WORKSPACE_ID }} -HttpPathSQLEndpoint ${{ secrets.AZURE_DATABRICKS_SQL_ENDPOINT }} -Environment ${{ inputs.Environment }} -ModelsToDeploy ${{ inputs.DeployPBIModel }} -PBIWorkspaceID ${{ secrets.AZURE_PBI_DATASET_WORKSPACE_ID }} -ClientId ${{ secrets.AZURE_SERVICE_PRINCIPAL_ID }} -ClientSecret ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }} -DatabricksAccessToken ${{ secrets.AZURE_DATABRICKS_BEARER_TOKEN }} -TenantId  ${{ secrets.AZURE_TENANT_ID }} 
-        azPSVersion: "latest"  
 
     - name: Deploy Meta Data
       if: ${{ inputs.DeployMetaData == true }} 
