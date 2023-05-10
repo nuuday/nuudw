@@ -19,8 +19,9 @@ jobs:
       DeployADF: false
       DeployADB: false
       DeployPBI: false
-      DeployPBIModel: "All"
+      DeployPBIModel: false
       DeployMetaData: false 
+      DeploySSAS: false
     secrets: inherit
 
 

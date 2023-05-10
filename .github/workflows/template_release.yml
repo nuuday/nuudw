@@ -42,6 +42,11 @@ on:
         description: Deploy Meta Data
         default: true
         required: true
+      DeploySSAS:
+        type: string
+        description: Deploy SSAS
+        default: 'All'
+        required: true
 
 jobs:
   deploy:
@@ -119,6 +124,23 @@ jobs:
         inlineScript: |
           ./Automation/SSMS/Deploy.ps1 -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -DataFactoryName 'df-dataestate-${{ inputs.Environment }}' -SubscriptionID ${{ secrets.AZURE_SUBSCRIPTION_ID }} -TenantId  ${{ secrets.AZURE_TENANT_ID }}
         azPSVersion: "latest"  
+
+    - name: Build SSAS
+      if: ${{ inputs.DeploySSAS == true && inputs.Environment != 'dev'}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./src/Tools/TabularEditor/TabularEditor.exe ".\src\SSAS\${{ inputs.Model }}" -B ".\src\SSAS\${{ inputs.Model }}\${{ inputs.Model }}.bim"
+        azPSVersion: "latest"
+
+    - name: Release SSAS
+      if: ${{ inputs.DeploySSAS == true && inputs.Environment != 'dev'}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./src/Tools/TabularEditor/TabularEditor.exe ".\src\SSAS\${{ inputs.Model }}" -S ".\src\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "${{ inputs.Model }}" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -V -E
+        azPSVersion: "latest"
+
 
  
 

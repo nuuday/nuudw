@@ -53,6 +53,11 @@ on:
         description: Include Meta Data
         default: true
         required: true
+      DeploySSAS:
+        type: boolean
+        description: Include SSAS
+        default: "All"
+        required: true
   workflow_call:
     inputs:
       DeployToDev:
@@ -104,7 +109,12 @@ on:
         type: boolean
         description: Deploy Meta Data
         default: true
-        required: true      
+        required: true 
+      DeploySSAS:
+        type: boolean
+        description: Include SSAS
+        default: "All"
+        required: true     
 
 jobs:
   Deploy_To_Dev:
@@ -120,6 +130,7 @@ jobs:
       DeployPBI: false
       DeployPBIModel: ${{ inputs.DeployPBIModel}} 
       DeployMetaData: false
+      DeploySSAS: false
     secrets: inherit
 
   Deploy_To_Test:
@@ -134,7 +145,8 @@ jobs:
       DeployADB: ${{ inputs.DeployADB}} 
       DeployPBI: ${{ inputs.DeployPBI}} 
       DeployPBIModel: ${{ inputs.DeployPBIModel}} 
-      DeployMetaData: ${{ inputs.DeployMetaData}} 
+      DeployMetaData: ${{ inputs.DeployMetaData}}
+      DeploySSAS: ${{ inputs.DeploySSAS}}
     secrets: inherit
 
   Deploy_To_Prod:
@@ -149,7 +161,8 @@ jobs:
       DeployADB: ${{ inputs.DeployADB}} 
       DeployPBI: ${{ inputs.DeployPBI}} 
       DeployPBIModel: ${{ inputs.DeployPBIModel}} 
-      DeployMetaData: ${{ inputs.DeployMetaData}} 
+      DeployMetaData: ${{ inputs.DeployMetaData}}
+      DeploySSAS: ${{ inputs.DeploySSAS}} 
     secrets: inherit
 
   
