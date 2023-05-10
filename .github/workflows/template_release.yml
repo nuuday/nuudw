@@ -27,14 +27,14 @@ on:
         description: Deploy ADB
         default: true
         required: true
-      DeployPBI:
+      DeploySSAS:
         type: boolean
-        description: Deploy Power BI Datasets
+        description: Deploy SSAS
         default: true
         required: true
-      DeployPBIModel:
+      DeploySSASModel:
         type: string
-        description: Deploy Power BI Datasets
+        description: Deploy SSAS Models
         default: 'All'
         required: true
       DeployMetaData:
