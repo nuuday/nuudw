@@ -33,11 +33,6 @@ on:
         description: Include Data Factory
         default: true
         required: true 
-      DeployADB:
-        type: boolean
-        description: Include Databricks
-        default: true
-        required: true
       DeployPBI:
         type: boolean
         description: Include Power BI Dataset
@@ -90,11 +85,6 @@ on:
         description: Deploy ADF
         default: true
         required: true 
-      DeployADB:
-        type: boolean
-        description: Deploy ADB
-        default: true
-        required: true
       DeployPBI:
         type: boolean
         description: Deploy Power BI Datasets
@@ -126,7 +116,6 @@ jobs:
       DeployIaC: ${{ inputs.DeployIaC}} 
       DeploySSMS: false 
       DeployADF: false 
-      DeployADB: ${{ inputs.DeployADB}} 
       DeployPBI: false
       DeployPBIModel: ${{ inputs.DeployPBIModel}} 
       DeployMetaData: false
@@ -142,7 +131,6 @@ jobs:
       DeployIaC: ${{ inputs.DeployIaC}} 
       DeploySSMS: ${{ inputs.DeploySSMS}} 
       DeployADF: ${{ inputs.DeployADF}} 
-      DeployADB: ${{ inputs.DeployADB}} 
       DeployPBI: ${{ inputs.DeployPBI}} 
       DeployPBIModel: ${{ inputs.DeployPBIModel}} 
       DeployMetaData: ${{ inputs.DeployMetaData}}
@@ -158,7 +146,6 @@ jobs:
       DeployIaC: ${{ inputs.DeployIaC}} 
       DeploySSMS: ${{ inputs.DeploySSMS}} 
       DeployADF: ${{ inputs.DeployADF}} 
-      DeployADB: ${{ inputs.DeployADB}} 
       DeployPBI: ${{ inputs.DeployPBI}} 
       DeployPBIModel: ${{ inputs.DeployPBIModel}} 
       DeployMetaData: ${{ inputs.DeployMetaData}}
