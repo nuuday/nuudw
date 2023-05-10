@@ -21,11 +21,6 @@ on:
         type: boolean
         description: Deploy ADF
         default: true
-        required: true 
-      DeployADB:
-        type: boolean
-        description: Deploy ADB
-        default: true
         required: true
       DeploySSAS:
         type: boolean
