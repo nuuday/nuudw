@@ -23,7 +23,7 @@ on:
         default: true
         required: true 
      DeploySSAS:
-        type: string
+        type: boolean
         description: Deploy SSAS
         default: true
         required: true
