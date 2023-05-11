@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/SSMS/.vs/SSMS/FileContentIndex/1066e383-3859-4745-979c-b00f20d1eb60.vsidx
+/SSMS/.vs/SSMS/FileContentIndex/read.lock
+/SSMS/.vs/SSMS/v17/.suo
+/SSMS/SSMS/obj/Debug/SSMS.sqlproj.AssemblyReference.cache
+/SSMS/SSMS/SSMS.jfm
+/SSMS/SSMS/SSMS.dbmdl
+/.vs/nuudw/v17/.wsuo
