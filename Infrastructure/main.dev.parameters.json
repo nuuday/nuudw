@@ -12,7 +12,7 @@
       "value": "f66a3776-90de-490f-96ca-2b6352efd968"
     },
     "AADAdminUPN": {
-      "value": "nuudw-ag01-admin@nuuday.onmicrosoft.com" //Obj:@tenantid
+      "value": "obj:f66a3776-90de-490f-96ca-2b6352efd968@c95a25de-f20a-4216-bc84-99694442c1b5" 
     },
     "AzureDevOpsServicePrincipalObjectID": {
       "value": "14de91c1-6446-4c1a-a5dd-512b5864b71b"
@@ -75,15 +75,15 @@
     "DeploySqlDatabases": {
       "value": true
     },
-    "SqlDatabases": { //Ændre til HyperScale 
+    "SqlDatabases": { 
       "value": 
         {
           "DatabaseName": "nuudwsqldb01",
           "DatabaseMaxSize": 0,
           "SqlDatabaseCollation": "Danish_Norwegian_CI_AS",
           "DatabaseTier": {
-            "Name": "GP_S_Gen5", 
-            "Tier": "GeneralPurpose",
+            "Name": "HS_Gen5", 
+            "Tier": "Hyperscale",
             "Capacity": 2
           }
         }        

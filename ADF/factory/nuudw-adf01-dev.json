@@ -1,0 +1,17 @@
+{
+	"name": "nuudw-adf01-dev",
+	"properties": {
+		"globalParameters": {
+			"KeyVaultName": {
+				"type": "String",
+				"value": "nuudw-kv01-dev"
+			}
+		}
+	},
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "3eab6287-b869-420b-8a74-9a4094b40759",
+		"tenantId": "c95a25de-f20a-4216-bc84-99694442c1b5"
+	}
+}

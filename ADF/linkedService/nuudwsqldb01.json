@@ -1,5 +1,5 @@
 {
-	"name": "POFerriesDW",
+	"name": "nuudw",
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"annotations": [],
@@ -11,7 +11,7 @@
 					"referenceName": "KeyVault",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "ConnectionString-POFerriesDW"
+				"secretName": "ConnectionString-nuudwsqldb01"
 			}
 		}
 	}
