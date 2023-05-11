@@ -12,7 +12,7 @@
       "value": "f66a3776-90de-490f-96ca-2b6352efd968"
     },
     "AADAdminUPN": {
-      "value": "nuudw-ag01-admin@nuuday.onmicrosoft.com"
+      "value": "obj:f66a3776-90de-490f-96ca-2b6352efd968@c95a25de-f20a-4216-bc84-99694442c1b5" 
     },
     "AzureDevOpsServicePrincipalObjectID": {
       "value": "9178cf7f-a324-49b2-b071-22590870ae93"
@@ -82,30 +82,30 @@
           "DatabaseMaxSize": 0,
           "SqlDatabaseCollation": "Danish_Norwegian_CI_AS",
           "DatabaseTier": {
-            "Name": "GP_S_Gen5", 
-            "Tier": "GeneralPurpose",
+            "Name": "HS_Gen5", 
+            "Tier": "Hyperscale",
             "Capacity": 2
           }
         }        
       
-    },
-    "DataFactoryName": {
-      "value": "nuudw-adf01-prod"
-    },
-    "DataFactoryGitAccountName": {
-      "value": ""
-    },
-    "DataFactoryGitProjectName": {
-      "value": ""
-    },
-    "DataFactoryGitRepositoryName": {
-      "value": ""
-    },
-    "DataFactoryGitCollaborationBranch": {
-      "value": ""
-    },
-    "DataFactoryGitRootFolder": {
-      "value": ""
+      },
+      "DataFactoryName": {
+        "value": "nuudw-adf01-dev"
+      },
+      "DataFactoryGitAccountName": {
+        "value": "nuuday" 
+      },
+      "DataFactoryGitProjectName": {
+        "value": "nuudw"
+      },
+      "DataFactoryGitRepositoryName": {
+        "value": "nuudw"
+      },
+      "DataFactoryGitCollaborationBranch": {
+        "value": "development"
+      },
+      "DataFactoryGitRootFolder": {
+        "value": "ADF"
+      }
     }
   }
-}

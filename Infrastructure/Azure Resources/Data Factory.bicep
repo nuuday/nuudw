@@ -21,7 +21,7 @@ resource adf 'Microsoft.DataFactory/factories@2018-06-01' = {
   properties: {
     globalParameters: GlobalParams
     repoConfiguration: AddGitRepo ? {
-      type: 'FactoryVSTSConfiguration'
+      type: 'FactoryGitHubConfiguration'
       accountName: GitAccountName
       projectName: GitProjectName
       repositoryName: GitRepositoryName

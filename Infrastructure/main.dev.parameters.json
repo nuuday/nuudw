@@ -12,7 +12,7 @@
       "value": "f66a3776-90de-490f-96ca-2b6352efd968"
     },
     "AADAdminUPN": {
-      "value": "nuudw-ag01-admin@nuuday.onmicrosoft.com"
+      "value": "nuudw-ag01-admin@nuuday.onmicrosoft.com" //Obj:@tenantid
     },
     "AzureDevOpsServicePrincipalObjectID": {
       "value": "14de91c1-6446-4c1a-a5dd-512b5864b71b"
@@ -70,12 +70,12 @@
       "value": false
     },
     "AutomationAccountName": {
-      "value": "" //Hvad her?
+      "value": "" 
     },
     "DeploySqlDatabases": {
       "value": true
     },
-    "SqlDatabases": {
+    "SqlDatabases": { //Ændre til HyperScale 
       "value": 
         {
           "DatabaseName": "nuudwsqldb01",
@@ -93,13 +93,13 @@
       "value": "nuudw-adf01-dev"
     },
     "DataFactoryGitAccountName": {
-      "value": "POFerriesUK" //HVad her?
+      "value": "nuuday" 
     },
     "DataFactoryGitProjectName": {
       "value": "nuudw"
     },
     "DataFactoryGitRepositoryName": {
-      "value": "Business Intelligence (BI)" //Hvad her? 
+      "value": "nuudw"
     },
     "DataFactoryGitCollaborationBranch": {
       "value": "development"
