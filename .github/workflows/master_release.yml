@@ -12,8 +12,8 @@ jobs:
     uses: ./.github/workflows/master_release_services.yml
     with:
       DeployToDev: true 
-      DeployToTest: true 
-      DeployToProd: true 
+      DeployToTest: false
+      DeployToProd: false 
       DeployIaC: true 
       DeploySSMS: false
       DeployADF: false
