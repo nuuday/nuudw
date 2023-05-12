@@ -14,8 +14,8 @@ jobs:
       DeployToDev: true 
       DeployToTest: false
       DeployToProd: false 
-      DeployIaC: true 
-      DeploySSMS: false
+      DeployIaC: false 
+      DeploySSMS: true
       DeployADF: false
       DeploySSAS: false
       DeploySSASModel: "All"
