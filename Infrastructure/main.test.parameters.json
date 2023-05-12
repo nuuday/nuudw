@@ -67,10 +67,10 @@
       }
     },
     "CreateAutomationAccount": {
-      "value": false
+      "value": true
     },
     "AutomationAccountName": {
-      "value": ""
+      "value": "aa-nuudw-test"
     },
     "DeploySqlDatabases": {
       "value": true
@@ -90,7 +90,7 @@
       
       },
       "DataFactoryName": {
-        "value": "nuudw-adf01-dev"
+        "value": "nuudw-adf01-test"
       },
       "DataFactoryGitAccountName": {
         "value": "nuuday" 
