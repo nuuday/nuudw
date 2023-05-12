@@ -12,7 +12,7 @@ IMPORT-Module Az
 $ADFPath = (Get-Item -Path ".\").FullName + '\';
 
 # The subscription ID for the Azure environment
-$AzureSubscriptionID = "3e00fd8f-f7ff-4f9b-8ba4-0a71e79e2522";
+$AzureSubscriptionID = "155e9e90-807a-43a9-811b-8f7bdb95a801";
 
 # =====================
 # Login i Azure
@@ -21,12 +21,12 @@ $AzureSubscriptionID = "3e00fd8f-f7ff-4f9b-8ba4-0a71e79e2522";
 #NB!!! Make sure you are logged into the customer tenant in the PS Session. When this is done you do not need to login again in the session.
 #Use the cmd below to login
 
-#Login-AzAccount -Tenant 'f40d0f9e-0dfd-4ed9-9ab6-a81f49849649'
+#Login-AzAccount -Tenant 'c95a25de-f20a-4216-bc84-99694442c1b5'
 
 Select-AzSubscription $AzureSubscriptionID
 
 # The connectionstring for the Azure SQL DB
-$Secret = Get-AzKeyVaultSecret -VaultName "KV-WristBI-Dev" -Name "ConnectionString-WristBIDW"
+$Secret = Get-AzKeyVaultSecret -VaultName "nuudw-kv01-dev" -Name "ConnectionString-nuudwsqldb01"
 $ConnectionString = $Secret.SecretValueText
 
 # Set working directory (where the .json ADF templates are located)
