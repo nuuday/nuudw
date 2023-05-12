@@ -381,7 +381,7 @@ var UniqueName = uniqueString(resourceGroup().name)
             kv
           ]
           params: {
-            SecretValue: 'Server=sql-${ProjectName}-${EnvironmentVariable}.database.windows.net;initial catalog=${SqlDatabases.DatabaseName};User ID=${SqlServerAdminUserName};Password=${SqlServerAdminPassword};Integrated Security=False;'
+            SecretValue: 'Server=${ProjectName}-sql01-${EnvironmentVariable}.database.windows.net;initial catalog=${SqlDatabases.DatabaseName};User ID=${SqlServerAdminUserName};Password=${SqlServerAdminPassword};Integrated Security=False;'
             KeyVaultName: kv.outputs.KeyVaultName
             SecretName: 'ConnectionString-Deployment'
             SecretContentType: 'ConnectionString'
