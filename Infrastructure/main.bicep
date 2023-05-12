@@ -28,21 +28,7 @@ var UniqueName = uniqueString(resourceGroup().name)
   var Location = resourceGroup().location  
   var ResourceGroupName = resourceGroup().name
 // Resources
- 
-  // - Automation Account
-  param CreateAutomationAccount bool = false
-  param AutomationAccountName string
-
-  module aa 'Azure Resources/Automation Account.bicep' = if (CreateAutomationAccount) {
-    name: 'AutomationAccountDeploy-${UniqueName}'
-    params: {
-      Location: Location
-      Name: AutomationAccountName
-      Tags: Tags
-    }
-  }
-
-    
+     
   // - Analysis Services
   param DeployAnalysisServices bool = true
   param AnalysisServicesInstances array
