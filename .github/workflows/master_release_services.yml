@@ -104,7 +104,7 @@ jobs:
     with:
       Environment: dev 
       DeployIaC: ${{ inputs.DeployIaC}} 
-      DeploySSMS: true 
+      DeploySSMS: false 
       DeployADF: false 
       DeploySSAS: false
       DeploySSASModel: ${{ inputs.DeploySSASModel}} 
