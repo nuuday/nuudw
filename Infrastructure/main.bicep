@@ -30,7 +30,7 @@ var UniqueName = uniqueString(resourceGroup().name)
 // Resources
  
   // - Automation Account
-  param CreateAutomationAccount bool = true
+  param CreateAutomationAccount bool = false
   param AutomationAccountName string
 
   module aa 'Azure Resources/Automation Account.bicep' = if (CreateAutomationAccount) {
