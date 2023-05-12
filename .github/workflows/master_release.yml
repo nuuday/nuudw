@@ -11,13 +11,13 @@ jobs:
     name: Release Platform
     uses: ./.github/workflows/master_release_services.yml
     with:
-      DeployToDev: true 
-      DeployToTest: false
+      DeployToDev: false 
+      DeployToTest: true
       DeployToProd: false 
       DeployIaC: false 
       DeploySSMS: true
-      DeployADF: false
-      DeploySSAS: false
+      DeployADF: true
+      DeploySSAS: true
       DeploySSASModel: "All"
       DeployMetaData: false 
     secrets: inherit
