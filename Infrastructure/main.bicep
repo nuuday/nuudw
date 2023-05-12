@@ -28,7 +28,21 @@ var UniqueName = uniqueString(resourceGroup().name)
   var Location = resourceGroup().location  
   var ResourceGroupName = resourceGroup().name
 // Resources
-     
+
+  // - Automation Account
+  param CreateAutomationAccount bool = true
+  param AutomationAccountName string
+
+  module aa 'Azure Resources/Automation Account.bicep' = if (CreateAutomationAccount) {
+    name: 'AutomationAccountDeploy-${UniqueName}'
+    params: {
+      Location: Location
+      Name: AutomationAccountName
+      Tags: Tags
+    }
+  }
+
+
   // - Analysis Services
   param DeployAnalysisServices bool = true
   param AnalysisServicesInstances array
@@ -110,7 +124,7 @@ var UniqueName = uniqueString(resourceGroup().name)
   param SqlServerAdminUserName string 
   @secure()    
   param SqlServerAdminPassword string
- 
+
   module sqlsvr 'Azure Resources/SQL Server.bicep' = {
     name: 'SqlServerDeploy-${UniqueName}'
     params: {
@@ -212,6 +226,19 @@ var UniqueName = uniqueString(resourceGroup().name)
     }
   }
 
+  module kvSecretaaname 'Azure Resources/Key Vault Secret.bicep' = {
+    name: 'KeyVaultSecretDeploy-${AutomationAccountName}-${UniqueName}'
+    dependsOn: [
+      kv
+    ]
+    params: {
+      SecretValue: AutomationAccountName
+      KeyVaultName: kv.outputs.KeyVaultName
+      SecretName: 'AAAutomationAccountName'
+      SecretContentType: 'Deployment'
+    }
+  }
+
   module kvSecretadfname 'Azure Resources/Key Vault Secret.bicep' = {
     name: 'KeyVaultSecretDeploy-ADFName-${UniqueName}'
     dependsOn: [
@@ -279,7 +306,7 @@ var UniqueName = uniqueString(resourceGroup().name)
     }
   }
 
-  
+
   param ServicePrincipalSec string
   module kvSecretClientSec 'Azure Resources/Key Vault Secret.bicep' = {
     name: 'KeyVaultSecretDeploy-ADFClientSec-${UniqueName}'
@@ -346,7 +373,7 @@ var UniqueName = uniqueString(resourceGroup().name)
           SecretContentType: 'Deployment'
           }
         }]
-        
+
 
         module kvSecretConStringDeployment 'Azure Resources/Key Vault Secret.bicep' = {
           name: 'KeyVaultSecretDeploy-ConStringDeployment-${UniqueName}'
