@@ -226,19 +226,6 @@ var UniqueName = uniqueString(resourceGroup().name)
     }
   }
 
-  module kvSecretaaname 'Azure Resources/Key Vault Secret.bicep' = {
-    name: 'KeyVaultSecretDeploy-${AutomationAccountName}-${UniqueName}'
-    dependsOn: [
-      kv
-    ]
-    params: {
-      SecretValue: AutomationAccountName
-      KeyVaultName: kv.outputs.KeyVaultName
-      SecretName: 'AAAutomationAccountName'
-      SecretContentType: 'Deployment'
-    }
-  }
-
   module kvSecretadfname 'Azure Resources/Key Vault Secret.bicep' = {
     name: 'KeyVaultSecretDeploy-ADFName-${UniqueName}'
     dependsOn: [
