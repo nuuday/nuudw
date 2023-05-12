@@ -7,11 +7,11 @@ Import-Module sqlserver
 # START : Variables to set
 # =====================
 # The tenant ID for the Azure environment
-$AzureTenantID = '61ef7470-26aa-45fe-ae1f-b0641f6bf738';
+$AzureTenantID = 'c95a25de-f20a-4216-bc84-99694442c1b5';
 # The subscription ID for the Azure environment
-$AzureSubscriptionID = '0eaca686-fa04-41e8-8962-a26cbb5e6571';
+$AzureSubscriptionID = '155e9e90-807a-43a9-811b-8f7bdb95a801';
 # The name of the keyvault to use for getting secrets
-$AzureKeyvaultName = 'kv-poferriesbi-dev'
+$AzureKeyvaultName = 'nuudw-kv01-dev'
 # The name of the secret for the connection string to the DW being build
 $DWConnectionSecretName = 'ConnectionString-Deployment'
 # =====================
