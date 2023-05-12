@@ -1,1 +1,1 @@
-﻿EXEC sp_addextendedproperty @name = N'DatabaseNameMeta', @value = N'POFerriesDW'
+﻿EXEC sp_addextendedproperty @name = N'DatabaseNameMeta', @value = N'nuudwsqldb01'
