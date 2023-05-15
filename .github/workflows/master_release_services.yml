@@ -41,7 +41,7 @@ on:
       DeploySSASModel:
         type: string
         description: SSAS models to include (All will deploy all models, Format needs to be ModelName1,ModelName2)
-        default: "All"
+        default: "Template"
         required: true
       DeployMetaData:
         type: boolean
