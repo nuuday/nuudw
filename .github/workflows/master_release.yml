@@ -14,10 +14,10 @@ jobs:
       DeployToDev: false 
       DeployToTest: true
       DeployToProd: false 
-      DeployIaC: true 
+      DeployIaC: false 
       DeploySSMS: true
-      DeployADF: false
-      DeploySSAS: false
+      DeployADF: true
+      DeploySSAS: true
       DeploySSASModel: "All"
       DeployMetaData: false 
     secrets: inherit
