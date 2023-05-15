@@ -90,7 +90,7 @@
       
       },
       "DataFactoryName": {
-        "value": "nuudw-adf01-dev"
+        "value": "nuudw-adf01-prod"
       },
       "DataFactoryGitAccountName": {
         "value": "nuuday" 
