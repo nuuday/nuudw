@@ -30,7 +30,7 @@ on:
       DeploySSASModel:
         type: string
         description: Deploy SSAS Models
-        default: 'All'
+        default: 'Template'
         required: true
       DeployMetaData:
         type: boolean
