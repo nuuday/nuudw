@@ -67,10 +67,10 @@
       }
     },
     "CreateAutomationAccount": {
-      "value": false
+      "value": true
     },
     "AutomationAccountName": {
-      "value": ""
+      "value": "aa-nuudw-prod"
     },
     "DeploySqlDatabases": {
       "value": true
