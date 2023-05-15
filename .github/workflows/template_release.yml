@@ -95,7 +95,7 @@ jobs:
       uses: azure/powershell@v1
       with:
         inlineScript: |
-          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\${{ inputs.DeploySSASModel }}" -B ".\src\SSAS\${{ inputs.DeploySSASModel }}\${{ inputs.DeploySSASModel }}.bim"
+          ./Tools/TabularEditor/TabularEditor.exe ".\src\SSAS\${{ inputs.DeploySSASModel }}" -B ".\src\SSAS\${{ inputs.DeploySSASModel }}\${{ inputs.DeploySSASModel }}.bim"
         azPSVersion: "latest"
 
     - name: Release SSAS
@@ -103,7 +103,7 @@ jobs:
       uses: azure/powershell@v1
       with:
         inlineScript: |
-          ./Tools/TabularEditor/TabularEditor.exe ".\src\SSAS\${{ inputs.DeploySSASModel }}\${{ inputs.DeploySSASModel }}.bim" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "${{ inputs.DeploySSASModel }}" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -V -E
+          ./Tools/TabularEditor/TabularEditor.exe ".\src\SSAS\${{ inputs.DeploySSASModel }}\${{ inputs.DeploySSASModel }}.bim" -S ".\src\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "${{ inputs.DeploySSASModel }}" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -V -E
         azPSVersion: "latest"
 
 
