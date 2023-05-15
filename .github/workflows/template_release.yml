@@ -95,7 +95,7 @@ jobs:
       uses: azure/powershell@v1
       with:
         inlineScript: |
-          ./Tools/TabularEditor/TabularEditor.exe ".\src\SSAS\${{ inputs.DeploySSASModel }}" -B ".\SSAS\${{ inputs.DeploySSASModel }}\${{ inputs.DeploySSASModel }}.bim"
+          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\${{ inputs.DeploySSASModel }}" -B ".\SSAS\${{ inputs.DeploySSASModel }}\${{ inputs.DeploySSASModel }}.bim"
         azPSVersion: "latest"
 
     - name: Release SSAS
