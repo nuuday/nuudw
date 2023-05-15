@@ -1,0 +1,5 @@
+{
+  "name": "TimeMinuteKey",
+  "dataType": "int64",
+  "sourceColumn": "TimeMinuteKey"
+}

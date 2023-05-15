@@ -1,0 +1,24 @@
+{
+  "UseWorkspace": false,
+  "DataSourceOverrides": {
+    "nuudwsqldb01": {
+      "Username": "NuuDWAdminDev",
+      "ConnectionString": {
+        "Encryption": "UserKey",
+        "EncryptedString": "AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAiGKl5UT0dUaxaPPbMmk6PQAAAAACAAAAAAADZgAAwAAAABAAAABBLfqYgtBwjP7SVP2xhgDHAAAAAASAAACgAAAAEAAAACGp68+lYFoi1hKHVr+Hpj5wAQAAiUAw242lnQryir2eQQEd7+1/b+Md/fOGJZzfHWkY0oCsAscScwHo6n2VMcq/9GtuDt+xKlModAyJRB18ohdYROuVA9z2trFjD5tXlIZfOp0H98esQd0qz6UmK58kAh4+dfJu0jMukUqIYEHHSIyKCOY5jV96mgGR9ZUDfJZNiMa63fl5V9DkrzgtUuDr5+cD3CQXrI1jCG1sRF6KRAysV9PaPbHFP90asIXh3DEbLMNbOM8O3kxo9TTqeINRNCZ8sDivTlPVksb49GoSGAn2awG5CNUKZzHvCxIIrYA2v8WIIeZrDo2ZT4/mgGiPkQPPXqKhVu65JVzVSbhRaQgJ1j9MquFVuEnMq0B4+oJoHktEbrtJNwcXAJAx8lhC9jAivWJo39OOeaMHkwCCkzWdQs0q1wWKDFdx36/T7Alo8EsrrYQ2zhQ+FdB8aSKgsX4cSuIw0AvkqMvoZ7qKYix+enriJZr7CUbjmQmgrnDa0GUUAAAAuoM0FKZ5fK37JXxwXaTs+4Y7Vwg="
+      }
+    }
+  },
+  "TableImportSettings": {
+    "nuudwsqldb01": {
+      "ServerType": "Sql",
+      "Options": {
+        "persist security info": "True"
+      },
+      "UserId": "NuuDWAdminDev",
+      "Server": "nuudw-sql01-dev.database.windows.net,1433",
+      "Database": "nuudwsqldb01",
+      "Authentication": "Sql"
+    }
+  }
+}

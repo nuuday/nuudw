@@ -1,9 +1,9 @@
 {
-  "name": "Calendar",
+  "name": "Time",
   "mode": "import",
   "source": {
     "type": "query",
-    "query": "SELECT * FROM [dim].[Calendar]",
+    "query": "SELECT * FROM [dim].[Time]",
     "dataSource": "nuudwsqldb01"
   }
 }

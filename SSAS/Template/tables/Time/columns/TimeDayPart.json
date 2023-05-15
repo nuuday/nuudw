@@ -1,0 +1,5 @@
+{
+  "name": "TimeDayPart",
+  "dataType": "string",
+  "sourceColumn": "TimeDayPart"
+}

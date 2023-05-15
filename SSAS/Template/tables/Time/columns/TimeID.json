@@ -1,0 +1,5 @@
+{
+  "name": "TimeID",
+  "dataType": "int64",
+  "sourceColumn": "TimeID"
+}
