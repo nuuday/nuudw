@@ -1,7 +1,8 @@
 {
   "name": "SemanticModel",
-  "compatibilityLevel": 1400,
+  "compatibilityLevel": 1500,
   "model": {
+    "name": "Template",
     "annotations": [
       {
         "name": "TabularEditor_SerializeOptions",
