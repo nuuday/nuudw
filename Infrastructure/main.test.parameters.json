@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Environment": {
-      "value": "Test"
+      "value": "Test/QA"
     },
     "ProjectName": {
       "value": "nuudw"
