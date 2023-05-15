@@ -13,7 +13,7 @@ jobs:
     with:
       DeployToDev: false 
       DeployToTest: true
-      DeployToProd: false 
+      DeployToProd: true 
       DeployIaC: false 
       DeploySSMS: true
       DeployADF: true
