@@ -1,0 +1,14 @@
+{
+  "type": "structured",
+  "name": "nuudwsqldb01",
+  "connectionDetails": {
+    "protocol": "tds",
+    "address": {
+      "server": "nuudw-sql01-dev.database.windows.net",
+      "database": "nuudwsqldb01"
+    }
+  },
+  "credential": {
+    "AuthenticationKind": "ServiceAccount"
+  }
+}

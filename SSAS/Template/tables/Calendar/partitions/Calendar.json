@@ -1,0 +1,14 @@
+{
+  "name": "Calendar",
+  "mode": "import",
+  "source": {
+    "type": "m",
+    "expression": [
+      "let",
+      "    Source = #\"nuudwsqldb01\",",
+      "    Data = Source{[Schema=\"dimView\",Item=\"Calendar\"]}[Data]",
+      "in",
+      "    Data"
+    ]
+  }
+}

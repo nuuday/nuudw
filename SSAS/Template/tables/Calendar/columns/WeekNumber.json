@@ -1,0 +1,5 @@
+{
+  "name": "WeekNumber",
+  "dataType": "int64",
+  "sourceColumn": "WeekNumber"
+}

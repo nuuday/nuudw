@@ -1,0 +1,9 @@
+{
+  "name": "Calendar",
+  "annotations": [
+    {
+      "name": "TabularEditor_Relationships",
+      "value": "[]"
+    }
+  ]
+}

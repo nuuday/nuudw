@@ -1,0 +1,5 @@
+{
+  "name": "CalendarKey",
+  "dataType": "dateTime",
+  "sourceColumn": "CalendarKey"
+}
