@@ -327,7 +327,7 @@ var UniqueName = uniqueString(resourceGroup().name)
       kv
     ]
     params: {
-      SecretValue: 'POFIntegrationRuntime'
+      SecretValue: 'nuudwIntegrationRuntime'
       KeyVaultName: kv.outputs.KeyVaultName
       SecretName: 'ADFIntegrationRuntimeName'
       SecretContentType: 'Deployment'
