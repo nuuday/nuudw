@@ -1,0 +1,12 @@
+{
+	"name": "nuudwIntegrationRuntime",
+	"properties": {
+		"type": "SelfHosted",
+		"typeProperties": {
+			"linkedInfo": {
+				"resourceId": "/subscriptions/b05a2e18-2089-4864-80c8-7303371b246c/resourcegroups/Sense-DataFactory/providers/Microsoft.DataFactory/factories/SenseDF01/integrationruntimes/OnPrem-IntegrationRuntime-01",
+				"authorizationType": "Rbac"
+			}
+		}
+	}
+}
