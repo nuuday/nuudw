@@ -1,0 +1,200 @@
+{
+	"name": "SSAS_Suspend",
+	"properties": {
+		"activities": [
+			{
+				"name": "SSASServerName",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.07:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat('https://',replace(pipeline().DataFactory,'adf','kv'),'.vault.azure.net/secrets/SSASServerName?api-version=7.0')",
+						"type": "Expression"
+					},
+					"method": "GET",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "ResourceGroupName",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.07:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat('https://',replace(pipeline().DataFactory,'adf','kv'),'.vault.azure.net/secrets/ADFResourceGroupName?api-version=7.0')",
+						"type": "Expression"
+					},
+					"method": "GET",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "SubscriptionID",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.07:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat('https://',replace(pipeline().DataFactory,'adf','kv'),'.vault.azure.net/secrets/ADFSubscriptionID?api-version=7.0')",
+						"type": "Expression"
+					},
+					"method": "GET",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Get Azure AS Status",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "SSASServerName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "ResourceGroupName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SubscriptionID",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat('https://management.azure.com/subscriptions/',activity('SubscriptionID').output.value,'/resourceGroups/',activity('ResourceGroupName').output.value,'/providers/Microsoft.AnalysisServices/servers/',activity('SSASServerName').output.value,'?api-version=2017-08-01')",
+						"type": "Expression"
+					},
+					"method": "GET",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://management.azure.com"
+					}
+				}
+			},
+			{
+				"name": "Set AAS Status Variable",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Azure AS Status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "AASStatus",
+					"value": {
+						"value": "@activity('Get Azure AS Status').output.properties.state",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If AAS running",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Set AAS Status Variable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('AASStatus'),'Succeeded')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Suspend Azure AS",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.01:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": {
+									"value": "@concat('https://management.azure.com/subscriptions/',activity('SubscriptionID').output.value,'/resourceGroups/',activity('ResourceGroupName').output.value,'/providers/Microsoft.AnalysisServices/servers/',activity('SSASServerName').output.value,'/suspend?api-version=2017-08-01')",
+									"type": "Expression"
+								},
+								"method": "POST",
+								"body": {
+									"dummy": "dummy"
+								},
+								"authentication": {
+									"type": "MSI",
+									"resource": "https://management.azure.com"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"AASStatus": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Toolbox/Azure Analysis Services"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,244 @@
+{
+	"name": "SSAS_Process",
+	"properties": {
+		"activities": [
+			{
+				"name": "Start Processing",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get SSASServerName secret",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:01:40",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat('https://westeurope.asazure.windows.net/servers/',activity('Get SSASServerName secret').output.value,'/models/',pipeline().parameters.ModelName,'/refreshes')",
+						"type": "Expression"
+					},
+					"method": "POST",
+					"body": {
+						"value": "@pipeline().parameters.RefreshCommand",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://*.asazure.windows.net"
+					}
+				}
+			},
+			{
+				"name": "Get Refreshes",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Start Processing",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:01:40",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat('https://westeurope.asazure.windows.net/servers/',activity('Get SSASServerName secret').output.value,'/models/',pipeline().parameters.ModelName,'/refreshes')",
+						"type": "Expression"
+					},
+					"method": "GET",
+					"body": {
+						"value": "@pipeline().parameters.RefreshCommand",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://*.asazure.windows.net"
+					}
+				}
+			},
+			{
+				"name": "Get Latest Refresh",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Get Refreshes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@json(activity('Get Refreshes').output.Response)",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@greaterOrEquals(item().startTime,addseconds(activity('Start Processing').output.startTime,-30))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Wait for completion",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Get Latest Refresh",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(equals(activity('Get Refresh Status').output.status,'inProgress'))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Wait 15 seconds",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 15
+							}
+						},
+						{
+							"name": "Get Refresh Status",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Wait 15 seconds",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.00:01:40",
+								"retry": 2,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": {
+									"value": "@concat('https://westeurope.asazure.windows.net/servers/',activity('Get SSASServerName secret').output.value,'/models/',pipeline().parameters.ModelName,'/refreshes/',first(activity('Get Latest Refresh').output.Value).refreshId)",
+									"type": "Expression"
+								},
+								"method": "GET",
+								"authentication": {
+									"type": "MSI",
+									"resource": "https://*.asazure.windows.net"
+								}
+							}
+						}
+					],
+					"timeout": "0.01:00:00"
+				}
+			},
+			{
+				"name": "Throw if failed",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Wait for completion",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Get Refresh Status').output.status,'failed')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Throw",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.01:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": {
+									"value": "localhost",
+									"type": "Expression"
+								},
+								"method": "POST",
+								"body": {
+									"value": "@activity('Get Refresh Status').output",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Get SSASServerName secret",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat('https://',replace(pipeline().DataFactory,'adf','kv'),'.vault.azure.net/secrets/SSASServerName?api-version=7.0')",
+						"type": "Expression"
+					},
+					"method": "GET",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"ModelName": {
+				"type": "string"
+			},
+			"RefreshCommand": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Toolbox/Azure Analysis Services"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
