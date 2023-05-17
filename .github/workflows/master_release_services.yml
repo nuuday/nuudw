@@ -11,32 +11,32 @@ on:
       DeployToTest:
         type: boolean
         description: Deploy to TEST environment
-        default: true
+        default: false
         required: true 
       DeployToProd:
         type: boolean
         description: Deploy to PROD environment
-        default: true
+        default: false
         required: true 
       DeployIaC:
         type: boolean
         description: Include Infrastructure
-        default: true
+        default: false
         required: true 
       DeploySSMS:
         type: boolean
         description: Include SQL Database
-        default: true
+        default: false
         required: true
       DeployADF:
         type: boolean
         description: Include Data Factory
-        default: true
+        default: false
         required: true 
       DeploySSAS:
         type: boolean
         description: Include SSAS
-        default: true
+        default: false
         required: true
       DeploySSASModel:
         type: string
