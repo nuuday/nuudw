@@ -88,7 +88,15 @@ jobs:
       with:
         inlineScript: |
           ./Automation/SSMS/Deploy.ps1 -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -DataFactoryName 'df-dataestate-${{ inputs.Environment }}' -SubscriptionID ${{ secrets.AZURE_SUBSCRIPTION_ID }} -TenantId  ${{ secrets.AZURE_TENANT_ID }}
-        azPSVersion: "latest"  
+        azPSVersion: "latest"
+        
+    - name: Resume SSAS
+      if: ${{ inputs.DeploySSAS == true && inputs.Environment != 'dev'}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Automation/SSAS/ResumeAAS.ps1 -ResourceGroup ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -SSASServer ${{ secrets.AZURE_ANALYSIS_SERVER_NAME }}
+        azPSVersion: "latest"
  
     - name: Build SSAS
       if: ${{ inputs.DeploySSAS == true && inputs.Environment != 'dev'}}
