@@ -46,7 +46,7 @@ on:
       DeployMetaData:
         type: boolean
         description: Include Meta Data
-        default: true
+        default: false
         required: true
   workflow_call:
     inputs:
