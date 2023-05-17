@@ -327,7 +327,7 @@ var UniqueName = uniqueString(resourceGroup().name)
       kv
     ]
     params: {
-      SecretValue: 'nuudwIntegrationRuntime'
+      SecretValue: 'NuuDW-OnPremiseIntegrationRuntime'
       KeyVaultName: kv.outputs.KeyVaultName
       SecretName: 'ADFIntegrationRuntimeName'
       SecretContentType: 'Deployment'
