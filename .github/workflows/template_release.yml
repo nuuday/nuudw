@@ -79,7 +79,7 @@ jobs:
       uses: azure/powershell@v1
       with:
         inlineScript: |
-            ./Automation/ADF/Deploy.ps1 -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -DataFactoryName 'df-dataestate-${{ inputs.Environment }}' -IntegrationRuntimeName 'NuuDW-OnPremiseIntegrationRuntime' -Path "./ADF" -SubscriptionID ${{ secrets.AZURE_SUBSCRIPTION_ID }} -ConnectionReplacements "" -TenantId ${{ secrets.AZURE_TENANT_ID }}
+            ./Automation/ADF/Deploy.ps1 -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -DataFactoryName 'nuudw-adf01-${{ inputs.Environment }}' -IntegrationRuntimeName 'NuuDW-OnPremiseIntegrationRuntime' -Path "./ADF" -SubscriptionID ${{ secrets.AZURE_SUBSCRIPTION_ID }} -ConnectionReplacements "" -TenantId ${{ secrets.AZURE_TENANT_ID }}
         azPSVersion: "latest"
 
     - name: Deploy Meta Data
