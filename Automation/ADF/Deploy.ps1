@@ -1,6 +1,7 @@
 param (
     [Parameter(Mandatory = $true)][string]$ResourceGroupName,
     [Parameter(Mandatory = $true)][string]$DataFactoryName,
+    [Parameter(Mandatory = $true)][string]$IntegrationRuntimeName,
     [Parameter(Mandatory = $true)][string]$Path,
     [Parameter(Mandatory = $true)][string]$SubscriptionID,
     [Parameter(Mandatory = $false)][string]$ConnectionReplacements = '',
@@ -175,14 +176,14 @@ foreach ( $branchLinkedService in $branchLinkedServices )
         continue
     }
 
-    Write-host " - source code definition updated according to target env. Changed: [" -NoNewline
+     Write-host " - source code definition updated according to target env. Changed: [" -NoNewline
     # If connecting thru IR, we need to update for environment
-  #  if ($branchLinkedServiceDefinition.properties.PSObject.Properties.name -match "connectVia")
-  #  {
+    if ($branchLinkedServiceDefinition.properties.PSObject.Properties.name -match "connectVia")
+    {
         # First manipulate IR
-  #      (Get-Content -Encoding UTF8 $branchLinkedService.FullName).replace($branchLinkedServiceDefinition.properties.connectVia.referenceName , $IntegrationRuntimeName) | Set-Content -Encoding UTF8 $branchLinkedService.FullName
-  #      Write-host " IR" -NoNewline
-  #  }
+        (Get-Content -Encoding UTF8 $branchLinkedService.FullName).replace($branchLinkedServiceDefinition.properties.connectVia.referenceName , $IntegrationRuntimeName) | Set-Content -Encoding UTF8 $branchLinkedService.FullName
+        Write-host " IR" -NoNewline
+    }
     if ($ConnectionReplacementsArray | Where-Object { $_.name -eq $branchLinkedServiceName })
     {
         # Some properties needs to be modified for environment
