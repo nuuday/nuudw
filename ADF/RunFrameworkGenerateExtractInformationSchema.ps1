@@ -97,7 +97,7 @@ $SourceConnections = Invoke-Sqlcmd -ConnectionString $ConnectionString -Query "S
 
 $TargetConnections = Invoke-Sqlcmd -ConnectionString $ConnectionString -Query "SELECT DISTINCT TargetConnections.Name, TargetConnections.ConnectionType,'AzureSqlTable' AS ObjectType, SourceConnectionID, SourceConnections.Name AS SourceConnectionName,SourceConnections.ExtractSchemaName FROM meta.TargetConnections INNER JOIN meta.TargetObjects ON TargetObjects.TargetConnectionID = TargetConnections.ID INNER JOIN meta.SourceObjects ON SourceObjects.ID = TargetObjects.SourceObjectID INNER JOIN meta.SourceConnections ON SourceConnections.ID = SourceObjects.SourceConnectionID  WHERE TargetConnections.ConnectionType = 'AzureSqlDatabase' AND TargetConnections.ExcludeFlag = 0"
 		
-$ADFDatabase = Invoke-Sqlcmd -ConnectionString $ConnectionString -Query "SELECT VariableVaultName "nuudw-kv01-dev" -Name "ConnectionString-nuudwsqldb01Value, 'AzureSqlTable' AS ObjectType FROM meta.Variables WHERE VariableName = 'DatabaseNameMeta'"
+$ADFDatabase = Invoke-Sqlcmd -ConnectionString $ConnectionString -Query "SELECT VariableValue, 'AzureSqlTable' AS ObjectType FROM meta.Variables WHERE VariableName = 'DatabaseNameMeta'"
 
 write-host "# ============================="
 write-host "# Create Datasets"
