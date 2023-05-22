@@ -1,0 +1,15 @@
+﻿CREATE TABLE [sourceDataLakeNetcracker_interim].[customer_category] (
+    [localized_name]              NVARCHAR (500) NULL,
+    [id]                          NVARCHAR (500) NULL,
+    [name]                        NVARCHAR (500) NULL,
+    [parent_customer_category_id] NVARCHAR (500) NULL,
+    [external_id]                 NVARCHAR (500) NULL,
+    [extended_parameters]         NVARCHAR (500) NULL,
+    [cdc_revision_id]             NVARCHAR (500) NULL,
+    [DWCreatedDate]               DATETIME       DEFAULT (getdate()) NULL
+);
+
+
+GO
+EXECUTE sp_addextendedproperty @name = N'TruncateBeforeDeploy', @value = N'True', @level0type = N'SCHEMA', @level0name = N'sourceDataLakeNetcracker_interim', @level1type = N'TABLE', @level1name = N'customer_category';
+

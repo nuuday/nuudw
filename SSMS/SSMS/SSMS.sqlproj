@@ -9,7 +9,7 @@
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <ProjectGuid>{f9c36a8e-b8e2-4096-aa90-ae0ea7cf5ed7}</ProjectGuid>
     <DefaultCollation>Danish_Norwegian_CI_AS</DefaultCollation>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -54,6 +54,8 @@
     <Folder Include="meta\Stored Procedures\" />
     <Folder Include="Security\" />
     <Folder Include="extended properties" />
+    <Folder Include="sourceDataLakeNetcracker_interim\" />
+    <Folder Include="sourceDataLakeNetcracker_interim\Tables\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -174,6 +176,31 @@
     <Build Include="meta\Stored Procedures\FactPatternsReplacement.sql" />
     <Build Include="dim\Tables\Calendar.sql" />
     <Build Include="dimView\Views\Calendar.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\soft_bundled_offering.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\product_offering-template.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\product_offering.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\customer_category.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\custhasproduct_key_name.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\product_instance.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\product_family.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\customer.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\acchasonetimecharge.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\contact_medium.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\quote_item.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\party_role.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\contact_medium_association.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\quote.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\distribution_channel.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\prod_cat_to_prod_offering.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\product_catalog.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\prod_catalog_bundled_offer.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\adjustment.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\phone_numbers.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\billproductcharge.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\custproductdetails.sql" />
+    <Build Include="sourceDataLakeNetcracker_interim\Tables\custhasproduct.sql" />
+    <Build Include="Security\sourceDataLakeNetcracker_interim_history.sql" />
+    <Build Include="Security\sourceDataLakeNetcracker_interim.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
