@@ -1,0 +1,93 @@
+{
+  "name": "datalake01ingestionNetcracker_interim_DelimitedText_DynamicDataset",
+  "properties": {
+    "linkedServiceName": {
+      "referenceName": "datalake01ingestionNetcracker_interim",
+      "type": "LinkedServiceReference"
+    },
+    "parameters": {
+      "FileSystemName": {
+        "type": "string",
+        "defaultValue": "dummy"
+      },
+      "FolderName": {
+        "type": "string",
+        "defaultValue": "dummy"
+      },
+      "FileName": {
+        "type": "string",
+        "defaultValue": "dummy"
+      },
+      "ColumnDelimiter": {
+        "type": "string",
+        "defaultValue": ","
+      },
+      "TextQualifier": {
+        "type": "string",
+        "defaultValue": "\""
+      },
+      "EscapeCharacter": {
+        "type": "string",
+        "defaultValue": "\\"
+      },
+      "IsHeaderPresent": {
+        "type": "bool",
+        "defaultValue": true
+      },
+      "CompressionCodec": {
+        "type": "string",
+        "defaultValue": "none"
+      },
+      "Encoding": {
+        "type": "string",
+        "defaultValue": "UTF-8"
+      }
+    },
+    "type": "DelimitedText",
+    "typeProperties": {
+      "location": {
+        "type": "AzureBlobFSLocation",
+        "fileName": {
+          "value": "@dataset().FileName",
+          "type": "Expression"
+        },
+        "folderPath": {
+          "value": "@dataset().FolderName",
+          "type": "Expression"
+        },
+        "fileSystem": {
+          "value": "@dataset().FileSystemName",
+          "type": "Expression"
+        }
+      },
+      "compressionCodec": {
+        "value": "@dataset().CompressionCodec",
+        "type": "Expression"
+      },
+      "columnDelimiter": {
+        "value": "@dataset().ColumnDelimiter",
+        "type": "Expression"
+      },
+      "escapeChar": {
+        "value": "@dataset().EscapeCharacter",
+        "type": "Expression"
+      },
+      "quoteChar": {
+        "value": "@dataset().TextQualifier",
+        "type": "Expression"
+      },
+      "firstRowAsHeader": {
+        "value": "@dataset().IsHeaderPresent",
+        "type": "Expression"
+      },
+      "encodingName": {
+        "value": "@dataset().Encoding",
+        "type": "Expression"
+      }
+    },
+    "schema": [],
+    "folder": {
+      "name": "DynamicDatasets"
+    }
+  }
+}

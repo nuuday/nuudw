@@ -1,0 +1,24 @@
+{
+  "name": "nuudwsqldb01_DynamicDataset",
+  "properties": {
+    "linkedServiceName": {
+      "referenceName": "nuudwsqldb01",
+      "type": "LinkedServiceReference"
+    },
+    "parameters": {
+      "TableName": {
+        "type": "string"
+      }
+    },
+    "type": "AzureSqlTable",
+    "typeProperties": {
+      "tableName": {
+        "value": "@dataset().TableName",
+        "type": "Expression"
+      }
+    },
+    "folder": {
+      "name": "DynamicDatasets"
+    }
+  }
+}
