@@ -21,5 +21,5 @@ jobs:
       # Publish artifact
       - uses: actions/upload-artifact@v3.1.2
         with:
-          name: master.dacpac
-          path: ${{ github.workspace }}/bin/Debug/ 
+          name: SSMS.dacpac
+          path: ${{ github.workspace }}/SSMS/SSMS/bin/Debug/ 
