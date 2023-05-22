@@ -1,0 +1,68 @@
+{
+  "name": "ExtractsourceDataLakeNetcracker_interim_acchasonetimecharge",
+  "properties": {
+    "activities": [
+      {
+        "name": "Copy_acchasonetimecharge",
+        "type": "Copy",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "ParquetSource"
+          },
+          "sink": {
+            "type": "SqlSink",
+            "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+            "preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[acchasonetimecharge]"
+          },
+          "enableStaging": false,
+          "cloudDataMovementUnits": 0
+        },
+        "inputs": [
+          {
+            "referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "FileSystemName": "raw",
+              "FolderName": "netcracker_interim/interim-nrm-acchasonetimecharge/",
+              "FileName": "interim-nrm-acchasonetimecharge-20230330T124710Z.parquet",
+              "ColumnDelimiter": "\t",
+              "TextQualifier": "\"",
+              "IsHeaderPresent": "False",
+              "Encoding": ""
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "sourceDataLakeNetcracker_interim.acchasonetimecharge"
+            }
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "false",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "Extract/Extract_datalake01ingestionNetcracker_interim"
+    }
+  }
+}
