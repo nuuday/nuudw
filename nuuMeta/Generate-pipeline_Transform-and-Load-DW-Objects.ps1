@@ -38,7 +38,7 @@ $AzureSubscriptionID = "155e9e90-807a-43a9-811b-8f7bdb95a801";
 # =====================
 
 #Login-AzAccount -Tenant 'c95a25de-f20a-4216-bc84-99694442c1b5'
-Select-AzSubscription $AzureSubscriptionID
+#Select-AzSubscription $AzureSubscriptionID
 
 # The connectionstring for the Azure SQL DB
 $ConnectionString = Get-AzKeyVaultSecret -VaultName "nuudw-kv01-dev" -Name "ConnectionString-nuudwsqldb01" -AsPlainText
