@@ -2,8 +2,8 @@ name: Build Validation
 on:
   pull_request:
     types: [opened, reopened, synchronize]
-    paths: 
-      - 'SSMS/**'
+    #paths: Only start if changes to SSMS.
+      #- 'SSMS/**'
 jobs:
 
   # Job to build and publish the dacpac
