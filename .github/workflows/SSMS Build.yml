@@ -16,7 +16,7 @@ jobs:
       # Build dacpac using dotnet build
       - name: Build Database project
         run: |
-          dotnet build SSMS/SSMS/SSMS.sqlproj /p:NetCoreBuild=true /p:/WarnAsError:SQL71502
+          dotnet build SSMS/SSMS/SSMS.sqlproj /p:NetCoreBuild=true /WarnAsError:SQL71502
       # Publish artifact
       - uses: actions/upload-artifact@v3.1.2
         with:
