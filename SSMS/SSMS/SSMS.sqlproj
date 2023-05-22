@@ -58,6 +58,7 @@
     <Folder Include="sourceDataLakeNetcracker_interim\Tables\" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="dbo\Tables\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -204,6 +205,7 @@
     <Build Include="Security\sourceDataLakeNetcracker_interim_history.sql" />
     <Build Include="Security\sourceDataLakeNetcracker_interim.sql" />
     <Build Include="dbo\Stored Procedures\transform_deso_test.sql" />
+    <Build Include="dbo\Tables\deso_test.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
