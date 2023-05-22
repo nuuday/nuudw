@@ -16,7 +16,7 @@ jobs:
       # Build dacpac using dotnet build
       - name: Build Database project
         run: |
-          dotnet build /SSMS/SSMS/SSMS.sqlproj
+          dotnet build SSMS/SSMS/SSMS.sqlproj
       # Publish artifact
       - uses: actions/upload-artifact@v3.1.2
         with:
