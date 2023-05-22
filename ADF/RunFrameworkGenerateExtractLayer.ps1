@@ -1,5 +1,4 @@
-﻿ 
- Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 [Reflection.Assembly]::LoadWithPartialName("Newtonsoft.Json.dll")
 IMPORT-Module sqlserver
