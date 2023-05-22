@@ -1,8 +1,7 @@
 name: Build Validation
 on:
-  push:
-    branches: 
-      - development
+  pull_request:
+    types: [opened, reopened]
 jobs:
 
   # Job to build and publish the dacpac
