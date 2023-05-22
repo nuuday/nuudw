@@ -51,9 +51,9 @@ on:
         description: Environment
         required: true
         options:
-        - Development
+        - Dev
         - Test
-        - Production
+        - Prod
       CreatePartnerId:   # Associates the partner ID to the service principal defined in the azure credentials.
         type: boolean
         default: false
