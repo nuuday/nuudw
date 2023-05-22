@@ -8,7 +8,7 @@ on:
 jobs:
 
   # Job to build and publish the dacpac
-  Build Dacpac:
+  BuildDacpac:
     runs-on: windows-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
