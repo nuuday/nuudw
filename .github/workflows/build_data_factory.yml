@@ -70,8 +70,8 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
-        template: ADF/ArmTemplate/ARMTemplateForFactory.json
-        parameters: ADF/ArmTemplate/ARMTemplateParametersForFactory.json
+        template: ADF/ARMTemplateForFactory.json
+        parameters: ADF/ARMTemplateParametersForFactory.json
         failOnStdErr: false  
 # Validates all of the Data Factory resources in the repository. You'll get the same validation errors as when "Validate All" is selected.
 # Enter the appropriate subscription and name for the source factory.
