@@ -49,7 +49,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ArmTemplate
-        path: ${{ github.workspace }}/ADF/build/ArmTemplate # or path/to/artifact
+        path: ${{ github.workspace }}/ADF/build/ # or path/to/artifact
 
   deploy:
     name: Deploy ADF
