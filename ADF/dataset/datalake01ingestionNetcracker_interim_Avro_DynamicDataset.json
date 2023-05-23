@@ -1,0 +1,73 @@
+{
+  "name": "datalake01ingestionNetcracker_interim_Avro_DynamicDataset",
+  "properties": {
+    "linkedServiceName": {
+      "referenceName": "datalake01ingestionNetcracker_interim",
+      "type": "LinkedServiceReference"
+    },
+    "parameters": {
+      "FileSystemName": {
+        "type": "string",
+        "defaultValue": "dummy"
+      },
+      "FolderName": {
+        "type": "string",
+        "defaultValue": "dummy"
+      },
+      "FileName": {
+        "type": "string",
+        "defaultValue": "dummy"
+      },
+      "ColumnDelimiter": {
+        "type": "string",
+        "defaultValue": ","
+      },
+      "TextQualifier": {
+        "type": "string",
+        "defaultValue": "\""
+      },
+      "EscapeCharacter": {
+        "type": "string",
+        "defaultValue": "\\"
+      },
+      "IsHeaderPresent": {
+        "type": "bool",
+        "defaultValue": true
+      },
+      "CompressionCodec": {
+        "type": "string",
+        "defaultValue": "none"
+      },
+      "Encoding": {
+        "type": "string",
+        "defaultValue": "UTF-8"
+      }
+    },
+    "type": "Avro",
+    "typeProperties": {
+      "location": {
+        "type": "AzureBlobFSLocation",
+        "fileName": {
+          "value": "@dataset().FileName",
+          "type": "Expression"
+        },
+        "folderPath": {
+          "value": "@dataset().FolderName",
+          "type": "Expression"
+        },
+        "fileSystem": {
+          "value": "@dataset().FileSystemName",
+          "type": "Expression"
+        }
+      },
+      "avroCompressionCodec": {
+        "value": "@dataset().CompressionCodec",
+        "type": "Expression"
+      }
+    },
+    "schema": [],
+    "folder": {
+      "name": "DynamicDatasets"
+    }
+  }
+}

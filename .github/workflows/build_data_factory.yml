@@ -26,30 +26,30 @@ jobs:
 
  # Deploy Bicep file
     - name: Use Node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
          node-version: '14.x'
     - name: npm install, build, and test example
-      working-directory: Automation\ADF\Package
+      working-directory: ${{ github.workspace }}/ADF/build
       run: |
         npm install
     - name: 'Validate ADF'
       id: validate
-      working-directory: Automation\ADF\Package
+      working-directory: ${{ github.workspace }}/ADF/build
       run: |
-        'run build validate D:/a/dataestate/dataestate/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/df-dataestate-${{ inputs.Environment }}'
+        'npm run build validate ${{ github.workspace }}/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }}'
 
     - name: 'Build ADF ARM Template'
       id: build
-      working-directory: Automation\ADF\Package
+      working-directory: ${{ github.workspace }}/ADF/build
       run: |
-        'run build export D:/a/dataestate/dataestate/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/df-dataestate-${{ inputs.Environment }} "arm_template"'
+        'npm run build export ${{ github.workspace }}/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }} "ArmTemplate"'
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ADF
-        path: D:/a/dataestate/dataestate/Automation/ADF/Package/ # or path/to/artifact
+        name: ArmTemplate
+        path: ${{ github.workspace }}/ADF/build/ # or path/to/artifact
 
   deploy:
     name: Deploy ADF

@@ -1,0 +1,40 @@
+{
+    "name": "<%ADFControllerPipelineName%>",
+    "properties": {
+        "activities": [
+            {
+                "name": "Transform",
+                "type": "ExecutePipeline",
+                "dependsOn": [],
+                "userProperties": [],
+                "typeProperties": {
+                    "pipeline": {
+                        "referenceName": "<%ADFTransformPipelineName%>",
+                        "type": "PipelineReference"
+                    },
+                    "waitOnCompletion": true,
+                    "parameters": {
+                        "JobIsIncremental": {
+                            "value": "@pipeline().parameters.JobIsIncremental",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            }
+        ],
+        "parameters": {
+            "JobIsIncremental": {
+                "type": "bool",
+                "defaultValue": true
+            },
+            "CleanUpPartitions": {
+                "type": "bool",
+                "defaultValue": false
+            }
+        },
+        "folder": {
+            "name": "<%ADFPipelineFolder%>"
+        },
+        "annotations": []
+    }
+}

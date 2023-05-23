@@ -1,0 +1,45 @@
+﻿CREATE TABLE [sourceDataLakeNetcracker_interim].[product_offering-template] (
+    [id]                                NVARCHAR (500)  NULL,
+    [name]                              NVARCHAR (500)  NULL,
+    [display_name]                      NVARCHAR (500)  NULL,
+    [description]                       NVARCHAR (500)  NULL,
+    [display_name1]                     NVARCHAR (500)  NULL,
+    [description1]                      NVARCHAR (500)  NULL,
+    [display_name2]                     NVARCHAR (500)  NULL,
+    [description2]                      NVARCHAR (500)  NULL,
+    [type]                              NVARCHAR (500)  NULL,
+    [tags]                              VARBINARY (MAX) NULL,
+    [external_id]                       NVARCHAR (500)  NULL,
+    [migration_id]                      NVARCHAR (500)  NULL,
+    [v_created_timestamp]               NVARCHAR (500)  NULL,
+    [v_deleted_timestamp]               NVARCHAR (500)  NULL,
+    [v_created_user_id]                 NVARCHAR (500)  NULL,
+    [extended_parameters]               NVARCHAR (500)  NULL,
+    [v_change_request_id]               NVARCHAR (500)  NULL,
+    [legacy_id]                         NVARCHAR (500)  NULL,
+    [v_updated_timestamp]               NVARCHAR (500)  NULL,
+    [v_updated_user_id]                 NVARCHAR (500)  NULL,
+    [is_draft]                          BIT             NULL,
+    [v_created_user]                    NVARCHAR (500)  NULL,
+    [v_updated_user]                    NVARCHAR (500)  NULL,
+    [is_saleable_stand_alone]           BIT             NULL,
+    [is_one_time_offering]              BIT             NULL,
+    [is_location_required]              BIT             NULL,
+    [is_external_pricing]               BIT             NULL,
+    [is_tangible]                       BIT             NULL,
+    [prod_offering_price_details_id]    NVARCHAR (500)  NULL,
+    [legal_product_type_id]             NVARCHAR (500)  NULL,
+    [is_product_with_sale_type]         BIT             NULL,
+    [is_p_o_ignore_template_transition] BIT             NULL,
+    [product_specification_id]          NVARCHAR (500)  NULL,
+    [installment_details_id]            NVARCHAR (500)  NULL,
+    [is_event_generating]               BIT             NULL,
+    [is_deleted]                        BIT             NULL,
+    [last_modified_ts]                  NVARCHAR (500)  NULL,
+    [DWCreatedDate]                     DATETIME        DEFAULT (getdate()) NULL
+);
+
+
+GO
+EXECUTE sp_addextendedproperty @name = N'TruncateBeforeDeploy', @value = N'True', @level0type = N'SCHEMA', @level0name = N'sourceDataLakeNetcracker_interim', @level1type = N'TABLE', @level1name = N'product_offering-template';
+
