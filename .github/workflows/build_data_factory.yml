@@ -30,18 +30,18 @@ jobs:
       with:
          node-version: '14.x'
     - name: npm install, build, and test example
-      working-directory: ADF\Package
+      working-directory: ${{ github.workspace }}/ADF/Package
       run: |
         npm install
     - name: 'Validate ADF'
       id: validate
-      working-directory: ADF\Package
+      working-directory: ${{ github.workspace }}/ADF/Package
       run: |
         'run build validate ${{ github.workspace }}/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }}'
 
     - name: 'Build ADF ARM Template'
       id: build
-      working-directory: ADF\Package
+      working-directory: ${{ github.workspace }}/ADF/Package
       run: |
         'run build export ${{ github.workspace }}/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }} "ArmTemplate"'
 
