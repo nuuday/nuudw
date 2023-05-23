@@ -49,7 +49,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ADF
-        path: D:/a/nuudw/nuudw/ADF/ArmTemplate # or path/to/artifact
+        path: D:/a/nuudw/nuudw/Automation/ADF/Package/ArmTemplate # or path/to/artifact
 
   deploy:
     name: Deploy ADF
