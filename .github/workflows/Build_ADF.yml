@@ -7,6 +7,7 @@ on:
         type: string
         description: Which Environment to deploy to (dev, test, prod)
         required: true
+        default: dev
 
 jobs:
   Build:
