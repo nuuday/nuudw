@@ -1,0 +1,45 @@
+﻿{
+    "name": "<%ADFTransformPipelineName%>",
+    "properties": {
+        "activities": [
+            {
+                "name": "TRF_<%ADFStageTableName%>",
+                "type": "SqlServerStoredProcedure",
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "storedProcedureName": "<%ADFTransformProcedureName%>",
+					"storedProcedureParameters": {
+						"JobIsIncremental": {
+							"value": {
+								"value": "@pipeline().parameters.JobIsIncremental",
+								"type": "Expression"
+							},
+							"type": "Boolean"
+						}
+					}
+                },
+                "linkedServiceName": {
+                    "referenceName": "<%ADFLinkedServiceName%>",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "parameters": {
+            "JobIsIncremental": {
+                "type": "Bool",
+                "defaultValue": "true",
+                "identity": "JobIsIncremental"
+            }
+        },
+        "folder": {
+            "name": "<%ADFPipelineFolder%>"
+        },
+		"annotations": []
+    }
+}
