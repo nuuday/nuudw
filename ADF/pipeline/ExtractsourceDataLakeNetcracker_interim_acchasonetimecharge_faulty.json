@@ -1,0 +1,76 @@
+{
+	"name": "ExtractsourceDataLakeNetcracker_interim_acchasonetimecharge_faulty",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_acchasonetimecharge",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "ParquetReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SqlSink",
+						"writeBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						},
+						"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[acchasonetimecharge]"
+					},
+					"enableStaging": false,
+					"dataIntegrationUnits": 0
+				},
+				"inputs": [
+					{
+						"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"FolderName": "netcracker_interim/interim-nrm-acchasonetimecharge/",
+							"FileName": "interim-nrm-acchasonetimecharge-20230330T124710Z.parquet",
+							"ColumnDelimiter": "\t",
+							"TextQualifier": "\"",
+							"EscapeCharacter": "\\",
+							"IsHeaderPresent": "False",
+							"CompressionCodec": "none"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "nuudwsqldb01_DynamicDataset",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"parameters": {
+			"JobIsIncremental": {
+				"type": "Bool",
+				"defaultValue": false
+			},
+			"WriteBatchSize": {
+				"type": "Int",
+				"defaultValue": 10000
+			}
+		},
+		"folder": {
+			"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
+		},
+		"annotations": []
+	}
+}
