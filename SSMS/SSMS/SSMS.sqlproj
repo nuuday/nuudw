@@ -56,6 +56,13 @@
     <Folder Include="extended properties" />
     <Folder Include="sourceDataLakeNetcracker_interim\" />
     <Folder Include="sourceDataLakeNetcracker_interim\Tables\" />
+
+    <Folder Include="nuuMeta\" />
+    <Folder Include="nuuMeta\Tables\" />
+    <Folder Include="nuuMetaView\" />
+    <Folder Include="nuuMetaView\Views\" />
+    <Folder Include="nuuMeta\Functions\" />
+    <Folder Include="nuuMeta\Stored Procedures\" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Stored Procedures\" />
   </ItemGroup>
@@ -203,6 +210,44 @@
     <Build Include="sourceDataLakeNetcracker_interim\Tables\custhasproduct.sql" />
     <Build Include="Security\sourceDataLakeNetcracker_interim_history.sql" />
     <Build Include="Security\sourceDataLakeNetcracker_interim.sql" />
+    <Build Include="nuuMeta\Tables\ValidLoadPattern.sql" />
+    <Build Include="nuuMeta\Tables\ValidHistoryType.sql" />
+    <Build Include="nuuMeta\Tables\ValidExtractPattern.sql" />
+    <Build Include="nuuMeta\Tables\ValidDWObjectType.sql" />
+    <Build Include="nuuMeta\Tables\DWObject.sql" />
+    <Build Include="nuuMeta\Tables\DWObject_History.sql" />
+    <Build Include="nuuMeta\Tables\SourceInformationSchema.sql" />
+    <Build Include="nuuMeta\Tables\SourceConnection.sql" />
+    <Build Include="nuuMeta\Tables\SourceConnection_History.sql" />
+    <Build Include="nuuMeta\Tables\SourceObject.sql" />
+    <Build Include="nuuMeta\Tables\SourceObject_History.sql" />
+    <Build Include="nuuMeta\Tables\ValidConnectionType.sql" />
+    <Build Include="nuuMetaView\Views\Variables.sql" />
+    <Build Include="nuuMetaView\Views\ExtractControllerDefinitions.sql" />
+    <Build Include="nuuMetaView\Views\DWObjectDefinitions.sql" />
+    <Build Include="nuuMetaView\Views\SourceInformationSchemaDefinitions.sql" />
+    <Build Include="nuuMetaView\Views\SourceConnectionDefinitions.sql" />
+    <Build Include="nuuMetaView\Views\SourceObjectDefinitions.sql" />
+    <Build Include="nuuMeta\Functions\SplitCamelCase.sql" />
+    <Build Include="nuuMeta\Functions\GetEasterSundayFromYear.sql" />
+    <Build Include="nuuMeta\Stored Procedures\MaintainDW.sql" />
+    <Build Include="nuuMeta\Stored Procedures\LoadSourceObjectHistoryInherit.sql" />
+    <Build Include="nuuMeta\Stored Procedures\LoadSourceObjectHistory.sql" />
+    <Build Include="nuuMeta\Stored Procedures\LoadFact.sql" />
+    <Build Include="nuuMeta\Stored Procedures\LoadDimension.sql" />
+    <Build Include="nuuMeta\Stored Procedures\GetLastValueLoaded.sql" />
+    <Build Include="nuuMeta\Stored Procedures\CreateTransformProcedures.sql" />
+    <Build Include="nuuMeta\Stored Procedures\CreateDWRelations.sql" />
+    <Build Include="nuuMeta\Stored Procedures\UpdateSourceTables.sql" />
+    <Build Include="nuuMeta\Stored Procedures\SetLastLoadedValue.sql" />
+    <Build Include="nuuMeta\Stored Procedures\MaintainSourceObject.sql" />
+    <Build Include="nuuMeta\Stored Procedures\MaintainExtractCreateTable.sql" />
+    <Build Include="nuuMeta\Stored Procedures\MaintainExtractCreateSourceScript.sql" />
+    <Build Include="nuuMeta\Stored Procedures\MaintainExtractCreateSchemas.sql" />
+    <Build Include="nuuMeta\Stored Procedures\MaintainExtract.sql" />
+    <Build Include="nuuMeta\Stored Procedures\MaintainDWCreateTableAndView.sql" />
+    <Build Include="Security\nuuMetaView.sql" />
+    <Build Include="Security\nuuMeta.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
@@ -213,5 +258,8 @@
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="PreDeploymentCleanup.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Schema Compare development with local.scmp" />
   </ItemGroup>
 </Project>

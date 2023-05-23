@@ -1,0 +1,71 @@
+﻿{
+    "name": "<%ADFLoadPipelineName%>",
+    "properties": {
+        "activities": [
+            {
+                "name": "Load_<%ADFDWTableName%>",
+                "type": "SqlServerStoredProcedure",
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "storedProcedureName": "<%ADFLoadProcedure%>",
+                    "storedProcedureParameters": {
+                        "StageTable": {
+                            "value": "<%ADFStageTableName%>",
+                            "type": "String"
+                        },
+                        "DWTable": {
+                            "value": "<%ADFDWTableName%>",
+                            "type": "String"
+                        },
+                        "DWSchema": {
+                            "value": "<%ADFDWSchemaName%>",
+                            "type": "String"
+                        },
+                        "LoadPattern": {
+                            "value": "<%ADFLoadPattern%>",
+                            "type": "String"
+                        },
+                        "IncrementalFlag": {
+                            "value": {
+                                "value": "@pipeline().parameters.JobIsIncremental",
+                                "type": "Expression"
+                            },
+                            "type": "Boolean"
+                        },
+                        "CleanUpPartitionsFlag": {
+                            "value": {
+                                "value": "@pipeline().parameters.CleanUpPartitions",
+                                "type": "Expression"
+                            },
+                            "type": "Boolean"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "<%ADFLinkedServiceName%>",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "parameters": {
+            "JobIsIncremental": {
+                "type": "Bool",
+                "defaultValue": "true"
+            },
+            "CleanUpPartitions": {
+                "type": "Bool",
+                "defaultValue": "false"
+            }
+        },
+        "folder": {
+            "name": "<%ADFPipelineFolder%>"
+        },
+        "annotations": []
+    }
+}
