@@ -43,13 +43,13 @@ jobs:
       id: build
       working-directory: Automation\ADF\Package
       run: |
-        'run build export D:/a/nuudw/nuudw/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }} "arm_template"'
+        'run build export D:/a/nuudw/nuudw/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }} "ArmTemplate"'
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
         name: ADF
-        path: D:/a/nuudw/nuudw/Automation/ADF/Package/ # or path/to/artifact
+        path: D:/a/nuudw/nuudw//ADF/ArmTemplate # or path/to/artifact
 
   deploy:
     name: Deploy ADF
@@ -70,8 +70,8 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
-        template: ADF/ARMTemplateForFactory.json
-        parameters: ADF/ARMTemplateParametersForFactory.json
+        template: ADF/ArmTemplate/ARMTemplateForFactory.json
+        parameters: ADF/ArmTemplate/ARMTemplateParametersForFactory.json
         failOnStdErr: false  
 # Validates all of the Data Factory resources in the repository. You'll get the same validation errors as when "Validate All" is selected.
 # Enter the appropriate subscription and name for the source factory.
