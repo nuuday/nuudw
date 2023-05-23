@@ -37,19 +37,19 @@ jobs:
       id: validate
       working-directory: ADF\Package
       run: |
-        'run build validate D:/a/nuudw/nuudw/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }}'
+        'run build validate ${{ github.workspace }}/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }}'
 
     - name: 'Build ADF ARM Template'
       id: build
       working-directory: ADF\Package
       run: |
-        'run build export D:/a/nuudw/nuudw/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }} "ArmTemplate"'
+        'run build export ${{ github.workspace }}/ADF /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }} "ArmTemplate"'
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
         name: ADF
-        path: D:/a/nuudw/nuudw/ADF/Package/ArmTemplate # or path/to/artifact
+        path: ${{ github.workspace }}/ADF/Package # or path/to/artifact
 
   deploy:
     name: Deploy ADF
