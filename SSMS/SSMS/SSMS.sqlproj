@@ -56,12 +56,15 @@
     <Folder Include="extended properties" />
     <Folder Include="sourceDataLakeNetcracker_interim\" />
     <Folder Include="sourceDataLakeNetcracker_interim\Tables\" />
+
     <Folder Include="nuuMeta\" />
     <Folder Include="nuuMeta\Tables\" />
     <Folder Include="nuuMetaView\" />
     <Folder Include="nuuMetaView\Views\" />
     <Folder Include="nuuMeta\Functions\" />
     <Folder Include="nuuMeta\Stored Procedures\" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
