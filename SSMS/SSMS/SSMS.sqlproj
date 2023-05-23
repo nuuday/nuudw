@@ -56,6 +56,8 @@
     <Folder Include="extended properties" />
     <Folder Include="sourceDataLakeNetcracker_interim\" />
     <Folder Include="sourceDataLakeNetcracker_interim\Tables\" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
