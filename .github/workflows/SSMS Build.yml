@@ -1,0 +1,25 @@
+name: Build Validation
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    #paths: Only start if changes to SSMS.
+      #- 'SSMS/**'
+jobs:
+
+  # Job to build and publish the dacpac
+  Build:
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      # Build dacpac using dotnet build
+      - name: Build Database project
+        run: |
+          dotnet build SSMS/SSMS/SSMS.sqlproj /p:NetCoreBuild=true /WarnAsError:SQL71502
+      # Publish artifact
+      - uses: actions/upload-artifact@v3.1.2
+        with:
+          name: SSMS.dacpac
+          path: ${{ github.workspace }}/SSMS/SSMS/bin/Debug/ 

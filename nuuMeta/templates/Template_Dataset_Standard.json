@@ -1,0 +1,30 @@
+﻿{
+  "name": "<%ADFDatasetName%>",
+  "properties": {
+    "linkedServiceName": {
+      "referenceName": "<%ADFLinkedServiceName%>",
+      "type": "LinkedServiceReference"
+    },
+    "parameters": {
+      "TableName": {
+        "type": "string"
+      }
+
+    },
+    "type": "<%ADFDatasetType%>",
+    "schema": [],
+    "typeProperties": {
+      "schema": {
+        "value": "@replace(replace(split(dataset().TableName,'.')[0],'[',''),']','')",
+        "type": "Expression"
+        },
+        "table": {
+        "value": "@replace(replace(split(dataset().TableName,'.')[1],'[',''),']','')",
+        "type": "Expression"
+         }
+    },
+      "folder": {
+        "name": "<%ADFFolderName%>"
+      }
+    }
+}

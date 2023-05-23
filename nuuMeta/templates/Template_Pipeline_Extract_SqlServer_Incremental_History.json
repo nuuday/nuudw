@@ -1,0 +1,330 @@
+﻿{
+    "name": "<%ADFPipelineName%>",
+    "properties": {
+        "activities": [
+            {
+                "name": "Lookup_IsReady_flag",
+                "type": "Lookup",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlServerSource",
+                        "sqlReaderQuery": "<%ADFSourceIsReadyQuery%>",
+                        "queryTimeout": "02:00:00",
+                        "partitionOption": "None"
+                    },
+                    "dataset": {
+                        "referenceName": "<%ADFSourceDatasetName%>",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "<%ADFSourceSchema%>.<%ADFSourceTable%>"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Evaluate_IsReady_flag",
+                "type": "IfCondition",
+                "dependsOn": [
+                    {
+                        "activity": "Lookup_IsReady_flag",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "expression": {
+                        "value": "@equals(activity('Lookup_IsReady_flag').output.firstRow.IsReady,1)",
+                        "type": "Expression"
+                    },
+                    "ifFalseActivities": [
+                        {
+                            "name": "IsReady",
+                            "type": "Fail",
+                            "dependsOn": [],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "message": "The source was not ready at execution time. Try re-running the pipeline at a later time.",
+                                "errorCode": "0"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Update_Meta_Tables",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "Evaluate_IsReady_flag",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "nuuMeta.[UpdateSourceTables]",
+                    "storedProcedureParameters": {
+                        "SourceConnectionName": {
+                            "value": "<%ADFSourceConnection%>",
+                            "type": "String"
+                        },
+                        "SourceConnectionType": {
+                            "value": "<%ADFSourceConnectionType%>",
+                            "type": "String"
+                        },
+                        "SourceSchemaName": {
+                            "value": "<%ADFSourceSchema%>",
+                            "type": "String"
+                        },
+                        "SourceObjectName": {
+                            "value": "<%ADFSourceTable%>",
+                            "type": "String"
+                        },
+                        "DestinationSchemaName": {
+                            "value": "<%ADFDestinationSchema%>",
+                            "type": "String"
+                        },
+                        "WatermarkColumnName": {
+                            "value": "<%ADFWatermarkColumn%>",
+                            "type": "String"
+                        },
+                        "WatermarkIsDate": {
+                            "value": "<%ADFWatermarkIsDate%>",
+                            "type": "Boolean"
+                        },
+                        "WatermarkRollingWindowDays": {
+                            "value": "<%ADFWatermarkRollingWindowDays%>",
+                            "type": "Int32"
+                        },
+                        "WatermarkInQuery": {
+                            "value": "<%ADFWatermarkInQuery%>",
+                            "type": "String"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "<%ADFDestinationLinkedService%>",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "Lookup_Last_Value_Loaded",
+                "type": "Lookup",
+                "dependsOn": [
+                    {
+                        "activity": "Update_Meta_Tables",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderStoredProcedureName": "nuuMeta.[GetLastValueLoaded]",
+                        "storedProcedureParameters": {
+                            "SourceConnectionName": {
+                                "value": "<%ADFSourceConnection%>",
+                                "type": "String"
+                            },
+                            "SourceSchemaName": {
+                                "value": "<%ADFSourceSchema%>",
+                                "type": "String"
+                            },
+                            "SourceTableName": {
+                                "value": "<%ADFSourceTable%>",
+                                "type": "String"
+                            },
+                            "JobIsIncremental": {
+                                "value": "@pipeline().parameters.JobIsIncremental",
+                                "type": "Boolean"
+                            },
+                            "ConnectionType": {
+                                "value": "<%ADFSourceConnectionType%>",
+                                "type": "String"
+                            },
+                            "WatermarkIsDate": {
+                                "value": "<%ADFWatermarkIsDate%>",
+                                "type": "Boolean"
+                            }
+                        }
+                    },
+                    "dataset": {
+                        "referenceName": "<%ADFDestinationDatasetName%>",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "nuuMeta.SourceObjects"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Copy_<%ADFDestinationTable%>",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "Lookup_Last_Value_Loaded",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "SqlSource",
+                        "sqlReaderQuery": {
+                            "value": "<%ADFSourceQuery%>",
+                            "type": "Expression"
+                        }
+                    },
+                    "sink": {
+                        "type": "SqlSink",
+                        "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+                        "preCopyScript": "TRUNCATE TABLE [<%ADFDestinationSchema%>].[<%ADFDestinationTable%>]"
+                    },
+                    "enableStaging": false,
+                    "cloudDataMovementUnits": 0
+                },
+                "inputs": [
+                    {
+                        "referenceName": "<%ADFSourceDatasetName%>",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "<%ADFSourceSchema%>.<%ADFSourceTable%>"
+                        }
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "<%ADFDestinationDatasetName%>",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "TableName": "[<%ADFDestinationSchema%>].[<%ADFDestinationTable%>]"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Merge_To_History",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "Copy_<%ADFDestinationTable%>",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "nuuMeta.[LoadSourceObjectHistory]",
+                    "storedProcedureParameters": {
+                        "ExtractTable": {
+                            "value": "<%ADFDestinationSchema%>.<%ADFDestinationTable%>",
+                            "type": "String"
+                        },
+                        "LoadIsIncremental": {
+                            "value": "@pipeline().parameters.JobIsIncremental",
+                            "type": "Boolean"
+                        },
+                        "HistoryTrackingColumns": {
+                            "value": "<%ADFHistoryTrackingColumns%>",
+                            "type": "String"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "<%ADFDestinationLinkedService%>",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "Set_Last_Value_Loaded",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "Merge_To_History",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                    "storedProcedureName": "nuuMeta.[SetLastLoadedValue]",
+                    "storedProcedureParameters": {
+                        "SourceConnectionName": {
+                            "value": "<%ADFSourceConnection%>",
+                            "type": "String"
+                        },
+                        "SourceSchemaName": {
+                            "value": "<%ADFSourceSchema%>",
+                            "type": "String"
+                        },
+                        "SourceTableName": {
+                            "value": "<%ADFSourceTable%>",
+                            "type": "String"
+                        },
+                        "WatermarkIsDate": {
+                            "value": "<%ADFWatermarkIsDate%>",
+                            "type": "Boolean"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "<%ADFDestinationLinkedService%>",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "parameters": {
+            "JobIsIncremental": {
+                "type": "Bool",
+                "defaultValue": "true",
+                "identity": "JobIsIncremental"
+            },
+            "WriteBatchSize": {
+                "type": "Int",
+                "defaultValue": 10000,
+                "identity": "WriteBatchSize"
+            }
+        },
+        "folder": {
+            "name": "<%ADFFolderName%>"
+        }
+    }
+}
