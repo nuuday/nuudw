@@ -56,7 +56,6 @@
     <Folder Include="extended properties" />
     <Folder Include="sourceDataLakeNetcracker_interim\" />
     <Folder Include="sourceDataLakeNetcracker_interim\Tables\" />
-
     <Folder Include="nuuMeta\" />
     <Folder Include="nuuMeta\Tables\" />
     <Folder Include="nuuMetaView\" />
@@ -248,6 +247,8 @@
     <Build Include="nuuMeta\Stored Procedures\MaintainDWCreateTableAndView.sql" />
     <Build Include="Security\nuuMetaView.sql" />
     <Build Include="Security\nuuMeta.sql" />
+    <Build Include="extended properties\NUUDLStagingLinkedService.sql" />
+    <Build Include="extended properties\DataLakeSQLLinkedService.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
