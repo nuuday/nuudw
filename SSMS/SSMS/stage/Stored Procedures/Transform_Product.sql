@@ -19,13 +19,8 @@ TRUNCATE TABLE [stage].[Product]
 
 	INSERT INTO stage.[Product] WITH (TABLOCK)
 	  ([ProductKey]
-      ,[ProductNo]
       ,[ProductName]
-	  ,[MainProduct]
-	  ,[ProductType]
-	  ,[AddonProduct]
-	  ,[ProductIsCurrent]
-	  ,[DWCreatedDate])
+	  ,[ProductType])
 
 	--Apply business logic for full load here
 
@@ -34,27 +29,10 @@ TRUNCATE TABLE [stage].[Product]
    SCD Type 2 is excluded.
 ***********************************************************************************************************************************************************************/
 SELECT DISTINCT
-	   product.[id]										    AS ProductKey
-	  ,NULL												    AS ProductNo
-	  ,product.[name]									    AS ProductName
-	  ,productoffering.[MainProduct]					    AS MainProduct
-	  ,family.[name]									    AS ProductType
-	  ,NULL													AS AddonProduct
-	  ,[is_active]											AS ProductIsCurrent
-	  ,Getdate()											AS DWCreatedDate
-FROM [sourceDataLakeNetcracker_interim].[product_offering] product
+	   p.[id]	 AS ProductKey
+	  ,p.[name]	 AS ProductName
+	  ,pf.[name] AS ProductType
+FROM [sourceDataLakeNetcracker_interim].[product_offering] p
 
-LEFT JOIN [sourceDataLakeNetcracker_interim].[product_family] family
-ON product.product_family_id = family.id
-
-	-- Subquery in Join selects MainProduct from product_offering
-LEFT JOIN (
-			SELECT
-			 [id] 
-		    ,[name] AS MainProduct
-			FROM [sourceDataLakeNetcracker_interim].[product_offering-template]
-			WHERE is_saleable_stand_alone = 1
-			AND is_one_time_offering = 0
-			AND v_deleted_timestamp IS NULL
-		  ) productoffering ON
-			product.id = productoffering.id
+LEFT JOIN [sourceDataLakeNetcracker_interim].[product_family] pf
+ON p.product_family_id = pf.id
