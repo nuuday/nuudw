@@ -250,6 +250,8 @@
     <Build Include="nuuMeta\Stored Procedures\MaintainDWCreateTableAndView.sql" />
     <Build Include="Security\nuuMetaView.sql" />
     <Build Include="Security\nuuMeta.sql" />
+    <Build Include="extended properties\NUUDLStagingLinkedService.sql" />
+    <Build Include="extended properties\DataLakeSQLLinkedService.sql" />
     <Build Include="stage\Tables\Customer.sql" />
     <Build Include="dim\Tables\Customer.sql" />
     <Build Include="dimView\Views\Customer.sql" />

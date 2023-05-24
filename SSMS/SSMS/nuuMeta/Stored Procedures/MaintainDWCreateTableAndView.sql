@@ -18,8 +18,8 @@ SET NOCOUNT ON
 
 /*
 DECLARE
-	@DestinationTable NVARCHAR(100) = 'CustomerProductTest',
-	@DestinationSchema NVARCHAR(10) = 'fact', 
+	@DestinationTable NVARCHAR(100) = 'Customer',
+	@DestinationSchema NVARCHAR(10) = 'dim', 
 	@PrintSQL BIT = 1
 --*/
 
@@ -92,17 +92,17 @@ FROM #InformationSchema c
 OUTER APPLY (
 	SELECT 
 		Type.[value] AS ColumnName
-	FROM nuuMeta.SourceObject dw
+	FROM nuuMeta.DWObject dw
 	OUTER APPLY STRING_SPLIT( NULLIF( dw.HistoryTrackingColumns, '' ), ',', 1 ) Type
 	WHERE 
 		dw.HistoryTrackingColumns <> ''
-		AND dw.SourceObjectType = 'Dimension'
-		AND dw.SourceObjectName = c.DestinationTable
+		AND dw.DWObjectType = 'Dimension'
+		AND dw.DWObjectName = c.DestinationTable
 ) type2
 
 
 INSERT #DWRelations 
-EXEC nuuMeta.CreateDWRelations @DestinationTable
+EXEC nuuMeta.CreateDWRelations @StageTable
 
 /*Populates @DimensionCombinedKeys to check if combined keys are used and in which dimensions they are used*/
 INSERT #DimensionCombinedKeys  

@@ -19,10 +19,10 @@ CREATE PROCEDURE [nuuMeta].[LoadFact]
 AS
 /*
 DECLARE 
-	@StageTable  NVARCHAR(100) = 'Fact_CustomerProductTest', --Input is the dimensions name without schema
+	@StageTable  NVARCHAR(100) = 'Fact_CustomerProducts', --Input is the dimensions name without schema
 	@DWSchema NVARCHAR(10) = 'fact',
-	@DWTable  NVARCHAR(100) = 'CustomerProduct', --Input is the dimensions name without schema
-	@LoadPattern NVARCHAR(50) = 'FactAdd',
+	@DWTable  NVARCHAR(100) = 'CustomerProducts', --Input is the dimensions name without schema
+	@LoadPattern NVARCHAR(50) = 'FactMerge',
 	@IncrementalFlag BIT = 1,
 	@CleanUpPartitionsFlag BIT = 1,
 	@PrintSQL BIT = 1
@@ -78,7 +78,7 @@ WHERE
 								
 /*Generates the mapping dataset between fact/bridge and dimensions*/
 INSERT INTO #Dimensions (TableName,DimensionTable,ColumnName,ColumnMapping,RolePlayingDimension,IsType2Dimension,IsType2CompositeKeyDimension,OrdinalPosition,NewDimension,ErrorValue)
-EXEC nuuMeta.CreateDWRelations @Table = @DWTable  
+EXEC nuuMeta.CreateDWRelations @Table = @StageTable  
 
 DROP TABLE IF EXISTS #DW
 SELECT
@@ -94,7 +94,6 @@ FROM #InformationSchema AS inf
 LEFT JOIN #Dimensions AS dim
 	ON dim.ColumnName = inf.ColumnName
 GROUP BY inf.DatabaseName, inf.TableName, dim.RolePlayingDimension, inf.ColumnName, inf.OrdinalPosition, inf.DataType, inf.PrimaryKey
-
 
 INSERT INTO #InformationSchema (DatabaseName,TableName,ColumnName,OrdinalPosition,DataType,PrimaryKey) 
 SELECT
@@ -221,8 +220,8 @@ DECLARE @DatetimeValue NVARCHAR(MAX)
 /* DatetimeValue is set dependent on if there is a timehour key or not. If there is we convert calendarkey and time keys into a datetime. The replicate function makes sure to add a leading 0 if we are at single digit number */
 SET @DatetimeValue =
 	CASE 
-		WHEN @HasTimeKey=1 THEN 'Convert(datetime, STUFF(STUFF(CONCAT(REPLACE([' + @DWTable + '].[CalendarKey], ''-'', ''''),REPLICATE(''0'',2 -LEN(RTRIM([' + @DWTable + '].[TimeHourKey]))) + RTRIM([' + @DWTable + '].[TimeHourKey]),REPLICATE(''0'',2 -LEN(RTRIM([' + @DWTable + '].[TimeMinuteKey]))) + RTRIM([' + @DWTable + '].[TimeMinuteKey])),11,0,'':''),9,0,'' ''))'
-		ELSE 'Convert(date, CONCAT([' + @DWTable + '].[CalendarKey], '' '',''00:00:00''))'
+		WHEN @HasTimeKey=1 THEN 'Convert(datetime, STUFF(STUFF(CONCAT(REPLACE([' + @StageTable + '].[CalendarKey], ''-'', ''''),REPLICATE(''0'',2 -LEN(RTRIM([' + @StageTable + '].[TimeHourKey]))) + RTRIM([' + @StageTable + '].[TimeHourKey]),REPLICATE(''0'',2 -LEN(RTRIM([' + @StageTable + '].[TimeMinuteKey]))) + RTRIM([' + @StageTable + '].[TimeMinuteKey])),11,0,'':''),9,0,'' ''))'
+		ELSE 'Convert(date, CONCAT([' + @StageTable + '].[CalendarKey], '' '',''00:00:00''))'
 	END
 	
 SELECT
@@ -238,8 +237,8 @@ SELECT
 						WHEN @HasCalendarKey = 1 AND Type2FromSource.DimensionTable IS NOT NULL THEN @DatetimeValue + ' >= [' + RolePlayingDimension + '].[' + Type2FromSource.DimensionTable + 'ValidFromDate] AND ' + @DatetimeValue + ' < [' + RolePlayingDimension + '].[' + Type2FromSource.DimensionTable + 'ValidToDate]'
 						WHEN @HasCalendarKey = 0 AND Type2FromSource.DimensionTable IS NOT NULL THEN '[' + RolePlayingDimension + '].[' + Type2FromSource.DimensionTable + 'IsCurrent] = 1 '
 						ELSE '[' + RolePlayingDimension + '].[DWIsCurrent] = 1 '
-					END + @CRLF + 'AND [' + RolePlayingDimension + '].[' + ColumnMapping + '] = [' + @DWTable + '].[' + ColumnName + ']'
-			ELSE 'AND [' + RolePlayingDimension + '].[' + ColumnMapping + '] = [' + @DWTable + '].[' + ColumnName + ']'
+					END + @CRLF + 'AND [' + RolePlayingDimension + '].[' + ColumnMapping + '] = [' + @StageTable + '].[' + ColumnName + ']'
+			ELSE 'AND [' + RolePlayingDimension + '].[' + ColumnMapping + '] = [' + @StageTable + '].[' + ColumnName + ']'
 		END, @CRLF)
 FROM #Type2CombinedKeys AS Type2CombinedKeys
 LEFT JOIN #Type2FromSource AS Type2FromSource
@@ -267,8 +266,8 @@ SELECT
 					END + '].[' + ColumnMapping + '] =' +
 
 					CASE
-						WHEN ColumnMapping = 'CalendarKey' THEN ' IIF([' + @DWTable + '].[' + ColumnName + '] > ''' + @MaxCalendarKey + ''',''' + @MaxCalendarKey + ''',[' + @DWTable + '].[' + ColumnName + '] )'
-						ELSE '[' + @DWTable + '].[' + ColumnName + ']'
+						WHEN ColumnMapping = 'CalendarKey' THEN ' IIF([' + @StageTable + '].[' + ColumnName + '] > ''' + @MaxCalendarKey + ''',''' + @MaxCalendarKey + ''',[' + @StageTable + '].[' + ColumnName + '] )'
+						ELSE '[' + @StageTable + '].[' + ColumnName + ']'
 					END
 
 			ELSE 'AND [' +
@@ -278,8 +277,8 @@ SELECT
 					END + '].[' + ColumnMapping + '] = ' +
 
 					CASE
-						WHEN ColumnMapping = 'CalendarKey' THEN ' IIF([' + @DWTable + '].[' + ColumnName + '] > ''' + @MaxCalendarKey + ''',''' + @MaxCalendarKey + ''',[' + @DWTable + '].[' + ColumnName + '] )'
-						ELSE '[' + @DWTable + '].[' + ColumnName + ']'
+						WHEN ColumnMapping = 'CalendarKey' THEN ' IIF([' + @StageTable + '].[' + ColumnName + '] > ''' + @MaxCalendarKey + ''',''' + @MaxCalendarKey + ''',[' + @StageTable + '].[' + ColumnName + '] )'
+						ELSE '[' + @StageTable + '].[' + ColumnName + ']'
 					END
 		END, @CRLF)
 FROM #Dimensions
