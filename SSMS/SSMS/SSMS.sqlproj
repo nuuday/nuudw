@@ -64,6 +64,9 @@
     <Folder Include="nuuMeta\Stored Procedures\" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="stage\" />
+    <Folder Include="stage\Tables\" />
+    <Folder Include="stage\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -249,6 +252,10 @@
     <Build Include="Security\nuuMeta.sql" />
     <Build Include="extended properties\NUUDLStagingLinkedService.sql" />
     <Build Include="extended properties\DataLakeSQLLinkedService.sql" />
+    <Build Include="stage\Tables\Customer.sql" />
+    <Build Include="dim\Tables\Customer.sql" />
+    <Build Include="dimView\Views\Customer.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Customer.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
