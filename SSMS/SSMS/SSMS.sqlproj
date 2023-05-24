@@ -56,7 +56,6 @@
     <Folder Include="extended properties" />
     <Folder Include="sourceDataLakeNetcracker_interim\" />
     <Folder Include="sourceDataLakeNetcracker_interim\Tables\" />
-
     <Folder Include="nuuMeta\" />
     <Folder Include="nuuMeta\Tables\" />
     <Folder Include="nuuMetaView\" />
@@ -65,6 +64,9 @@
     <Folder Include="nuuMeta\Stored Procedures\" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="stage\" />
+    <Folder Include="stage\Tables\" />
+    <Folder Include="stage\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -248,6 +250,10 @@
     <Build Include="nuuMeta\Stored Procedures\MaintainDWCreateTableAndView.sql" />
     <Build Include="Security\nuuMetaView.sql" />
     <Build Include="Security\nuuMeta.sql" />
+    <Build Include="stage\Tables\Product.sql" />
+    <Build Include="dim\Tables\Product.sql" />
+    <Build Include="dimView\Views\Product.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Product.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
