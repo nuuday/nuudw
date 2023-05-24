@@ -1,8 +1,9 @@
 name: SSMS Build
 
 on:
-  pull_request:
-    types: [opened, reopened, synchronize]
+ push
+  #pull_request:
+    #types: [opened, reopened, synchronize]
     #paths: Only start if changes to SSMS.
       #- 'SSMS/**'
 
