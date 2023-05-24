@@ -1,5 +1,11 @@
 name: SSMS Build
 
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    #paths: Only start if changes to SSMS.
+      #- 'SSMS/**'
+
 jobs:
 
   # Job to build and publish the dacpac
