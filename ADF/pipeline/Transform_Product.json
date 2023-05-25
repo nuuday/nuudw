@@ -1,0 +1,35 @@
+{
+  "name": "Transform_Product",
+  "properties": {
+    "activities": [
+      {
+        "name": "SP_TransformProduct",
+        "type": "SqlServerStoredProcedure",
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "storedProcedureName": "[stage].[Transform_Product]"
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "false",
+        "identity": "JobIsIncremental"
+      }
+    },
+    "folder": {
+      "name": "5.Transform"
+    }
+  }
+}
