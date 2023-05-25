@@ -3,7 +3,7 @@ name: Release to test
 on:
   workflow_dispatch:  
   schedule:
-  - cron: "37 14 * * 1-5"
+  - cron: "0 15 * * 1-5"
 
 jobs:
   Deploy:
