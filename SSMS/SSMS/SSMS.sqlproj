@@ -256,6 +256,10 @@
     <Build Include="dim\Tables\Customer.sql" />
     <Build Include="dimView\Views\Customer.sql" />
     <Build Include="stage\Stored Procedures\Transform_Customer.sql" />
+    <Build Include="stage\Tables\Product.sql" />
+    <Build Include="dim\Tables\Product.sql" />
+    <Build Include="dimView\Views\Product.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Product.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
