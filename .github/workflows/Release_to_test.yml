@@ -1,7 +1,9 @@
 name: Release to test
 
 on:
-  workflow_dispatch:        
+  workflow_dispatch:  
+  schedule:
+  - cron: "34 16 * * 1-5"
 
 jobs:
   Deploy:
