@@ -1,0 +1,20 @@
+name: Release to test
+
+on:
+  workflow_dispatch:        
+
+jobs:
+  Deploy:
+    name: Release to test
+    uses: ./.github/workflows/master_release_services.yml
+    with:
+      DeployToDev: false 
+      DeployToTest: true
+      DeployToProd: false 
+      DeployIaC: false 
+      DeploySSMS: true
+      DeployADF: true
+      DeploySSAS: true
+      DeploySSASModel: "All"
+      DeployMetaData: false 
+    secrets: inherit
