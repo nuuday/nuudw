@@ -1,0 +1,18 @@
+{
+	"name": "ingestsqldb01",
+	"properties": {
+		"description": "Metadata for nuudl datalake",
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "ConnectionString-nuudlsql01ingestprod-ingestsqldb01"
+			}
+		}
+	}
+}
