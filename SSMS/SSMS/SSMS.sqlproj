@@ -260,6 +260,8 @@
     <Build Include="dim\Tables\Product.sql" />
     <Build Include="dimView\Views\Product.sql" />
     <Build Include="stage\Stored Procedures\Transform_Product.sql" />
+    <Build Include="Security\nuudw-adg01-contributor.sql" />
+    <Build Include="Security\RoleMemberships.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
