@@ -2,7 +2,7 @@
 	"name": "ingestsqldb01_DynamicDataset",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ingestsqldb01",
+			"referenceName": "nuudwsqldb01",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
