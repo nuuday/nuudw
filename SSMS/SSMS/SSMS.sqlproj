@@ -67,6 +67,10 @@
     <Folder Include="stage\" />
     <Folder Include="stage\Tables\" />
     <Folder Include="stage\Stored Procedures\" />
+    <Folder Include="sourceNuudlColumbus\" />
+    <Folder Include="sourceNuudlColumbus\Tables\" />
+    <Folder Include="sourceNuudlColumbusView\" />
+    <Folder Include="sourceNuudlColumbusView\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -256,6 +260,11 @@
     <Build Include="dim\Tables\Customer.sql" />
     <Build Include="dimView\Views\Customer.sql" />
     <Build Include="stage\Stored Procedures\Transform_Customer.sql" />
+    <Build Include="sourceNuudlColumbus\Tables\AFTALE_LID_History.sql" />
+    <Build Include="sourceNuudlColumbus\Tables\AFTALE_LID.sql" />
+    <Build Include="sourceNuudlColumbusView\Views\AFTALE_LID_History.sql" />
+    <Build Include="Security\sourceNuudlColumbusView.sql" />
+    <Build Include="Security\sourceNuudlColumbus.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
