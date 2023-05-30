@@ -31,6 +31,21 @@
             "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
           }
         }
+      },
+      {
+        "name": "PROD_LID_AFT",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_NuuDL_Columbus_PROD_LID_AFT",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
       }
     ]
   }
