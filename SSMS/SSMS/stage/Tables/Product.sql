@@ -1,8 +1,11 @@
 ﻿CREATE TABLE [stage].[Product] (
-    [ProductKey]  NVARCHAR (500) NULL,
-    [ProductName] NVARCHAR (500) NULL,
-    [ProductType] NVARCHAR (500) NULL
+    [ProductKey]    NVARCHAR (50)  NULL,
+    [ProductName]   NVARCHAR (250) NULL,
+    [ProductType]   NVARCHAR (50)  NULL,
+    [DWCreatedDate] DATETIME       NOT NULL
 );
+
+
 
 
 

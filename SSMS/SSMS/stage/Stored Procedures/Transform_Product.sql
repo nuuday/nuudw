@@ -20,7 +20,8 @@ TRUNCATE TABLE [stage].[Product]
 	INSERT INTO stage.[Product] WITH (TABLOCK)
 	  ([ProductKey]
       ,[ProductName]
-	  ,[ProductType])
+	  ,[ProductType]
+	  ,[DWCreatedDate])
 
 	--Apply business logic for full load here
 
@@ -28,10 +29,12 @@ TRUNCATE TABLE [stage].[Product]
 3. SELECT column and values, matching the namingconvention and standard for values, when it contains "Null".
    SCD Type 2 is excluded.
 ***********************************************************************************************************************************************************************/
-SELECT DISTINCT
-	   p.[id]	 AS ProductKey
-	  ,p.[name]	 AS ProductName
-	  ,pf.[name] AS ProductType
+SELECT 
+	   CONVERT(NVARCHAR(50), p.[id])								AS ProductKey
+	  ,CONVERT(NVARCHAR(250), ISNULL(NULLIF(p.[name], ''), '?'))	AS ProductName
+	  ,CONVERT(NVARCHAR(50), ISNULL(NULLIF(pf.[name], ''), '?'))	AS ProductType
+	  ,GETDATE()													AS DWCreatedDate
+	  --INTO stage.Product 
 FROM [sourceDataLakeNetcracker_interim].[product_offering] p
 
 LEFT JOIN [sourceDataLakeNetcracker_interim].[product_family] pf
