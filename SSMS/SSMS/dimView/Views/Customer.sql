@@ -6,6 +6,5 @@ SELECT
 ,[CustomerName] AS [Customer Name]
 ,[CustomerSegment] AS [Customer Segment]
 ,[CustomerStatus] AS [Customer Status]
-,[CustomerIsCurrent] AS [Customer Is Current]
 
   FROM [dim].[Customer]

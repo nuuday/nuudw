@@ -23,7 +23,6 @@ TRUNCATE TABLE [stage].[Customer]
       ,[CustomerName]
 	  ,[CustomerSegment]
 	  ,[CustomerStatus]
-	  ,[CustomerIsCurrent]
 	  ,[DWCreatedDate])
 
 	--Apply business logic for full load here
@@ -32,24 +31,25 @@ TRUNCATE TABLE [stage].[Customer]
 3. SELECT column and values, matching the namingconvention and standard for values, when it contains "Null".
    SCD Type 2 is excluded.
 ***********************************************************************************************************************************************************************/
-SELECT DISTINCT
-	   customer.[id]														      AS CustomerKey
-      ,[customer_number]													      AS CustomerNo
-      ,CASE WHEN customer.[name]   IS NULL    THEN '?' ELSE customer.[name]   END AS CustomerName				
-	  ,customer_category.[name]												      AS CustomerSegment
-	  ,CASE WHEN customer.[status] IS NULL    THEN '?' ELSE customer.[status] END AS CustomerStatus
-	  ,CASE WHEN customer.[status] = 'Active' THEN 1 ELSE 0				      END AS CustomerIsCurrent
-	  ,Getdate()												                  AS DWCreatedDate
+	  SELECT 
+	   CONVERT(NVARCHAR(50), customer.[id])											AS CustomerKey
+      ,CONVERT(NVARCHAR(50), [customer_number])										AS CustomerNo
+      ,CONVERT(NVARCHAR(250), ISNULL(NULLIF(customer.[name], ''), '?'))				AS CustomerName				
+	  ,CONVERT(NVARCHAR(50), ISNULL(NULLIF(customer_category.[name], ''), '?')) 	AS CustomerSegment
+	  ,CONVERT(NVARCHAR(20), ISNULL(NULLIF(customer.[status], ''), '?'))			AS CustomerStatus
+	  ,GETDATE()																	AS DWCreatedDate
 
 	-- Subquery to SELECT Active and Prospect customers without duplicates on CustomerKey
-FROM 
-	(
-   		SELECT id, active_from, active_to, customer_number, [name], [status], customer_category_id
-   		,ROW_NUMBER() OVER (PARTITION BY id ORDER BY ISNULL(active_to, '9999-12-31') DESC) rn
-   		FROM [sourceDataLakeNetcracker_interim].[customer]
-	) customer
+	/* Decide to use Type 2 or not. If yes, what specific columns should include Type 2 history */ 
+	FROM 
+		(
+   			SELECT id, active_from, active_to, customer_number, [name], [status], customer_category_id
+   			,ROW_NUMBER() OVER (PARTITION BY id ORDER BY ISNULL(active_to, '9999-12-31') DESC) rn 
+			/* Using the most recenct customer record for now untill decision on Type 2 history */
+   			FROM [sourceDataLakeNetcracker_interim].[customer]
+		) customer
 
 	LEFT JOIN sourceDataLakeNetcracker_interim.customer_category customer_category
 	ON customer_category.id = customer.customer_category_id
 
-	WHERE customer.rn = 1
+	WHERE customer.rn = 1 --Remove if type 2 history 

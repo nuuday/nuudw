@@ -67,6 +67,10 @@
     <Folder Include="stage\" />
     <Folder Include="stage\Tables\" />
     <Folder Include="stage\Stored Procedures\" />
+    <Folder Include="fact\" />
+    <Folder Include="fact\Tables\" />
+    <Folder Include="factView\" />
+    <Folder Include="factView\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -262,6 +266,10 @@
     <Build Include="stage\Stored Procedures\Transform_Product.sql" />
     <Build Include="Security\nuudw-adg01-contributor.sql" />
     <Build Include="Security\RoleMemberships.sql" />
+    <Build Include="stage\Tables\ProductTransactions.sql" />
+    <Build Include="fact\Tables\ProductTransactions.sql" />
+    <Build Include="factView\Views\Product Transactions.sql" />
+    <Build Include="stage\Stored Procedures\Transform_ProductTransactions.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
