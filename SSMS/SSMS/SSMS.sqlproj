@@ -265,6 +265,9 @@
     <Build Include="sourceNuudlColumbusView\Views\AFTALE_LID_History.sql" />
     <Build Include="Security\sourceNuudlColumbusView.sql" />
     <Build Include="Security\sourceNuudlColumbus.sql" />
+    <Build Include="sourceNuudlColumbus\Tables\PROD_LID_AFT_History.sql" />
+    <Build Include="sourceNuudlColumbus\Tables\PROD_LID_AFT.sql" />
+    <Build Include="sourceNuudlColumbusView\Views\PROD_LID_AFT_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
