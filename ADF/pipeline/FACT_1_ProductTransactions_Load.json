@@ -1,9 +1,9 @@
 {
-  "name": "LoadFact_ProductTransactions",
+  "name": "FACT_1_ProductTransactions_Load",
   "properties": {
     "activities": [
       {
-        "name": "SP_LoadFactProductTransactions",
+        "name": "Load_ProductTransactions",
         "type": "SqlServerStoredProcedure",
         "policy": {
           "timeout": "0.12:00:00",
@@ -13,34 +13,36 @@
           "secureInput": false
         },
         "typeProperties": {
-          "storedProcedureName": "[meta].[LoadFact]",
+          "storedProcedureName": "[nuuMeta].[LoadFact]",
           "storedProcedureParameters": {
-            "Table": {
+            "StageTable": {
+              "value": "Fact_ProductTransactions",
+              "type": "String"
+            },
+            "DWTable": {
               "value": "ProductTransactions",
               "type": "String"
             },
-            "DestinationSchema": {
-              "value": "Fact",
+            "DWSchema": {
+              "value": "fact",
               "type": "String"
             },
             "LoadPattern": {
-              "value": "Standard",
+              "value": "FactMerge",
               "type": "String"
             },
             "IncrementalFlag": {
-              "value": "@pipeline().parameters.JobIsIncremental",
+              "value": {
+                "value": "@pipeline().parameters.JobIsIncremental",
+                "type": "Expression"
+              },
               "type": "Boolean"
             },
             "CleanUpPartitionsFlag": {
-              "value": "@pipeline().parameters.CleanUpPartitions",
-              "type": "Boolean"
-            },
-            "DisableMaintainDWFlag": {
-              "value": "@pipeline().parameters.DisableMaintainDW",
-              "type": "Boolean"
-            },
-            "PrintSQL": {
-              "value": "false",
+              "value": {
+                "value": "@pipeline().parameters.CleanUpPartitions",
+                "type": "Expression"
+              },
               "type": "Boolean"
             }
           }
@@ -54,22 +56,16 @@
     "parameters": {
       "JobIsIncremental": {
         "type": "Bool",
-        "defaultValue": "false",
-        "identity": "JobIsIncremental"
-      },
-      "DisableMaintainDW": {
-        "type": "Bool",
-        "defaultValue": "false",
-        "identity": "DisableMaintainDW"
+        "defaultValue": "true"
       },
       "CleanUpPartitions": {
         "type": "Bool",
-        "defaultValue": "false",
-        "identity": "CleanUpPartitions"
+        "defaultValue": "false"
       }
     },
     "folder": {
-      "name": "4.Fact"
-    }
+      "name": "0.4_Facts"
+    },
+    "annotations": []
   }
 }

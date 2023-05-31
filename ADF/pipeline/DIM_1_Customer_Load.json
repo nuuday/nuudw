@@ -1,9 +1,9 @@
 {
-  "name": "Transform_Customer",
+  "name": "DIM_1_Customer_Load",
   "properties": {
     "activities": [
       {
-        "name": "SP_TransformCustomer",
+        "name": "Load_Dim_Customer",
         "type": "SqlServerStoredProcedure",
         "policy": {
           "timeout": "0.12:00:00",
@@ -13,7 +13,17 @@
           "secureInput": false
         },
         "typeProperties": {
-          "storedProcedureName": "[stage].[Transform_Customer]"
+          "storedProcedureName": "[nuuMeta].[LoadDimension]",
+          "storedProcedureParameters": {
+            "StageTable": {
+              "value": "Dim_Customer",
+              "type": "String"
+            },
+            "DWTable": {
+              "value": "Customer",
+              "type": "String"
+            }
+          }
         },
         "linkedServiceName": {
           "referenceName": "nuudwsqldb01",
@@ -21,15 +31,8 @@
         }
       }
     ],
-    "parameters": {
-      "JobIsIncremental": {
-        "type": "Bool",
-        "defaultValue": "false",
-        "identity": "JobIsIncremental"
-      }
-    },
     "folder": {
-      "name": "5.Transform"
+      "name": "0.3_Dimensions"
     }
   }
 }

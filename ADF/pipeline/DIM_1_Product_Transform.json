@@ -1,9 +1,9 @@
 {
-  "name": "Transform_Product",
+  "name": "DIM_1_Product_Transform",
   "properties": {
     "activities": [
       {
-        "name": "SP_TransformProduct",
+        "name": "TRF_Dim_Product",
         "type": "SqlServerStoredProcedure",
         "policy": {
           "timeout": "0.12:00:00",
@@ -13,7 +13,16 @@
           "secureInput": false
         },
         "typeProperties": {
-          "storedProcedureName": "[stage].[Transform_Product]"
+          "storedProcedureName": "stage.Transform_Dim_Product",
+          "storedProcedureParameters": {
+            "JobIsIncremental": {
+              "value": {
+                "value": "@pipeline().parameters.JobIsIncremental",
+                "type": "Expression"
+              },
+              "type": "Boolean"
+            }
+          }
         },
         "linkedServiceName": {
           "referenceName": "nuudwsqldb01",
@@ -24,12 +33,13 @@
     "parameters": {
       "JobIsIncremental": {
         "type": "Bool",
-        "defaultValue": "false",
+        "defaultValue": "true",
         "identity": "JobIsIncremental"
       }
     },
     "folder": {
-      "name": "5.Transform"
-    }
+      "name": "0.3_Dimensions"
+    },
+    "annotations": []
   }
 }

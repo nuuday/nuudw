@@ -1,9 +1,9 @@
 {
-  "name": "LoadDimension_Calendar",
+  "name": "DIM_1_Product_Load",
   "properties": {
     "activities": [
       {
-        "name": "SP_LoadDimensionCalendar",
+        "name": "Load_Dim_Product",
         "type": "SqlServerStoredProcedure",
         "policy": {
           "timeout": "0.12:00:00",
@@ -13,7 +13,17 @@
           "secureInput": false
         },
         "typeProperties": {
-          "storedProcedureName": "[meta].[CreateCalendarDimension]"
+          "storedProcedureName": "[nuuMeta].[LoadDimension]",
+          "storedProcedureParameters": {
+            "StageTable": {
+              "value": "Dim_Product",
+              "type": "String"
+            },
+            "DWTable": {
+              "value": "Product",
+              "type": "String"
+            }
+          }
         },
         "linkedServiceName": {
           "referenceName": "nuudwsqldb01",
@@ -22,7 +32,7 @@
       }
     ],
     "folder": {
-      "name": "2.Dimensions"
+      "name": "0.3_Dimensions"
     }
   }
 }
