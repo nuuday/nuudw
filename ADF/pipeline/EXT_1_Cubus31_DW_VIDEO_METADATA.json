@@ -1,0 +1,330 @@
+{
+  "name": "EXT_1_Cubus31_DW_VIDEO_METADATA",
+  "properties": {
+    "activities": [
+      {
+        "name": "Lookup_IsReady_flag",
+        "type": "Lookup",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "7.00:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [],
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "sqlReaderQuery": "SELECT 1 AS IsReady",
+            "queryTimeout": "02:00:00",
+            "partitionOption": "None"
+          },
+          "dataset": {
+            "referenceName": "Cubus31_DW_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "BIVOD3.VIDEO_METADATA"
+            }
+          }
+        }
+      },
+      {
+        "name": "Evaluate_IsReady_flag",
+        "type": "IfCondition",
+        "dependsOn": [
+          {
+            "activity": "Lookup_IsReady_flag",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "userProperties": [],
+        "typeProperties": {
+          "expression": {
+            "value": "@equals(activity('Lookup_IsReady_flag').output.firstRow.IsReady,1)",
+            "type": "Expression"
+          },
+          "ifFalseActivities": [
+            {
+              "name": "IsReady",
+              "type": "Fail",
+              "dependsOn": [],
+              "userProperties": [],
+              "typeProperties": {
+                "message": "The source was not ready at execution time. Try re-running the pipeline at a later time.",
+                "errorCode": "0"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "Update_Meta_Tables",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Evaluate_IsReady_flag",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "nuuMeta.[UpdateSourceTables]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "Cubus31_DW",
+              "type": "String"
+            },
+            "SourceConnectionType": {
+              "value": "SqlServer",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "BIVOD3",
+              "type": "String"
+            },
+            "SourceObjectName": {
+              "value": "VIDEO_METADATA",
+              "type": "String"
+            },
+            "DestinationSchemaName": {
+              "value": "sourceCubusBivod",
+              "type": "String"
+            },
+            "WatermarkColumnName": {
+              "value": "<%ADFWatermarkColumn%>",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "True",
+              "type": "Boolean"
+            },
+            "WatermarkRollingWindowDays": {
+              "value": "0",
+              "type": "Int32"
+            },
+            "WatermarkInQuery": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Lookup_Last_Value_Loaded",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Update_Meta_Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderStoredProcedureName": "nuuMeta.[GetLastValueLoaded]",
+            "storedProcedureParameters": {
+              "SourceConnectionName": {
+                "value": "Cubus31_DW",
+                "type": "String"
+              },
+              "SourceSchemaName": {
+                "value": "BIVOD3",
+                "type": "String"
+              },
+              "SourceTableName": {
+                "value": "VIDEO_METADATA",
+                "type": "String"
+              },
+              "JobIsIncremental": {
+                "value": "@pipeline().parameters.JobIsIncremental",
+                "type": "Boolean"
+              },
+              "ConnectionType": {
+                "value": "SqlServer",
+                "type": "String"
+              },
+              "WatermarkIsDate": {
+                "value": "True",
+                "type": "Boolean"
+              }
+            }
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjects"
+            }
+          }
+        }
+      },
+      {
+        "name": "Copy_VIDEO_METADATA",
+        "type": "Copy",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Last_Value_Loaded",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderQuery": {
+              "value": "\r\nSELECT \r\n[id] \r\n,[updated] \r\n,[ASSET_ID] \r\n,[LANGUAGE] \r\n,[METADATA_CREATED] \r\n,[PROVIDER_ID] \r\n,[PROVIDER_NAME] \r\n,[TITLE] \r\n,[TITLE_SYNOPSIS] \r\n,[RATING] \r\n,[RUN_TIME] \r\n,[DISPLAY_RUN_TIME] \r\n,[PRODUCTION_YEAR] \r\n,[COUNTRY_OF_ORIGIN] \r\n,[IMDB_ID] \r\n,[ACTORS] \r\n,[WRITERS] \r\n,[DIRECTORS] \r\n,[CATEGORY] \r\n,[GENRES] \r\n,[LICENSING_WINDOW_START] \r\n,[LICENSING_WINDOW_END] \r\n,[ALLOWED_FOR_PUBLIC_VIEWING] \r\n,[VIDEOPRODUCTS] \r\n,[EPISODE_NAME] \r\n,[EPISODE_NUMBER] \r\n,[SERIES_NAME] \r\n,[SERIES_SYNOPSIS] \r\n,[SEASON_NAME] \r\n,[SEASON_SYNOPSIS] \r\n,[SEASON_NUMBER] \r\n,[MEDIAID] \r\n,[EXTERNALID] \r\n,[EPISODE_ID] \r\n,[COVER_URL] \r\n \r\nFROM BIVOD3.[VIDEO_METADATA]\r\n WHERE updated > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "type": "Expression"
+            }
+          },
+          "sink": {
+            "type": "SqlSink",
+            "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+            "preCopyScript": "TRUNCATE TABLE [sourceCubusBivod].[VIDEO_METADATA]"
+          },
+          "enableStaging": false,
+          "cloudDataMovementUnits": 0
+        },
+        "inputs": [
+          {
+            "referenceName": "Cubus31_DW_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "BIVOD3.VIDEO_METADATA"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "[sourceCubusBivod].[VIDEO_METADATA]"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Merge_To_History",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Copy_VIDEO_METADATA",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "nuuMeta.[LoadSourceObjectHistory]",
+          "storedProcedureParameters": {
+            "ExtractTable": {
+              "value": "sourceCubusBivod.VIDEO_METADATA",
+              "type": "String"
+            },
+            "LoadIsIncremental": {
+              "value": "@pipeline().parameters.JobIsIncremental",
+              "type": "Boolean"
+            },
+            "HistoryTrackingColumns": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Set_Last_Value_Loaded",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Merge_To_History",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "nuuMeta.[SetLastLoadedValue]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "Cubus31_DW",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "BIVOD3",
+              "type": "String"
+            },
+            "SourceTableName": {
+              "value": "VIDEO_METADATA",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "True",
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    }
+  }
+}
