@@ -1,14 +1,7 @@
 {
-  "type": "structured",
   "name": "nuudwsqldb01",
-  "connectionDetails": {
-    "protocol": "tds",
-    "address": {
-      "server": "nuudw-sql01-dev.database.windows.net,1433",
-      "database": "nuudwsqldb01"
-    }
-  },
-  "credential": {
-    "AuthenticationKind": "ServiceAccount"
-  }
+  "connectionString": "Data Source=nuudw-sql01-dev.database.windows.net,1433;Initial Catalog=nuudwsqldb01;Persist Security Info=True;User ID=NuuDWAdminDev",
+  "impersonationMode": "impersonateServiceAccount",
+  "account": "NuuDWAdminDev",
+  "provider": "System.Data.SqlClient"
 }

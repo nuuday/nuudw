@@ -1,8 +1,9 @@
 {
-  "name": "SemanticModel",
+  "name": "Product Explorer",
   "compatibilityLevel": 1500,
   "model": {
     "name": "Product Explorer",
+    "culture": "en-US",
     "annotations": [
       {
         "name": "TabularEditor_SerializeOptions",

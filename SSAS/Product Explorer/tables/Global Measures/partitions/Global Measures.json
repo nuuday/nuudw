@@ -2,6 +2,7 @@
   "name": "Global Measures",
   "mode": "import",
   "source": {
-    "type": "calculated"
+    "type": "calculated",
+    "expression": "DATATABLE ( \"Global Measures\", STRING, {{ \"\"} })"
   }
 }
