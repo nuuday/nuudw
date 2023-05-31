@@ -264,12 +264,12 @@
     <Build Include="Security\RoleMemberships.sql" />
     <Build Include="fact\Tables\ProductTransactions.sql" />
     <Build Include="factView\Views\Product Transactions.sql" />
-    <Build Include="stage\Tables\Fact__ProductTransactions.sql" />
     <Build Include="stage\Tables\Dim_Product.sql" />
     <Build Include="stage\Tables\Dim_Customer.sql" />
     <Build Include="stage\Stored Procedures\Transform_Fact_ProductTransactions.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_Product.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_Customer.sql" />
+    <Build Include="stage\Tables\Fact_ProductTransactions.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

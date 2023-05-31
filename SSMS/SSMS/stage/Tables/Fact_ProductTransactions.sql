@@ -1,4 +1,4 @@
-﻿CREATE TABLE [stage].[Fact:_ProductTransactions] (
+﻿CREATE TABLE [stage].[Fact_ProductTransactions] (
     [ProductTransactionsIdentifier] NVARCHAR (50) NULL,
     [CalendarKey]                   DATE          NULL,
     [ProductKey]                    NVARCHAR (50) NULL,

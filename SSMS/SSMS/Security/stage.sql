@@ -1,1 +1,3 @@
-﻿CREATE SCHEMA [stage] AUTHORIZATION [dbo];
+﻿CREATE SCHEMA [stage]
+    AUTHORIZATION [dbo];
+
