@@ -1,0 +1,9 @@
+{
+  "name": "Customer",
+  "mode": "import",
+  "source": {
+    "type": "query",
+    "query": "SELECT * FROM [dimView].[Customer]",
+    "dataSource": "nuudwsqldb01"
+  }
+}

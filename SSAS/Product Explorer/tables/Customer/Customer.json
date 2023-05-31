@@ -1,0 +1,9 @@
+{
+  "name": "Customer",
+  "annotations": [
+    {
+      "name": "TabularEditor_Relationships",
+      "value": "[]"
+    }
+  ]
+}
