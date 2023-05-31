@@ -1,0 +1,20 @@
+{
+  "name": "Date Y-M-D",
+  "levels": [
+    {
+      "name": "Year",
+      "ordinal": 0,
+      "column": "Year"
+    },
+    {
+      "name": "Month",
+      "ordinal": 1,
+      "column": "MonthName"
+    },
+    {
+      "name": "Date",
+      "ordinal": 2,
+      "column": "CalendarDate"
+    }
+  ]
+}

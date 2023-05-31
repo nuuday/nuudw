@@ -1,5 +1,6 @@
 {
   "name": "MonthName",
   "dataType": "string",
-  "sourceColumn": "MonthName"
+  "sourceColumn": "MonthName",
+  "sortByColumn": "MonthCode"
 }
