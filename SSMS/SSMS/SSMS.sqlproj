@@ -71,6 +71,10 @@
     <Folder Include="sourceNuudlColumbus\Tables\" />
     <Folder Include="sourceNuudlColumbusView\" />
     <Folder Include="sourceNuudlColumbusView\Views\" />
+    <Folder Include="sourceCubusBivod\" />
+    <Folder Include="sourceCubusBivod\Tables\" />
+    <Folder Include="sourceCubusBivodView\" />
+    <Folder Include="sourceCubusBivodView\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -268,6 +272,11 @@
     <Build Include="sourceNuudlColumbus\Tables\PROD_LID_AFT_History.sql" />
     <Build Include="sourceNuudlColumbus\Tables\PROD_LID_AFT.sql" />
     <Build Include="sourceNuudlColumbusView\Views\PROD_LID_AFT_History.sql" />
+    <Build Include="sourceCubusBivod\Tables\VIDEO_METADATA_History.sql" />
+    <Build Include="sourceCubusBivod\Tables\VIDEO_METADATA.sql" />
+    <Build Include="sourceCubusBivodView\Views\VIDEO_METADATA_History.sql" />
+    <Build Include="Security\sourceCubusBivodView.sql" />
+    <Build Include="Security\sourceCubusBivod.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
