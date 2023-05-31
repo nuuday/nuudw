@@ -5,7 +5,7 @@ AS
 
 TRUNCATE TABLE [stage].[Dim_Customer]
 
-INSERT INTO stage.[Customer] WITH (TABLOCK) ( [CustomerKey], [CustomerNo], [CustomerName], [CustomerSegment], [CustomerStatus], [DWCreatedDate] )
+INSERT INTO stage.[Dim_Customer] WITH (TABLOCK) ( [CustomerKey], [CustomerNo], [CustomerName], [CustomerSegment], [CustomerStatus], [DWCreatedDate] )
 SELECT
 	CONVERT( NVARCHAR(50), customer.[ID] ) AS CustomerKey,
 	CONVERT( NVARCHAR(50), [customer_number] ) AS CustomerNo,

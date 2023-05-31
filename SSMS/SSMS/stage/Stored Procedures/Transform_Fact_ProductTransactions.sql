@@ -5,7 +5,7 @@ AS
 
 TRUNCATE TABLE [stage].[Fact_ProductTransactions]
 
-INSERT INTO stage.[ProductTransactions] WITH (TABLOCK) ( ProductTransactionsIdentifier, CalendarKey, ProductKey, CustomerKey, ProductTransactionsQuantity, ProductTransactionsType, DWCreatedDate )
+INSERT INTO stage.[Fact_ProductTransactions] WITH (TABLOCK) ( ProductTransactionsIdentifier, CalendarKey, ProductKey, CustomerKey, ProductTransactionsQuantity, ProductTransactionsType, DWCreatedDate )
 
 SELECT
 	CONVERT( NVARCHAR(50), pin.id ) AS ProductTransactionsIdentifier,
