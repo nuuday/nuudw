@@ -19,9 +19,9 @@ CREATE PROCEDURE [nuuMeta].[LoadFact]
 AS
 /*
 DECLARE 
-	@StageTable  NVARCHAR(100) = 'Fact_CustomerProducts', --Input is the dimensions name without schema
+	@StageTable  NVARCHAR(100) = 'Fact_ProductTransactions', --Input is the dimensions name without schema
 	@DWSchema NVARCHAR(10) = 'fact',
-	@DWTable  NVARCHAR(100) = 'CustomerProducts', --Input is the dimensions name without schema
+	@DWTable  NVARCHAR(100) = 'ProductTransactions', --Input is the dimensions name without schema
 	@LoadPattern NVARCHAR(50) = 'FactMerge',
 	@IncrementalFlag BIT = 1,
 	@CleanUpPartitionsFlag BIT = 1,
@@ -69,7 +69,7 @@ SELECT
 	COLUMNS.COLUMN_NAME AS ColumnName,
 	COLUMNS.ORDINAL_POSITION,
 	COLUMNS.DATA_TYPE AS DataType,
-	CASE WHEN COLUMN_NAME LIKE '%Unique' THEN 1 ELSE 0 END AS PrimaryKey
+	CASE WHEN COLUMN_NAME LIKE '%Identifier' THEN 1 ELSE 0 END AS PrimaryKey
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE
 	COLUMNS.TABLE_NAME = @StageTable

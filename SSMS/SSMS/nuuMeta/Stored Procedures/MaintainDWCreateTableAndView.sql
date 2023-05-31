@@ -286,8 +286,8 @@ DECLARE @SQL NVARCHAR(MAX)
 
 SET @DropTableScript = 'DROP TABLE IF EXISTS [' + @DestinationSchema + '].[' + @DestinationTable + ']'
 SET @DropTempTableScript = 'DROP TABLE IF EXISTS [' + @DestinationSchema + '].[' + @DestinationTable + '_Temp]'
-SET @DropViewScript = 'DROP TABLE IF EXISTS [' + @DestinationSchema + 'View].[' + @DestinationTable + ']'
-SET @DropTempViewScript = 'DROP TABLE IF EXISTS [' + @DestinationSchema + 'View].[' + @DestinationTable + '_Temp]'
+SET @DropViewScript = 'DROP VIEW IF EXISTS [' + @DestinationSchema + 'View].[' + @ViewName + ']'
+SET @DropTempViewScript = 'DROP VIEW IF EXISTS [' + @DestinationSchema + 'View].[' + @ViewName + '_Temp]'
 SET @CreateClusteredColumnStoreIndexScript = 'CREATE CLUSTERED COLUMNSTORE INDEX [CCI_' + @DestinationTable + '] ON [fact].[' + @DestinationTable + '] WITH (DROP_EXISTING = OFF)'
 
 
@@ -358,7 +358,6 @@ SET @SQL =
 		@CreateViewScript, @CRLF,
 		@CreateTempTableScript, @CRLF,
 		IIF(@LoadPattern LIKE 'Fact%',@CreateClusteredColumnStoreIndexScript,''), @CRLF,
-		IIF(@LoadPattern = 'FactMerge',@CreateTempTableScript,''), @CRLF,
 		ISNULL(@ExtendendPropertyType2Column, ''),@CRLF
 		)
 
