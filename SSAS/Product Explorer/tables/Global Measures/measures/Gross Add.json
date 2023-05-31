@@ -1,0 +1,12 @@
+{
+  "name": "Gross Add",
+  "expression": [
+    "COUNTROWS(",
+    "    CALCULATETABLE(",
+    "        'Product Transactions',",
+    "        FILTER( 'Product Transactions', 'Product Transactions'[ProductTransactionsType] = \"Gross Add\" )",
+    "    )",
+    ")"
+  ],
+  "displayFolder": "Product Transactions"
+}

@@ -1,0 +1,7 @@
+{
+  "name": "Global Measures",
+  "mode": "import",
+  "source": {
+    "type": "calculated"
+  }
+}

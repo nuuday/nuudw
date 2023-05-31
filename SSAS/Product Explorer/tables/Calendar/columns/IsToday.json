@@ -1,0 +1,5 @@
+{
+  "name": "IsToday",
+  "dataType": "boolean",
+  "sourceColumn": "IsToday"
+}

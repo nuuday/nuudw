@@ -1,0 +1,5 @@
+{
+  "name": "CurrentQuarter",
+  "dataType": "int64",
+  "sourceColumn": "CurrentQuarter"
+}

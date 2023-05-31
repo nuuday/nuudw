@@ -1,0 +1,31 @@
+{
+  "name": "Product Transactions",
+  "isHidden": true,
+  "annotations": [
+    {
+      "name": "TabularEditor_Relationships",
+      "value": [
+        "[",
+        "  {",
+        "    \"fromTable\": \"Product Transactions\",",
+        "    \"fromColumn\": \"CalendarID\",",
+        "    \"toTable\": \"Calendar\",",
+        "    \"toColumn\": \"CalendarID\"",
+        "  },",
+        "  {",
+        "    \"fromTable\": \"Product Transactions\",",
+        "    \"fromColumn\": \"CustomerID\",",
+        "    \"toTable\": \"Customer\",",
+        "    \"toColumn\": \"CustomerID\"",
+        "  },",
+        "  {",
+        "    \"fromTable\": \"Product Transactions\",",
+        "    \"fromColumn\": \"ProductID\",",
+        "    \"toTable\": \"Product\",",
+        "    \"toColumn\": \"ProductID\"",
+        "  }",
+        "]"
+      ]
+    }
+  ]
+}

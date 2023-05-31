@@ -1,0 +1,6 @@
+{
+  "name": "ProductTransactionsType",
+  "dataType": "string",
+  "isHidden": true,
+  "sourceColumn": "ProductTransactionsType"
+}

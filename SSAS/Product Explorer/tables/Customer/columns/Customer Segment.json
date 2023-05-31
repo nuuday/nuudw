@@ -1,0 +1,5 @@
+{
+  "name": "Customer Segment",
+  "dataType": "string",
+  "sourceColumn": "Customer Segment"
+}

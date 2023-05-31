@@ -1,0 +1,5 @@
+{
+  "name": "FiscalMonthCode",
+  "dataType": "int64",
+  "sourceColumn": "FiscalMonthCode"
+}

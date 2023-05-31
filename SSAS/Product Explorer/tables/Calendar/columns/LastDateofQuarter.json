@@ -1,0 +1,5 @@
+{
+  "name": "LastDateofQuarter",
+  "dataType": "dateTime",
+  "sourceColumn": "LastDateofQuarter"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Admin",
+  "modelPermission": "administrator",
+  "members": [
+    {
+      "memberName": "migh@kapacity.dk",
+      "identityProvider": "AzureAD"
+    }
+  ]
+}
