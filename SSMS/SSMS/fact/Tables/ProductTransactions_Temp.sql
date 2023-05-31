@@ -1,4 +1,4 @@
-﻿CREATE TABLE [fact].[ProductTransactions] (
+﻿CREATE TABLE [fact].[ProductTransactions_Temp] (
     [ProductTransactionsIdentifier] NVARCHAR (50) NULL,
     [CalendarID]                    INT           DEFAULT ((-1)) NOT NULL,
     [ProductID]                     INT           DEFAULT ((-1)) NOT NULL,
@@ -8,11 +8,4 @@
     [DWCreatedDate]                 DATETIME2 (0) NOT NULL,
     [DWModifiedDate]                DATETIME2 (0) NOT NULL
 );
-
-
-
-
-GO
-CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ProductTransactions]
-    ON [fact].[ProductTransactions];
 

@@ -270,6 +270,7 @@
     <Build Include="stage\Stored Procedures\Transform_Dim_Product.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_Customer.sql" />
     <Build Include="stage\Tables\Fact_ProductTransactions.sql" />
+    <Build Include="fact\Tables\ProductTransactions_Temp.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
