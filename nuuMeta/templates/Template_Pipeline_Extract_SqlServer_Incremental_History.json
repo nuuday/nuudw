@@ -101,7 +101,7 @@
                             "type": "String"
                         },
                         "WatermarkColumnName": {
-                            "value": "<%ADFWatermarkColumn%>",
+                            "value": "<%ADFWatermarkColumnName%>",
                             "type": "String"
                         },
                         "WatermarkIsDate": {
