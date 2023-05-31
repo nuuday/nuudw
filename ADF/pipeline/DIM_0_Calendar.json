@@ -1,9 +1,9 @@
 {
-  "name": "Transform_Customer",
+  "name": "DIM_0_Calendar",
   "properties": {
     "activities": [
       {
-        "name": "SP_TransformCustomer",
+        "name": "Load_Dim_Calendar",
         "type": "SqlServerStoredProcedure",
         "policy": {
           "timeout": "0.12:00:00",
@@ -13,7 +13,7 @@
           "secureInput": false
         },
         "typeProperties": {
-          "storedProcedureName": "[stage].[Transform_Customer]"
+          "storedProcedureName": "[meta].[CreateCalendarDimension]"
         },
         "linkedServiceName": {
           "referenceName": "nuudwsqldb01",
@@ -21,15 +21,8 @@
         }
       }
     ],
-    "parameters": {
-      "JobIsIncremental": {
-        "type": "Bool",
-        "defaultValue": "false",
-        "identity": "JobIsIncremental"
-      }
-    },
     "folder": {
-      "name": "5.Transform"
+      "name": "0.3_Dimensions"
     }
   }
 }
