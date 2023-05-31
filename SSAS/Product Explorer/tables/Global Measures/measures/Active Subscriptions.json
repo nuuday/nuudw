@@ -1,0 +1,13 @@
+{
+  "name": "Active Subscriptions",
+  "expression": [
+    "CALCULATE(",
+    "    SUM( 'Product Transactions'[ProductTransactionsQuantity] ),",
+    "    FILTER(",
+    "        ALL( Calendar ),",
+    "        Calendar[CalendarDate] <= MAX( Calendar[CalendarDate] )",
+    "    )",
+    ")"
+  ],
+  "displayFolder": "Product Transactions"
+}

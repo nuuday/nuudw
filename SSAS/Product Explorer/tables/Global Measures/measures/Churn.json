@@ -1,12 +1,11 @@
 {
-  "name": "Gross Add",
+  "name": "Churn",
   "expression": [
     "CALCULATE(",
     "    COUNTROWS( 'Product Transactions' ),",
     "    FILTER(",
     "        ALL( 'Product Transactions'[ProductTransactionsType] ),",
-    "        'Product Transactions'[ProductTransactionsType]",
-    "            = \"Gross Add\"",
+    "        'Product Transactions'[ProductTransactionsType] = \"Churn\"",
     "    )",
     ")"
   ],
