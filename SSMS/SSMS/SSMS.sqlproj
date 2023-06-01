@@ -277,6 +277,10 @@
     <Build Include="sourceCubusBivodView\Views\VIDEO_METADATA_History.sql" />
     <Build Include="Security\sourceCubusBivodView.sql" />
     <Build Include="Security\sourceCubusBivod.sql" />
+    <Build Include="stage\Tables\Dim_ContentGenre.sql" />
+    <Build Include="dim\Tables\ContentGenre.sql" />
+    <Build Include="dimView\Views\Content Genre.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_ContentGenre.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
