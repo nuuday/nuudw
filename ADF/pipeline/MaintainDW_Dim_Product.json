@@ -26,7 +26,7 @@
               "type": "String"
             },
             "PrintSQL": {
-              "value": "true",
+              "value": "false",
               "type": "Boolean"
             }
           }
