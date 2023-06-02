@@ -64,7 +64,23 @@ write-host "# ============================="
 write-host ""
 
 foreach ($rec in $DWObjectDefinitions) { 
-    
+
+    #MaintainDW
+
+    $MaintainDWPatternName = $nuuMetaPath+'Templates\Template_Pipeline_MaintainDW.json'
+
+    $MaintainDW_Pipeline = (Get-Content ($MaintainDWPatternName)) `
+       -replace "<%LinkedServiceName%>",$ADFDatabase.DBName `
+       -replace "<%DWSchemaName%>",$rec.DWSchemaName `
+       -replace "<%DWTableName%>",$rec.DWTableName `
+
+    Write-Host "Generating pipline $($rec.MaintainDWPipelineName)..." -ForegroundColor Yellow -NoNewline
+          
+    Set-Content -Path ($ADFPath+"pipeline\" + $rec.MaintainDWPipelineName + ".json") -Value ([Newtonsoft.Json.Linq.JObject]::Parse($MaintainDW_Pipeline).ToString()) -NoNewline
+
+    Write-Host " Done"-ForegroundColor Green  
+
+
     #Transform
 
     $TransformPatternName = $nuuMetaPath+'Templates\Template_Pipeline_Transform.json'

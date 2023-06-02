@@ -1,0 +1,45 @@
+{
+    "name": "MaintainDW_<%DWSchemaName%>_<%DWTableName%>",
+    "properties": {
+        "activities": [
+            {
+                "name": "MaintainDW_<%DWSchemaName%>_<%DWTableName%>",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "storedProcedureName": "[meta].[MaintainDW]",
+                    "storedProcedureParameters": {
+                        "DestinationSchema": {
+                            "value": "<%DWSchemaName%>",
+                            "type": "String"
+                        },
+                        "DestinationTable": {
+                            "value": "<%DWTableName%>",
+                            "type": "String"
+                        },
+                        "PrintSQL": {
+                            "value": "true",
+                            "type": "Boolean"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "<%LinkedServiceName%>",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "folder": {
+            "name": "0.9_Meta"
+        },
+        "annotations": []
+    }
+}
