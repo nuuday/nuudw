@@ -1,10 +1,12 @@
-﻿CREATE VIEW [FactView].[Product Transactions] AS
+﻿CREATE VIEW [factView].[Product Transactions] 
+AS
 SELECT
-[ProductTransactionsIdentifier]
-,[CalendarID] 
-,[ProductID] 
-,[CustomerID] 
-,[ProductTransactionsQuantity]
-,[ProductTransactionsType]
-
-  FROM [Fact].[ProductTransactions]
+	[CalendarID]
+	,[ProductID]
+	,[CustomerID]
+	,[ProductTransactionsQuantity]
+	,[ProductTransactionsType]
+	,[DWCreatedDate]
+	,[DWModifiedDate]
+	
+FROM [fact].[ProductTransactions]
