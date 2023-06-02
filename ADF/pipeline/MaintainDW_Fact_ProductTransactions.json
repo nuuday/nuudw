@@ -15,7 +15,7 @@
         },
         "userProperties": [],
         "typeProperties": {
-          "storedProcedureName": "[meta].[MaintainDW]",
+          "storedProcedureName": "[nuuMeta].[MaintainDW]",
           "storedProcedureParameters": {
             "DestinationSchema": {
               "value": "fact",
