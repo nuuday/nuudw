@@ -1,0 +1,330 @@
+{
+  "name": "EXT_1_Cubus31_DW_OTT_STREAMLOG",
+  "properties": {
+    "activities": [
+      {
+        "name": "Lookup_IsReady_flag",
+        "type": "Lookup",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "7.00:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [],
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "sqlReaderQuery": "SELECT 1 AS IsReady",
+            "queryTimeout": "02:00:00",
+            "partitionOption": "None"
+          },
+          "dataset": {
+            "referenceName": "Cubus31_DW_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "BIVOD3.OTT_STREAMLOG"
+            }
+          }
+        }
+      },
+      {
+        "name": "Evaluate_IsReady_flag",
+        "type": "IfCondition",
+        "dependsOn": [
+          {
+            "activity": "Lookup_IsReady_flag",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "userProperties": [],
+        "typeProperties": {
+          "expression": {
+            "value": "@equals(activity('Lookup_IsReady_flag').output.firstRow.IsReady,1)",
+            "type": "Expression"
+          },
+          "ifFalseActivities": [
+            {
+              "name": "IsReady",
+              "type": "Fail",
+              "dependsOn": [],
+              "userProperties": [],
+              "typeProperties": {
+                "message": "The source was not ready at execution time. Try re-running the pipeline at a later time.",
+                "errorCode": "0"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "Update_Meta_Tables",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Evaluate_IsReady_flag",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "nuuMeta.[UpdateSourceTables]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "Cubus31_DW",
+              "type": "String"
+            },
+            "SourceConnectionType": {
+              "value": "SqlServer",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "BIVOD3",
+              "type": "String"
+            },
+            "SourceObjectName": {
+              "value": "OTT_STREAMLOG",
+              "type": "String"
+            },
+            "DestinationSchemaName": {
+              "value": "sourceCubusBivod",
+              "type": "String"
+            },
+            "WatermarkColumnName": {
+              "value": "STREAMED_AT",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "True",
+              "type": "Boolean"
+            },
+            "WatermarkRollingWindowDays": {
+              "value": "0",
+              "type": "Int32"
+            },
+            "WatermarkInQuery": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Lookup_Last_Value_Loaded",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Update_Meta_Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderStoredProcedureName": "nuuMeta.[GetLastValueLoaded]",
+            "storedProcedureParameters": {
+              "SourceConnectionName": {
+                "value": "Cubus31_DW",
+                "type": "String"
+              },
+              "SourceSchemaName": {
+                "value": "BIVOD3",
+                "type": "String"
+              },
+              "SourceTableName": {
+                "value": "OTT_STREAMLOG",
+                "type": "String"
+              },
+              "JobIsIncremental": {
+                "value": "@pipeline().parameters.JobIsIncremental",
+                "type": "Boolean"
+              },
+              "ConnectionType": {
+                "value": "SqlServer",
+                "type": "String"
+              },
+              "WatermarkIsDate": {
+                "value": "True",
+                "type": "Boolean"
+              }
+            }
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjects"
+            }
+          }
+        }
+      },
+      {
+        "name": "Copy_OTT_STREAMLOG",
+        "type": "Copy",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Last_Value_Loaded",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderQuery": {
+              "value": "\r\nSELECT \r\n[ID] \r\n,[LOG_ID] \r\n,[STREAMED_AT] \r\n,[CUSTOMER_NUMBER] \r\n,[CONTENT_ID] \r\n,[CONTENT_TYPE] \r\n,[CONTENT_DESCRIPTION] \r\n,[CLIENT_TYPE] \r\n,[CLIENT_UID] \r\n,[IP] \r\n,[YOUSEE_IP] \r\n,[CUSTOMER_ORIGIN] \r\n,[PRODUCT_TYPE] \r\n,[STREAM_START] \r\n,[STREAM_END] \r\n,[IMPORT_DATE] \r\n,[PERSONA] \r\n \r\nFROM BIVOD3.[OTT_STREAMLOG]\r\n WHERE STREAMED_AT > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "type": "Expression"
+            }
+          },
+          "sink": {
+            "type": "SqlSink",
+            "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+            "preCopyScript": "TRUNCATE TABLE [sourceCubusBivod].[OTT_STREAMLOG]"
+          },
+          "enableStaging": false,
+          "cloudDataMovementUnits": 0
+        },
+        "inputs": [
+          {
+            "referenceName": "Cubus31_DW_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "BIVOD3.OTT_STREAMLOG"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "[sourceCubusBivod].[OTT_STREAMLOG]"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Merge_To_History",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Copy_OTT_STREAMLOG",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "nuuMeta.[LoadSourceObjectHistory]",
+          "storedProcedureParameters": {
+            "ExtractTable": {
+              "value": "sourceCubusBivod.OTT_STREAMLOG",
+              "type": "String"
+            },
+            "LoadIsIncremental": {
+              "value": "@pipeline().parameters.JobIsIncremental",
+              "type": "Boolean"
+            },
+            "HistoryTrackingColumns": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Set_Last_Value_Loaded",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Merge_To_History",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "nuuMeta.[SetLastLoadedValue]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "Cubus31_DW",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "BIVOD3",
+              "type": "String"
+            },
+            "SourceTableName": {
+              "value": "OTT_STREAMLOG",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "True",
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    }
+  }
+}

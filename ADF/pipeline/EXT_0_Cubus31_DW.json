@@ -1,0 +1,52 @@
+{
+  "name": "EXT_0_Cubus31_DW",
+  "properties": {
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    },
+    "activities": [
+      {
+        "name": "OTT_STREAMLOG",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Cubus31_DW_OTT_STREAMLOG",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "VIDEO_METADATA",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Cubus31_DW_VIDEO_METADATA",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      }
+    ]
+  }
+}
