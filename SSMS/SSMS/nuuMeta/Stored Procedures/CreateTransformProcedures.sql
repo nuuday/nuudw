@@ -39,6 +39,8 @@ CREATE PROCEDURE ' + TransformProcedureName + '
 	@JobIsIncremental BIT			
 AS 
 
+TRUNCATE TABLE [stage].[' + StageTableName  + ']
+
 /*
 
 ---------------------------------------------------------------------------------------
@@ -55,7 +57,6 @@ BEGIN
 END
 
 TRUNCATE TABLE [stage].[' + StageTableName  + ']
-
 INSERT INTO stage.[' + StageTableName + '] WITH (TABLOCK) (A, B, C)
 SELECT A, B, C
 FROM MyTable

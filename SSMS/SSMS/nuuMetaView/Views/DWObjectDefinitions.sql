@@ -5,6 +5,7 @@
 
 
 
+
 CREATE VIEW [nuuMetaView].[DWObjectDefinitions]
 AS
 SELECT 
@@ -73,5 +74,12 @@ SELECT
 		WHEN DWObjectType = 'Fact' THEN 'FACT_0_'+[DWObjectName]
 		WHEN DWObjectType = 'Bridge' THEN 'BRIDGE_0_'+[DWObjectName]
 		ELSE ''
-	END AS ControllerPipelineName 		
+	END AS ControllerPipelineName ,
+	CASE 
+		WHEN DWObjectType = 'Link' THEN 'MaintainDW_Link_'+[DWObjectName]
+		WHEN DWObjectType = 'Dimension' THEN 'MaintainDW_Dim_'+[DWObjectName]
+		WHEN DWObjectType = 'Fact' THEN 'MaintainDW_Fact_'+[DWObjectName]
+		WHEN DWObjectType = 'Bridge' THEN 'MaintainDW_Bridge_'+[DWObjectName]
+		ELSE ''
+	END AS MaintainDWPipelineName 		
 FROM [nuuMeta].[DWObject]
