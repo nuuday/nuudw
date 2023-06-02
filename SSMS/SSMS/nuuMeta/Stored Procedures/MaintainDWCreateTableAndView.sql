@@ -357,8 +357,8 @@ SET @SQL =
 		@DropTempTableScript, @CRLF,
 		@CreateTableScript, @CRLF,
 		@CreateViewScript, @CRLF,
-		@CreateTempTableScript, @CRLF,
 		IIF(@LoadPattern LIKE 'Fact%',@CreateClusteredColumnStoreIndexScript,''), @CRLF,
+		IIF(@LoadPattern LIKE 'Fact%',@CreateTempTableScript,''), @CRLF,
 		ISNULL(@ExtendendPropertyType2Column, ''),@CRLF
 		)
 
