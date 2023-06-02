@@ -1,0 +1,21 @@
+{
+	"name": "Cubus31_DW",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "ConnectionString-Cubus-Cubus31-DW"
+			}
+		},
+		"connectVia": {
+			"referenceName": "NuuDW-OnPremiseIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
