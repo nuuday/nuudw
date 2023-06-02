@@ -71,6 +71,10 @@
     <Folder Include="fact\Tables\" />
     <Folder Include="factView\" />
     <Folder Include="factView\Views\" />
+    <Folder Include="sourceCubusBivod\" />
+    <Folder Include="sourceCubusBivod\Tables\" />
+    <Folder Include="sourceCubusBivodView\" />
+    <Folder Include="sourceCubusBivodView\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -271,6 +275,11 @@
     <Build Include="stage\Stored Procedures\Transform_Dim_Customer.sql" />
     <Build Include="stage\Tables\Fact_ProductTransactions.sql" />
     <Build Include="fact\Tables\ProductTransactions_Temp.sql" />
+    <Build Include="sourceCubusBivod\Tables\OTT_STREAMLOG_History.sql" />
+    <Build Include="sourceCubusBivod\Tables\OTT_STREAMLOG.sql" />
+    <Build Include="sourceCubusBivodView\Views\OTT_STREAMLOG_History.sql" />
+    <Build Include="Security\sourceCubusBivodView.sql" />
+    <Build Include="Security\sourceCubusBivod.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
