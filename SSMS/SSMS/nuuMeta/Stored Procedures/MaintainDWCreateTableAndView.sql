@@ -18,8 +18,8 @@ SET NOCOUNT ON
 
 /*
 DECLARE
-	@DestinationTable NVARCHAR(100) = 'Customer',
-	@DestinationSchema NVARCHAR(10) = 'dim', 
+	@DestinationTable NVARCHAR(100) = 'ProductTransactions',
+	@DestinationSchema NVARCHAR(10) = 'fact', 
 	@PrintSQL BIT = 1
 --*/
 
@@ -172,6 +172,7 @@ FROM (
 					END
 		END AS TableLine,		
 		CASE
+			WHEN @DestinationSchema IN ('fact', 'bridge') AND ColumnName LIKE '%Identifier' THEN NULL /* Do not add identifier to view */ 
 			WHEN @DestinationSchema IN ('fact', 'bridge') AND ColumnName LIKE '%' + @BusinessKeySuffix AND ColumnName NOT IN (SELECT ColumnName FROM #DimensionCombinedKeys) 
 				THEN '[' + REPLACE( ColumnName, @BusinessKeySuffix, @SurrogatKeySuffix ) + ']'
 			WHEN @DestinationSchema IN ('fact', 'bridge') AND ColumnName LIKE '%' + @BusinessKeySuffix AND ColumnName IN (SELECT ColumnName FROM #DimensionCombinedKeys) 
