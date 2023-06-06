@@ -13,7 +13,7 @@ AS
 SET NOCOUNT ON
 
 /*
-DECLARE @SourceObjectID INT = 1004
+DECLARE @SourceObjectID INT = 5
 DECLARE @PrintSQL BIT = 0
 --*/
 
@@ -24,11 +24,14 @@ DECLARE @Table NVARCHAR(50)
 DECLARE @Columns NVARCHAR(MAX)
 DECLARE @DelimitedIdentifier NVARCHAR(30)
 DECLARE @SQLScript NVARCHAR(MAX)
+DECLARE @SQLLastValue NVARCHAR(MAX)
+DECLARE @WatermarkIsDate bit
 
 SELECT
 	@Schema = SourceSchemaName,
 	@Table = SourceObjectName,
-	@DelimitedIdentifier = DelimitedIdentifier
+	@DelimitedIdentifier = DelimitedIdentifier,
+	@WatermarkIsDate = WatermarkIsDate
 FROM nuuMetaView.SourceObjectDefinitions
 WHERE
 	SourceObjectID = @SourceObjectID
@@ -39,6 +42,12 @@ FROM nuuMetaView.[SourceInformationSchemaDefinitions] AS MetaData
 WHERE
 	MetaData.[SourceObjectID] = @SourceObjectID
 
+SET @SQLLastValue =
+	CASE
+		WHEN @WatermarkIsDate = 1 THEN 'convert(datetime, stuff(stuff(stuff(''@{activity(''Lookup_Last_Value_Loaded'').output.firstRow.LastValueLoaded}'', 9, 0, '' ''), 12, 0, '':''), 15, 0, '':''))'
+		ELSE '''@{activity(''Lookup_Last_Value_Loaded'').output.firstRow.LastValueLoaded}'''	
+	END 
+
 
 SELECT
 	@SQLScript = '
@@ -48,8 +57,8 @@ FROM ' + @Schema + IIF( @Schema = '', '', '.' ) + '[' + @Table + ']
 ' +
 	CASE
 		WHEN WatermarkColumnName IS NULL THEN IIF(ExtractSQLFilter <> '', 'WHERE '+ExtractSQLFilter, '')
-		WHEN LEFT(WatermarkColumnName,6) = 'SRC_DW' THEN ' WHERE ' + IIF(ExtractSQLFilter <> '', ExtractSQLFilter + ' AND ', '') + RIGHT(WatermarkColumnName,LEN(WatermarkColumnName)-4) + ' > ' + '''@{activity(''Lookup_Last_Value_Loaded'').output.firstRow.LastValueLoaded}'''	
-		ELSE ' WHERE ' + IIF(ExtractSQLFilter <> '', ExtractSQLFilter + ' AND ', '') + WatermarkColumnName + ' > ' + '''@{activity(''Lookup_Last_Value_Loaded'').output.firstRow.LastValueLoaded}'''			
+		WHEN LEFT(WatermarkColumnName,6) = 'SRC_DW' THEN ' WHERE ' + IIF(ExtractSQLFilter <> '', ExtractSQLFilter + ' AND ', '') + RIGHT(WatermarkColumnName,LEN(WatermarkColumnName)-4) + ' > ' + @SQLLastValue
+		ELSE ' WHERE ' + IIF(ExtractSQLFilter <> '', ExtractSQLFilter + ' AND ', '') + WatermarkColumnName + ' > ' + @SQLLastValue		
 	END
 FROM nuuMetaView.SourceObjectDefinitions
 WHERE
