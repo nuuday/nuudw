@@ -238,7 +238,7 @@
       </PropertyElementName>
       <PropertyElementName>
         <Name>IgnoreUserSettingsObjects</Name>
-        <Value>False</Value>
+        <Value>True</Value>
       </PropertyElementName>
       <PropertyElementName>
         <Name>IgnoreFilegroupPlacement</Name>
