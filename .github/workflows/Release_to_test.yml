@@ -15,6 +15,6 @@ jobs:
       DeployADF: true
       DeploySSAS: true
       DeploySSASModel: "All"
-      SupendSSAS: true
+      SuspendSSAS: true
       DeployMetaData: false 
     secrets: inherit
