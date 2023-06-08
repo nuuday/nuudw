@@ -1,4 +1,4 @@
-name: Template Release
+name: Template Release Test
 
 on:
   workflow_call:
@@ -6,12 +6,8 @@ on:
       Environment:
         type: string
         description: Which Environment to deploy to (dev, test, prod)
+        default: test
         required: true
-      DeployIaC:
-        type: boolean
-        description: Deploy IaC
-        default: true
-        required: true 
       DeploySSMS:
         type: boolean
         description: Deploy SSMS
@@ -32,6 +28,11 @@ on:
         description: Deploy SSAS Models
         default: 'All'
         required: true
+      SuspendSSAS:
+        type: boolean
+        description: Suspend SSAS
+        default: false
+        required: true
       DeployMetaData:
         type: boolean
         description: Deploy Meta Data
@@ -40,8 +41,7 @@ on:
 
 jobs:
   deploy:
-    name: Release ${{ inputs.Service }} to ${{ inputs.Environment }} Environment
-    environment: ${{ inputs.Environment }}
+    name: Release ${{ inputs.Service }} to test Environment
     
     runs-on: windows-latest
     steps:
@@ -54,7 +54,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}     
         enable-AzPSSession: true  
 
- # Deploy Bicep file
+      # Deploy Bicep file
     - name: Deploy Infrastructure
       if: ${{ inputs.DeployIaC == true }} 
       uses: azure/arm-deploy@v1
@@ -96,6 +96,14 @@ jobs:
       with:
         inlineScript: |
           ./Automation/SSAS/ResumeAAS.ps1 -ResourceGroup ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -SSASServer ${{ secrets.AZURE_ANALYSIS_SERVER_NAME }}
+        azPSVersion: "latest"
+
+    - name: Suspend SSAS
+      if: ${{ inputs.SupspendSSAS == true}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Automation/SSAS/SuspendAAS.ps1 -ResourceGroup ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -SSASServer ${{ secrets.AZURE_ANALYSIS_SERVER_NAME }}
         azPSVersion: "latest"
  
     - name: Build SSAS

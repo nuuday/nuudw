@@ -8,11 +8,8 @@ on:
 jobs:
   Deploy:
     name: Release to test
-    uses: ./.github/workflows/master_release_services.yml
+    uses: ./.github/workflows/master_release_services_test.yml
     with:
-      DeployToDev: false 
-      DeployToTest: true
-      DeployToProd: false 
       DeployIaC: false 
       DeploySSMS: true
       DeployADF: true

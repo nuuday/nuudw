@@ -43,16 +43,6 @@ on:
         description: SSAS models to include (All will deploy all models, Format needs to be ModelName1,ModelName2)
         default: "Template"
         required: true
-      SuspendSSASTest:
-        type: boolean
-        description: Suspend SSAS on test after deployment
-        default: false
-        required: true
-      SuspendSSASProd:
-        type: boolean
-        description: Suspend SSAS on production after deployment
-        default: false
-        required: true
       DeployMetaData:
         type: boolean
         description: Include Meta Data
@@ -100,16 +90,6 @@ on:
         description: SSAS models to include (All will deploy all models, Format needs to be ModelName1,ModelName2)
         default: "All"
         required: true
-      SuspendSSASTest:
-        type: boolean
-        description: Suspend SSAS on test after deployment
-        default: false
-        required: true
-      SuspendSSASProd:
-        type: boolean
-        description: Suspend SSAS on production after deployment
-        default: false
-        required: true
       DeployMetaData:
         type: boolean
         description: Deploy Meta Data
@@ -142,7 +122,6 @@ jobs:
       DeployADF: ${{ inputs.DeployADF}} 
       DeploySSAS: ${{ inputs.DeploySSAS}}
       DeploySSASModel: ${{ inputs.DeploySSASModel}} 
-      SuspendSSASTest: ${{ inputs.SuspendSSASTest}}
       DeployMetaData: ${{ inputs.DeployMetaData}}
     secrets: inherit
 
@@ -157,7 +136,6 @@ jobs:
       DeployADF: ${{ inputs.DeployADF}} 
       DeploySSAS: ${{ inputs.DeploySSAS}}
       DeploySSASModel: ${{ inputs.DeploySSASModel}}
-      SuspendSSASProd: ${{ inputs.SuspendSSASProd}}
       DeployMetaData: ${{ inputs.DeployMetaData}}
     secrets: inherit
 

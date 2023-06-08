@@ -1,0 +1,96 @@
+name: Master Release to Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      DeployIaC:
+        type: boolean
+        description: Include Infrastructure
+        default: false
+        required: true 
+      DeploySSMS:
+        type: boolean
+        description: Include SQL Database
+        default: false
+        required: true
+      DeployADF:
+        type: boolean
+        description: Include Data Factory
+        default: false
+        required: true 
+      DeploySSAS:
+        type: boolean
+        description: Include SSAS
+        default: false
+        required: true
+      DeploySSASModel:
+        type: string
+        description: SSAS models to include (All will deploy all models, Format needs to be ModelName1,ModelName2)
+        default: "Template"
+        required: true
+      SuspendSSAS:
+        type: boolean
+        description: Suspend SSAS after deployment
+        default: false
+        required: true
+      DeployMetaData:
+        type: boolean
+        description: Include Meta Data
+        default: false
+        required: true
+  workflow_call:
+    inputs:
+      DeployIaC:
+        type: boolean
+        description: Include Infrastructure
+        default: false
+        required: true 
+      DeploySSMS:
+        type: boolean
+        description: Include SQL Database
+        default: false
+        required: true
+      DeployADF:
+        type: boolean
+        description: Include Data Factory
+        default: false
+        required: true 
+      DeploySSAS:
+        type: boolean
+        description: Include SSAS
+        default: false
+        required: true
+      DeploySSASModel:
+        type: string
+        description: SSAS models to include (All will deploy all models, Format needs to be ModelName1,ModelName2)
+        default: "Template"
+        required: true
+      SuspendSSAS:
+        type: boolean
+        description: Suspend SSAS after deployment
+        default: false
+        required: true
+      DeployMetaData:
+        type: boolean
+        description: Include Meta Data
+        default: false
+        required: true
+
+jobs:
+
+  Deploy_To_Test:
+    name: Release to Test
+    uses: ./.github/workflows/template_release.yml
+    with:
+      Environment: test 
+      DeployIaC: ${{ inputs.DeployIaC}} 
+      DeploySSMS: ${{ inputs.DeploySSMS}} 
+      DeployADF: ${{ inputs.DeployADF}} 
+      DeploySSAS: ${{ inputs.DeploySSAS}}
+      DeploySSASModel: ${{ inputs.DeploySSASModel}} 
+      SuspendSSAS: ${{ inputs.SuspendSSAS}}
+      DeployMetaData: ${{ inputs.DeployMetaData}}
+    secrets: inherit
+
+
+  
