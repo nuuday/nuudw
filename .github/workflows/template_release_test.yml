@@ -100,7 +100,7 @@ jobs:
         azPSVersion: "latest"
 
     - name: Suspend SSAS
-      if: ${{ inputs.SupspendSSAS == true}}
+      if: ${{ inputs.SuspendSSAS == true}}
       uses: azure/powershell@v1
       with:
         inlineScript: |
