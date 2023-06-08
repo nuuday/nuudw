@@ -80,7 +80,7 @@ jobs:
 
   Deploy_To_Test:
     name: Release to Test
-    uses: ./.github/workflows/template_release.yml
+    uses: ./.github/workflows/template_release_test.yml
     with:
       Environment: test 
       DeployIaC: ${{ inputs.DeployIaC}} 
