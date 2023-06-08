@@ -36,7 +36,7 @@ on:
 
 jobs:
   deploy:
-    name: Release ${{ inputs.Service }} to test Environment
+    name: Release ${{ inputs.Service }} to dev Environment
     environment: ${{ inputs.Environment }}
     
     runs-on: windows-latest
@@ -74,14 +74,6 @@ jobs:
         inlineScript: |
           ./Automation/SSAS/ResumeAAS.ps1 -ResourceGroup ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -SSASServer ${{ secrets.AZURE_ANALYSIS_SERVER_NAME }}
         azPSVersion: "latest"
-
-    - name: Suspend SSAS
-      if: ${{ inputs.SuspendSSAS == true}}
-      uses: azure/powershell@v1
-      with:
-        inlineScript: |
-          ./Automation/SSAS/SuspendAAS.ps1 -ResourceGroup ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -SSASServer ${{ secrets.AZURE_ANALYSIS_SERVER_NAME }}
-        azPSVersion: "latest"
  
     - name: Build SSAS
       if: ${{ inputs.DeploySSAS == true}}
@@ -97,6 +89,14 @@ jobs:
       with:
         inlineScript: |
           ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\${{ inputs.DeploySSASModel }}" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "${{ inputs.DeploySSASModel }}" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -V -E
+        azPSVersion: "latest"
+
+    - name: Suspend SSAS
+      if: ${{ inputs.SuspendSSAS == true}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Automation/SSAS/SuspendAAS.ps1 -ResourceGroup ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -SSASServer ${{ secrets.AZURE_ANALYSIS_SERVER_NAME }}
         azPSVersion: "latest"
 
 
