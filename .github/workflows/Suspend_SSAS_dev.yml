@@ -7,9 +7,10 @@ on:
 
 jobs:
   Deploy:
-    name: Release to test
-    uses: ./.github/workflows/master_release_services_dev.yml
+    name: Suspend SSAS 
+    uses: ./.github/workflows/template_release_dev.yml
     with:
+      Environment: dev 
       DeploySSMS: false
       DeployADF: false
       DeploySSAS: false
