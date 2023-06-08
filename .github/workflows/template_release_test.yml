@@ -42,6 +42,7 @@ on:
 jobs:
   deploy:
     name: Release ${{ inputs.Service }} to test Environment
+    environment: ${{ inputs.Environment }}
     
     runs-on: windows-latest
     steps:
