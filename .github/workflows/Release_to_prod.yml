@@ -16,5 +16,6 @@ jobs:
       DeployADF: true
       DeploySSAS: true
       DeploySSASModel: "All"
+      SupendSSASProd: false
       DeployMetaData: false 
     secrets: inherit

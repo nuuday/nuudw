@@ -97,6 +97,22 @@ jobs:
         inlineScript: |
           ./Automation/SSAS/ResumeAAS.ps1 -ResourceGroup ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -SSASServer ${{ secrets.AZURE_ANALYSIS_SERVER_NAME }}
         azPSVersion: "latest"
+
+    - name: Suspend SSAS Test
+      if: ${{ inputs.SupspendSSASTest == true && inputs.Environment = 'test'}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Automation/SSAS/SuspendAAS.ps1 -ResourceGroup ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -SSASServer ${{ secrets.AZURE_ANALYSIS_SERVER_NAME }}
+        azPSVersion: "latest"
+
+    - name: Suspend SSAS Prod
+      if: ${{ inputs.SupspendSSASProd == true && inputs.Environment = 'prod'}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Automation/SSAS/SuspendAAS.ps1 -ResourceGroup ${{ secrets.AZURE_RESOURCE_GROUP_NAME }} -SSASServer ${{ secrets.AZURE_ANALYSIS_SERVER_NAME }}
+        azPSVersion: "latest"
  
     - name: Build SSAS
       if: ${{ inputs.DeploySSAS == true && inputs.Environment != 'dev'}}
