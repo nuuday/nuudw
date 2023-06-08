@@ -8,13 +8,11 @@ on:
 jobs:
   Deploy:
     name: Release to test
-    uses: ./.github/workflows/master_release_services_test.yml
+    uses: ./.github/workflows/template_release_test.yml
     with:
-      DeployIaC: false 
       DeploySSMS: false
       DeployADF: false
       DeploySSAS: false
       DeploySSASModel: "Template"
       SuspendSSAS: true
-      DeployMetaData: false 
     secrets: inherit
