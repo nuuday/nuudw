@@ -10,6 +10,7 @@ jobs:
     name: Release to test
     uses: ./.github/workflows/template_release_test.yml
     with:
+      Environment: test 
       DeploySSMS: false
       DeployADF: false
       DeploySSAS: false
