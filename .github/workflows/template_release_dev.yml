@@ -36,7 +36,7 @@ on:
 
 jobs:
   deploy:
-    name: Release ${{ inputs.Service }} to dev Environment
+    name: Run tasks on environment
     environment: ${{ inputs.Environment }}
     
     runs-on: windows-latest
