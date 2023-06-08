@@ -1,0 +1,20 @@
+name: Suspend SSAS Test
+
+on:
+  workflow_dispatch:  
+  schedule:
+  - cron: "0 18 * * *"
+
+jobs:
+  Deploy:
+    name: Release to test
+    uses: ./.github/workflows/master_release_services_test.yml
+    with:
+      DeployIaC: false 
+      DeploySSMS: false
+      DeployADF: false
+      DeploySSAS: false
+      DeploySSASModel: "Template"
+      SupendSSASTest: true
+      DeployMetaData: false 
+    secrets: inherit
