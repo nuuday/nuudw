@@ -1,4 +1,4 @@
-name: SSMS Build
+name: Build Database
 
 on:
   pull_request:
