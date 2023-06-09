@@ -1,4 +1,4 @@
-name: ADF Build
+name: Build ADF
 
 on:
   pull_request:
