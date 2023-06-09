@@ -1,0 +1,100 @@
+name: Template Tasks for Prod
+
+on:
+  workflow_call:
+    inputs:
+      DeploySSMS:
+        type: boolean
+        description: Deploy SSMS
+        default: true
+        required: true
+      DeployADF:
+        type: boolean
+        description: Deploy ADF
+        default: true
+        required: true
+      DeploySSAS:
+        type: boolean
+        description: Deploy SSAS
+        default: true
+        required: true
+      DeploySSASModel:
+        type: string
+        description: Deploy SSAS Models
+        default: 'All'
+        required: true
+      SuspendSSAS:
+        type: boolean
+        description: Suspend SSAS
+        default: false
+        required: true
+
+jobs:
+  deploy:
+    name: Run tasks on environment
+    environment: prod
+    
+    runs-on: windows-latest
+    steps:
+      # Checkout code
+    - uses: actions/checkout@v3
+
+      # Log into Azure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}     
+        enable-AzPSSession: true  
+
+    - name: Deploy SSMS
+      if: ${{ inputs.DeploySSMS == true }}      
+      uses: azure/sql-action@v2
+      with:        
+        connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+        path: './SSMS/SSMS/SSMS.sqlproj'
+        action: 'publish'
+        build-arguments: '-c Release'                 # Optional build options passed to dotnet build
+
+    - name: Deploy ADF
+      if: ${{ inputs.DeployADF == true }} 
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+            ./Automation/ADF/Deploy.ps1 -ResourceGroupName ${{ vars.AZURE_RESOURCE_GROUP_NAME }} -DataFactoryName 'nuudw-adf01-${{ inputs.Environment }}' -IntegrationRuntimeName 'NuuDW-OnPremiseIntegrationRuntime' -Path "./ADF" -SubscriptionID ${{ vars.AZURE_SUBSCRIPTION_ID }} -ConnectionReplacements "" -TenantId ${{ vars.AZURE_TENANT_ID }}
+        azPSVersion: "latest"
+        
+    - name: Resume SSAS
+      if: ${{ inputs.DeploySSAS == true}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Automation/SSAS/ResumeAAS.ps1 -ResourceGroup ${{ vars.AZURE_RESOURCE_GROUP_NAME }} -SSASServer ${{ vars.AZURE_ANALYSIS_SERVER_NAME }}
+        azPSVersion: "latest"
+ 
+    - name: Build SSAS
+      if: ${{ inputs.DeploySSAS == true}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\${{ inputs.DeploySSASModel }}" -B ".\src\SSAS\${{ inputs.DeploySSASModel }}\${{ inputs.DeploySSASModel }}.bim"
+        azPSVersion: "latest"        
+
+    - name: Release SSAS
+      if: ${{ inputs.DeploySSAS == true}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\${{ inputs.DeploySSASModel }}" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "${{ inputs.DeploySSASModel }}" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -V -E
+        azPSVersion: "latest"
+
+    - name: Suspend SSAS
+      if: ${{ inputs.SuspendSSAS == true}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Automation/SSAS/SuspendAAS.ps1 -ResourceGroup ${{ vars.AZURE_RESOURCE_GROUP_NAME }} -SSASServer ${{ vars.AZURE_ANALYSIS_SERVER_NAME }}
+        azPSVersion: "latest"
+
+
+ 
+
+ 
