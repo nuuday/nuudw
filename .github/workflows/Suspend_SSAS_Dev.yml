@@ -8,7 +8,7 @@ on:
 jobs:
   Deploy:
     name: Suspend SSAS 
-    uses: ./.github/workflows/template_release_dev.yml
+    uses: ./.github/workflows/Template_tasks_dev.yml
     with:
       Environment: dev 
       DeploySSMS: false
