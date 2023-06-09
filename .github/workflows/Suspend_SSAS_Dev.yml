@@ -10,7 +10,6 @@ jobs:
     name: Suspend SSAS 
     uses: ./.github/workflows/Template_tasks_dev.yml
     with:
-      Environment: dev 
       DeploySSMS: false
       DeployADF: false
       DeploySSAS: false
