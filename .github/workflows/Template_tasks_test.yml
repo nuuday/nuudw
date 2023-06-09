@@ -1,13 +1,8 @@
-name: Template Release Test
+name: Template tasks on Test
 
 on:
   workflow_call:
     inputs:
-      Environment:
-        type: string
-        description: Which Environment to deploy to (dev, test, prod)
-        default: test
-        required: true
       DeploySSMS:
         type: boolean
         description: Deploy SSMS
@@ -37,7 +32,7 @@ on:
 jobs:
   deploy:
     name: Run tasks on environment
-    environment: ${{ inputs.Environment }}
+    environment: test
     
     runs-on: windows-latest
     steps:
@@ -64,7 +59,7 @@ jobs:
       uses: azure/powershell@v1
       with:
         inlineScript: |
-            ./Automation/ADF/Deploy.ps1 -ResourceGroupName ${{ vars.AZURE_RESOURCE_GROUP_NAME }} -DataFactoryName 'nuudw-adf01-${{ inputs.Environment }}' -IntegrationRuntimeName 'NuuDW-OnPremiseIntegrationRuntime' -Path "./ADF" -SubscriptionID ${{ vars.AZURE_SUBSCRIPTION_ID }} -ConnectionReplacements "" -TenantId ${{ vars.AZURE_TENANT_ID }}
+            ./Automation/ADF/Deploy.ps1 -ResourceGroupName ${{ vars.AZURE_RESOURCE_GROUP_NAME }} -DataFactoryName ${{ vars.AZURE_ADF_NAME }} -IntegrationRuntimeName 'NuuDW-OnPremiseIntegrationRuntime' -Path "./ADF" -SubscriptionID ${{ vars.AZURE_SUBSCRIPTION_ID }} -ConnectionReplacements "" -TenantId ${{ vars.AZURE_TENANT_ID }}
         azPSVersion: "latest"
         
     - name: Resume SSAS
