@@ -59,7 +59,7 @@ jobs:
       uses: azure/powershell@v1
       with:
         inlineScript: |
-            ./Automation/ADF/Deploy.ps1 -ResourceGroupName ${{ vars.AZURE_RESOURCE_GROUP_NAME }} -DataFactoryName 'nuudw-adf01-prod' -IntegrationRuntimeName 'NuuDW-OnPremiseIntegrationRuntime' -Path "./ADF" -SubscriptionID ${{ vars.AZURE_SUBSCRIPTION_ID }} -ConnectionReplacements "" -TenantId ${{ vars.AZURE_TENANT_ID }}
+            ./Automation/ADF/Deploy.ps1 -ResourceGroupName ${{ vars.AZURE_RESOURCE_GROUP_NAME }} -DataFactoryName ${{ "nuudw-adf01-prod" }} -IntegrationRuntimeName 'NuuDW-OnPremiseIntegrationRuntime' -Path "./ADF" -SubscriptionID ${{ vars.AZURE_SUBSCRIPTION_ID }} -ConnectionReplacements "" -TenantId ${{ vars.AZURE_TENANT_ID }}
         azPSVersion: "latest"
         
     - name: Resume SSAS
