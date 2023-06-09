@@ -3,11 +3,6 @@ name: Template Tasks for Dev
 on:
   workflow_call:
     inputs:
-      Environment:
-        type: string
-        description: Which Environment to deploy to (dev, test, prod)
-        default: dev
-        required: true
       DeploySSMS:
         type: boolean
         description: Deploy SSMS
@@ -37,7 +32,7 @@ on:
 jobs:
   deploy:
     name: Run tasks on environment
-    environment: ${{ inputs.Environment }}
+    environment: dev
     
     runs-on: windows-latest
     steps:
