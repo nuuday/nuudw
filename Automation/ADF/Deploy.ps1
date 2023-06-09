@@ -8,7 +8,8 @@ param (
     [Parameter(Mandatory = $false)][string]$TriggerReplacements = '',
     [Parameter(Mandatory = $true)][string]$TenantId
 )
-
+Write-Host $ResourceGroupName
+Write-Host $DataFactoryName
 
 ################################################################################################################
 # Functions
