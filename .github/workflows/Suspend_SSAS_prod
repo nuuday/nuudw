@@ -1,0 +1,18 @@
+name: Suspend SSAS Prod
+
+on:
+  workflow_dispatch:  
+  schedule:
+  - cron: "0 16 * * *"
+
+jobs:
+  Deploy:
+    name: Suspend SSAS 
+    uses: ./.github/workflows/Template_tasks_prod.yml
+    with:
+      DeploySSMS: false
+      DeployADF: false
+      DeploySSAS: false
+      DeploySSASModel: "Template"
+      SuspendSSAS: true
+    secrets: inherit
