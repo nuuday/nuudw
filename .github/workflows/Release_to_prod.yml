@@ -1,20 +1,18 @@
 name: Release to prod
 
 on:
-  workflow_dispatch:        
+  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   Deploy:
     name: Release to prod
-    uses: ./.github/workflows/master_release_services.yml
+    uses: ./.github/workflows/Template_tasks_prod.yml
     with:
-      DeployToDev: false 
-      DeployToTest: false
-      DeployToProd: true 
-      DeployIaC: false 
       DeploySSMS: true
       DeployADF: true
       DeploySSAS: true
       DeploySSASModel: "All"
-      DeployMetaData: false 
+      SuspendSSAS: false
     secrets: inherit
