@@ -8,9 +8,8 @@ on:
 jobs:
   Deploy:
     name: Release to test
-    uses: ./.github/workflows/template_release_test.yml
+    uses: ./.github/workflows/Template_tasks_test.yml
     with:
-      Environment: test 
       DeploySSMS: true
       DeployADF: true
       DeploySSAS: true
