@@ -4,6 +4,7 @@
   "model": {
     "name": "Product Explorer",
     "culture": "en-US",
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
     "annotations": [
       {
         "name": "TabularEditor_SerializeOptions",
