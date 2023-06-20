@@ -1,0 +1,202 @@
+{
+  "name": "EXT_Schema_nuudata",
+  "properties": {
+    "activities": [
+      {
+        "name": "SP Maintain Extract Create Schemas",
+        "type": "SqlServerStoredProcedure",
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[MaintainExtractCreateSchemas]",
+          "storedProcedureParameters": {
+            "ExtractSchemaName": {
+              "value": "sourceDataLakeChipper",
+              "type": "String"
+            },
+            "PrintSQL": {
+              "value": "false",
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "LKP Objects",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "SP Maintain Extract Create Schemas",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderQuery": "SELECT [SourceSchemaName]\n ,[SourceObjectName]\n,[SourceObjectID]\n FROM [nuuMetaView].[SourceObjectDefinitions]\n  WHERE SourceConnectionName = 'nuudata'"
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjectDefinitions"
+            }
+          },
+          "firstRowOnly": false
+        }
+      },
+      {
+        "name": "ForEach Object",
+        "type": "ForEach",
+        "dependsOn": [
+          {
+            "activity": "LKP Objects",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "items": {
+            "value": "@activity('LKP Objects').output.value",
+            "type": "Expression"
+          },
+          "isSequential": true,
+          "activities": [
+            {
+              "name": "Copy Information Schema",
+              "type": "Copy",
+              "dependsOn": [],
+              "policy": {
+                "timeout": "7.00:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "source": {
+                  "type": "SqlSource",
+                  "sqlReaderQuery": {
+                    "value": "SELECT DISTINCT \n'AzureSqlDatabase' AS SourceSystemTypeName\t\n,COLUMNS.[TABLE_CATALOG] AS TableCatalogName\n,COLUMNS.[TABLE_SCHEMA] AS SchemaName\n,COLUMNS.[TABLE_NAME] AS TableName\n,COLUMNS.[COLUMN_NAME] AS ColumnName\n,COLUMNS.[ORDINAL_POSITION] AS OrdinalPositionNumber\n,COLUMNS.[DATA_TYPE] AS DataTypeName\n,COLUMNS.[CHARACTER_MAXIMUM_LENGTH] AS MaximumLenghtNumber \n,CAST(COLUMNS.[NUMERIC_PRECISION] AS INT) AS NumericPrecisionNumber \n,COLUMNS.[NUMERIC_SCALE] AS NumericScaleNumber \n,KEY_COLUMN_USAGE.ORDINAL_POSITION AS KeySequenceNumber \n,@{item().SourceObjectID} AS SourceObjectID\nFROM \n\tINFORMATION_SCHEMA.COLUMNS\nLEFT JOIN\n\tINFORMATION_SCHEMA.TABLE_CONSTRAINTS\n\t\tON\n\t\t\tTABLE_CONSTRAINTS.TABLE_CATALOG = COLUMNS.TABLE_CATALOG\n\t\tAND\tTABLE_CONSTRAINTS.TABLE_SCHEMA = COLUMNS.TABLE_SCHEMA\n\t\tAND TABLE_CONSTRAINTS.TABLE_NAME = COLUMNS.TABLE_NAME\n\t\tAND TABLE_CONSTRAINTS.CONSTRAINT_TYPE = 'PRIMARY KEY'\nLEFT JOIN \n\tINFORMATION_SCHEMA.KEY_COLUMN_USAGE\nON\t\n\tKEY_COLUMN_USAGE.CONSTRAINT_NAME = TABLE_CONSTRAINTS.CONSTRAINT_NAME\n\tAND KEY_COLUMN_USAGE.COLUMN_NAME = COLUMNS.COLUMN_NAME\nWHERE \n\tCOLUMNS.TABLE_SCHEMA = '@{item().SourceSchemaName}'\n\tAND COLUMNS.TABLE_NAME = '@{item().SourceObjectName}'",
+                    "type": "Expression"
+                  }
+                },
+                "sink": {
+                  "type": "SqlSink",
+                  "writeBatchSize": 10000,
+                  "preCopyScript": {
+                    "value": "DELETE FROM nuuMeta.SourceInformationSchema WHERE SourceObjectID = '@{item().SourceObjectID}'",
+                    "type": "Expression"
+                  }
+                },
+                "enableStaging": false,
+                "cloudDataMovementUnits": 0
+              },
+              "inputs": [
+                {
+                  "referenceName": "nuudata_DynamicDataset",
+                  "type": "DatasetReference",
+                  "parameters": {
+                    "TableName": "INFORMATION_SCHEMA.COLUMNS"
+                  }
+                }
+              ],
+              "outputs": [
+                {
+                  "referenceName": "nuudwsqldb01_DynamicDataset",
+                  "type": "DatasetReference",
+                  "parameters": {
+                    "TableName": "nuuMeta.SourceInformationSchema"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "SP Maintain Extract",
+              "type": "SqlServerStoredProcedure",
+              "dependsOn": [
+                {
+                  "activity": "Copy Information Schema",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ],
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "storedProcedureName": "[nuuMeta].[MaintainExtract]",
+                "storedProcedureParameters": {
+                  "SourceObjectID": {
+                    "value": "@{item().SourceObjectID}",
+                    "type": "Int32"
+                  },
+                  "CreateTable": {
+                    "value": {
+                      "value": "@pipeline().parameters.CreateTable",
+                      "type": "Expression"
+                    },
+                    "type": "Boolean"
+                  },
+                  "UpdateSourceScript": {
+                    "value": {
+                      "value": "@pipeline().parameters.UpdateSourceScript",
+                      "type": "Expression"
+                    },
+                    "type": "Boolean"
+                  }
+                }
+              },
+              "linkedServiceName": {
+                "referenceName": "nuudwsqldb01",
+                "type": "LinkedServiceReference"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "parameters": {
+      "CreateTable": {
+        "type": "bool",
+        "defaultValue": true
+      },
+      "UpdateSourceScript": {
+        "type": "bool",
+        "defaultValue": true
+      }
+    },
+    "variables": {
+      "SchemaName": {
+        "type": "String"
+      }
+    },
+    "folder": {
+      "name": "0.9_Meta"
+    }
+  }
+}
