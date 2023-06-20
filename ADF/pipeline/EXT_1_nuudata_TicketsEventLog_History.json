@@ -101,11 +101,11 @@
               "type": "String"
             },
             "WatermarkColumnName": {
-              "value": "",
+              "value": "DW_ValidFromDate",
               "type": "String"
             },
             "WatermarkIsDate": {
-              "value": "False",
+              "value": "True",
               "type": "Boolean"
             },
             "WatermarkRollingWindowDays": {
@@ -165,7 +165,7 @@
                 "type": "String"
               },
               "WatermarkIsDate": {
-                "value": "False",
+                "value": "True",
                 "type": "Boolean"
               }
             }
@@ -300,7 +300,7 @@
               "type": "String"
             },
             "WatermarkIsDate": {
-              "value": "False",
+              "value": "True",
               "type": "Boolean"
             }
           }
