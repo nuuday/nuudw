@@ -1,5 +1,6 @@
 ﻿
 
+
 CREATE VIEW [nuuMetaView].[SourceInformationSchemaDefinitions] AS
 
 
@@ -72,7 +73,7 @@ WITH ExtractSchema AS
 		OUTER APPLY (
 			SELECT Value 
 			FROM STRING_SPLIT(obj.PrimaryKeyColumns,',')
-			WHERE Value = eis.ColumnName
+			WHERE CAST(value AS nvarchar(128)) = eis.ColumnName
 		) pk
 
 ), PrepareData AS (

@@ -18,10 +18,10 @@ SET NOCOUNT ON
 
 /*
 DECLARE   
-	@SourceConnectionName NVARCHAR(100) = 'BIZSQLP01PMETA_Dimension'
-	, @SourceSchemaName NVARCHAR(100) = 'DimensionV_WS'
-	, @SourceTableName NVARCHAR(100) = 'Dim_PRODTJE_Flat'
-	, @WatermarkIsDate BIT = 0
+	@SourceConnectionName NVARCHAR(100) = 'nuudata'
+	, @SourceSchemaName NVARCHAR(100) = 'sourceDataLakeChipper'
+	, @SourceTableName NVARCHAR(100) = 'TicketsEventLog_History'
+	, @WatermarkIsDate BIT = 1
 	, @PrintSQL BIT= 1
 --*/
 
@@ -36,7 +36,7 @@ DECLARE @LastValueLoaded NVARCHAR(500)
 
 
 SELECT 
-	@WatermarkValueColumn = IIF(so.WatermarkInQuery <> '',so.WatermarkInQuery, so.WatermarkColumnName),
+	@WatermarkValueColumn = IIF(so.WatermarkInQuery <> '',so.WatermarkInQuery, CASE WHEN LEFT(so.WatermarkColumnName,2) = 'DW' THEN '[SRC_' +  so.WatermarkColumnName + ']' ELSE so.WatermarkColumnName END),
 	@LastValueLoaded = so.WatermarkLastValue,
 	@ExtractSchemaName = co.DestinationSchemaName,
 	@SourceObjectID = CAST(so.ID as nvarchar)
