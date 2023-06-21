@@ -18,11 +18,11 @@
     },
     "activities": [
       {
-        "name": "TicketsEventLog_History",
+        "name": "ChipperTicketsEventLog",
         "type": "ExecutePipeline",
         "typeProperties": {
           "pipeline": {
-            "referenceName": "EXT_1_NuuData_Chipper_TicketsEventLog_History",
+            "referenceName": "EXT_1_NuuData_Chipper_ChipperTicketsEventLog",
             "type": "PipelineReference"
           },
           "waitOnCompletion": true,
