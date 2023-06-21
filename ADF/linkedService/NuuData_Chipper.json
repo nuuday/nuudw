@@ -1,5 +1,5 @@
 {
-	"name": "nuudata",
+	"name": "NuuData_Chipper",
 	"properties": {
 		"annotations": [],
 		"type": "AzureSqlDatabase",
