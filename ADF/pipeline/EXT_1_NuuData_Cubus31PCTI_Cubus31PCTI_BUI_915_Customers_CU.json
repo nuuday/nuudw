@@ -199,7 +199,7 @@
           "source": {
             "type": "SqlSource",
             "sqlReaderQuery": {
-              "value": "\r\nSELECT \r\n[LinkKundeID] \r\n,[CustomerNumber] \r\n,[AccountNumber] \r\n,[HouseholdID] \r\n,[Lid] \r\n,[Segment] \r\n,[PersonId] \r\n,[SystemKtnavn] \r\n,[ServiceProvCode] \r\n,[Product] \r\n,[Technology] \r\n,[CVRnr] \r\n,[OKunde] \r\n,[Kvhx] \r\n \r\nFROM exportNuuDW.[Cubus31PCTI_BUI_915_Customers_CU]\r\n WHERE DWCreatedDate > convert(datetime, stuff(stuff(stuff('@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}', 9, 0, ' '), 12, 0, ':'), 15, 0, ':'))",
+              "value": "\r\nSELECT \r\n[LinkKundeID] \r\n,[CustomerNumber] \r\n,[AccountNumber] \r\n,[HouseholdID] \r\n,[Lid] \r\n,[Segment] \r\n,[PersonId] \r\n,[SystemKtnavn] \r\n,[ServiceProvCode] \r\n,[Product] \r\n,[Technology] \r\n,[CVRnr] \r\n,[OKunde] \r\n,[Kvhx] \r\n,[DWCreatedDate] AS [SRC_DWCreatedDate]\r\n \r\nFROM exportNuuDW.[Cubus31PCTI_BUI_915_Customers_CU]\r\n WHERE DWCreatedDate > convert(datetime, stuff(stuff(stuff('@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}', 9, 0, ' '), 12, 0, ':'), 15, 0, ':'))",
               "type": "Expression"
             }
           },
