@@ -1,0 +1,330 @@
+{
+  "name": "EXT_1_NuuData_Cubus31PCTI_Cubus31PCTI_BUI_915_Customers_CU",
+  "properties": {
+    "activities": [
+      {
+        "name": "Lookup_IsReady_flag",
+        "type": "Lookup",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "7.00:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [],
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "sqlReaderQuery": "SELECT 1 AS IsReady",
+            "queryTimeout": "02:00:00",
+            "partitionOption": "None"
+          },
+          "dataset": {
+            "referenceName": "NuuData_Cubus31PCTI_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "exportNuuDW.Cubus31PCTI_BUI_915_Customers_CU"
+            }
+          }
+        }
+      },
+      {
+        "name": "Evaluate_IsReady_flag",
+        "type": "IfCondition",
+        "dependsOn": [
+          {
+            "activity": "Lookup_IsReady_flag",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "userProperties": [],
+        "typeProperties": {
+          "expression": {
+            "value": "@equals(activity('Lookup_IsReady_flag').output.firstRow.IsReady,1)",
+            "type": "Expression"
+          },
+          "ifFalseActivities": [
+            {
+              "name": "IsReady",
+              "type": "Fail",
+              "dependsOn": [],
+              "userProperties": [],
+              "typeProperties": {
+                "message": "The source was not ready at execution time. Try re-running the pipeline at a later time.",
+                "errorCode": "0"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "Update_Meta_Tables",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Evaluate_IsReady_flag",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "nuuMeta.[UpdateSourceTables]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "NuuData_Cubus31PCTI",
+              "type": "String"
+            },
+            "SourceConnectionType": {
+              "value": "SqlServer",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "exportNuuDW",
+              "type": "String"
+            },
+            "SourceObjectName": {
+              "value": "Cubus31PCTI_BUI_915_Customers_CU",
+              "type": "String"
+            },
+            "DestinationSchemaName": {
+              "value": "sourceNuuDataCubus31PCTI",
+              "type": "String"
+            },
+            "WatermarkColumnName": {
+              "value": "DWCreatedDate",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "True",
+              "type": "Boolean"
+            },
+            "WatermarkRollingWindowDays": {
+              "value": "0",
+              "type": "Int32"
+            },
+            "WatermarkInQuery": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Lookup_Last_Value_Loaded",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Update_Meta_Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderStoredProcedureName": "nuuMeta.[GetLastValueLoaded]",
+            "storedProcedureParameters": {
+              "SourceConnectionName": {
+                "value": "NuuData_Cubus31PCTI",
+                "type": "String"
+              },
+              "SourceSchemaName": {
+                "value": "exportNuuDW",
+                "type": "String"
+              },
+              "SourceTableName": {
+                "value": "Cubus31PCTI_BUI_915_Customers_CU",
+                "type": "String"
+              },
+              "JobIsIncremental": {
+                "value": "@pipeline().parameters.JobIsIncremental",
+                "type": "Boolean"
+              },
+              "ConnectionType": {
+                "value": "SqlServer",
+                "type": "String"
+              },
+              "WatermarkIsDate": {
+                "value": "True",
+                "type": "Boolean"
+              }
+            }
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjects"
+            }
+          }
+        }
+      },
+      {
+        "name": "Copy_Cubus31PCTI_BUI_915_Customers_CU",
+        "type": "Copy",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Last_Value_Loaded",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderQuery": {
+              "value": "\r\nSELECT \r\n[LinkKundeID] \r\n,[CustomerNumber] \r\n,[AccountNumber] \r\n,[HouseholdID] \r\n,[Lid] \r\n,[Segment] \r\n,[PersonId] \r\n,[SystemKtnavn] \r\n,[ServiceProvCode] \r\n,[Product] \r\n,[Technology] \r\n,[CVRnr] \r\n,[OKunde] \r\n,[Kvhx] \r\n \r\nFROM exportNuuDW.[Cubus31PCTI_BUI_915_Customers_CU]\r\n WHERE DWCreatedDate > convert(datetime, stuff(stuff(stuff('@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}', 9, 0, ' '), 12, 0, ':'), 15, 0, ':'))",
+              "type": "Expression"
+            }
+          },
+          "sink": {
+            "type": "SqlSink",
+            "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+            "preCopyScript": "TRUNCATE TABLE [sourceNuuDataCubus31PCTI].[Cubus31PCTI_BUI_915_Customers_CU]"
+          },
+          "enableStaging": false,
+          "cloudDataMovementUnits": 0
+        },
+        "inputs": [
+          {
+            "referenceName": "NuuData_Cubus31PCTI_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "exportNuuDW.Cubus31PCTI_BUI_915_Customers_CU"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "[sourceNuuDataCubus31PCTI].[Cubus31PCTI_BUI_915_Customers_CU]"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Merge_To_History",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Copy_Cubus31PCTI_BUI_915_Customers_CU",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "nuuMeta.[LoadSourceObjectHistory]",
+          "storedProcedureParameters": {
+            "ExtractTable": {
+              "value": "sourceNuuDataCubus31PCTI.Cubus31PCTI_BUI_915_Customers_CU",
+              "type": "String"
+            },
+            "LoadIsIncremental": {
+              "value": "@pipeline().parameters.JobIsIncremental",
+              "type": "Boolean"
+            },
+            "HistoryTrackingColumns": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Set_Last_Value_Loaded",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Merge_To_History",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "nuuMeta.[SetLastLoadedValue]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "NuuData_Cubus31PCTI",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "exportNuuDW",
+              "type": "String"
+            },
+            "SourceTableName": {
+              "value": "Cubus31PCTI_BUI_915_Customers_CU",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "True",
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    }
+  }
+}
