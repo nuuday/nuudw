@@ -75,6 +75,10 @@
     <Folder Include="sourceNuuDataChipper\Tables\" />
     <Folder Include="sourceNuuDataChipperView\" />
     <Folder Include="sourceNuuDataChipperView\Views\" />
+    <Folder Include="sourceNuudlColumbus\" />
+    <Folder Include="sourceNuudlColumbus\Tables\" />
+    <Folder Include="sourceNuudlColumbusView\" />
+    <Folder Include="sourceNuudlColumbusView\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -289,6 +293,14 @@
     <Build Include="sourceNuuDataChipperView\Views\ChipperTicketsTags_History.sql" />
     <Build Include="Security\sourceNuuDataChipperView.sql" />
     <Build Include="Security\sourceNuuDataChipper.sql" />
+    <Build Include="sourceNuudlColumbus\Tables\PROD_LID_AFT_History.sql" />
+    <Build Include="sourceNuudlColumbus\Tables\PROD_LID_AFT.sql" />
+    <Build Include="sourceNuudlColumbus\Tables\AFTALE_LID_History.sql" />
+    <Build Include="sourceNuudlColumbus\Tables\AFTALE_LID.sql" />
+    <Build Include="sourceNuudlColumbusView\Views\PROD_LID_AFT_History.sql" />
+    <Build Include="sourceNuudlColumbusView\Views\AFTALE_LID_History.sql" />
+    <Build Include="Security\sourceNuudlColumbusView.sql" />
+    <Build Include="Security\sourceNuudlColumbus.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
