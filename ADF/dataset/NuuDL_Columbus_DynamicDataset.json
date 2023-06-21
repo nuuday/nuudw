@@ -1,0 +1,29 @@
+{
+  "name": "NuuDL_Columbus_DynamicDataset",
+  "properties": {
+    "linkedServiceName": {
+      "referenceName": "NuuDL_Columbus",
+      "type": "LinkedServiceReference"
+    },
+    "parameters": {
+      "TableName": {
+        "type": "string"
+      }
+    },
+    "type": "AzureDatabricksDeltaLakeDataset",
+    "schema": [],
+    "typeProperties": {
+      "schema": {
+        "value": "@replace(replace(split(dataset().TableName,'.')[0],'[',''),']','')",
+        "type": "Expression"
+      },
+      "table": {
+        "value": "@replace(replace(split(dataset().TableName,'.')[1],'[',''),']','')",
+        "type": "Expression"
+      }
+    },
+    "folder": {
+      "name": "DynamicDatasets"
+    }
+  }
+}
