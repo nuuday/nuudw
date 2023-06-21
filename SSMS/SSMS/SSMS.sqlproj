@@ -71,6 +71,10 @@
     <Folder Include="fact\Tables\" />
     <Folder Include="factView\" />
     <Folder Include="factView\Views\" />
+    <Folder Include="sourceNuuDataChipper\" />
+    <Folder Include="sourceNuuDataChipper\Tables\" />
+    <Folder Include="sourceNuuDataChipperView\" />
+    <Folder Include="sourceNuuDataChipperView\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -271,6 +275,20 @@
     <Build Include="stage\Stored Procedures\Transform_Dim_Customer.sql" />
     <Build Include="stage\Tables\Fact_ProductTransactions.sql" />
     <Build Include="fact\Tables\ProductTransactions_Temp.sql" />
+    <Build Include="sourceNuuDataChipper\Tables\ChipperTicketsTickets_History.sql" />
+    <Build Include="sourceNuuDataChipper\Tables\ChipperTicketsTickets.sql" />
+    <Build Include="sourceNuuDataChipper\Tables\ChipperTicketsTags_History.sql" />
+    <Build Include="sourceNuuDataChipper\Tables\ChipperTicketsTags.sql" />
+    <Build Include="sourceNuuDataChipper\Tables\ChipperTicketsEventLog_History.sql" />
+    <Build Include="sourceNuuDataChipper\Tables\ChipperTicketsEventLog.sql" />
+    <Build Include="sourceNuuDataChipper\Tables\ChipperTicketsComments_History.sql" />
+    <Build Include="sourceNuuDataChipper\Tables\ChipperTicketsComments.sql" />
+    <Build Include="sourceNuuDataChipperView\Views\ChipperTicketsEventLog_History.sql" />
+    <Build Include="sourceNuuDataChipperView\Views\ChipperTicketsComments_History.sql" />
+    <Build Include="sourceNuuDataChipperView\Views\ChipperTicketsTickets_History.sql" />
+    <Build Include="sourceNuuDataChipperView\Views\ChipperTicketsTags_History.sql" />
+    <Build Include="Security\sourceNuuDataChipperView.sql" />
+    <Build Include="Security\sourceNuuDataChipper.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
