@@ -1,0 +1,22 @@
+{
+	"name": "Cubus31_PCTI",
+	"properties": {
+		"description": "Created by milank@nuuday.dk 2023-06-22",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "ConnectionString-Cubus-Cubus31-PCTI"
+			}
+		},
+		"connectVia": {
+			"referenceName": "NuuData-OnPremiseIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
