@@ -128,7 +128,7 @@
         "type": "Copy",
         "dependsOn": [
           {
-            "activity": "Lookup_Last_Value_Loaded",
+            "activity": "Update_Meta_Tables",
             "dependencyConditions": [
               "Succeeded"
             ]
