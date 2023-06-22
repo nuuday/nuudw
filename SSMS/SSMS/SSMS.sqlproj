@@ -81,12 +81,10 @@
     <Folder Include="sourceNuudlColumbusView\Views\" />
     <Folder Include="sourceNuuDataCubusMasterData\" />
     <Folder Include="sourceNuuDataCubusMasterData\Tables\" />
-    <Folder Include="sourceNuuDataCubus31PCTI\" />
-    <Folder Include="sourceNuuDataCubus31PCTI\Tables\" />
     <Folder Include="sourceNuuDataCubusMasterDataView\" />
     <Folder Include="sourceNuuDataCubusMasterDataView\Views\" />
-    <Folder Include="sourceNuuDataCubus31PCTIView\" />
-    <Folder Include="sourceNuuDataCubus31PCTIView\Views\" />
+    <Folder Include="SourceCubus31PCTI\" />
+    <Folder Include="SourceCubus31PCTI\Tables\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -311,14 +309,12 @@
     <Build Include="Security\sourceNuudlColumbus.sql" />
     <Build Include="sourceNuuDataCubusMasterData\Tables\CubusMasterData_DimEmployee_History.sql" />
     <Build Include="sourceNuuDataCubusMasterData\Tables\CubusMasterData_DimEmployee.sql" />
-    <Build Include="sourceNuuDataCubus31PCTI\Tables\Cubus31PCTI_BUI_915_Customers_CU_History.sql" />
-    <Build Include="sourceNuuDataCubus31PCTI\Tables\Cubus31PCTI_BUI_915_Customers_CU.sql" />
     <Build Include="sourceNuuDataCubusMasterDataView\Views\CubusMasterData_DimEmployee_History.sql" />
-    <Build Include="sourceNuuDataCubus31PCTIView\Views\Cubus31PCTI_BUI_915_Customers_CU_History.sql" />
     <Build Include="Security\sourceNuuDataCubusMasterDataView.sql" />
     <Build Include="Security\sourceNuuDataCubusMasterData.sql" />
-    <Build Include="Security\sourceNuuDataCubus31PCTIView.sql" />
-    <Build Include="Security\sourceNuuDataCubus31PCTI.sql" />
+    <Build Include="SourceCubus31PCTI\Tables\BUI_915_Customers_CU.sql" />
+    <Build Include="Security\SourceCubus31PCTIView.sql" />
+    <Build Include="Security\SourceCubus31PCTI.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
