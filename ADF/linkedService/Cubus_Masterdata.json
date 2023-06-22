@@ -1,0 +1,23 @@
+{
+	"name": "Cubus_Masterdata",
+	"properties": {
+		"description": "Created by milan@nuuday.dk 2023-06-22 ",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "ConnectionString-Cubus-Masterdata"
+			}
+		},
+		"connectVia": {
+			"referenceName": "NuuDW-OnPremiseIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
+}
