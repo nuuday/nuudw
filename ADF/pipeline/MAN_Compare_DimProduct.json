@@ -42,7 +42,7 @@
 						"referenceName": "NuuData_Chipper_DynamicDataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"TableName": "lookup.DimDimension"
+							"TableName": "lookup.DimProduct"
 						}
 					}
 				],
