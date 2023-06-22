@@ -101,11 +101,11 @@
               "type": "String"
             },
             "WatermarkColumnName": {
-              "value": "ObjectTime",
+              "value": "",
               "type": "String"
             },
             "WatermarkIsDate": {
-              "value": "True",
+              "value": "False",
               "type": "Boolean"
             },
             "WatermarkRollingWindowDays": {
@@ -121,62 +121,6 @@
         "linkedServiceName": {
           "referenceName": "nuudwsqldb01",
           "type": "LinkedServiceReference"
-        }
-      },
-      {
-        "name": "Lookup_Last_Value_Loaded",
-        "type": "Lookup",
-        "dependsOn": [
-          {
-            "activity": "Update_Meta_Tables",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "source": {
-            "type": "SqlSource",
-            "sqlReaderStoredProcedureName": "nuuMeta.[GetLastValueLoaded]",
-            "storedProcedureParameters": {
-              "SourceConnectionName": {
-                "value": "Cubus31_PCTI",
-                "type": "String"
-              },
-              "SourceSchemaName": {
-                "value": "CUBUS_READER",
-                "type": "String"
-              },
-              "SourceTableName": {
-                "value": "BUI_915_Customers_CU",
-                "type": "String"
-              },
-              "JobIsIncremental": {
-                "value": "@pipeline().parameters.JobIsIncremental",
-                "type": "Boolean"
-              },
-              "ConnectionType": {
-                "value": "SqlServer",
-                "type": "String"
-              },
-              "WatermarkIsDate": {
-                "value": "True",
-                "type": "Boolean"
-              }
-            }
-          },
-          "dataset": {
-            "referenceName": "nuudwsqldb01_DynamicDataset",
-            "type": "DatasetReference",
-            "parameters": {
-              "TableName": "nuuMeta.SourceObjects"
-            }
-          }
         }
       },
       {
@@ -199,7 +143,7 @@
           "source": {
             "type": "SqlSource",
             "sqlReaderQuery": {
-              "value": "\r\nSELECT \r\n[LinkKundeID] \r\n,[CustomerNumber] \r\n,[AccountNumber] \r\n,[HouseholdID] \r\n,[Lid] \r\n,[Segment] \r\n,[PersonId] \r\n,[SystemKtnavn] \r\n,[ServiceProvCode] \r\n,[Product] \r\n,[Technology] \r\n,[CVRnr] \r\n,[OKunde] \r\n,[Objecttime] \r\n,[Kvhx] \r\n \r\nFROM CUBUS_READER.[BUI_915_Customers_CU]\r\n WHERE ObjectTime > convert(datetime, stuff(stuff(stuff('@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}', 9, 0, ' '), 12, 0, ':'), 15, 0, ':'))",
+              "value": "\r\nSELECT \r\n[LinkKundeID] \r\n,[CustomerNumber] \r\n,[AccountNumber] \r\n,[HouseholdID] \r\n,[Lid] \r\n,[Segment] \r\n,[PersonId] \r\n,[SystemKtnavn] \r\n,[ServiceProvCode] \r\n,[Product] \r\n,[Technology] \r\n,[CVRnr] \r\n,[OKunde] \r\n,[Objecttime] \r\n,[Kvhx] \r\n \r\nFROM CUBUS_READER.[BUI_915_Customers_CU]\r\n",
               "type": "Expression"
             }
           },
@@ -229,94 +173,9 @@
             }
           }
         ]
-      },
-      {
-        "name": "Merge_To_History",
-        "type": "SqlServerStoredProcedure",
-        "dependsOn": [
-          {
-            "activity": "Copy_BUI_915_Customers_CU",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "storedProcedureName": "nuuMeta.[LoadSourceObjectHistory]",
-          "storedProcedureParameters": {
-            "ExtractTable": {
-              "value": "SourceCubus31PCTI.BUI_915_Customers_CU",
-              "type": "String"
-            },
-            "LoadIsIncremental": {
-              "value": "@pipeline().parameters.JobIsIncremental",
-              "type": "Boolean"
-            },
-            "HistoryTrackingColumns": {
-              "value": "",
-              "type": "String"
-            }
-          }
-        },
-        "linkedServiceName": {
-          "referenceName": "nuudwsqldb01",
-          "type": "LinkedServiceReference"
-        }
-      },
-      {
-        "name": "Set_Last_Value_Loaded",
-        "type": "SqlServerStoredProcedure",
-        "dependsOn": [
-          {
-            "activity": "Merge_To_History",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "storedProcedureName": "nuuMeta.[SetLastLoadedValue]",
-          "storedProcedureParameters": {
-            "SourceConnectionName": {
-              "value": "Cubus31_PCTI",
-              "type": "String"
-            },
-            "SourceSchemaName": {
-              "value": "CUBUS_READER",
-              "type": "String"
-            },
-            "SourceTableName": {
-              "value": "BUI_915_Customers_CU",
-              "type": "String"
-            },
-            "WatermarkIsDate": {
-              "value": "True",
-              "type": "Boolean"
-            }
-          }
-        },
-        "linkedServiceName": {
-          "referenceName": "nuudwsqldb01",
-          "type": "LinkedServiceReference"
-        }
       }
     ],
     "parameters": {
-      "JobIsIncremental": {
-        "type": "Bool",
-        "defaultValue": "true",
-        "identity": "JobIsIncremental"
-      },
       "WriteBatchSize": {
         "type": "Int",
         "defaultValue": 10000,
