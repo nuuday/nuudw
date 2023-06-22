@@ -1,5 +1,5 @@
 {
-  "name": "ingestsqldb01DynamicDataset",
+  "name": "ingestsqldb01_DynamicDataset",
   "properties": {
     "linkedServiceName": {
       "referenceName": "ingestsqldb01",
