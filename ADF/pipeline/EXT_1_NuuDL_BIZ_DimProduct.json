@@ -1,5 +1,5 @@
 {
-  "name": "EXT_1_NuuDL_BIZ_DIM_DimProduct",
+  "name": "EXT_1_NuuDL_BIZ_DimProduct",
   "properties": {
     "activities": [
       {
@@ -26,7 +26,7 @@
               "type": "String"
             },
             "SourceObjectName": {
-              "value": "DIM_DimProduct",
+              "value": "DimProduct",
               "type": "String"
             },
             "DestinationSchemaName": {
@@ -86,7 +86,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "DIM_DimProduct",
+                "value": "DimProduct",
                 "type": "String"
               },
               "JobIsIncremental": {
@@ -113,7 +113,7 @@
         }
       },
       {
-        "name": "Copy_DIM_DimProduct",
+        "name": "Copy_DimProduct",
         "type": "Copy",
         "dependsOn": [
           {
@@ -132,7 +132,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`NUUDL_SourceCreated` \r\n,`NUUDL_SourceUpdated` \r\n,`ProductKey` \r\n,`DimEditor_Updated_TS` \r\n,`DimEditor_Created_TS` \r\n,`DimEditor_Created_By` \r\n,`ProductID` \r\n,`SourceSystem` \r\n,`Downstream` \r\n,`ETL_AntalLinier` \r\n,`ETL_FlowRelevant` \r\n,`ETL_ProduktInfo` \r\n,`ETL_ProduktKobling` \r\n,`ETL_TekstRelevant` \r\n,`IsWholesale` \r\n,`ProductBrandCategory` \r\n,`ProductCategory` \r\n,`ProductChange` \r\n,`ProductChangeCategory` \r\n,`ProductMainCategory` \r\n,`ProductName` \r\n,`ProductNetworkTechnology` \r\n,`ProductSubCategory` \r\n,`ProductTargetCustomer` \r\n,`ProductTransmissionTechnology` \r\n,`ProductType` \r\n,`SalesEffectiveDate` \r\n,`SalesExperiationDate` \r\n,`ServiceType` \r\n,`SourceCreatedDate` \r\n,`SourceEffectiveDate` \r\n,`SourceExpirationDate` \r\n,`SourceUpdatedBy` \r\n,`SourceUpdatedDate` \r\n,`Upstream` \r\n,`NUUDL_ID` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`BIZ_BatchCreatedID` \r\n,`BIZ_BatchUpdatedID` \r\n,`NUUDL_PKLatest` \r\n,`SAF_Attr` \r\n,`ETL_SAFFlowrelevant` \r\n,`ETL_SAFFlowrelevantDate` \r\n,`Niv1` \r\n,`Niv2` \r\n,`Niv3` \r\n,`Niv4` \r\n,`ProductSubCategory2` \r\n,`BellisPrioritet` \r\n,`Bemaerkning` \r\n,`CallDirectionFrom` \r\n,`CallDirectionTo` \r\n,`Landekode` \r\n,`Source_Created_By` \r\n,`Source_Updated_By` \r\n,`TrafficAddon` \r\n,`Volumetype` \r\n,`BundleType` \r\n,`Technology` \r\n,`ProductWeight` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM biz.`DIM_DimProduct`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`NUUDL_SourceCreated` \r\n,`NUUDL_SourceUpdated` \r\n,`ProductKey` \r\n,`DimEditor_Updated_TS` \r\n,`DimEditor_Created_TS` \r\n,`DimEditor_Created_By` \r\n,`ProductID` \r\n,`SourceSystem` \r\n,`Downstream` \r\n,`ETL_AntalLinier` \r\n,`ETL_FlowRelevant` \r\n,`ETL_ProduktInfo` \r\n,`ETL_ProduktKobling` \r\n,`ETL_TekstRelevant` \r\n,`IsWholesale` \r\n,`ProductBrandCategory` \r\n,`ProductCategory` \r\n,`ProductChange` \r\n,`ProductChangeCategory` \r\n,`ProductMainCategory` \r\n,`ProductName` \r\n,`ProductNetworkTechnology` \r\n,`ProductSubCategory` \r\n,`ProductTargetCustomer` \r\n,`ProductTransmissionTechnology` \r\n,`ProductType` \r\n,`SalesEffectiveDate` \r\n,`SalesExperiationDate` \r\n,`ServiceType` \r\n,`SourceCreatedDate` \r\n,`SourceEffectiveDate` \r\n,`SourceExpirationDate` \r\n,`SourceUpdatedBy` \r\n,`SourceUpdatedDate` \r\n,`Upstream` \r\n,`NUUDL_ID` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`BIZ_BatchCreatedID` \r\n,`BIZ_BatchUpdatedID` \r\n,`NUUDL_PKLatest` \r\n,`SAF_Attr` \r\n,`ETL_SAFFlowrelevant` \r\n,`ETL_SAFFlowrelevantDate` \r\n,`Niv1` \r\n,`Niv2` \r\n,`Niv3` \r\n,`Niv4` \r\n,`ProductSubCategory2` \r\n,`BellisPrioritet` \r\n,`Bemaerkning` \r\n,`CallDirectionFrom` \r\n,`CallDirectionTo` \r\n,`Landekode` \r\n,`Source_Created_By` \r\n,`Source_Updated_By` \r\n,`TrafficAddon` \r\n,`Volumetype` \r\n,`BundleType` \r\n,`Technology` \r\n,`ProductWeight` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM biz.`DimProduct`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -142,7 +142,7 @@
           "sink": {
             "type": "AzureSqlSink",
             "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [SourceNuudlBIZ].[DIM_DimProduct]"
+            "preCopyScript": "TRUNCATE TABLE [SourceNuudlBIZ].[DimProduct]"
           },
           "enableStaging": true,
           "stagingSettings": {
@@ -158,7 +158,7 @@
             "referenceName": "NuuDL_BIZ_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "biz.DIM_DimProduct"
+              "TableName": "biz.DimProduct"
             }
           }
         ],
@@ -167,7 +167,7 @@
             "referenceName": "nuudwsqldb01_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "[SourceNuudlBIZ].[DIM_DimProduct]"
+              "TableName": "[SourceNuudlBIZ].[DimProduct]"
             }
           }
         ]
@@ -177,7 +177,7 @@
         "type": "SqlServerStoredProcedure",
         "dependsOn": [
           {
-            "activity": "Copy_DIM_DimProduct",
+            "activity": "Copy_DimProduct",
             "dependencyConditions": [
               "Succeeded"
             ]
@@ -192,7 +192,7 @@
           "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistory]",
           "storedProcedureParameters": {
             "ExtractTable": {
-              "value": "SourceNuudlBIZ.DIM_DimProduct",
+              "value": "SourceNuudlBIZ.DimProduct",
               "type": "String"
             },
             "LoadIsIncremental": {
@@ -238,7 +238,7 @@
               "type": "String"
             },
             "SourceTableName": {
-              "value": "DIM_DimProduct",
+              "value": "DimProduct",
               "type": "String"
             },
             "WatermarkIsDate": {

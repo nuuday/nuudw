@@ -18,11 +18,11 @@
     },
     "activities": [
       {
-        "name": "DIM_DimProduct",
+        "name": "DimProduct",
         "type": "ExecutePipeline",
         "typeProperties": {
           "pipeline": {
-            "referenceName": "EXT_1_NuuDL_BIZ_DIM_DimProduct",
+            "referenceName": "EXT_1_NuuDL_BIZ_DimProduct",
             "type": "PipelineReference"
           },
           "waitOnCompletion": true,
