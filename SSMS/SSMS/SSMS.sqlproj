@@ -83,6 +83,14 @@
     <Folder Include="SourceCubus31PCTI\Tables\" />
     <Folder Include="SourceCubusMasterData\" />
     <Folder Include="SourceCubusMasterData\Tables\" />
+    <Folder Include="SourceNuudlLinkit\" />
+    <Folder Include="SourceNuudlLinkit\Tables\" />
+    <Folder Include="SourceNuudlBIZ\" />
+    <Folder Include="SourceNuudlBIZ\Tables\" />
+    <Folder Include="SourceNuudlLinkitView\" />
+    <Folder Include="SourceNuudlLinkitView\Views\" />
+    <Folder Include="SourceNuudlBIZView\" />
+    <Folder Include="SourceNuudlBIZView\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -311,6 +319,16 @@
     <Build Include="SourceCubusMasterData\Tables\DimEmployee.sql" />
     <Build Include="Security\SourceCubusMasterDataView.sql" />
     <Build Include="Security\SourceCubusMasterData.sql" />
+    <Build Include="SourceNuudlLinkit\Tables\LINK_KUNDE_History.sql" />
+    <Build Include="SourceNuudlLinkit\Tables\LINK_KUNDE.sql" />
+    <Build Include="SourceNuudlBIZ\Tables\DimProduct_History.sql" />
+    <Build Include="SourceNuudlBIZ\Tables\DimProduct.sql" />
+    <Build Include="SourceNuudlLinkitView\Views\LINK_KUNDE_History.sql" />
+    <Build Include="SourceNuudlBIZView\Views\DimProduct_History.sql" />
+    <Build Include="Security\SourceNuudlLinkitView.sql" />
+    <Build Include="Security\SourceNuudlLinkit.sql" />
+    <Build Include="Security\SourceNuudlBIZView.sql" />
+    <Build Include="Security\SourceNuudlBIZ.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
