@@ -1,4 +1,4 @@
-﻿CREATE TABLE [sourceNuuDataCubusMasterData].[CubusMasterData_DimEmployee_History] (
+﻿CREATE TABLE [SourceCubusMasterData].[DimEmployee] (
     [EmployeeKey]                 INT            NOT NULL,
     [SRC_DW_ID_DimEmployeeWork]   INT            NULL,
     [SRC_DW_AuditKey]             INT            NULL,
@@ -82,25 +82,12 @@
     [ChapterAreaID]               NVARCHAR (12)  NULL,
     [ChapterAreaDescription]      NVARCHAR (30)  NULL,
     [ChapterAreaDescriptionShort] NVARCHAR (10)  NULL,
-    [SRC_DWIsCurrent]             BIT            NULL,
-    [SRC_DWValidFromDate]         DATETIME       NOT NULL,
-    [SRC_DWValidToDate]           DATETIME       NULL,
-    [SRC_DWCreatedDate]           DATETIME       NULL,
-    [SRC_DWModifiedDate]          DATETIME       NULL,
-    [SRC_DWIsDeletedInSource]     BIT            NULL,
-    [SRC_DWDeletedInSourceDate]   DATETIME       NULL,
-    [DWIsCurrent]                 BIT            NULL,
-    [DWValidFromDate]             DATETIME2 (7)  NOT NULL,
-    [DWValidToDate]               DATETIME2 (7)  NULL,
-    [DWCreatedDate]               DATETIME2 (7)  NULL,
-    [DWModifiedDate]              DATETIME2 (7)  NULL,
-    [DWIsDeletedInSource]         BIT            NULL,
-    [DWDeletedInSourceDate]       DATETIME2 (7)  NULL,
-    CONSTRAINT [PK_CubusMasterData_DimEmployee_History] PRIMARY KEY NONCLUSTERED ([SRC_DWValidFromDate] ASC, [EmployeeKey] ASC, [DWValidFromDate] ASC)
+    [DWCreatedDate]               DATETIME2 (7)  DEFAULT (getdate()) NULL,
+    CONSTRAINT [PK_DimEmployee] PRIMARY KEY NONCLUSTERED ([EmployeeKey] ASC)
 );
 
 
 GO
-CREATE CLUSTERED COLUMNSTORE INDEX [CCI_CubusMasterData_DimEmployee_History]
-    ON [sourceNuuDataCubusMasterData].[CubusMasterData_DimEmployee_History];
+CREATE CLUSTERED COLUMNSTORE INDEX [CCI_DimEmployee]
+    ON [SourceCubusMasterData].[DimEmployee];
 
