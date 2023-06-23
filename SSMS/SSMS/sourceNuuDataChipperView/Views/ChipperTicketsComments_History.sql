@@ -26,4 +26,4 @@ SELECT
 	,[DWIsDeletedInSource]
 	,[DWDeletedInSourceDate]
 FROM [sourceNuuDataChipper].[ChipperTicketsComments_History]
-WHERE DWIsCurrent = 1
+WHERE DWIsCurrent = 1 AND SRC_DWIsCurrent = 1

@@ -28,4 +28,4 @@ SELECT
 	,[DWIsDeletedInSource]
 	,[DWDeletedInSourceDate]
 FROM [sourceNuuDataChipper].[ChipperTicketsEventLog_History]
-WHERE DWIsCurrent = 1
+WHERE DWIsCurrent = 1 AND SRC_DWIsCurrent = 1
