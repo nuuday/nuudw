@@ -1,11 +1,10 @@
 {
-  "name": "MaintainDW_dim_FAM_OpenIncidentGroup",
+  "name": "DIM_1_FAM_OpenIncidentsGroup_Load",
   "properties": {
     "activities": [
       {
-        "name": "MaintainDW_dim_FAM_OpenIncidentGroup",
+        "name": "Load_Dim_FAM_OpenIncidentsGroup",
         "type": "SqlServerStoredProcedure",
-        "dependsOn": [],
         "policy": {
           "timeout": "0.12:00:00",
           "retry": 0,
@@ -13,21 +12,16 @@
           "secureOutput": false,
           "secureInput": false
         },
-        "userProperties": [],
         "typeProperties": {
-          "storedProcedureName": "[nuuMeta].[MaintainDW]",
+          "storedProcedureName": "[nuuMeta].[LoadDimension]",
           "storedProcedureParameters": {
-            "DestinationSchema": {
-              "value": "dim",
+            "StageTable": {
+              "value": "Dim_FAM_OpenIncidentsGroup",
               "type": "String"
             },
-            "DestinationTable": {
-              "value": "FAM_OpenIncidentGroup",
+            "DWTable": {
+              "value": "FAM_OpenIncidentsGroup",
               "type": "String"
-            },
-            "PrintSQL": {
-              "value": "false",
-              "type": "Boolean"
             }
           }
         },
@@ -38,8 +32,7 @@
       }
     ],
     "folder": {
-      "name": "0.9_Meta"
-    },
-    "annotations": []
+      "name": "0.3_Dimensions"
+    }
   }
 }

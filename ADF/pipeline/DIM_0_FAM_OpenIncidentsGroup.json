@@ -1,5 +1,5 @@
 {
-  "name": "DIM_0_FAM_OpenIncidentGroup",
+  "name": "DIM_0_FAM_OpenIncidentsGroup",
   "properties": {
     "activities": [
       {
@@ -9,7 +9,7 @@
         "userProperties": [],
         "typeProperties": {
           "pipeline": {
-            "referenceName": "DIM_1_FAM_OpenIncidentGroup_Transform",
+            "referenceName": "DIM_1_FAM_OpenIncidentsGroup_Transform",
             "type": "PipelineReference"
           },
           "waitOnCompletion": true,
@@ -35,7 +35,7 @@
         "userProperties": [],
         "typeProperties": {
           "pipeline": {
-            "referenceName": "DIM_1_FAM_OpenIncidentGroup_Load",
+            "referenceName": "DIM_1_FAM_OpenIncidentsGroup_Load",
             "type": "PipelineReference"
           },
           "waitOnCompletion": true,

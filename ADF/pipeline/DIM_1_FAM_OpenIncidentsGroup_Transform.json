@@ -1,9 +1,9 @@
 {
-  "name": "DIM_1_FAM_OpenIncidentGroup_Load",
+  "name": "DIM_1_FAM_OpenIncidentsGroup_Transform",
   "properties": {
     "activities": [
       {
-        "name": "Load_Dim_FAM_OpenIncidentGroup",
+        "name": "TRF_Dim_FAM_OpenIncidentsGroup",
         "type": "SqlServerStoredProcedure",
         "policy": {
           "timeout": "0.12:00:00",
@@ -13,15 +13,14 @@
           "secureInput": false
         },
         "typeProperties": {
-          "storedProcedureName": "[nuuMeta].[LoadDimension]",
+          "storedProcedureName": "stage.Transform_Dim_FAM_OpenIncidentsGroup",
           "storedProcedureParameters": {
-            "StageTable": {
-              "value": "Dim_FAM_OpenIncidentGroup",
-              "type": "String"
-            },
-            "DWTable": {
-              "value": "FAM_OpenIncidentGroup",
-              "type": "String"
+            "JobIsIncremental": {
+              "value": {
+                "value": "@pipeline().parameters.JobIsIncremental",
+                "type": "Expression"
+              },
+              "type": "Boolean"
             }
           }
         },
@@ -31,8 +30,16 @@
         }
       }
     ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      }
+    },
     "folder": {
       "name": "0.3_Dimensions"
-    }
+    },
+    "annotations": []
   }
 }
