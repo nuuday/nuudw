@@ -35,8 +35,10 @@
     [product.id]                                NVARCHAR (500) NULL,
     [outageid]                                  NVARCHAR (50)  NULL,
     [DWCreatedDate]                             DATETIME2 (7)  DEFAULT (getdate()) NULL,
-    CONSTRAINT [PK_ChipperTicketsTickets] PRIMARY KEY NONCLUSTERED ([SRC_DWValidFromDate] ASC, [id] ASC)
+    CONSTRAINT [PK_ChipperTicketsTickets] PRIMARY KEY NONCLUSTERED ([id] ASC, [SRC_DWValidFromDate] ASC)
 );
+
+
 
 
 GO

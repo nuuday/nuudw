@@ -14,8 +14,10 @@
     [SRC_DWIsDeletedInSource]   BIT            NULL,
     [SRC_DWDeletedInSourceDate] DATETIME2 (7)  NULL,
     [DWCreatedDate]             DATETIME2 (7)  DEFAULT (getdate()) NULL,
-    CONSTRAINT [PK_ChipperTicketsTags] PRIMARY KEY NONCLUSTERED ([SRC_DWValidFromDate] ASC, [id] ASC, [tags] ASC)
+    CONSTRAINT [PK_ChipperTicketsTags] PRIMARY KEY NONCLUSTERED ([id] ASC, [tags] ASC, [SRC_DWValidFromDate] ASC)
 );
+
+
 
 
 GO

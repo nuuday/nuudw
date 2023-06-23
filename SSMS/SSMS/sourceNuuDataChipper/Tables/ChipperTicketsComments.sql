@@ -16,8 +16,10 @@
     [SRC_DWIsDeletedInSource]   BIT             NULL,
     [SRC_DWDeletedInSourceDate] DATETIME2 (7)   NULL,
     [DWCreatedDate]             DATETIME2 (7)   DEFAULT (getdate()) NULL,
-    CONSTRAINT [PK_ChipperTicketsComments] PRIMARY KEY NONCLUSTERED ([comments.timestamp] ASC, [SRC_DWValidFromDate] ASC, [id] ASC)
+    CONSTRAINT [PK_ChipperTicketsComments] PRIMARY KEY NONCLUSTERED ([id] ASC, [comments.timestamp] ASC, [SRC_DWValidFromDate] ASC)
 );
+
+
 
 
 GO

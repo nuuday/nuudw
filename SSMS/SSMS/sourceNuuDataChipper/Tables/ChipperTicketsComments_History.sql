@@ -22,8 +22,10 @@
     [DWModifiedDate]            DATETIME2 (7)   NULL,
     [DWIsDeletedInSource]       BIT             NULL,
     [DWDeletedInSourceDate]     DATETIME2 (7)   NULL,
-    CONSTRAINT [PK_ChipperTicketsComments_History] PRIMARY KEY NONCLUSTERED ([comments.timestamp] ASC, [SRC_DWValidFromDate] ASC, [id] ASC, [DWValidFromDate] ASC)
+    CONSTRAINT [PK_ChipperTicketsComments_History] PRIMARY KEY NONCLUSTERED ([id] ASC, [comments.timestamp] ASC, [SRC_DWValidFromDate] ASC, [DWValidFromDate] ASC)
 );
+
+
 
 
 GO

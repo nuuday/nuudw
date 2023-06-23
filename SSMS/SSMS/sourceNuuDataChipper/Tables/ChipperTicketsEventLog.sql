@@ -18,8 +18,10 @@
     [SRC_DWDeletedInSourceDate]     DATETIME2 (7)  NULL,
     [eventLog.source.error.userId]  NVARCHAR (100) NULL,
     [DWCreatedDate]                 DATETIME2 (7)  DEFAULT (getdate()) NULL,
-    CONSTRAINT [PK_ChipperTicketsEventLog] PRIMARY KEY NONCLUSTERED ([SRC_DWValidFromDate] ASC, [eventLog.eventType] ASC, [eventLog.timestamp] ASC, [id] ASC)
+    CONSTRAINT [PK_ChipperTicketsEventLog] PRIMARY KEY NONCLUSTERED ([id] ASC, [eventLog.eventType] ASC, [eventLog.timestamp] ASC, [SRC_DWValidFromDate] ASC)
 );
+
+
 
 
 GO
