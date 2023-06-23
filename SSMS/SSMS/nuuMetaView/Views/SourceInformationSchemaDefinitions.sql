@@ -1,6 +1,7 @@
 ﻿
 
 
+
 CREATE VIEW [nuuMetaView].[SourceInformationSchemaDefinitions] AS
 
 
@@ -63,7 +64,7 @@ WITH ExtractSchema AS
 				ELSE [eis].NumericPrecisionNumber
 			END AS NumericPrecisionNumber,
 			[eis].NumericScaleNumber,
-			COALESCE(IIF( pk.Value IS NULL, NULL, ROW_NUMBER() OVER (PARTITION BY [eis].SourceObjectID ORDER BY pk.Value )), KeySequenceNumber) AS KeySequenceNumber,
+			COALESCE(IIF( pk.Value IS NULL, NULL, ROW_NUMBER() OVER (PARTITION BY [eis].SourceObjectID ORDER BY pk.ordinal )), KeySequenceNumber) AS KeySequenceNumber,
 			DataTypeName AS OriginalDataTypeName
 		FROM [nuuMeta].[SourceInformationSchema] eis
 		LEFT JOIN [nuuMeta].SourceObject obj
@@ -71,8 +72,8 @@ WITH ExtractSchema AS
 		LEFT JOIN [nuuMetaView].SourceConnectionDefinitions con
 			ON con.SourceConnectionName = obj.SourceConnectionName
 		OUTER APPLY (
-			SELECT Value 
-			FROM STRING_SPLIT(obj.PrimaryKeyColumns,',')
+			SELECT sp.value, sp.ordinal
+			FROM STRING_SPLIT(obj.PrimaryKeyColumns,',',1) sp
 			WHERE CAST(value AS nvarchar(128)) = eis.ColumnName
 		) pk
 
