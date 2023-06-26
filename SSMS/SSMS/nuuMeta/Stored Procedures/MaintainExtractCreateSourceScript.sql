@@ -56,7 +56,7 @@ SELECT
 FROM ' + @Schema + IIF( @Schema = '', '', '.' ) + '[' + @Table + ']
 ' +
 	CASE
-		WHEN WatermarkColumnName IS NULL THEN IIF(ExtractSQLFilter <> '', 'WHERE '+ExtractSQLFilter, '')
+		WHEN NULLIF(WatermarkColumnName,'') IS NULL THEN IIF(ExtractSQLFilter <> '', 'WHERE '+ExtractSQLFilter, '')
 		WHEN LEFT(WatermarkColumnName,6) = 'SRC_DW' THEN ' WHERE ' + IIF(ExtractSQLFilter <> '', ExtractSQLFilter + ' AND ', '') + RIGHT(WatermarkColumnName,LEN(WatermarkColumnName)-4) + ' > ' + @SQLLastValue
 		ELSE ' WHERE ' + IIF(ExtractSQLFilter <> '', ExtractSQLFilter + ' AND ', '') + WatermarkColumnName + ' > ' + @SQLLastValue		
 	END

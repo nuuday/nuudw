@@ -167,7 +167,7 @@ DECLARE @MatchType1 NVARCHAR(MAX)
 SELECT 
 	@MatchType1 = 
 		STRING_AGG(
-			'([target].[' + ColumnName + '] <> [source].[' + ColumnName + ']) OR ([target].[' + ColumnName + '] IS NULL AND [source].[' + ColumnName + '] IS NOT NULL) OR ([target].[' + ColumnName + '] IS NOT NULL AND [source].[' + ColumnName + '] IS NULL)',
+			CAST('([target].[' + ColumnName + '] <> [source].[' + ColumnName + ']) OR ([target].[' + ColumnName + '] IS NULL AND [source].[' + ColumnName + '] IS NOT NULL) OR ([target].[' + ColumnName + '] IS NOT NULL AND [source].[' + ColumnName + '] IS NULL)' AS NVARCHAR(MAX)),
 			' OR ' 
 		) WITHIN GROUP (ORDER BY OrdinalPosition),
 	@UpdateType1 = STRING_AGG('[target].[' + ColumnName + '] = [source].[' + ColumnName + ']', ',')  WITHIN GROUP (ORDER BY OrdinalPosition)
