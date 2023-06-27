@@ -1,4 +1,4 @@
-﻿CREATE TABLE [SourceNuudlLinkit].[LINK_KUNDE] (
+﻿CREATE TABLE [sourceNuudlLinkit].[LINK_KUNDE] (
     [NUUDL_SourceCreated]  DATETIME2 (7) NULL,
     [NUUDL_SourceUpdated]  DATETIME2 (7) NULL,
     [LINK_KUNDE_ID]        NVARCHAR (26) NULL,
@@ -42,5 +42,5 @@
 
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_LINK_KUNDE]
-    ON [SourceNuudlLinkit].[LINK_KUNDE];
+    ON [sourceNuudlLinkit].[LINK_KUNDE];
 

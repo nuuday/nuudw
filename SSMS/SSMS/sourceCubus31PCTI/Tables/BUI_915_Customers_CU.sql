@@ -1,4 +1,4 @@
-﻿CREATE TABLE [SourceCubus31PCTI].[BUI_915_Customers_CU] (
+﻿CREATE TABLE [sourceCubus31PCTI].[BUI_915_Customers_CU] (
     [LinkKundeID]     NVARCHAR (26) NULL,
     [CustomerNumber]  DECIMAL (10)  NULL,
     [AccountNumber]   NVARCHAR (10) NULL,
@@ -20,5 +20,5 @@
 
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_BUI_915_Customers_CU]
-    ON [SourceCubus31PCTI].[BUI_915_Customers_CU];
+    ON [sourceCubus31PCTI].[BUI_915_Customers_CU];
 

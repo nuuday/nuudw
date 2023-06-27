@@ -1,3 +1,0 @@
-﻿CREATE SCHEMA [SourceNuudlBIZ]
-    AUTHORIZATION [dbo];
-

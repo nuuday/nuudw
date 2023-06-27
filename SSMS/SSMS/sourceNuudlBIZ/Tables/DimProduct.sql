@@ -1,4 +1,4 @@
-﻿CREATE TABLE [SourceNuudlBIZ].[DimProduct] (
+﻿CREATE TABLE [sourceNuudlBIZ].[DimProduct] (
     [NUUDL_SourceCreated]           DATETIME2 (7)  NULL,
     [NUUDL_SourceUpdated]           DATETIME2 (7)  NULL,
     [ProductKey]                    INT            NULL,
@@ -69,5 +69,5 @@
 
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_DimProduct]
-    ON [SourceNuudlBIZ].[DimProduct];
+    ON [sourceNuudlBIZ].[DimProduct];
 

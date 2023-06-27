@@ -1,4 +1,4 @@
-﻿CREATE TABLE [SourceCubusMasterData].[DimEmployee] (
+﻿CREATE TABLE [sourceCubusMasterData].[DimEmployee] (
     [EmployeeKey]                 INT            NOT NULL,
     [SRC_DW_ID_DimEmployeeWork]   INT            NULL,
     [SRC_DW_AuditKey]             INT            NULL,
@@ -89,5 +89,5 @@
 
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_DimEmployee]
-    ON [SourceCubusMasterData].[DimEmployee];
+    ON [sourceCubusMasterData].[DimEmployee];
 
