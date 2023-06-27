@@ -80,6 +80,18 @@
     <Folder Include="sourceNuudlColumbus\Tables\" />
     <Folder Include="sourceNuudlColumbusView\" />
     <Folder Include="sourceNuudlColumbusView\Views\" />
+    <Folder Include="sourceNuudlLinkit\" />
+    <Folder Include="sourceNuudlLinkit\Tables\" />
+    <Folder Include="sourceNuudlBIZ\" />
+    <Folder Include="sourceNuudlBIZ\Tables\" />
+    <Folder Include="sourceCubusMasterData\" />
+    <Folder Include="sourceCubusMasterData\Tables\" />
+    <Folder Include="sourceCubus31PCTI\" />
+    <Folder Include="sourceCubus31PCTI\Tables\" />
+    <Folder Include="sourceNuudlLinkitView\" />
+    <Folder Include="sourceNuudlLinkitView\Views\" />
+    <Folder Include="sourceNuudlBIZView\" />
+    <Folder Include="sourceNuudlBIZView\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -350,6 +362,22 @@
     <Build Include="sourceNuudlColumbusView\Views\AFTALE_LID_History.sql" />
     <Build Include="Security\sourceNuudlColumbusView.sql" />
     <Build Include="Security\sourceNuudlColumbus.sql" />
+    <Build Include="sourceNuudlLinkit\Tables\LINK_KUNDE_History.sql" />
+    <Build Include="sourceNuudlLinkit\Tables\LINK_KUNDE.sql" />
+    <Build Include="sourceNuudlBIZ\Tables\DimProduct_History.sql" />
+    <Build Include="sourceNuudlBIZ\Tables\DimProduct.sql" />
+    <Build Include="sourceCubusMasterData\Tables\DimEmployee.sql" />
+    <Build Include="sourceCubus31PCTI\Tables\BUI_915_Customers_CU.sql" />
+    <Build Include="sourceNuudlLinkitView\Views\LINK_KUNDE_History.sql" />
+    <Build Include="sourceNuudlBIZView\Views\DimProduct_History.sql" />
+    <Build Include="Security\sourceNuudlLinkitView.sql" />
+    <Build Include="Security\sourceNuudlLinkit.sql" />
+    <Build Include="Security\sourceNuudlBIZView.sql" />
+    <Build Include="Security\sourceNuudlBIZ.sql" />
+    <Build Include="Security\sourceCubusMasterDataView.sql" />
+    <Build Include="Security\sourceCubusMasterData.sql" />
+    <Build Include="Security\sourceCubus31PCTIView.sql" />
+    <Build Include="Security\sourceCubus31PCTI.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
