@@ -135,19 +135,21 @@ DECLARE @Output NVARCHAR(MAX)
 SELECT 
 	@ColumnNameSource =
 		STRING_AGG(
-			CASE 
-				WHEN DataType LIKE '%char%' AND ColumnName NOT LIKE '%' + @BusinessKeySuffix AND ColumnName NOT LIKE '%Code'
-				THEN 'ISNULL([' + ColumnName + '],''' + @DefaultString + ''') AS [' + ColumnName + ']'
-				WHEN DataType IN ('int','tinyint','bigint','smallint','decimal','numeric','float','double','money') AND ColumnName NOT LIKE '%' + @BusinessKeySuffix AND ColumnName NOT LIKE '%Code'
-				THEN 'ISNULL([' + ColumnName + '],''' + @DefaultNumber + ''') AS [' + ColumnName + ']'
-				WHEN DataType LIKE '%date%' AND ColumnName NOT LIKE '%' + @BusinessKeySuffix AND ColumnName NOT LIKE '%Code'
-				THEN 'ISNULL([' + ColumnName + '],''' + @DefaultDate + ''') AS [' + ColumnName + ']'
-				WHEN DataType = 'bit' AND ColumnName NOT LIKE '%' + @BusinessKeySuffix AND ColumnName NOT LIKE '%Code'
-				THEN 'ISNULL([' + ColumnName + '],''' + @DefaultBit + ''') AS [' + ColumnName + ']'
-				WHEN ColumnName LIKE '%Code'
-				THEN 'ISNULL([' + ColumnName + '],''' + @DefaultDimensionMemberID + ''') AS [' + ColumnName + ']'
-				ELSE '[' + ColumnName + ']' 
-			END
+			CAST(
+				CASE 
+					WHEN DataType LIKE '%char%' AND ColumnName NOT LIKE '%' + @BusinessKeySuffix AND ColumnName NOT LIKE '%Code'
+					THEN 'ISNULL([' + ColumnName + '],''' + @DefaultString + ''') AS [' + ColumnName + ']'
+					WHEN DataType IN ('int','tinyint','bigint','smallint','decimal','numeric','float','double','money') AND ColumnName NOT LIKE '%' + @BusinessKeySuffix AND ColumnName NOT LIKE '%Code'
+					THEN 'ISNULL([' + ColumnName + '],''' + @DefaultNumber + ''') AS [' + ColumnName + ']'
+					WHEN DataType LIKE '%date%' AND ColumnName NOT LIKE '%' + @BusinessKeySuffix AND ColumnName NOT LIKE '%Code'
+					THEN 'ISNULL([' + ColumnName + '],''' + @DefaultDate + ''') AS [' + ColumnName + ']'
+					WHEN DataType = 'bit' AND ColumnName NOT LIKE '%' + @BusinessKeySuffix AND ColumnName NOT LIKE '%Code'
+					THEN 'ISNULL([' + ColumnName + '],''' + @DefaultBit + ''') AS [' + ColumnName + ']'
+					WHEN ColumnName LIKE '%Code'
+					THEN 'ISNULL([' + ColumnName + '],''' + @DefaultDimensionMemberID + ''') AS [' + ColumnName + ']'
+					ELSE '[' + ColumnName + ']' 
+				END
+			AS NVARCHAR(MAX))
 			, ',') WITHIN GROUP (ORDER BY OrdinalPosition),
 	@ColumnNameStage = STRING_AGG('[' + ColumnName + ']', ',' ) WITHIN GROUP (ORDER BY OrdinalPosition),
 	@Output = STRING_AGG('[source].[' + ColumnName + '] AS [' + ColumnName +']', ','  ) WITHIN GROUP (ORDER BY OrdinalPosition)
@@ -187,8 +189,8 @@ DECLARE @MatchType2 NVARCHAR(MAX)
 
 SELECT 
 	@MatchType2 = 
-		STRING_AGG(
-			'([target].[' + ColumnName + '] <> [source].[' + ColumnName + '] OR ([target].[' + ColumnName + '] IS NULL AND [source].[' + ColumnName + '] IS NOT NULL) OR ([target].[' + ColumnName + '] IS NOT NULL AND [source].[' + ColumnName + '] IS NULL))',
+		STRING_AGG(			
+			CAST('([target].[' + ColumnName + '] <> [source].[' + ColumnName + '] OR ([target].[' + ColumnName + '] IS NULL AND [source].[' + ColumnName + '] IS NOT NULL) OR ([target].[' + ColumnName + '] IS NOT NULL AND [source].[' + ColumnName + '] IS NULL))' AS NVARCHAR(MAX)),
 			' OR '
 		) WITHIN GROUP (ORDER BY OrdinalPosition)
 FROM #InformationSchema AS InformationSchema 
