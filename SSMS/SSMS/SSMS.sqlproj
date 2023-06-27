@@ -404,6 +404,12 @@
     <Build Include="cubeView_FAM\Views\Dim Calendar.sql" />
     <Build Include="bridgeView\Views\User Access.sql" />
     <Build Include="cubeView_FAM\Views\Bridge User Access.sql" />
+    <Build Include="stage\Tables\Fact_ActiveCustomers.sql" />
+    <Build Include="fact\Tables\ActiveCustomers_Temp.sql" />
+    <Build Include="fact\Tables\ActiveCustomers.sql" />
+    <Build Include="factView\Views\Active Customers.sql" />
+    <Build Include="cubeView_FAM\Views\Fact Active Customers.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Fact_ActiveCustomers.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
