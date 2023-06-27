@@ -338,7 +338,6 @@
     <Build Include="stage\Stored Procedures\Transform_Dim_FAM_SalesChannel.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_FAM_OpenIncidentsGroup.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_FAM_Infrastructure.sql" />
-    <Build Include="stage\Stored Procedures\Transform_Dim_FAM_DatePeriods.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_FAM_ChipperStatus.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_FAM_ChipperIncident.sql" />
     <Build Include="sourceNuuDataChipper\Tables\ChipperTicketsTickets_History.sql" />
