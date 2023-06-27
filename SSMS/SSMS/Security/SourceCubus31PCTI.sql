@@ -1,3 +1,0 @@
-﻿CREATE SCHEMA [SourceCubus31PCTI]
-    AUTHORIZATION [dbo];
-
