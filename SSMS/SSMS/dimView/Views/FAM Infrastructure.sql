@@ -2,7 +2,7 @@
 AS
 SELECT
 	[FAM_InfrastructureID]
-	,[FAM_InfrastructureKey] AS [F A M_ Infrastructure Key]
+	,[FAM_InfrastructureKey] AS [FAM Infrastructure Key]
 	,[InfrastructureName] AS [Infrastructure Name]
 	,[DWIsCurrent]
 	,[DWValidFromDate]
