@@ -40,6 +40,19 @@
 					},
 					"waitOnCompletion": true
 				}
+			},
+			{
+				"name": "FACT_0_ActiveCustomers",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "FACT_0_ActiveCustomers",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"folder": {
