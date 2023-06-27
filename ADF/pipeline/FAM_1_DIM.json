@@ -42,11 +42,15 @@
 				}
 			},
 			{
-				"name": "FAM_OpenIncidentGroup",
+				"name": "FAM_OpenIncidentsGroup",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DIM_0_FAM_OpenIncidentsGroup",
+						"type": "PipelineReference"
+					},
 					"waitOnCompletion": true
 				}
 			},
