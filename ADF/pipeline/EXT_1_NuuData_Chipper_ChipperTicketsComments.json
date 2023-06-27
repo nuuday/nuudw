@@ -1,0 +1,330 @@
+{
+  "name": "EXT_1_NuuData_Chipper_ChipperTicketsComments",
+  "properties": {
+    "activities": [
+      {
+        "name": "Lookup_IsReady_flag",
+        "type": "Lookup",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "7.00:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [],
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "sqlReaderQuery": "SELECT 1 AS IsReady",
+            "queryTimeout": "02:00:00",
+            "partitionOption": "None"
+          },
+          "dataset": {
+            "referenceName": "NuuData_Chipper_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "exportNuuDW.ChipperTicketsComments"
+            }
+          }
+        }
+      },
+      {
+        "name": "Evaluate_IsReady_flag",
+        "type": "IfCondition",
+        "dependsOn": [
+          {
+            "activity": "Lookup_IsReady_flag",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "userProperties": [],
+        "typeProperties": {
+          "expression": {
+            "value": "@equals(activity('Lookup_IsReady_flag').output.firstRow.IsReady,1)",
+            "type": "Expression"
+          },
+          "ifFalseActivities": [
+            {
+              "name": "IsReady",
+              "type": "Fail",
+              "dependsOn": [],
+              "userProperties": [],
+              "typeProperties": {
+                "message": "The source was not ready at execution time. Try re-running the pipeline at a later time.",
+                "errorCode": "0"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "Update_Meta_Tables",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Evaluate_IsReady_flag",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "nuuMeta.[UpdateSourceTables]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "NuuData_Chipper",
+              "type": "String"
+            },
+            "SourceConnectionType": {
+              "value": "SqlServer",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "exportNuuDW",
+              "type": "String"
+            },
+            "SourceObjectName": {
+              "value": "ChipperTicketsComments",
+              "type": "String"
+            },
+            "DestinationSchemaName": {
+              "value": "sourceNuuDataChipper",
+              "type": "String"
+            },
+            "WatermarkColumnName": {
+              "value": "DWModifiedDate",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "True",
+              "type": "Boolean"
+            },
+            "WatermarkRollingWindowDays": {
+              "value": "0",
+              "type": "Int32"
+            },
+            "WatermarkInQuery": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Lookup_Last_Value_Loaded",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Update_Meta_Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderStoredProcedureName": "nuuMeta.[GetLastValueLoaded]",
+            "storedProcedureParameters": {
+              "SourceConnectionName": {
+                "value": "NuuData_Chipper",
+                "type": "String"
+              },
+              "SourceSchemaName": {
+                "value": "exportNuuDW",
+                "type": "String"
+              },
+              "SourceTableName": {
+                "value": "ChipperTicketsComments",
+                "type": "String"
+              },
+              "JobIsIncremental": {
+                "value": "@pipeline().parameters.JobIsIncremental",
+                "type": "Boolean"
+              },
+              "ConnectionType": {
+                "value": "SqlServer",
+                "type": "String"
+              },
+              "WatermarkIsDate": {
+                "value": "True",
+                "type": "Boolean"
+              }
+            }
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjects"
+            }
+          }
+        }
+      },
+      {
+        "name": "Copy_ChipperTicketsComments",
+        "type": "Copy",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Last_Value_Loaded",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderQuery": {
+              "value": "\r\nSELECT \r\n[comments.author] \r\n,[comments.text] \r\n,[comments.timestamp] \r\n,[id] \r\n,[sourceFilename] \r\n,[processedTimestamp] \r\n,[hour] \r\n,[quarterhour] \r\n,[DWSourceFilePath] AS [SRC_DWSourceFilePath]\r\n,[DWIsCurrent] AS [SRC_DWIsCurrent]\r\n,[DWValidFromDate] AS [SRC_DWValidFromDate]\r\n,[DWValidToDate] AS [SRC_DWValidToDate]\r\n,[DWCreatedDate] AS [SRC_DWCreatedDate]\r\n,[DWModifiedDate] AS [SRC_DWModifiedDate]\r\n,[DWIsDeletedInSource] AS [SRC_DWIsDeletedInSource]\r\n,[DWDeletedInSourceDate] AS [SRC_DWDeletedInSourceDate]\r\n \r\nFROM exportNuuDW.[ChipperTicketsComments]\r\n WHERE DWModifiedDate > convert(datetime, stuff(stuff(stuff('@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}', 9, 0, ' '), 12, 0, ':'), 15, 0, ':'))",
+              "type": "Expression"
+            }
+          },
+          "sink": {
+            "type": "SqlSink",
+            "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+            "preCopyScript": "TRUNCATE TABLE [sourceNuuDataChipper].[ChipperTicketsComments]"
+          },
+          "enableStaging": false,
+          "cloudDataMovementUnits": 0
+        },
+        "inputs": [
+          {
+            "referenceName": "NuuData_Chipper_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "exportNuuDW.ChipperTicketsComments"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "[sourceNuuDataChipper].[ChipperTicketsComments]"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Merge_To_History",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Copy_ChipperTicketsComments",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "nuuMeta.[LoadSourceObjectHistory]",
+          "storedProcedureParameters": {
+            "ExtractTable": {
+              "value": "sourceNuuDataChipper.ChipperTicketsComments",
+              "type": "String"
+            },
+            "LoadIsIncremental": {
+              "value": "@pipeline().parameters.JobIsIncremental",
+              "type": "Boolean"
+            },
+            "HistoryTrackingColumns": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Set_Last_Value_Loaded",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Merge_To_History",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "nuuMeta.[SetLastLoadedValue]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "NuuData_Chipper",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "exportNuuDW",
+              "type": "String"
+            },
+            "SourceTableName": {
+              "value": "ChipperTicketsComments",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "True",
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    }
+  }
+}

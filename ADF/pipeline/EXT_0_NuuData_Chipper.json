@@ -1,0 +1,82 @@
+{
+  "name": "EXT_0_NuuData_Chipper",
+  "properties": {
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    },
+    "activities": [
+      {
+        "name": "ChipperTicketsComments",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_NuuData_Chipper_ChipperTicketsComments",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "ChipperTicketsEventLog",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_NuuData_Chipper_ChipperTicketsEventLog",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "ChipperTicketsTags",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_NuuData_Chipper_ChipperTicketsTags",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "ChipperTicketsTickets",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_NuuData_Chipper_ChipperTicketsTickets",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      }
+    ]
+  }
+}

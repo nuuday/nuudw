@@ -261,7 +261,7 @@ Generate script for adding extended property for type 2 columns
 ***********************************************************************************************************************************************************************/
 DECLARE @ExtendendPropertyType2Column NVARCHAR(MAX)
 
-SELECT @ExtendendPropertyType2Column = STRING_AGG('EXEC sys.sp_addextendedproperty @name=N''HistoryType'', @value=N''Type2'' ,@level0type = N''Schema'', @level0name = ''dim'' ,@level1type = N''Table'',  @level1name = ''' + @DestinationTable + ''' ,@level2type = N''Column'', @level2name = ''' + ColumnName + '''', @CRLF)
+SELECT @ExtendendPropertyType2Column = STRING_AGG(CAST('EXEC sys.sp_addextendedproperty @name=N''HistoryType'', @value=N''Type2'' ,@level0type = N''Schema'', @level0name = ''dim'' ,@level1type = N''Table'',  @level1name = ''' + @DestinationTable + ''' ,@level2type = N''Column'', @level2name = ''' + ColumnName + '''' AS NVARCHAR(MAX)), @CRLF)
 FROM #InformationSchema
 WHERE IsType2 = 1
 

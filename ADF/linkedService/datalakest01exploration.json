@@ -1,0 +1,19 @@
+{
+	"name": "datalakest01exploration",
+	"properties": {
+		"description": "To stage data from Delta Lake",
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://datalakest01exploration.dfs.core.windows.net/",
+			"accountKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "Variable-AccountKey-datalakest01exploration"
+			}
+		}
+	}
+}

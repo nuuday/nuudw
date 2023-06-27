@@ -1,0 +1,287 @@
+{
+	"name": "EXT_1_NuuDL_Linkit_LINK_KUNDE",
+	"properties": {
+		"activities": [
+			{
+				"name": "Update_Meta_Tables",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[UpdateSourceTables]",
+					"storedProcedureParameters": {
+						"SourceConnectionName": {
+							"value": "NuuDL_Linkit",
+							"type": "String"
+						},
+						"SourceConnectionType": {
+							"value": "AzureDatabricksDeltaLake",
+							"type": "String"
+						},
+						"SourceSchemaName": {
+							"value": "linkit",
+							"type": "String"
+						},
+						"SourceObjectName": {
+							"value": "LINK_KUNDE",
+							"type": "String"
+						},
+						"DestinationSchemaName": {
+							"value": "SourceNuudlLinkit",
+							"type": "String"
+						},
+						"WatermarkColumnName": {
+							"value": "NUUDL_CuratedBatchID",
+							"type": "String"
+						},
+						"WatermarkIsDate": {
+							"value": "False",
+							"type": "Boolean"
+						},
+						"WatermarkRollingWindowDays": {
+							"value": "0",
+							"type": "Int32"
+						},
+						"WatermarkInQuery": {
+							"value": "",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Lookup_Last_Value_Loaded",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Update_Meta_Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlSource",
+						"sqlReaderStoredProcedureName": "[nuuMeta].[GetLastValueLoaded]",
+						"storedProcedureParameters": {
+							"SourceConnectionName": {
+								"type": "String",
+								"value": "NuuDL_Linkit"
+							},
+							"SourceSchemaName": {
+								"type": "String",
+								"value": "linkit"
+							},
+							"SourceTableName": {
+								"type": "String",
+								"value": "LINK_KUNDE"
+							},
+							"JobIsIncremental": {
+								"type": "Boolean",
+								"value": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								}
+							},
+							"ConnectionType": {
+								"type": "String",
+								"value": "AzureDatabricksDeltaLake"
+							},
+							"WatermarkIsDate": {
+								"type": "Boolean",
+								"value": "False"
+							}
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "nuudwsqldb01_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "nuuMeta.SourceObjects"
+						}
+					}
+				}
+			},
+			{
+				"name": "Copy_LINK_KUNDE",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Lookup_Last_Value_Loaded",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureDatabricksDeltaLakeSource",
+						"query": {
+							"value": "\r\nSELECT \r\n`NUUDL_SourceCreated` \r\n,`NUUDL_SourceUpdated` \r\n,`LINK_KUNDE_ID` \r\n,`LINK_KUNDENR` \r\n,`STILLING` \r\n,`FORNAVN` \r\n,`EFTERNAVN` \r\n,`BUSINESS_NAVN1` \r\n,`BUSINESS_NAVN2` \r\n,`KUNDE_KATEGORI` \r\n,`KUNDE_TYPE` \r\n,`CVR_NR` \r\n,`FOEDSELSDATO` \r\n,`CPR_NR` \r\n,`KOEN` \r\n,`SIKKERHEDSKODE` \r\n,`SLUT_MRK` \r\n,`TOTAL_ENGAGEMENT` \r\n,`UDLANDS_CVR_NR` \r\n,`KUNDE_STATUS` \r\n,`POPNAVN` \r\n,`POP_FORNAVN` \r\n,`POP_EFTERNAVN` \r\n,`AENDRINGSSTATUS` \r\n,`SIDST_OPD_TSTMP` \r\n,`SIDST_OPD_INIT` \r\n,`LINK_AARSAG_ID` \r\n,`BONUS_FLAG` \r\n,`NUUDL_ID` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`BIZ_BatchCreatedID` \r\n,`BIZ_BatchUpdatedID` \r\n,`NUUDL_PKLatest` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM linkit.`LINK_KUNDE`\r\n WHERE NUUDL_ValidTo>='2017-01-01' AND NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "AzureDatabricksDeltaLakeExportCommand"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						},
+						"preCopyScript": "TRUNCATE TABLE [SourceNuudlLinkit].[LINK_KUNDE]"
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "datalakest01exploration",
+							"type": "LinkedServiceReference"
+						},
+						"path": "adfstage"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "NuuDL_Linkit_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "linkit.LINK_KUNDE"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "nuudwsqldb01_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "[SourceNuudlLinkit].[LINK_KUNDE]"
+						}
+					}
+				]
+			},
+			{
+				"name": "Merge_To_History",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy_LINK_KUNDE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[LoadSourceObjectHistory]",
+					"storedProcedureParameters": {
+						"ExtractTable": {
+							"value": "SourceNuudlLinkit.LINK_KUNDE",
+							"type": "String"
+						},
+						"LoadIsIncremental": {
+							"value": {
+								"value": "@pipeline().parameters.JobIsIncremental",
+								"type": "Expression"
+							},
+							"type": "Boolean"
+						},
+						"HistoryTrackingColumns": {
+							"value": "",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Set_Last_Value_Loaded",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Merge_To_History",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[SetLastLoadedValue]",
+					"storedProcedureParameters": {
+						"SourceConnectionName": {
+							"value": "NuuDL_Linkit",
+							"type": "String"
+						},
+						"SourceSchemaName": {
+							"value": "linkit",
+							"type": "String"
+						},
+						"SourceTableName": {
+							"value": "LINK_KUNDE",
+							"type": "String"
+						},
+						"WatermarkIsDate": {
+							"value": "False",
+							"type": "Boolean"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"JobIsIncremental": {
+				"type": "Bool",
+				"defaultValue": true
+			},
+			"WriteBatchSize": {
+				"type": "Int",
+				"defaultValue": 10000
+			}
+		},
+		"folder": {
+			"name": "0.1_Extracts"
+		},
+		"annotations": []
+	}
+}

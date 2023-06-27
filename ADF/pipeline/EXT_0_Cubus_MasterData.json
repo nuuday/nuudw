@@ -1,0 +1,37 @@
+{
+  "name": "EXT_0_Cubus_MasterData",
+  "properties": {
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    },
+    "activities": [
+      {
+        "name": "DimEmployee",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Cubus_MasterData_DimEmployee",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      }
+    ]
+  }
+}

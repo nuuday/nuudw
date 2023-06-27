@@ -1,0 +1,189 @@
+{
+  "name": "EXT_1_Cubus_MasterData_DimEmployee",
+  "properties": {
+    "activities": [
+      {
+        "name": "Lookup_IsReady_flag",
+        "type": "Lookup",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "7.00:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [],
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "sqlReaderQuery": "SELECT 1 AS IsReady",
+            "queryTimeout": "02:00:00",
+            "partitionOption": "None"
+          },
+          "dataset": {
+            "referenceName": "Cubus_MasterData_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "Dimension.DimEmployee"
+            }
+          }
+        }
+      },
+      {
+        "name": "Evaluate_IsReady_flag",
+        "type": "IfCondition",
+        "dependsOn": [
+          {
+            "activity": "Lookup_IsReady_flag",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "userProperties": [],
+        "typeProperties": {
+          "expression": {
+            "value": "@equals(activity('Lookup_IsReady_flag').output.firstRow.IsReady,1)",
+            "type": "Expression"
+          },
+          "ifFalseActivities": [
+            {
+              "name": "IsReady",
+              "type": "Fail",
+              "dependsOn": [],
+              "userProperties": [],
+              "typeProperties": {
+                "message": "The source was not ready at execution time. Try re-running the pipeline at a later time.",
+                "errorCode": "0"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "Update_Meta_Tables",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Evaluate_IsReady_flag",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "nuuMeta.[UpdateSourceTables]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "Cubus_MasterData",
+              "type": "String"
+            },
+            "SourceConnectionType": {
+              "value": "SqlServer",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "Dimension",
+              "type": "String"
+            },
+            "SourceObjectName": {
+              "value": "DimEmployee",
+              "type": "String"
+            },
+            "DestinationSchemaName": {
+              "value": "SourceCubusMasterData",
+              "type": "String"
+            },
+            "WatermarkColumnName": {
+              "value": "",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "False",
+              "type": "Boolean"
+            },
+            "WatermarkRollingWindowDays": {
+              "value": "0",
+              "type": "Int32"
+            },
+            "WatermarkInQuery": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Copy_DimEmployee",
+        "type": "Copy",
+        "dependsOn": [
+          {
+            "activity": "Update_Meta_Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderQuery": {
+              "value": "\r\nSELECT \r\n[EmployeeKey] \r\n,[DW_ID_DimEmployeeWork] AS [SRC_DW_ID_DimEmployeeWork]\r\n,[DW_AuditKey] AS [SRC_DW_AuditKey]\r\n,[DW_Batch_Created_ID] AS [SRC_DW_Batch_Created_ID]\r\n,[DW_Batch_Updated_ID] AS [SRC_DW_Batch_Updated_ID]\r\n,[DW_CreateDate] AS [SRC_DW_CreateDate]\r\n,[DW_UpdateDate] AS [SRC_DW_UpdateDate]\r\n,[DW_Valid_From] AS [SRC_DW_Valid_From]\r\n,[DW_Valid_To] AS [SRC_DW_Valid_To]\r\n,[DW_EarlyArrived] AS [SRC_DW_EarlyArrived]\r\n,[DW_IsCurrent] AS [SRC_DW_IsCurrent]\r\n,[DW_IsDeleted] AS [SRC_DW_IsDeleted]\r\n,[DW_CRC] AS [SRC_DW_CRC]\r\n,[Source_Updated_TS] \r\n,[Source_Created_TS] \r\n,[Source_Updated_By] \r\n,[Source_Created_By] \r\n,[EmployeeID] \r\n,[EmployeeRecord] \r\n,[SourceSystem] \r\n,[JobIndicator] \r\n,[EmployeeStatus] \r\n,[Sex] \r\n,[BirthDate] \r\n,[FirstName] \r\n,[LastName] \r\n,[Name] \r\n,[LocalPhone] \r\n,[MobilePhone] \r\n,[FAX] \r\n,[WorkplacePhone] \r\n,[AlternativePhone] \r\n,[RoomNumber] \r\n,[PostalRoomNumber] \r\n,[Email] \r\n,[UserID] \r\n,[SeniorityDate] \r\n,[AnniversaryDate] \r\n,[StandardHours] \r\n,[OriginalHireDate] \r\n,[LatestHireDate] \r\n,[TerminationDate] \r\n,[LocationID] \r\n,[WorkAddress] \r\n,[WorkZipCode] \r\n,[WorkPostalDistrict] \r\n,[BusinessTitleCode] \r\n,[BusinessTitle] \r\n,[BusinessTitleShort] \r\n,[BusinessStatisticsCode] \r\n,[BusinessFunction] \r\n,[JobStatus] \r\n,[JobCode] \r\n,[JobCodeDescription] \r\n,[EmployeeClass] \r\n,[SalaryAdminPlan] \r\n,[SalaryGrade] \r\n,[PayGroup] \r\n,[SalaryType] \r\n,[EmployeeType] \r\n,[DepartmentID] \r\n,[DepartmentDescription] \r\n,[DepartmentDescriptionShort] \r\n,[ManagerEmployeeID] \r\n,[AONR] \r\n,[Company] \r\n,[CompanyDescription] \r\n,[CompanyDescriptionShort] \r\n,[EmployeeTypeCode] \r\n,[TerminationInfo] \r\n,[EmployeeStatusDescription] \r\n,[SexDescription] \r\n,[SkillGroup] \r\n,[IsManager] \r\n,[SquadID] \r\n,[SquadDescription] \r\n,[SquadDescriptionShort] \r\n,[IsAgileCoach] \r\n,[IsProductOwner] \r\n,[ApprovedEmailDomain] \r\n,[ChapterAreaID] \r\n,[ChapterAreaDescription] \r\n,[ChapterAreaDescriptionShort] \r\n \r\nFROM Dimension.[DimEmployee]\r\n",
+              "type": "Expression"
+            }
+          },
+          "sink": {
+            "type": "SqlSink",
+            "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+            "preCopyScript": "TRUNCATE TABLE [SourceCubusMasterData].[DimEmployee]"
+          },
+          "enableStaging": false,
+          "cloudDataMovementUnits": 0
+        },
+        "inputs": [
+          {
+            "referenceName": "Cubus_MasterData_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "Dimension.DimEmployee"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "[SourceCubusMasterData].[DimEmployee]"
+            }
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    }
+  }
+}

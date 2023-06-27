@@ -1,8 +1,8 @@
 {
-  "name": "nuudwsqldb01_DynamicDataset",
+  "name": "Cubus31_PCTI_DynamicDataset",
   "properties": {
     "linkedServiceName": {
-      "referenceName": "nuudwsqldb01",
+      "referenceName": "Cubus31_PCTI",
       "type": "LinkedServiceReference"
     },
     "parameters": {
@@ -10,7 +10,7 @@
         "type": "string"
       }
     },
-    "type": "AzureSqlTable",
+    "type": "SqlServerTable",
     "schema": [],
     "typeProperties": {
       "schema": {
