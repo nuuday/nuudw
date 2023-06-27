@@ -71,6 +71,7 @@
     <Folder Include="fact\Tables\" />
     <Folder Include="factView\" />
     <Folder Include="factView\Views\" />
+    <Folder Include="dbo\Functions\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -271,6 +272,55 @@
     <Build Include="stage\Stored Procedures\Transform_Dim_Customer.sql" />
     <Build Include="stage\Tables\Fact_ProductTransactions.sql" />
     <Build Include="fact\Tables\ProductTransactions_Temp.sql" />
+    <Build Include="stage\Tables\Fact_ChipperIncidents.sql" />
+    <Build Include="stage\Tables\Fact_ChipperIncidentEvents.sql" />
+    <Build Include="stage\Tables\Dim_Legacy_Product.sql" />
+    <Build Include="stage\Tables\Dim_Legacy_Employee.sql" />
+    <Build Include="stage\Tables\Dim_Legacy_Customer.sql" />
+    <Build Include="stage\Tables\Dim_FAM_Technology.sql" />
+    <Build Include="stage\Tables\Dim_FAM_SalesChannel.sql" />
+    <Build Include="stage\Tables\Dim_FAM_OpenIncidentsGroup.sql" />
+    <Build Include="stage\Tables\Dim_FAM_Infrastructure.sql" />
+    <Build Include="stage\Tables\Dim_FAM_ChipperStatus.sql" />
+    <Build Include="stage\Tables\Dim_FAM_ChipperIncident.sql" />
+    <Build Include="fact\Tables\ChipperIncidents_Temp.sql" />
+    <Build Include="fact\Tables\ChipperIncidents.sql" />
+    <Build Include="fact\Tables\ChipperIncidentEvents_Temp.sql" />
+    <Build Include="fact\Tables\ChipperIncidentEvents.sql" />
+    <Build Include="dim\Tables\Legacy_Product.sql" />
+    <Build Include="dim\Tables\Legacy_Employee.sql" />
+    <Build Include="dim\Tables\Legacy_Customer.sql" />
+    <Build Include="dim\Tables\FAM_Technology.sql" />
+    <Build Include="dim\Tables\FAM_SalesChannel.sql" />
+    <Build Include="dim\Tables\FAM_OpenIncidentsGroup.sql" />
+    <Build Include="dim\Tables\FAM_Infrastructure.sql" />
+    <Build Include="dim\Tables\FAM_ChipperStatus.sql" />
+    <Build Include="dim\Tables\FAM_ChipperIncident.sql" />
+    <Build Include="factView\Views\Chipper Incidents.sql" />
+    <Build Include="factView\Views\Chipper Incident Events.sql" />
+    <Build Include="dimView\Views\Legacy Product.sql" />
+    <Build Include="dimView\Views\Legacy Employee.sql" />
+    <Build Include="dimView\Views\Legacy Customer.sql" />
+    <Build Include="dimView\Views\FAM Technology.sql" />
+    <Build Include="dimView\Views\FAM Sales Channel.sql" />
+    <Build Include="dimView\Views\FAM Open Incidents Group.sql" />
+    <Build Include="dimView\Views\FAM Infrastructure.sql" />
+    <Build Include="dimView\Views\FAM Chipper Status.sql" />
+    <Build Include="dimView\Views\FAM Chipper Incident.sql" />
+    <Build Include="dimView\Views\DatePeriods.sql" />
+    <Build Include="dbo\Functions\udf_GetNumeric.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Fact_ChipperIncidents.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Fact_ChipperIncidentEvents.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_Legacy_Product.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_Legacy_Employee.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_Legacy_Customer.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_FAM_Technology.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_FAM_SalesChannel.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_FAM_OpenIncidentsGroup.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_FAM_Infrastructure.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_FAM_DatePeriods.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_FAM_ChipperStatus.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_FAM_ChipperIncident.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

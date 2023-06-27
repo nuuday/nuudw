@@ -1,0 +1,23 @@
+﻿CREATE VIEW [dimView].[Legacy Employee] 
+AS
+SELECT
+	[Legacy_EmployeeID]
+	,[Legacy_EmployeeKey] AS [Legacy_ Employee Key]
+	,[EmployeeFirstName] AS [Employee First Name]
+	,[EmployeeLastName] AS [Employee Last Name]
+	,[EmployeeName] AS [Employee Name]
+	,[EmployeeUserCode] AS [Employee User Code]
+	,[TerminationDate] AS [Termination Date]
+	,[EmployeeDepartmentDescriptionShort] AS [Employee Department Description Short]
+	,[EmployeeOrganizationCode] AS [Employee Organization Code]
+	,[Legacy_EmployeeIsCurrent] AS [Legacy_ Employee Is Current]
+	,[Legacy_EmployeeValidFromDate] AS [Legacy_ Employee Valid From Date]
+	,[Legacy_EmployeeValidToDate] AS [Legacy_ Employee Valid To Date]
+	,[DWIsCurrent]
+	,[DWValidFromDate]
+	,[DWValidToDate]
+	,[DWCreatedDate]
+	,[DWModifiedDate]
+	,[DWIsDeleted]
+	
+FROM [dim].[Legacy_Employee]
