@@ -19,10 +19,10 @@ CREATE PROCEDURE [nuuMeta].[LoadFact]
 AS
 /*
 DECLARE 
-	@StageTable  NVARCHAR(100) = 'Fact_ProductTransactions', --Input is the dimensions name without schema
+	@StageTable  NVARCHAR(100) = 'Fact_ChipperIncidents', --Input is the dimensions name without schema
 	@DWSchema NVARCHAR(10) = 'fact',
-	@DWTable  NVARCHAR(100) = 'ProductTransactions', --Input is the dimensions name without schema
-	@LoadPattern NVARCHAR(50) = 'FactMerge',
+	@DWTable  NVARCHAR(100) = 'ChipperIncidents', --Input is the dimensions name without schema
+	@LoadPattern NVARCHAR(50) = 'FactAdd',
 	@IncrementalFlag BIT = 1,
 	@CleanUpPartitionsFlag BIT = 1,
 	@PrintSQL BIT = 1
@@ -137,6 +137,14 @@ WHERE
 	dim.IsType2Dimension = 'Yes'
 	AND inf.DatabaseName = 'Stage'
 
+INSERT #Type2FromSource (DimensionTable)
+SELECT DISTINCT
+	table_name AS DimensionTable
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE
+	REPLACE( column_name, table_name, '' ) IN ('IsCurrent', 'ValidFromDate', 'ValidToDate')
+	AND TABLE_SCHEMA = 'dim' 				
+		
 
 /**********************************************************************************************************************************************************************
 2. Create Loop counter variables and Type2FromSource variable
@@ -166,7 +174,7 @@ SELECT
 ***********************************************************************************************************************************************************************/
 DECLARE @Select NVARCHAR(MAX) = ''
 
-SELECT @Select = STRING_AGG('[' + inf.TableName + '].[' + inf.ColumnName + ']',',')
+SELECT @Select = STRING_AGG(CAST('[' + inf.TableName + '].[' + inf.ColumnName + ']' AS NVARCHAR(MAX)),',')
 FROM #InformationSchema AS inf
 WHERE inf.DatabaseName = 'Stage'
 	AND inf.ColumnName NOT LIKE '%'+@BusinessKeySuffix
@@ -182,8 +190,8 @@ DECLARE @IDType2Columns NVARCHAR(MAX)
 DECLARE @IDType2 NVARCHAR(MAX)
 
 SELECT 
-	@IDType2Merge = STRING_AGG('ISNULL([' + RolePlayingDimension + '].[' + DimensionTable + @SurrogateKeySuffix + '],' + ErrorValue +') AS [' + RolePlayingDimension + @SurrogateKeySuffix + ']',',')	
-	, @IDType2Columns = STRING_AGG('[' + RolePlayingDimension + @SurrogateKeySuffix + ']',',')	
+	@IDType2Merge = STRING_AGG(CAST('ISNULL([' + RolePlayingDimension + '].[' + DimensionTable + @SurrogateKeySuffix + '],' + ErrorValue +') AS [' + RolePlayingDimension + @SurrogateKeySuffix + ']' AS NVARCHAR(MAX)),',')	
+	, @IDType2Columns = STRING_AGG(CAST('[' + RolePlayingDimension + @SurrogateKeySuffix + ']' AS NVARCHAR(MAX)),',')	
 	, @IDType2 = STRING_AGG('[' + RolePlayingDimension + '].[' + DimensionTable + @SurrogateKeySuffix + ']' + CASE WHEN RolePlayingDimension <> DimensionTable THEN ' AS [' + RolePlayingDimension + @SurrogateKeySuffix + ']'	ELSE '' END,',')	
 FROM #Type2CombinedKeys
 WHERE NewDimension = 'Yes' 
@@ -197,19 +205,30 @@ SET @IDType2 = @IDType2 + ','
 7. Create the select ID part for source code 
 ***********************************************************************************************************************************************************************/
 DECLARE @IDMerge NVARCHAR(MAX) 
+DECLARE @ColumnNameIDFact NVARCHAR(MAX) 
 
 SELECT
 	@IDMerge = STRING_AGG(
-		CASE
-			WHEN RolePlayingDimension IS NOT NULL THEN 'ISNULL([' + RolePlayingDimension + '].[' + DimensionTable + @SurrogateKeySuffix + '],' + ErrorValue + ') AS [' + RolePlayingDimension + @SurrogateKeySuffix + ']'
-			ELSE 'ISNULL([' + DimensionTable + '].[' + DimensionTable + @SurrogateKeySuffix + '],' + ErrorValue + ') AS ' + '[' + DimensionTable + @SurrogateKeySuffix + ']'
-		END, ',')
+		CAST(
+			CASE
+				WHEN RolePlayingDimension IS NOT NULL THEN 'ISNULL([' + RolePlayingDimension + '].[' + DimensionTable + @SurrogateKeySuffix + '],' + ErrorValue + ') AS [' + RolePlayingDimension + @SurrogateKeySuffix + ']'
+				ELSE 'ISNULL([' + DimensionTable + '].[' + DimensionTable + @SurrogateKeySuffix + '],' + ErrorValue + ') AS ' + '[' + DimensionTable + @SurrogateKeySuffix + ']'
+			END 
+		AS NVARCHAR(MAX)), ',')
+	,@ColumnNameIDFact = STRING_AGG(
+		CAST(
+			CASE
+				WHEN RolePlayingDimension IS NOT NULL THEN '[' + RolePlayingDimension + @SurrogateKeySuffix + ']' 
+				ELSE '[' + DimensionTable + @SurrogateKeySuffix + ']'
+			END		
+		AS NVARCHAR(MAX)),',')
 FROM #Dimensions
 WHERE
 	NewDimension = 'Yes'
 	AND IsType2Dimension = 'No'
 
 SET @IDMerge = @IDMerge + ','
+SET @ColumnNameIDFact = @ColumnNameIDFact + ','
 
 /**********************************************************************************************************************************************************************
 8. Create the the left join part for Type2 dimensions
@@ -226,7 +245,7 @@ SET @DatetimeValue =
 	
 SELECT
 	@LeftJoinType2 = STRING_AGG(
-		CASE
+		CAST(CASE
 			WHEN NewDimension = 'Yes' THEN 'LEFT JOIN [' + @DatabaseNameDW + '].[dim].[' + Type2CombinedKeys.DimensionTable + '] ' +
 					CASE
 						WHEN RolePlayingDimension IS NOT NULL THEN ' AS [' + RolePlayingDimension + ']'
@@ -239,11 +258,10 @@ SELECT
 						ELSE '[' + RolePlayingDimension + '].[DWIsCurrent] = 1 '
 					END + @CRLF + 'AND [' + RolePlayingDimension + '].[' + ColumnMapping + '] = [' + @StageTable + '].[' + ColumnName + ']'
 			ELSE 'AND [' + RolePlayingDimension + '].[' + ColumnMapping + '] = [' + @StageTable + '].[' + ColumnName + ']'
-		END, @CRLF)
+		END AS NVARCHAR(MAX)), @CRLF)
 FROM #Type2CombinedKeys AS Type2CombinedKeys
 LEFT JOIN #Type2FromSource AS Type2FromSource
 	ON Type2FromSource.DimensionTable = Type2CombinedKeys.DimensionTable
-
 
 
 
@@ -254,7 +272,7 @@ DECLARE @LeftJoin NVARCHAR(MAX)
 
 SELECT
 	@LeftJoin = STRING_AGG(
-		CASE
+		CAST(CASE
 			WHEN NewDimension = 'Yes' THEN 'LEFT JOIN [' + @DatabaseNameDW + '].[dim].[' + DimensionTable + '] ' +
 					CASE
 						WHEN RolePlayingDimension IS NOT NULL THEN ' AS [' + RolePlayingDimension + ']'
@@ -280,7 +298,7 @@ SELECT
 						WHEN ColumnMapping = 'CalendarKey' THEN ' IIF([' + @StageTable + '].[' + ColumnName + '] > ''' + @MaxCalendarKey + ''',''' + @MaxCalendarKey + ''',[' + @StageTable + '].[' + ColumnName + '] )'
 						ELSE '[' + @StageTable + '].[' + ColumnName + ']'
 					END
-		END, @CRLF)
+		END AS NVARCHAR(MAX)), @CRLF)
 FROM #Dimensions
 WHERE IsType2Dimension = 'No'
 
@@ -292,7 +310,7 @@ WHERE IsType2Dimension = 'No'
 DECLARE @Keys NVARCHAR(MAX) --Holds the value of @Keys
 
 SELECT
-	@Keys = STRING_AGG('[source].[' + ColumnName + '] = [target].[' + ColumnName + ']',' AND ')
+	@Keys = STRING_AGG(CAST('[source].[' + ColumnName + '] = [target].[' + ColumnName + ']' AS NVARCHAR(MAX)),' AND ')
 FROM #InformationSchema
 WHERE
 	PrimaryKey = 1
@@ -304,7 +322,7 @@ WHERE
 ***********************************************************************************************************************************************************************/
 DECLARE @ColumnNameFact NVARCHAR(MAX) --Holds the value of @ColumnNameDim for each loop
 
-SELECT @ColumnNameFact = STRING_AGG('[' + InformationSchema.ColumnName + ']',',')
+SELECT @ColumnNameFact = STRING_AGG(CAST('[' + InformationSchema.ColumnName + ']' AS NVARCHAR(MAX)),',')
 FROM #InformationSchema AS InformationSchema	
 WHERE DatabaseName = 'DW'
 	AND InformationSchema.ColumnName NOT LIKE '%ID'
@@ -313,38 +331,14 @@ SET @ColumnNameFact = @ColumnNameFact + ','
 
 
 /**********************************************************************************************************************************************************************
-11. Create the columns from stage for the merge script
-***********************************************************************************************************************************************************************/
-DECLARE @ColumnNameIDFact NVARCHAR(MAX) --Holds the value of @ColumnNameDim for each loop
-
-SELECT @ColumnNameIDFact = STRING_AGG('[' + InformationSchema.ColumnName + ']',',')
-FROM 
-	#InformationSchema AS InformationSchema
-LEFT JOIN
-	(SELECT
-		RolePlayingDimension,
-		SUM( OrdinalPosition ) AS OrdinalPosition
-	FROM #Type2CombinedKeys
-	GROUP BY RolePlayingDimension
-	) AS Type2Columns
-		ON CONCAT(Type2Columns.RolePlayingDimension,'ID') = InformationSchema.ColumnName
-WHERE 
-			DatabaseName = 'DW'
-	AND Type2Columns.RolePlayingDimension IS NULL
-	AND InformationSchema.ColumnName LIKE '%ID'
-
-SET @ColumnNameIDFact = @ColumnNameIDFact + ','
-
-
-/**********************************************************************************************************************************************************************
 12. Create the match part and the update part for the merge script
 ***********************************************************************************************************************************************************************/
-DECLARE @UpdateType21 NVARCHAR(MAX) --Holds the value of @ColumnNameDim for each loop
-DECLARE @MatchType21 NVARCHAR(MAX) --Holds the value of @ColumnNameDim for each loop
+DECLARE @UpdateType1 NVARCHAR(MAX) --Holds the value of @ColumnNameDim for each loop
+DECLARE @MatchType1 NVARCHAR(MAX) --Holds the value of @ColumnNameDim for each loop
 
 SELECT
-	@MatchType21 = STRING_AGG('([target].[' + ColumnName + '] <> [source].[' + ColumnName + ']) OR ([target].[' + ColumnName + '] IS NULL AND [source].[' + ColumnName + '] IS NOT NULL) OR ([target].[' + ColumnName + '] IS NOT NULL AND [source].[' + ColumnName + '] IS NULL)', ','),
-	@UpdateType21 = STRING_AGG('[target].[' + ColumnName + '] = [source].[' + ColumnName + ']',',')
+	@MatchType1 = STRING_AGG(CAST('([target].[' + ColumnName + '] <> [source].[' + ColumnName + ']) OR ([target].[' + ColumnName + '] IS NULL AND [source].[' + ColumnName + '] IS NOT NULL) OR ([target].[' + ColumnName + '] IS NOT NULL AND [source].[' + ColumnName + '] IS NULL)' AS NVARCHAR(MAX)), ','),
+	@UpdateType1 = STRING_AGG(CAST('[target].[' + ColumnName + '] = [source].[' + ColumnName + ']' AS NVARCHAR(MAX)),',')
 FROM #InformationSchema
 WHERE
 	DatabaseName = 'DW'
@@ -372,14 +366,14 @@ WHERE InformationSchema.DatabaseName = 'DW'
 14. Fill out dynamic SQL variables
 ***********************************************************************************************************************************************************************/
 
-DECLARE @DeleteFromFact NVARCHAR(MAX) --Holds the Type21 part of the Merge Join Script
-DECLARE @SQLFullLoad NVARCHAR(MAX) --Holds the Type21 part of the Merge Join Script
+DECLARE @DeleteFromFact NVARCHAR(MAX) --Holds the Type1 part of the Merge Join Script
+DECLARE @SQLFullLoad NVARCHAR(MAX) --Holds the Type1 part of the Merge Join Script
 DECLARE @SQLDelta NVARCHAR(MAX)
 DECLARE @SQLReplacement NVARCHAR(MAX)
 DECLARE @SQLStandard NVARCHAR(MAX)
 DECLARE @SQLAdd NVARCHAR(MAX)
-DECLARE @SQLMergeJoin NVARCHAR(MAX) --Holds the Type21 part of the Merge Join Script
-DECLARE @SQL NVARCHAR(MAX) --Holds the Type21 part of the Merge Join Script
+DECLARE @SQLMergeJoin NVARCHAR(MAX) --Holds the Type1 part of the Merge Join Script
+DECLARE @SQL NVARCHAR(MAX) --Holds the Type1 part of the Merge Join Script
 
 SET @SQLMergeJoin ='
 DECLARE @CurrentDateTime datetime
@@ -398,7 +392,7 @@ SELECT
 	@DateToDateTime = dateadd(ms,-3,  getdate())
 
 -- ==================================================
--- Type21
+-- Type1
 -- ==================================================
 
 MERGE [' + @DatabaseNameDW + '].[' + @DWSchema + '].['+ @DWTable + '] as [target] USING
@@ -437,10 +431,12 @@ WHEN MATCHED
 THEN UPDATE
 
 SET 
-'+  @UpdateType21 + ', [target].[DWModifiedDate] = @CurrentDateTime
+'+  @UpdateType1 + ', [target].[DWModifiedDate] = @CurrentDateTime
 
 ;'
 
+PRINT @ColumnNameIDFact
+PRINT @IDMerge
 
 SET @SQLFullLoad = 'TRUNCATE TABLE [' + @DatabaseNameDW + '].[' + @DWSchema + '].['+ @DWTable + '] 
 
