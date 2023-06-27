@@ -1,6 +1,21 @@
 {
 	"name": "FAM_1_DIM",
 	"properties": {
+		"activities": [
+			{
+				"name": "FAM_ChipperIncident",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DIM_0_FAM_ChipperIncident",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
 		"folder": {
 			"name": "0.0 Solutions/FAM_FaultManagement"
 		},
