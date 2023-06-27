@@ -1,0 +1,45 @@
+{
+  "name": "DIM_1_Legacy_Customer_Transform",
+  "properties": {
+    "activities": [
+      {
+        "name": "TRF_Dim_Legacy_Customer",
+        "type": "SqlServerStoredProcedure",
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "storedProcedureName": "stage.Transform_Dim_Legacy_Customer",
+          "storedProcedureParameters": {
+            "JobIsIncremental": {
+              "value": {
+                "value": "@pipeline().parameters.JobIsIncremental",
+                "type": "Expression"
+              },
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      }
+    },
+    "folder": {
+      "name": "0.3_Dimensions"
+    },
+    "annotations": []
+  }
+}
