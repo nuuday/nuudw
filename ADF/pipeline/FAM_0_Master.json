@@ -1,6 +1,21 @@
 {
 	"name": "FAM_0_Master",
 	"properties": {
+		"activities": [
+			{
+				"name": "FAM_1_DIM",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "FAM_1_DIM",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
 		"folder": {
 			"name": "0.0 Solutions/FAM_FaultManagement"
 		},
