@@ -94,6 +94,8 @@
     <Folder Include="sourceNuudlBIZView\Views\" />
     <Folder Include="cubeView_FAM\" />
     <Folder Include="cubeView_FAM\Views\" />
+    <Folder Include="bridge\" />
+    <Folder Include="bridge\Tables\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -329,7 +331,6 @@
     <Build Include="dimView\Views\FAM Infrastructure.sql" />
     <Build Include="dimView\Views\FAM Chipper Status.sql" />
     <Build Include="dimView\Views\FAM Chipper Incident.sql" />
-    <Build Include="dimView\Views\DatePeriods.sql" />
     <Build Include="dbo\Functions\udf_GetNumeric.sql" />
     <Build Include="stage\Stored Procedures\Transform_Fact_ChipperIncidents.sql" />
     <Build Include="stage\Stored Procedures\Transform_Fact_ChipperIncidentEvents.sql" />
@@ -392,6 +393,10 @@
     <Build Include="cubeView_FAM\Views\Dim Infrastructure.sql" />
     <Build Include="cubeView_FAM\Views\Dim Chipper Incident.sql" />
     <Build Include="Security\cubeView_FAM.sql" />
+    <Build Include="stage\Tables\Bridge_UserAccess.sql" />
+    <Build Include="bridge\Tables\UserAccess_Temp.sql" />
+    <Build Include="bridge\Tables\UserAccess.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Bridge_UserAccess.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
