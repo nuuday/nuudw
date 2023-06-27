@@ -1,4 +1,6 @@
 ﻿
+
+
 CREATE VIEW [SourceNuudlBIZView].[DimProduct_History]
 AS
 SELECT 
@@ -73,4 +75,5 @@ SELECT
 	,[DWIsDeletedInSource]
 	,[DWDeletedInSourceDate]
 FROM [SourceNuudlBIZ].[DimProduct_History]
-WHERE DWIsCurrent = 1
+--WHERE DWIsCurrent = 1
+WHERE DWValidFromDate <> DWValidToDate
