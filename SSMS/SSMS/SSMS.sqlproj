@@ -92,6 +92,8 @@
     <Folder Include="sourceNuudlLinkitView\Views\" />
     <Folder Include="sourceNuudlBIZView\" />
     <Folder Include="sourceNuudlBIZView\Views\" />
+    <Folder Include="cubeView_FAM\" />
+    <Folder Include="cubeView_FAM\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -378,6 +380,18 @@
     <Build Include="Security\sourceCubusMasterData.sql" />
     <Build Include="Security\sourceCubus31PCTIView.sql" />
     <Build Include="Security\sourceCubus31PCTI.sql" />
+    <Build Include="cubeView_FAM\Views\Fact Chipper Incidents.sql" />
+    <Build Include="cubeView_FAM\Views\Fact Chipper Incident Events.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Chipper Status.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Product.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Employee.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Customer.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Technology.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Sales Channel.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Open Incidents Group.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Infrastructure.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Chipper Incident.sql" />
+    <Build Include="Security\cubeView_FAM.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

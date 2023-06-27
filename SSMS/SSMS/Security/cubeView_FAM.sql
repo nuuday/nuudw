@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [cubeView_FAM]
+    AUTHORIZATION [dbo];
+
