@@ -1,0 +1,6 @@
+{
+  "name": "Incident Code",
+  "dataType": "string",
+  "isHidden": true,
+  "sourceColumn": "Incident Code"
+}

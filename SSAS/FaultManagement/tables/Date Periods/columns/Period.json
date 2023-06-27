@@ -1,0 +1,6 @@
+{
+  "name": "Period",
+  "dataType": "string",
+  "sourceColumn": "Period",
+  "sortByColumn": "Period Sort"
+}

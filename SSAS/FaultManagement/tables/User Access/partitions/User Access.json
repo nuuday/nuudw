@@ -1,0 +1,9 @@
+{
+  "name": "User Access",
+  "mode": "import",
+  "source": {
+    "type": "query",
+    "query": "SELECT * FROM [cubeView_FAM].[Bridge User Access]",
+    "dataSource": "nuudatasqldb01"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "Closed Date",
+  "dataType": "dateTime",
+  "sourceColumn": "Closed Date"
+}

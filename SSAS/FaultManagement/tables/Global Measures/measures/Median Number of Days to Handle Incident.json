@@ -1,0 +1,6 @@
+{
+  "name": "Median Number of Days to Handle Incident",
+  "expression": "MEDIAN( 'Chipper Incidents'[IncidentDaysToHandle] )",
+  "formatString": "#,##0.00",
+  "displayFolder": "Chipper Incidents"
+}

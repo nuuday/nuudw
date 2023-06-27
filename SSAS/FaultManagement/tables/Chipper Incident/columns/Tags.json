@@ -1,0 +1,5 @@
+{
+  "name": "Tags",
+  "dataType": "string",
+  "sourceColumn": "Tags"
+}

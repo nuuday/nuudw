@@ -1,0 +1,6 @@
+{
+  "name": "Product Sub Category Split Short",
+  "dataType": "int64",
+  "isHidden": true,
+  "sourceColumn": "Product Sub Category Split Short"
+}

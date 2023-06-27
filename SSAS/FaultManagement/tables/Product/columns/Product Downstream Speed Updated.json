@@ -1,0 +1,6 @@
+{
+  "name": "Product Downstream Speed Updated",
+  "dataType": "int64",
+  "isHidden": true,
+  "sourceColumn": "Product Downstream Speed Updated"
+}

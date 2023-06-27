@@ -1,0 +1,9 @@
+{
+  "name": "Chipper Last Updated",
+  "mode": "import",
+  "source": {
+    "type": "query",
+    "query": "SELECT * FROM [cubeView_FAM].[Dim Chipper Last Updated]",
+    "dataSource": "nuudatasqldb01"
+  }
+}

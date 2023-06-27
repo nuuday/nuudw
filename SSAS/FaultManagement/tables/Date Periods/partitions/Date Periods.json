@@ -1,0 +1,9 @@
+{
+  "name": "Date Periods",
+  "mode": "import",
+  "source": {
+    "type": "query",
+    "query": "SELECT * FROM [cubeView_FAM].[Dim Date Periods]",
+    "dataSource": "nuudatasqldb01"
+  }
+}

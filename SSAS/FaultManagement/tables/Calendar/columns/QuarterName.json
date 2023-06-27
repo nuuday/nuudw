@@ -1,0 +1,6 @@
+{
+  "name": "QuarterName",
+  "dataType": "string",
+  "sourceColumn": "QuarterName",
+  "sortByColumn": "QuarterCode"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Customer Gender",
+  "dataType": "string",
+  "isHidden": true,
+  "sourceColumn": "Customer Gender"
+}

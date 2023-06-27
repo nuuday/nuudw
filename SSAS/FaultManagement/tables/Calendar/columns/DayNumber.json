@@ -1,0 +1,5 @@
+{
+  "name": "DayNumber",
+  "dataType": "int64",
+  "sourceColumn": "DayNumber"
+}

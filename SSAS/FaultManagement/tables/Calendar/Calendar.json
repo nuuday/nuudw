@@ -1,0 +1,10 @@
+{
+  "name": "Calendar",
+  "dataCategory": "Time",
+  "annotations": [
+    {
+      "name": "TabularEditor_Relationships",
+      "value": "[]"
+    }
+  ]
+}

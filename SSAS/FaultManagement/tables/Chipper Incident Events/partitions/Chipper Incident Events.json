@@ -1,0 +1,9 @@
+{
+  "name": "Chipper Incident Events",
+  "mode": "import",
+  "source": {
+    "type": "query",
+    "query": "SELECT * FROM [cubeView_FAM].[Fact Chipper Incident Events]",
+    "dataSource": "nuudatasqldb01"
+  }
+}

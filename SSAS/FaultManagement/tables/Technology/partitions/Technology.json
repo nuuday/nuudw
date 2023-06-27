@@ -1,0 +1,9 @@
+{
+  "name": "Technology",
+  "mode": "import",
+  "source": {
+    "type": "query",
+    "query": "SELECT * FROM [cubeView_FAM].[Dim Technology]",
+    "dataSource": "nuudatasqldb01"
+  }
+}

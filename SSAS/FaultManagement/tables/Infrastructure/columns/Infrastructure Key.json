@@ -1,0 +1,6 @@
+{
+  "name": "Infrastructure Key",
+  "dataType": "string",
+  "isHidden": true,
+  "sourceColumn": "Infrastructure Key"
+}

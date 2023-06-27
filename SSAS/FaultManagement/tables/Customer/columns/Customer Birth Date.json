@@ -1,0 +1,6 @@
+{
+  "name": "Customer Birth Date",
+  "dataType": "dateTime",
+  "isHidden": true,
+  "sourceColumn": "Customer Birth Date"
+}

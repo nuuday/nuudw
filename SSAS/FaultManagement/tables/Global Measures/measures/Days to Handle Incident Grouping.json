@@ -1,0 +1,11 @@
+{
+  "name": "Days to Handle Incident Grouping",
+  "expression": [
+    "CALCULATE(",
+    "    COUNT( 'Chipper Incidents'[IncidentDaysToHandle] ),",
+    "    USERELATIONSHIP( 'Open Incidents Group'[OpenIncidentsGroupID], 'Chipper Incidents'[OpenIncidentsGroupHandleID] )",
+    ")"
+  ],
+  "formatString": "#,##0.00",
+  "displayFolder": "Chipper Incidents"
+}

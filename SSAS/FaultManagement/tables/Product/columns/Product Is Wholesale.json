@@ -1,0 +1,6 @@
+{
+  "name": "Product Is Wholesale",
+  "dataType": "boolean",
+  "isHidden": true,
+  "sourceColumn": "Product Is Wholesale"
+}

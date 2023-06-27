@@ -1,0 +1,6 @@
+{
+  "name": "Product Type Updated",
+  "dataType": "string",
+  "isHidden": true,
+  "sourceColumn": "Product Type Updated"
+}

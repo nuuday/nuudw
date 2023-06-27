@@ -1,0 +1,5 @@
+{
+  "name": "IncidentEventDay",
+  "dataType": "dateTime",
+  "sourceColumn": "IncidentEventDay"
+}

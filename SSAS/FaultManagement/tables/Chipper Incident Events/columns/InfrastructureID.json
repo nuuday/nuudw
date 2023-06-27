@@ -1,0 +1,6 @@
+{
+  "name": "InfrastructureID",
+  "dataType": "int64",
+  "isHidden": true,
+  "sourceColumn": "InfrastructureID"
+}

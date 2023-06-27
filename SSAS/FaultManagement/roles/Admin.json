@@ -1,0 +1,14 @@
+{
+  "name": "Admin",
+  "modelPermission": "administrator",
+  "members": [
+    {
+      "memberName": "obj:cd4ea667-324c-4953-add2-f8f1d7e3f9bf@c95a25de-f20a-4216-bc84-99694442c1b5",
+      "identityProvider": "AzureAD"
+    },
+    {
+      "memberName": "frfo@yousee.dk",
+      "identityProvider": "AzureAD"
+    }
+  ]
+}

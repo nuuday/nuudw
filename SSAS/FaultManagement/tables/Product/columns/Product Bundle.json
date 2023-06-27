@@ -1,0 +1,6 @@
+{
+  "name": "Product Bundle",
+  "dataType": "string",
+  "isHidden": true,
+  "sourceColumn": "Product Bundle"
+}

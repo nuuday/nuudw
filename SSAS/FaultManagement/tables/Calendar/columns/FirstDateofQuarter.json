@@ -1,0 +1,5 @@
+{
+  "name": "FirstDateofQuarter",
+  "dataType": "dateTime",
+  "sourceColumn": "FirstDateofQuarter"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "Calendar",
+  "mode": "import",
+  "source": {
+    "type": "query",
+    "query": "SELECT * FROM [cubeView_FAM].[Dim Calendar]",
+    "dataSource": "nuudatasqldb01"
+  }
+}

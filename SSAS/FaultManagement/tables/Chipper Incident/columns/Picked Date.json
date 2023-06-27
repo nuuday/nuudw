@@ -1,0 +1,5 @@
+{
+  "name": "Picked Date",
+  "dataType": "dateTime",
+  "sourceColumn": "Picked Date"
+}

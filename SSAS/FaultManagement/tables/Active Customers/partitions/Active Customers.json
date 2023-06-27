@@ -1,0 +1,9 @@
+{
+  "name": "Active Customers",
+  "mode": "import",
+  "source": {
+    "type": "query",
+    "query": "SELECT * FROM [cubeView_FAM].[Fact Active Customers]",
+    "dataSource": "nuudatasqldb01"
+  }
+}

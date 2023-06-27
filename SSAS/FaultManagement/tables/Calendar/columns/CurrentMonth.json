@@ -1,0 +1,6 @@
+{
+  "name": "CurrentMonth",
+  "dataType": "int64",
+  "sourceColumn": "CurrentMonth",
+  "sortByColumn": "MonthCode"
+}

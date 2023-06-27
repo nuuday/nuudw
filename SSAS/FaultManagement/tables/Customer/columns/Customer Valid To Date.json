@@ -1,0 +1,6 @@
+{
+  "name": "Customer Valid To Date",
+  "dataType": "dateTime",
+  "isHidden": true,
+  "sourceColumn": "Customer Valid To Date"
+}
