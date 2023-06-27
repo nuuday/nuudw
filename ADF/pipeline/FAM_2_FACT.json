@@ -27,6 +27,19 @@
 					},
 					"waitOnCompletion": true
 				}
+			},
+			{
+				"name": "BRIDGE_0_UserAccess",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "BRIDGE_0_UserAccess",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"folder": {
