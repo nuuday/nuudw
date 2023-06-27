@@ -96,6 +96,8 @@
     <Folder Include="cubeView_FAM\Views\" />
     <Folder Include="bridge\" />
     <Folder Include="bridge\Tables\" />
+    <Folder Include="bridgeView\" />
+    <Folder Include="bridgeView\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -397,6 +399,11 @@
     <Build Include="bridge\Tables\UserAccess_Temp.sql" />
     <Build Include="bridge\Tables\UserAccess.sql" />
     <Build Include="stage\Stored Procedures\Transform_Bridge_UserAccess.sql" />
+    <Build Include="cubeView_FAM\Views\Dim DatePeriods.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Chipper Last Updated.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Calendar.sql" />
+    <Build Include="bridgeView\Views\User Access.sql" />
+    <Build Include="cubeView_FAM\Views\Bridge User Access.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
