@@ -3,8 +3,8 @@ CREATE VIEW cubeView_FAM.[Dim Chipper Incident]
 AS
 
 SELECT
-	[FAM_ChipperIncidentID],
-	[FAM Chipper Incident Key],
+	[FAM_ChipperIncidentID] AS [ChipperIncidentID],
+	[FAM Chipper Incident Key] AS [Chipper Incident Key],
 	[Start Date],
 	[Created Date],
 	[Updated Date],

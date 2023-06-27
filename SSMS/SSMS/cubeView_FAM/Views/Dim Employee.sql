@@ -2,8 +2,8 @@
 CREATE VIEW cubeView_FAM.[Dim Employee]
 AS
 SELECT 
-	[Legacy_EmployeeID],
-	[Legacy Employee Key],
+	[Legacy_EmployeeID] AS [EmployeeID],
+	[Legacy Employee Key] AS [Employee Key],
 	[Employee First Name],
 	[Employee Last Name],
 	[Employee Name],

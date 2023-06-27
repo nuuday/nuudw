@@ -1,8 +1,8 @@
 ﻿CREATE VIEW cubeView_FAM.[Dim Product]
 AS
 SELECT 
-	[Legacy_ProductID],
-	[Legacy Product Key],
+	[Legacy_ProductID] AS [ProductID],
+	[Legacy Product Key] AS [Product Key],
 	[Product Name],
 	[Product Type Name],
 	[Product Type Updated],

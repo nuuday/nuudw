@@ -2,8 +2,8 @@
 CREATE VIEW cubeView_FAM.[Dim Customer]
 AS
 SELECT
-	[Legacy_CustomerID],
-	[Legacy Customer Key],
+	[Legacy_CustomerID] AS [CustomerID],
+	[Legacy Customer Key] AS [Customer Key],
 	[Customer Code],
 	[Customer Firstname],
 	[Customer Last Name],
