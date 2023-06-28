@@ -1,6 +1,0 @@
-{
-  "name": "Product Is Current",
-  "dataType": "boolean",
-  "isHidden": true,
-  "sourceColumn": "Product Is Current"
-}

@@ -1,6 +1,0 @@
-{
-  "name": "Product Valid To Date",
-  "dataType": "dateTime",
-  "isHidden": true,
-  "sourceColumn": "Product Valid To Date"
-}

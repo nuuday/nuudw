@@ -1,6 +1,0 @@
-{
-  "name": "Employee Valid From Date",
-  "dataType": "dateTime",
-  "isHidden": true,
-  "sourceColumn": "Employee Valid From Date"
-}

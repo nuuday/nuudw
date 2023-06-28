@@ -1,6 +1,0 @@
-{
-  "name": "Incident Event Customer Identifier",
-  "dataType": "string",
-  "isHidden": true,
-  "sourceColumn": "IncidentEventCustomerIdentifier"
-}

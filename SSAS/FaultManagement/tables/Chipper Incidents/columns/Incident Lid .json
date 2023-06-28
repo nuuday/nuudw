@@ -1,6 +1,0 @@
-{
-  "name": "Incident Lid ",
-  "dataType": "string",
-  "isHidden": true,
-  "sourceColumn": "Incident Lid Code"
-}

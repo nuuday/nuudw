@@ -1,6 +1,0 @@
-{
-  "name": "Employee Is Current",
-  "dataType": "boolean",
-  "isHidden": true,
-  "sourceColumn": "Employee Is Current"
-}

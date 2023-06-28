@@ -4,6 +4,6 @@
   "source": {
     "type": "query",
     "query": "SELECT * FROM [cubeView_FAM].[Dim Chipper Incident]",
-    "dataSource": "nuudatasqldb01"
+    "dataSource": "nuudwsqldb01"
   }
 }

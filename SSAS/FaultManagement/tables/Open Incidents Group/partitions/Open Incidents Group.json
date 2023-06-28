@@ -4,6 +4,6 @@
   "source": {
     "type": "query",
     "query": "SELECT * FROM [cubeView_FAM].[Dim Open Incidents Group]",
-    "dataSource": "nuudatasqldb01"
+    "dataSource": "nuudwsqldb01"
   }
 }

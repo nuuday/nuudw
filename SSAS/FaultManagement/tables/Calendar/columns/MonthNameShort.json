@@ -1,6 +1,0 @@
-{
-  "name": "MonthNameShort",
-  "dataType": "string",
-  "sourceColumn": "MonthNameShort",
-  "sortByColumn": "MonthCode"
-}

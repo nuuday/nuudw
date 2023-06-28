@@ -1,6 +1,0 @@
-{
-  "name": "UserAccessID",
-  "dataType": "int64",
-  "isHidden": true,
-  "sourceColumn": "UserAccessID"
-}

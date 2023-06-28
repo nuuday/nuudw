@@ -4,6 +4,6 @@
   "source": {
     "type": "query",
     "query": "SELECT * FROM [cubeView_FAM].[Fact Active Customers]",
-    "dataSource": "nuudatasqldb01"
+    "dataSource": "nuudwsqldb01"
   }
 }

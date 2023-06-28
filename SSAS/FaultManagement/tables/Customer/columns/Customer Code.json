@@ -1,5 +1,6 @@
 {
   "name": "Customer Code",
-  "dataType": "int64",
-  "sourceColumn": "Customer Code"
+  "dataType": "decimal",
+  "sourceColumn": "Customer Code",
+  "sourceProviderType": "decimal"
 }
