@@ -1,0 +1,29 @@
+{
+  "name": "ingestsqldb01_DynamicDataset",
+  "properties": {
+    "linkedServiceName": {
+      "referenceName": "ingestsqldb01",
+      "type": "LinkedServiceReference"
+    },
+    "parameters": {
+      "TableName": {
+        "type": "string"
+      }
+    },
+    "type": "AzureSqlTable",
+    "schema": [],
+    "typeProperties": {
+      "schema": {
+        "value": "@replace(replace(split(dataset().TableName,'.')[0],'[',''),']','')",
+        "type": "Expression"
+      },
+      "table": {
+        "value": "@replace(replace(split(dataset().TableName,'.')[1],'[',''),']','')",
+        "type": "Expression"
+      }
+    },
+    "folder": {
+      "name": "DynamicDatasets"
+    }
+  }
+}
