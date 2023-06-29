@@ -18,8 +18,8 @@ SET NOCOUNT ON
 
 /*
 DECLARE
-	@DestinationTable NVARCHAR(100) = 'ProductTransactions',
-	@DestinationSchema NVARCHAR(10) = 'fact', 
+	@DestinationTable NVARCHAR(100) = 'UserAccess',
+	@DestinationSchema NVARCHAR(10) = 'bridge', 
 	@PrintSQL BIT = 1
 --*/
 
@@ -289,7 +289,7 @@ SET @DropTableScript = 'DROP TABLE IF EXISTS [' + @DestinationSchema + '].[' + @
 SET @DropTempTableScript = 'DROP TABLE IF EXISTS [' + @DestinationSchema + '].[' + @DestinationTable + '_Temp]'
 SET @DropViewScript = 'DROP VIEW IF EXISTS [' + @DestinationSchema + 'View].[' + @ViewName + ']'
 SET @DropTempViewScript = 'DROP VIEW IF EXISTS [' + @DestinationSchema + 'View].[' + @ViewName + '_Temp]'
-SET @CreateClusteredColumnStoreIndexScript = 'CREATE CLUSTERED COLUMNSTORE INDEX [CCI_' + @DestinationTable + '] ON [fact].[' + @DestinationTable + '] WITH (DROP_EXISTING = OFF)'
+SET @CreateClusteredColumnStoreIndexScript = 'CREATE CLUSTERED COLUMNSTORE INDEX [CCI_' + @DestinationTable + '] ON [' + @DestinationSchema + '].[' + @DestinationTable + '] WITH (DROP_EXISTING = OFF)'
 
 
 /**********************************************************************************************************************************************************************

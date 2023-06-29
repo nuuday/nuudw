@@ -7,8 +7,35 @@ $ErrorActionPreference = "Stop"
 
 #Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
+# =====================
+# Check installed modules
+# =====================
+
+$requiredModules = @("sqlserver", "Az.Accounts", "Az.KeyVault")
+
+foreach ($module in $requiredModules) {
+
+    $exit = 0
+
+    if (-not (Get-Module -ListAvailable -Name $module*)) {
+        Write-Host "Required module '$module' is not installed. Please install the module and try again." -ForegroundColor Yellow
+        Write-Host "Install-Module -Name '$module' -AllowClobber -Scope AllUsers" -ForegroundColor Green
+        $exit = 1
+    }
+
+}
+
+if ($exit -eq 1) {
+    exit
+}
+
+
+Import-Module sqlserver
+Import-Module Az.Accounts
+Import-Module Az.KeyVault
+
 [Reflection.Assembly]::LoadWithPartialName("Newtonsoft.Json.dll")
-IMPORT-Module sqlserver
+
 
 # =====================
 # Set Variables
@@ -27,15 +54,12 @@ $nuuMetaPath = $ReposPath + '\nuuMeta\'
 $ADFPath = $ReposPath + '\ADF\'
 
 
-# The subscription ID for the Azure environment
-$AzureSubscriptionID = "155e9e90-807a-43a9-811b-8f7bdb95a801";
-
 # =====================
 # Login i Azure
 # =====================
 
-#Login-AzAccount -Tenant 'c95a25de-f20a-4216-bc84-99694442c1b5'
-#Select-AzSubscription $AzureSubscriptionID
+#Connect-AzAccount -TenantId "c95a25de-f20a-4216-bc84-99694442c1b5" -SubscriptionId "155e9e90-807a-43a9-811b-8f7bdb95a801"
+
 
 # The connectionstring for the Azure SQL DB
 $ConnectionString = Get-AzKeyVaultSecret -VaultName "nuudw-kv01-dev" -Name "ConnectionString-nuudwsqldb01" -AsPlainText

@@ -378,6 +378,7 @@
     <Build Include="Security\sourceCubusMasterData.sql" />
     <Build Include="Security\sourceCubus31PCTIView.sql" />
     <Build Include="Security\sourceCubus31PCTI.sql" />
+    <Build Include="nuuMeta\Stored Procedures\MaintainDWFactIndexes.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
