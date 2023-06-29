@@ -1,8 +1,8 @@
 {
-  "name": "nuudwsqldb01_DynamicDataset",
+  "name": "Nuudl_NetCracker_DynamicDataset",
   "properties": {
     "linkedServiceName": {
-      "referenceName": "nuudwsqldb01",
+      "referenceName": "Nuudl_NetCracker",
       "type": "LinkedServiceReference"
     },
     "parameters": {
@@ -10,7 +10,7 @@
         "type": "string"
       }
     },
-    "type": "AzureSqlTable",
+    "type": "AzureDatabricksDeltaLakeDataset",
     "schema": [],
     "typeProperties": {
       "schema": {
