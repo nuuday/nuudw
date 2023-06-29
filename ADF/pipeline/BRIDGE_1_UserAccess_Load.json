@@ -28,7 +28,7 @@
               "type": "String"
             },
             "LoadPattern": {
-              "value": "FactAdd",
+              "value": "FactFull",
               "type": "String"
             },
             "IncrementalFlag": {
