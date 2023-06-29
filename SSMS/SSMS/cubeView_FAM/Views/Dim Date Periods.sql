@@ -1,10 +1,11 @@
 ﻿
 
-CREATE VIEW [cubeView_FAM].[Dim DatePeriods]
+
+CREATE VIEW [cubeView_FAM].[Dim Date Periods]
 AS
 
 SELECT CP.[CalendarID],
-       [PeriodDummy] = [period],
+       [Period Dummy] = [period],
        [Period] = CASE
        /*Udforming af Perioder, så nuværende og seneste periode erstattes af, eksempelvis "Current Week" og "Last Week", for kalender uger, hvor resten af ugerne vises i normal format.*/
                     WHEN [type] = 'Select date'
@@ -57,9 +58,9 @@ SELECT CP.[CalendarID],
                     ELSE [period]
                   END,
        [Type],
-       [TypeDK],
-       [TypeSort] = [sort],
-       [PeriodSort] = [sort] * 10000 + Rank()
+       [TypeDK] AS [Type DK],
+       [Type Sort] = [sort],
+       [Period Sort] = [sort] * 10000 + Rank()
                                          OVER (
                                            partition BY [sort]
                                            ORDER BY [period] DESC)
