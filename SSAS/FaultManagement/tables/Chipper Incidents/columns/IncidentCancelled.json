@@ -1,0 +1,6 @@
+{
+  "name": "IncidentCancelled",
+  "dataType": "int64",
+  "isHidden": true,
+  "sourceColumn": "IncidentCancelled"
+}

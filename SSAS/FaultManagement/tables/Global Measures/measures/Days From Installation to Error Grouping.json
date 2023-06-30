@@ -1,0 +1,11 @@
+{
+  "name": "Days From Installation to Error Grouping",
+  "expression": [
+    "CALCULATE(",
+    "    COUNT( 'Chipper Incidents'[DaysFromInstallationToError] ),",
+    "    USERELATIONSHIP( 'Open Incidents Group'[OpenIncidentsGroupID], 'Chipper Incidents'[OpenIncidentsGroupInstallationToErrorID] )",
+    ")"
+  ],
+  "formatString": "#,##0.00",
+  "displayFolder": "Chipper Incidents"
+}

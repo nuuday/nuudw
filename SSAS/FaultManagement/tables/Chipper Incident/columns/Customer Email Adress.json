@@ -1,0 +1,5 @@
+{
+  "name": "Customer Email Adress",
+  "dataType": "string",
+  "sourceColumn": "Customer Email Adress"
+}

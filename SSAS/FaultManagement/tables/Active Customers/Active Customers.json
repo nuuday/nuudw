@@ -1,0 +1,19 @@
+{
+  "name": "Active Customers",
+  "isHidden": true,
+  "annotations": [
+    {
+      "name": "TabularEditor_Relationships",
+      "value": [
+        "[",
+        "  {",
+        "    \"fromTable\": \"Active Customers\",",
+        "    \"fromColumn\": \"CalendarID\",",
+        "    \"toTable\": \"Calendar\",",
+        "    \"toColumn\": \"CalendarID\"",
+        "  }",
+        "]"
+      ]
+    }
+  ]
+}

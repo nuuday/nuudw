@@ -2,7 +2,7 @@
 AS
 SELECT
 	[Legacy_ProductID]
-	,[Legacy_ProductKey] AS [Legacy_ Product Key]
+	,[Legacy_ProductKey] AS [Legacy Product Key]
 	,[ProductName] AS [Product Name]
 	,[ProductTypeName] AS [Product Type Name]
 	,[ProductTypeUpdated] AS [Product Type Updated]
@@ -15,9 +15,9 @@ SELECT
 	,[ProductTechnologyName] AS [Product Technology Name]
 	,[ProductGroupCode] AS [Product Group Code]
 	,[ProductGroupName] AS [Product Group Name]
-	,[Legacy_ProductIsCurrent] AS [Legacy_ Product Is Current]
-	,[Legacy_ProductValidFromDate] AS [Legacy_ Product Valid From Date]
-	,[Legacy_ProductValidToDate] AS [Legacy_ Product Valid To Date]
+	,[Legacy_ProductIsCurrent] AS [Legacy Product Is Current]
+	,[Legacy_ProductValidFromDate] AS [Legacy Product Valid From Date]
+	,[Legacy_ProductValidToDate] AS [Legacy Product Valid To Date]
 	,[DWIsCurrent]
 	,[DWValidFromDate]
 	,[DWValidToDate]

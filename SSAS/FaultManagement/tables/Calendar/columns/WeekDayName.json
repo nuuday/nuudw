@@ -1,0 +1,5 @@
+{
+  "name": "WeekDayName",
+  "dataType": "string",
+  "sourceColumn": "WeekDayName"
+}

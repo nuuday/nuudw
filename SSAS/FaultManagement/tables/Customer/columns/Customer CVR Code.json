@@ -1,0 +1,5 @@
+{
+  "name": "Customer CVR Code",
+  "dataType": "decimal",
+  "sourceColumn": "Customer CVR Code"
+}

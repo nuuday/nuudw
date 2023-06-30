@@ -2,7 +2,7 @@
 AS
 SELECT
 	[FAM_TechnologyID]
-	,[FAM_TechnologyKey] AS [F A M_ Technology Key]
+	,[FAM_TechnologyKey] AS [FAM Technology Key]
 	,[TechnologyName] AS [Technology Name]
 	,[DWIsCurrent]
 	,[DWValidFromDate]

@@ -1,0 +1,14 @@
+{
+  "name": "Read",
+  "modelPermission": "read",
+  "members": [
+    {
+      "memberName": "obj:ef05fe50-5fe0-4103-a287-e178241488a6@c95a25de-f20a-4216-bc84-99694442c1b5",
+      "identityProvider": "AzureAD"
+    },
+    {
+      "memberName": "obj:f32816ad-b30b-460c-b8bd-87fb5d60422b@c95a25de-f20a-4216-bc84-99694442c1b5",
+      "identityProvider": "AzureAD"
+    }
+  ]
+}

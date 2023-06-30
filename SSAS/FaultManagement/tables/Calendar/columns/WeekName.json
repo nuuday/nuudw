@@ -1,0 +1,6 @@
+{
+  "name": "WeekName",
+  "dataType": "string",
+  "sourceColumn": "WeekName",
+  "sortByColumn": "WeekCode"
+}

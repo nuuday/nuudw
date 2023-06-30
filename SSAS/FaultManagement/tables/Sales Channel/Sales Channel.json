@@ -1,0 +1,9 @@
+{
+  "name": "Sales Channel",
+  "annotations": [
+    {
+      "name": "TabularEditor_Relationships",
+      "value": "[]"
+    }
+  ]
+}

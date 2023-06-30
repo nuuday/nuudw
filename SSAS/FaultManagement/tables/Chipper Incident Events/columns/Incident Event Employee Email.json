@@ -1,0 +1,6 @@
+{
+  "name": "Incident Event Employee Email",
+  "dataType": "string",
+  "isHidden": true,
+  "sourceColumn": "IncidentEventEmployeeEmail"
+}

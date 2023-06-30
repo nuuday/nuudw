@@ -1,0 +1,6 @@
+{
+  "name": "Average Incident Response Time",
+  "expression": "AVERAGE( 'Chipper Incidents'[IncidentResponseTime] )",
+  "formatString": "#,##0.00",
+  "displayFolder": "Chipper Incidents"
+}

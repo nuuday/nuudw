@@ -1,0 +1,5 @@
+{
+  "name": "Reported Date",
+  "dataType": "dateTime",
+  "sourceColumn": "Reported Date"
+}

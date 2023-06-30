@@ -2,7 +2,7 @@
 AS
 SELECT
 	[FAM_SalesChannelID]
-	,[FAM_SalesChannelKey] AS [F A M_ Sales Channel Key]
+	,[FAM_SalesChannelKey] AS [FAM Sales Channel Key]
 	,[SalesChannelName] AS [Sales Channel Name]
 	,[DWIsCurrent]
 	,[DWValidFromDate]

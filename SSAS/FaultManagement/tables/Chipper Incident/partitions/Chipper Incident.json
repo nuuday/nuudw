@@ -1,0 +1,9 @@
+{
+  "name": "Chipper Incident",
+  "mode": "import",
+  "source": {
+    "type": "query",
+    "query": "SELECT * FROM [cubeView_FAM].[Dim Chipper Incident]",
+    "dataSource": "nuudwsqldb01"
+  }
+}

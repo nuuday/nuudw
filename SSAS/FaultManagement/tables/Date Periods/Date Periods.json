@@ -1,0 +1,19 @@
+{
+  "name": "Date Periods",
+  "annotations": [
+    {
+      "name": "TabularEditor_Relationships",
+      "value": [
+        "[",
+        "  {",
+        "    \"fromTable\": \"Date Periods\",",
+        "    \"fromColumn\": \"CalendarID\",",
+        "    \"toTable\": \"Calendar\",",
+        "    \"toColumn\": \"CalendarID\",",
+        "    \"crossFilteringBehavior\": \"bothDirections\"",
+        "  }",
+        "]"
+      ]
+    }
+  ]
+}

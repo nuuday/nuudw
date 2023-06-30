@@ -1,0 +1,6 @@
+{
+  "name": "Average Number of Days to Handle Incident",
+  "expression": "AVERAGE( 'Chipper Incidents'[IncidentDaysToHandle] )",
+  "formatString": "#,##0.00",
+  "displayFolder": "Chipper Incidents"
+}

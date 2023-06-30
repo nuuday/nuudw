@@ -1,0 +1,6 @@
+{
+  "name": "Customer Key",
+  "dataType": "string",
+  "isHidden": true,
+  "sourceColumn": "Customer Key"
+}

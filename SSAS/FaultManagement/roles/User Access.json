@@ -1,0 +1,30 @@
+{
+  "name": "User Access",
+  "modelPermission": "read",
+  "members": [
+    {
+      "memberName": "obj:50fd00b1-9a97-49cd-b14a-e7ca3cc0f246@c95a25de-f20a-4216-bc84-99694442c1b5",
+      "identityProvider": "AzureAD"
+    }
+  ],
+  "tablePermissions": [
+    {
+      "name": "Employee",
+      "filterExpression": [
+        "IF(",
+        "    CALCULATE(",
+        "        SUM( 'User Access'[TopManager] ),",
+        "    FILTER( 'User Access', 'User Access'[UserName] = USERPRINCIPALNAME() ) ) = 1,",
+        "    TRUE(),",
+        "    ",
+        "    Employee[EmployeeID] IN",
+        "    SELECTCOLUMNS(",
+        "        FILTER( 'User Access', 'User Access'[UserName] = USERPRINCIPALNAME() ),",
+        "        \"??\", 'User Access'[EmployeeID]",
+        "    )",
+        ")"
+      ],
+      "metadataPermission": "read"
+    }
+  ]
+}

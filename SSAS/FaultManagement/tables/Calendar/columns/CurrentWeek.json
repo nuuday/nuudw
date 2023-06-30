@@ -1,0 +1,6 @@
+{
+  "name": "CurrentWeek",
+  "dataType": "int64",
+  "sourceColumn": "CurrentWeek",
+  "sortByColumn": "WeekCode"
+}

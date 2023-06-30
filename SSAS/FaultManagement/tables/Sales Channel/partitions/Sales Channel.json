@@ -1,0 +1,9 @@
+{
+  "name": "Sales Channel",
+  "mode": "import",
+  "source": {
+    "type": "query",
+    "query": "SELECT * FROM [cubeView_FAM].[Dim Sales Channel]",
+    "dataSource": "nuudwsqldb01"
+  }
+}

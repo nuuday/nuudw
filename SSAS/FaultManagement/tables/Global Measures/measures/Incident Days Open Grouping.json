@@ -1,0 +1,6 @@
+{
+  "name": "Incident Days Open Grouping",
+  "expression": "COUNT( 'Chipper Incidents'[IncidentDaysOpen] )",
+  "formatString": "#,##0.00",
+  "displayFolder": "Chipper Incidents"
+}

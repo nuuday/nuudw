@@ -1,0 +1,6 @@
+{
+  "name": "PercentOfIncidents14DaysFromInstallation",
+  "dataType": "decimal",
+  "isHidden": true,
+  "sourceColumn": "PercentOfIncidents14DaysFromInstallation"
+}

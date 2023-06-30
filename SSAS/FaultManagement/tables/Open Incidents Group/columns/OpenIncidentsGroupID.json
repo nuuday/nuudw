@@ -1,0 +1,6 @@
+{
+  "name": "OpenIncidentsGroupID",
+  "dataType": "int64",
+  "isHidden": true,
+  "sourceColumn": "OpenIncidentsGroupID"
+}

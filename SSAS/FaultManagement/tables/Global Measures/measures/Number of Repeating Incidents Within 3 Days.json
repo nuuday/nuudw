@@ -1,0 +1,6 @@
+{
+  "name": "Number of Repeating Incidents Within 3 Days",
+  "expression": "SUM( 'Chipper Incidents'[IncidentRepeating3Days] )",
+  "formatString": "#,##0.00",
+  "displayFolder": "Chipper Incidents"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Employee Key",
+  "dataType": "int64",
+  "isHidden": true,
+  "sourceColumn": "Employee Key"
+}

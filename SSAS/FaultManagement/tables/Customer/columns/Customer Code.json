@@ -1,0 +1,6 @@
+{
+  "name": "Customer Code",
+  "dataType": "decimal",
+  "sourceColumn": "Customer Code",
+  "sourceProviderType": "decimal"
+}

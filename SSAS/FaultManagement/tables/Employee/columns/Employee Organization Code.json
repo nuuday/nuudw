@@ -1,0 +1,5 @@
+{
+  "name": "Employee Organization Code",
+  "dataType": "string",
+  "sourceColumn": "Employee Organization Code"
+}

@@ -1,8 +1,11 @@
-﻿CREATE VIEW dimView.DatePeriods
+﻿
+
+
+CREATE VIEW [cubeView_FAM].[Dim Date Periods]
 AS
 
-SELECT CP.[calendarid],
-       [PeriodDummy] = [period],
+SELECT CP.[CalendarID],
+       [Period Dummy] = [period],
        [Period] = CASE
        /*Udforming af Perioder, så nuværende og seneste periode erstattes af, eksempelvis "Current Week" og "Last Week", for kalender uger, hvor resten af ugerne vises i normal format.*/
                     WHEN [type] = 'Select date'
@@ -54,10 +57,10 @@ SELECT CP.[calendarid],
                     'Last month'
                     ELSE [period]
                   END,
-       [type],
-       [typedk],
-       [TypeSort] = [sort],
-       [PeriodSort] = [sort] * 10000 + Rank()
+       [Type],
+       [TypeDK] AS [Type DK],
+       [Type Sort] = [sort],
+       [Period Sort] = [sort] * 10000 + Rank()
                                          OVER (
                                            partition BY [sort]
                                            ORDER BY [period] DESC)

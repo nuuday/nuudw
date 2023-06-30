@@ -1,0 +1,9 @@
+{
+  "name": "Chipper Status",
+  "mode": "import",
+  "source": {
+    "type": "query",
+    "query": "SELECT * FROM [cubeView_FAM].[Dim Chipper Status]",
+    "dataSource": "nuudwsqldb01"
+  }
+}
