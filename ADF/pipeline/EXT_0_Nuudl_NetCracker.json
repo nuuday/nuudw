@@ -153,6 +153,21 @@
         }
       },
       {
+        "name": "custhasproduct",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_custhasproduct",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
         "name": "customer",
         "type": "ExecutePipeline",
         "typeProperties": {
