@@ -1,0 +1,5 @@
+{
+  "name": "Count of Total Incident Events",
+  "expression": "COUNTROWS( 'Chipper Incident Events' )",
+  "displayFolder": "Chipper Incident Events"
+}

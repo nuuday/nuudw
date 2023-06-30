@@ -1,0 +1,11 @@
+{
+  "name": "Count of Incidents Picked",
+  "expression": [
+    "CALCULATE(",
+    "    SUM( 'Chipper Incidents'[IncidentPicked] ),",
+    "    USERELATIONSHIP( Calendar[CalendarID], 'Chipper Incidents'[CalendarPickedID] )",
+    ")"
+  ],
+  "formatString": "#,##0.00",
+  "displayFolder": "Chipper Incidents"
+}

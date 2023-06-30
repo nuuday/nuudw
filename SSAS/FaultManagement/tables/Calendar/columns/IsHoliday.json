@@ -1,0 +1,5 @@
+{
+  "name": "IsHoliday",
+  "dataType": "boolean",
+  "sourceColumn": "IsHoliday"
+}

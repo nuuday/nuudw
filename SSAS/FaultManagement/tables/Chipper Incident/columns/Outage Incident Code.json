@@ -1,0 +1,5 @@
+{
+  "name": "Outage Incident Code",
+  "dataType": "string",
+  "sourceColumn": "Outage Incident Code"
+}

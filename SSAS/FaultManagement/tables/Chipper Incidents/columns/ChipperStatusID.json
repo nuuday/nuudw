@@ -1,0 +1,6 @@
+{
+  "name": "ChipperStatusID",
+  "dataType": "int64",
+  "isHidden": true,
+  "sourceColumn": "ChipperStatusID"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Period Dummy",
+  "dataType": "string",
+  "isHidden": true,
+  "sourceColumn": "Period Dummy"
+}

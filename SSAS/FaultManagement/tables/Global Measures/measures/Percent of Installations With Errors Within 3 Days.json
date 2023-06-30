@@ -1,0 +1,6 @@
+{
+  "name": "Percent of Installations With Errors Within 3 Days",
+  "expression": "AVERAGE('Chipper Incidents'[PercentOfIncidents3DaysFromInstallation])",
+  "formatString": "#,##0.00 %",
+  "displayFolder": "Chipper Incidents"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Chipper Incident Key",
+  "dataType": "string",
+  "isHidden": true,
+  "sourceColumn": "Chipper Incident Key"
+}

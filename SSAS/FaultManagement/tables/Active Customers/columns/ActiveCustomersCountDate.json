@@ -1,0 +1,6 @@
+{
+  "name": "ActiveCustomersCountDate",
+  "dataType": "dateTime",
+  "isHidden": true,
+  "sourceColumn": "ActiveCustomersCountDate"
+}

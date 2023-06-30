@@ -1,0 +1,6 @@
+{
+  "name": "IncidentResponseTime",
+  "dataType": "int64",
+  "isHidden": true,
+  "sourceColumn": "IncidentResponseTime"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Sales Channel Key",
+  "dataType": "string",
+  "isHidden": true,
+  "sourceColumn": "Sales Channel Key"
+}

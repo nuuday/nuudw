@@ -2,7 +2,7 @@
 AS
 SELECT
 	[FAM_ChipperStatusID]
-	,[FAM_ChipperStatusKey] AS [F A M_ Chipper Status Key]
+	,[FAM_ChipperStatusKey] AS [FAM Chipper Status Key]
 	,[ChipperStatusName] AS [Chipper Status Name]
 	,[DWIsCurrent]
 	,[DWValidFromDate]

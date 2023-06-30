@@ -15,6 +15,7 @@ INTO #LowerCase
 FROM SourceNuudlBIZView.DimProduct_History
 WHERE 1 = 1
 AND ProductID IN ('C0010766087', 'C0010766866', 'C0010766865', 'C0010766864', 'C0010766868', 'C0010766869', 'C0010766879', 'C0010766867')
+AND DWIsCurrent = 1 
 
 INSERT INTO stage.[Dim_FAM_Infrastructure] WITH (TABLOCK) ( FAM_Infrastructurekey, InfrastructureName, DWCreatedDate )
 SELECT

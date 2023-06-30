@@ -1,0 +1,6 @@
+{
+  "name": "Incident Response Time",
+  "expression": "SUM( 'Chipper Incidents'[IncidentResponseTime] )",
+  "formatString": "#,##0.00",
+  "displayFolder": "Chipper Incidents"
+}

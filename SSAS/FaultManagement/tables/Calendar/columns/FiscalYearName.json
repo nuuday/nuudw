@@ -1,0 +1,5 @@
+{
+  "name": "FiscalYearName",
+  "dataType": "string",
+  "sourceColumn": "FiscalYearName"
+}

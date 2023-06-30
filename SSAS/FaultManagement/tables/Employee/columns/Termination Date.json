@@ -1,0 +1,6 @@
+{
+  "name": "Termination Date",
+  "dataType": "dateTime",
+  "isHidden": true,
+  "sourceColumn": "Termination Date"
+}

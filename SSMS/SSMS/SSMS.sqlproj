@@ -92,6 +92,12 @@
     <Folder Include="sourceNuudlLinkitView\Views\" />
     <Folder Include="sourceNuudlBIZView\" />
     <Folder Include="sourceNuudlBIZView\Views\" />
+    <Folder Include="cubeView_FAM\" />
+    <Folder Include="cubeView_FAM\Views\" />
+    <Folder Include="bridge\" />
+    <Folder Include="bridge\Tables\" />
+    <Folder Include="bridgeView\" />
+    <Folder Include="bridgeView\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -327,7 +333,6 @@
     <Build Include="dimView\Views\FAM Infrastructure.sql" />
     <Build Include="dimView\Views\FAM Chipper Status.sql" />
     <Build Include="dimView\Views\FAM Chipper Incident.sql" />
-    <Build Include="dimView\Views\DatePeriods.sql" />
     <Build Include="dbo\Functions\udf_GetNumeric.sql" />
     <Build Include="stage\Stored Procedures\Transform_Fact_ChipperIncidents.sql" />
     <Build Include="stage\Stored Procedures\Transform_Fact_ChipperIncidentEvents.sql" />
@@ -378,6 +383,33 @@
     <Build Include="Security\sourceCubusMasterData.sql" />
     <Build Include="Security\sourceCubus31PCTIView.sql" />
     <Build Include="Security\sourceCubus31PCTI.sql" />
+    <Build Include="cubeView_FAM\Views\Fact Chipper Incidents.sql" />
+    <Build Include="cubeView_FAM\Views\Fact Chipper Incident Events.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Chipper Status.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Product.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Employee.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Customer.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Technology.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Sales Channel.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Open Incidents Group.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Infrastructure.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Chipper Incident.sql" />
+    <Build Include="Security\cubeView_FAM.sql" />
+    <Build Include="stage\Tables\Bridge_UserAccess.sql" />
+    <Build Include="bridge\Tables\UserAccess_Temp.sql" />
+    <Build Include="bridge\Tables\UserAccess.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Bridge_UserAccess.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Chipper Last Updated.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Calendar.sql" />
+    <Build Include="bridgeView\Views\User Access.sql" />
+    <Build Include="cubeView_FAM\Views\Bridge User Access.sql" />
+    <Build Include="stage\Tables\Fact_ActiveCustomers.sql" />
+    <Build Include="fact\Tables\ActiveCustomers_Temp.sql" />
+    <Build Include="fact\Tables\ActiveCustomers.sql" />
+    <Build Include="factView\Views\Active Customers.sql" />
+    <Build Include="cubeView_FAM\Views\Fact Active Customers.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Fact_ActiveCustomers.sql" />
+    <Build Include="cubeView_FAM\Views\Dim Date Periods.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

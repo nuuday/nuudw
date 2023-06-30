@@ -1,0 +1,9 @@
+{
+  "name": "Open Incidents Group",
+  "mode": "import",
+  "source": {
+    "type": "query",
+    "query": "SELECT * FROM [cubeView_FAM].[Dim Open Incidents Group]",
+    "dataSource": "nuudwsqldb01"
+  }
+}

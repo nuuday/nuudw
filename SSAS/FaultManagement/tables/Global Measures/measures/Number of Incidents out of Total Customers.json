@@ -1,0 +1,9 @@
+{
+  "name": "Number of Incidents out of Total Customers",
+  "expression": [
+    "IFERROR(CALCULATE(COUNT( 'Chipper Incidents'[ChipperIncidentID] ) / SUM( 'Active Customers'[ActiveCustomersCount] ) * 100 ), BLANK()",
+    "    )"
+  ],
+  "formatString": "#,##0.00 %",
+  "displayFolder": "Chipper Incidents"
+}

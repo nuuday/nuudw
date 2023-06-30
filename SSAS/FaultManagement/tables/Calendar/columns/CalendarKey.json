@@ -1,0 +1,13 @@
+{
+  "name": "CalendarKey",
+  "dataType": "dateTime",
+  "isHidden": true,
+  "isKey": true,
+  "sourceColumn": "CalendarKey",
+  "annotations": [
+    {
+      "name": "TabularEditor_MarkAsDateKey",
+      "value": "1"
+    }
+  ]
+}

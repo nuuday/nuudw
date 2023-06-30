@@ -1,0 +1,13 @@
+{
+  "name": "Incidents Open More Than 3 Days",
+  "expression": [
+    "COUNTROWS(",
+    "    CALCULATETABLE(",
+    "        'Chipper Incidents',",
+    "        FILTER( 'Chipper Incidents', 'Chipper Incidents'[IncidentDaysOpen] > 3 )",
+    "    )",
+    ")"
+  ],
+  "formatString": "#,##0.00",
+  "displayFolder": "Chipper Incidents"
+}

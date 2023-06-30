@@ -2,7 +2,7 @@
 AS
 SELECT
 	[FAM_OpenIncidentsGroupID]
-	,[FAM_OpenIncidentsGroupKey] AS [F A M_ Open Incidents Group Key]
+	,[FAM_OpenIncidentsGroupKey] AS [FAM Open Incidents Group Key]
 	,[OpenIncidentsGroup] AS [Open Incidents Group]
 	,[DWIsCurrent]
 	,[DWValidFromDate]

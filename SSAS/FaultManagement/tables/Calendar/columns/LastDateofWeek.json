@@ -1,0 +1,5 @@
+{
+  "name": "LastDateofWeek",
+  "dataType": "dateTime",
+  "sourceColumn": "LastDateofWeek"
+}

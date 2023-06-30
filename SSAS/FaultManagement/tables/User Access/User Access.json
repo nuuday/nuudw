@@ -1,0 +1,19 @@
+{
+  "name": "User Access",
+  "isHidden": true,
+  "annotations": [
+    {
+      "name": "TabularEditor_Relationships",
+      "value": [
+        "[",
+        "  {",
+        "    \"fromTable\": \"User Access\",",
+        "    \"fromColumn\": \"EmployeeID\",",
+        "    \"toTable\": \"Employee\",",
+        "    \"toColumn\": \"EmployeeID\"",
+        "  }",
+        "]"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "FiscalQuarterName",
+  "dataType": "string",
+  "sourceColumn": "FiscalQuarterName",
+  "sortByColumn": "FiscalQuarterCode"
+}
