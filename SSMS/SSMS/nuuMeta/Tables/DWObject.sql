@@ -7,6 +7,7 @@
     [HistoryTrackingColumns] NVARCHAR (MAX)                                     CONSTRAINT [DF_DWObject_HistoryTrackingColumns] DEFAULT ('') NOT NULL,
     [ValidFrom]              DATETIME2 (7) GENERATED ALWAYS AS ROW START HIDDEN CONSTRAINT [DF_DWObject_ValidFrom] DEFAULT (sysutcdatetime()) NOT NULL,
     [ValidTo]                DATETIME2 (7) GENERATED ALWAYS AS ROW END HIDDEN   CONSTRAINT [DF_DWObject_ValidTo] DEFAULT (CONVERT([datetime2],'9999-12-31 23:59:59.9999999')) NOT NULL,
+    [CubeSolutions]          NVARCHAR (200)                                     CONSTRAINT [DF_DWObject_CubeSolutions] DEFAULT ('') NULL,
     CONSTRAINT [PK_DWObject] PRIMARY KEY CLUSTERED ([ID] ASC),
     CONSTRAINT [fk_DWObjectType] FOREIGN KEY ([DWObjectType]) REFERENCES [nuuMeta].[ValidDWObjectType] ([DWObjectType]),
     CONSTRAINT [fk_LoadPattern] FOREIGN KEY ([LoadPattern]) REFERENCES [nuuMeta].[ValidLoadPattern] ([LoadPattern]),
@@ -14,4 +15,6 @@
     PERIOD FOR SYSTEM_TIME ([ValidFrom], [ValidTo])
 )
 WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE=[nuuMeta].[DWObject_History], DATA_CONSISTENCY_CHECK=ON));
+
+
 
