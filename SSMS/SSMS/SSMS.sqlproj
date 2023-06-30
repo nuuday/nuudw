@@ -383,6 +383,7 @@
     <Build Include="Security\sourceCubusMasterData.sql" />
     <Build Include="Security\sourceCubus31PCTIView.sql" />
     <Build Include="Security\sourceCubus31PCTI.sql" />
+    <Build Include="nuuMeta\Stored Procedures\MaintainDWFactIndexes.sql" />
     <Build Include="cubeView_FAM\Views\Fact Chipper Incidents.sql" />
     <Build Include="cubeView_FAM\Views\Fact Chipper Incident Events.sql" />
     <Build Include="cubeView_FAM\Views\Dim Chipper Status.sql" />

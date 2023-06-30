@@ -685,7 +685,7 @@ END CATCH'
 
 
 SET @SQL = CASE 
-				WHEN @IncrementalFact = 0 THEN @SQLFullLoad
+				WHEN @IncrementalFact = 0 OR @LoadPattern = 'FactFull' THEN @SQLFullLoad
 				WHEN @IncrementalFact = 1 AND @LoadPattern = 'FactMerge' THEN CONCAT(@SQLStandard,@SQLMergeJoin)
 				WHEN @IncrementalFact = 1 AND @LoadPattern = 'FactAdd' THEN @SQLAdd
 				WHEN @IncrementalFact = 1 AND @LoadPattern = 'FactDelta' THEN @SQLDelta
