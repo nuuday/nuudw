@@ -411,6 +411,7 @@
     <Build Include="cubeView_FAM\Views\Fact Active Customers.sql" />
     <Build Include="stage\Stored Procedures\Transform_Fact_ActiveCustomers.sql" />
     <Build Include="cubeView_FAM\Views\Dim Date Periods.sql" />
+    <Build Include="nuuMeta\Stored Procedures\MaintainDWCreateCubeViews.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
