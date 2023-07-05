@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "nuudw-adf01-dev"
+		},
+		"Cubus31_PCTI_properties_typeProperties_connectionString_secretName": {
+			"value": "ConnectionString-Cubus-Cubus31-PCTI"
+		},
+		"Cubus_Masterdata_properties_typeProperties_connectionString_secretName": {
+			"value": "ConnectionString-Cubus-Masterdata"
+		},
+		"KeyVault_properties_typeProperties_baseUrl": {
+			"value": "https://nuudw-kv01-dev.vault.azure.net/"
+		},
+		"NuuData_Chipper_properties_typeProperties_connectionString_secretName": {
+			"value": "ConnectionString-nuudatasqldb01"
+		},
+		"datalake01ingestion_properties_typeProperties_url": {
+			"value": "https://datalakest01ingestiondev.dfs.core.windows.net"
+		},
+		"datalake01ingestionNetcracker_interim_properties_typeProperties_url": {
+			"value": "https://datalakest01ingestiondev.dfs.core.windows.net"
+		},
+		"datalakest01exploration_properties_typeProperties_url": {
+			"value": "https://datalakest01exploration.dfs.core.windows.net/"
+		},
+		"ingestsqldb01_properties_typeProperties_connectionString_secretName": {
+			"value": "ConnectionString-nuudlsql01ingestprod-ingestsqldb01"
+		},
+		"nuudwsqldb01_properties_typeProperties_connectionString_secretName": {
+			"value": "ConnectionString-nuudwsqldb01"
+		},
+		"NuuDW-OnPremiseIntegrationRuntime_properties_typeProperties_linkedInfo_resourceId": {
+			"value": "/subscriptions/b05a2e18-2089-4864-80c8-7303371b246c/resourcegroups/sense-datafactory/providers/Microsoft.DataFactory/factories/SenseDF01/integrationruntimes/OnPrem-IntegrationRuntime-01"
+		}
+	}
+}
