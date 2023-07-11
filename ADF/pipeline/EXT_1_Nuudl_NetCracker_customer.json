@@ -166,20 +166,7 @@
 						},
 						"path": "adfstage"
 					},
-					"enableSkipIncompatibleRow": true,
-					"logSettings": {
-						"enableCopyActivityLog": true,
-						"copyActivityLogSettings": {
-							"logLevel": "Warning",
-							"enableReliableLogging": false
-						},
-						"logLocationSettings": {
-							"linkedServiceName": {
-								"referenceName": "AzureBlobStorage1",
-								"type": "LinkedServiceReference"
-							}
-						}
-					}
+					"enableSkipIncompatibleRow": false
 				},
 				"inputs": [
 					{
