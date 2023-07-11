@@ -166,6 +166,7 @@
 						},
 						"path": "adfstage"
 					},
+					"enableSkipIncompatibleRow": true,
 					"logSettings": {
 						"enableCopyActivityLog": true,
 						"copyActivityLogSettings": {
