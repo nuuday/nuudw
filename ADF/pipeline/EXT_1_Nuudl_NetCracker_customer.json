@@ -156,7 +156,6 @@
 						"preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[customer]",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
-						"tableOption": "autoCreate",
 						"disableMetricsCollection": false
 					},
 					"enableStaging": true,
