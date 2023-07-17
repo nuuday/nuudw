@@ -132,7 +132,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`localized_name` \r\n,`id` \r\n,`external_id` \r\n,`name` \r\n,`extended_parameters` \r\n,`eligibility_condition_id` \r\n,`cdc_revision_id` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`pim_nrml_soft_bundled_offering`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`localized_name` \r\n,`id` \r\n,`external_id` \r\n,`name` \r\n,`extended_parameters` \r\n,`eligibility_condition_id` \r\n,`cdc_revision_id` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`pim_nrml_soft_bundled_offering`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {

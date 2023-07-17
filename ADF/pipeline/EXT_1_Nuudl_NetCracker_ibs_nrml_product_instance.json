@@ -132,7 +132,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`id` \r\n,`active_from` \r\n,`active_to` \r\n,`schema_version` \r\n,`item` \r\n,`state` \r\n,`offering_id` \r\n,`customer_id` \r\n,`customer_category_id` \r\n,`root_id` \r\n,`start_date` \r\n,`termination_date` \r\n,`is_current` \r\n,`accountref_id` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`ibs_nrml_product_instance`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`id` \r\n,`active_from` \r\n,`active_to` \r\n,`schema_version` \r\n,`item` \r\n,`state` \r\n,`offering_id` \r\n,`customer_id` \r\n,`customer_category_id` \r\n,`root_id` \r\n,`start_date` \r\n,`termination_date` \r\n,`is_current` \r\n,`accountref_id` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`ibs_nrml_product_instance`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
