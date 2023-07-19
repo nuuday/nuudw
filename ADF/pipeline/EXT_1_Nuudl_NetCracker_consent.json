@@ -132,7 +132,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`active_from` \r\n,`id` \r\n,`name` \r\n,`description` \r\n,`state` \r\n,`state_change_channel` \r\n,`state_change_date` \r\n,`consent_specification_id` \r\n,`related_party_id` \r\n,`extended_parameters` \r\n,`changed_when` \r\n,`changed_by` \r\n,`start_date_time` \r\n,`end_date_time` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`active_to` \r\n,`version` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`consent`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`active_from` \r\n,`id` \r\n,`name` \r\n,`description` \r\n,`state` \r\n,`state_change_channel` \r\n,`state_change_date` \r\n,`consent_specification_id` \r\n,`related_party_id` \r\n,`extended_parameters` \r\n,`changed_when` \r\n,`changed_by` \r\n,`start_date_time` \r\n,`end_date_time` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`active_to` \r\n,`version` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`consent`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {

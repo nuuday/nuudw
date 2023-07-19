@@ -132,7 +132,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`id` \r\n,`active_from` \r\n,`changed_by` \r\n,`referred_entity_name` \r\n,`referred_entity_type` \r\n,`referred_entity_id` \r\n,`referred_entity_role` \r\n,`consent_id` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`active_to` \r\n,`version` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`consent_subject_entity`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`id` \r\n,`active_from` \r\n,`changed_by` \r\n,`referred_entity_name` \r\n,`referred_entity_type` \r\n,`referred_entity_id` \r\n,`referred_entity_role` \r\n,`consent_id` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`active_to` \r\n,`version` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`consent_subject_entity`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {

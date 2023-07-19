@@ -132,7 +132,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`id` \r\n,`active_from` \r\n,`birthdate` \r\n,`country_of_birth` \r\n,`death_date` \r\n,`location` \r\n,`marital_status` \r\n,`nationality` \r\n,`gender` \r\n,`place_of_birth` \r\n,`status` \r\n,`extended_attributes` \r\n,`changed_by` \r\n,`billing_data` \r\n,`idempotency_key` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`active_to` \r\n,`version` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`individual`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`id` \r\n,`active_from` \r\n,`birthdate` \r\n,`country_of_birth` \r\n,`death_date` \r\n,`location` \r\n,`marital_status` \r\n,`nationality` \r\n,`gender` \r\n,`place_of_birth` \r\n,`status` \r\n,`extended_attributes` \r\n,`changed_by` \r\n,`billing_data` \r\n,`idempotency_key` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`active_to` \r\n,`version` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`individual`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
