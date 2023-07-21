@@ -1,5 +1,5 @@
 {
-  "name": "EXT_1_Nuudl_NetCracker_contact_medium",
+  "name": "EXT_1_Nuudl_NetCracker_product_instance ",
   "properties": {
     "activities": [
       {
@@ -26,7 +26,7 @@
               "type": "String"
             },
             "SourceObjectName": {
-              "value": "contact_medium",
+              "value": "product_instance ",
               "type": "String"
             },
             "DestinationSchemaName": {
@@ -86,7 +86,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "contact_medium",
+                "value": "product_instance ",
                 "type": "String"
               },
               "JobIsIncremental": {
@@ -113,7 +113,7 @@
         }
       },
       {
-        "name": "Copy_contact_medium",
+        "name": "Copy_product_instance ",
         "type": "Copy",
         "dependsOn": [
           {
@@ -132,7 +132,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`id` \r\n,`city` \r\n,`country` \r\n,`email_address` \r\n,`phone_number` \r\n,`fax_number` \r\n,`phone_ext_number` \r\n,`postcode` \r\n,`state_or_province` \r\n,`street1` \r\n,`street2` \r\n,`type_of_contact` \r\n,`type_of_contact_method` \r\n,`is_active` \r\n,`active_from` \r\n,`ref_type` \r\n,`ref_id` \r\n,`extended_attributes_floor` \r\n,`contact_hour` \r\n,`changed_by_userId` \r\n,`start_date_time` \r\n,`end_date_time` \r\n,`preferred_contact` \r\n,`preferred_notification` \r\n,`billing_data_addressFormat` \r\n,`social_network_id` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`active_to` \r\n,`version` \r\n,`is_current` \r\n,`changed_by_userName` \r\n,`extended_attributes_namId` \r\n,`extended_attributes_suite` \r\n,`extended_attributes_careOf` \r\n,`extended_attributes_district` \r\n,`extended_attributes_streetCode` \r\n,`extended_attributes_municipalityCode` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`contact_medium`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`id` \r\n,`active_from` \r\n,`active_to` \r\n,`schema_version` \r\n,`state` \r\n,`offering_id` \r\n,`customer_id` \r\n,`customer_category_id` \r\n,`root_id` \r\n,`start_date` \r\n,`termination_date` \r\n,`is_current` \r\n,`accountref_id` \r\n,`item_id` \r\n,`item_name` \r\n,`item_type` \r\n,`item_state` \r\n,`item_rootId` \r\n,`item_quoteId` \r\n,`item_marketId` \r\n,`item_customerId` \r\n,`item_offeringId` \r\n,`item_offeringName` \r\n,`item_overrideMode` \r\n,`item_productFamilyId` \r\n,`item_productFamilyName` \r\n,`item_customerCategoryId` \r\n,`item_distributionChannelId` \r\n,`item_prices_id` \r\n,`item_prices_type` \r\n,`item_accountRef_name` \r\n,`item_accountRef_refId` \r\n,`item_accountRef_refType` \r\n,`item_characteristics_name` \r\n,`item_characteristics_value` \r\n,`item_characteristics_attributeId` \r\n,`item_characteristics_offeringCharId` \r\n,`item_characteristics_productSpecCharId` \r\n,`item_relatedPartyRef_role` \r\n,`item_relatedPartyRef_refId` \r\n,`item_relatedPartyRef_referredType` \r\n,`item_productSpecificationRef_id` \r\n,`item_productSpecificationRef_name` \r\n,`item_productSpecificationRef_version` \r\n,`item_prices_value_priceParentId` \r\n,`item_prices_value_prodOfferingPriceTaxAlterationId` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_StandardizedProcessedTimestamp` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`product_instance `\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -142,7 +142,7 @@
           "sink": {
             "type": "AzureSqlSink",
             "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[contact_medium]"
+            "preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[product_instance ]"
           },
           "enableStaging": true,
           "stagingSettings": {
@@ -158,7 +158,7 @@
             "referenceName": "Nuudl_NetCracker_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "netcracker.contact_medium"
+              "TableName": "netcracker.product_instance "
             }
           }
         ],
@@ -167,7 +167,7 @@
             "referenceName": "nuudwsqldb01_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "[sourceNuudlNetCracker].[contact_medium]"
+              "TableName": "[sourceNuudlNetCracker].[product_instance ]"
             }
           }
         ]
@@ -177,7 +177,7 @@
         "type": "SqlServerStoredProcedure",
         "dependsOn": [
           {
-            "activity": "Copy_contact_medium",
+            "activity": "Copy_product_instance ",
             "dependencyConditions": [
               "Succeeded"
             ]
@@ -192,7 +192,7 @@
           "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistory]",
           "storedProcedureParameters": {
             "ExtractTable": {
-              "value": "sourceNuudlNetCracker.contact_medium",
+              "value": "sourceNuudlNetCracker.product_instance ",
               "type": "String"
             },
             "LoadIsIncremental": {
@@ -238,7 +238,7 @@
               "type": "String"
             },
             "SourceTableName": {
-              "value": "contact_medium",
+              "value": "product_instance ",
               "type": "String"
             },
             "WatermarkIsDate": {
