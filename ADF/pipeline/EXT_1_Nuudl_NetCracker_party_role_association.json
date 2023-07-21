@@ -1,5 +1,5 @@
 {
-  "name": "EXT_1_Nuudl_NetCracker_pim_nrml_prod_cat_prod_offering",
+  "name": "EXT_1_Nuudl_NetCracker_party_role_association",
   "properties": {
     "activities": [
       {
@@ -26,7 +26,7 @@
               "type": "String"
             },
             "SourceObjectName": {
-              "value": "pim_nrml_prod_cat_prod_offering",
+              "value": "party_role_association",
               "type": "String"
             },
             "DestinationSchemaName": {
@@ -86,7 +86,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "pim_nrml_prod_cat_prod_offering",
+                "value": "party_role_association",
                 "type": "String"
               },
               "JobIsIncremental": {
@@ -113,7 +113,7 @@
         }
       },
       {
-        "name": "Copy_pim_nrml_prod_cat_prod_offering",
+        "name": "Copy_party_role_association",
         "type": "Copy",
         "dependsOn": [
           {
@@ -132,7 +132,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`product_catalog_id` \r\n,`product_offering_id` \r\n,`cdc_revision_id` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`pim_nrml_prod_cat_prod_offering`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`id` \r\n,`ref_type_from` \r\n,`id_from` \r\n,`ref_type_to` \r\n,`id_to` \r\n,`association_role` \r\n,`association_name` \r\n,`active_from` \r\n,`changed_by` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`active_to` \r\n,`version` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`party_role_association`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -142,7 +142,7 @@
           "sink": {
             "type": "AzureSqlSink",
             "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[pim_nrml_prod_cat_prod_offering]"
+            "preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[party_role_association]"
           },
           "enableStaging": true,
           "stagingSettings": {
@@ -158,7 +158,7 @@
             "referenceName": "Nuudl_NetCracker_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "netcracker.pim_nrml_prod_cat_prod_offering"
+              "TableName": "netcracker.party_role_association"
             }
           }
         ],
@@ -167,7 +167,7 @@
             "referenceName": "nuudwsqldb01_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "[sourceNuudlNetCracker].[pim_nrml_prod_cat_prod_offering]"
+              "TableName": "[sourceNuudlNetCracker].[party_role_association]"
             }
           }
         ]
@@ -177,7 +177,7 @@
         "type": "SqlServerStoredProcedure",
         "dependsOn": [
           {
-            "activity": "Copy_pim_nrml_prod_cat_prod_offering",
+            "activity": "Copy_party_role_association",
             "dependencyConditions": [
               "Succeeded"
             ]
@@ -192,7 +192,7 @@
           "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistory]",
           "storedProcedureParameters": {
             "ExtractTable": {
-              "value": "sourceNuudlNetCracker.pim_nrml_prod_cat_prod_offering",
+              "value": "sourceNuudlNetCracker.party_role_association",
               "type": "String"
             },
             "LoadIsIncremental": {
@@ -238,7 +238,7 @@
               "type": "String"
             },
             "SourceTableName": {
-              "value": "pim_nrml_prod_cat_prod_offering",
+              "value": "party_role_association",
               "type": "String"
             },
             "WatermarkIsDate": {

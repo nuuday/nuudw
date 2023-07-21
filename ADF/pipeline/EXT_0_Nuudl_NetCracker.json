@@ -393,6 +393,21 @@
         }
       },
       {
+        "name": "party_role_association",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_party_role_association",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
         "name": "phone_number",
         "type": "ExecutePipeline",
         "typeProperties": {
@@ -518,6 +533,21 @@
         "typeProperties": {
           "pipeline": {
             "referenceName": "EXT_1_Nuudl_NetCracker_pim_nrml_soft_bundled_offering",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "product_offering_registry",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_product_offering_registry",
             "type": "PipelineReference"
           },
           "waitOnCompletion": true,
