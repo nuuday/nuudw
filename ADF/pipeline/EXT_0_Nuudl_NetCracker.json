@@ -543,21 +543,6 @@
         }
       },
       {
-        "name": "product_instance",
-        "type": "ExecutePipeline",
-        "typeProperties": {
-          "pipeline": {
-            "referenceName": "EXT_1_Nuudl_NetCracker_product_instance",
-            "type": "PipelineReference"
-          },
-          "waitOnCompletion": true,
-          "parameters": {
-            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
-            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
-          }
-        }
-      },
-      {
         "name": "product_offering_registry",
         "type": "ExecutePipeline",
         "typeProperties": {
