@@ -145,10 +145,16 @@ foreach ($ctrl in $DistinctExtractControllerDefinitions) {
     ($Controller.properties) | add-member -MemberType NoteProperty -Name "activities" -Value @() 
 
     foreach ($pack in $ExtractControllerDefinitions) {
+       
         $ActivityName = $pack.ADFPipelineActivityName.SubString(0,[math]::min(55,$pack.ADFPipelineActivityName.length) )
         $Package = ('{"name": "' + $ActivityName + '","type": "ExecutePipeline","typeProperties":{"pipeline": {"referenceName": "' + $pack.ADFPipelineName + '","type": "PipelineReference"},"waitOnCompletion": true,"parameters": { "JobIsIncremental": "@pipeline().parameters.JobIsIncremental", "WriteBatchSize": "@pipeline().parameters.WriteBatchSize" }}}' | ConvertFrom-Json)
-        $Controller.properties.activities += $Package
+        
+        if ($ctrl.ADFControllerName -eq $pack.ADFControllerName) {
+            $Controller.properties.activities += $Package
+        }
+        
         $ActivityName = $null
+    
     }
 
     Write-Host "Generating pipline" $ctrl.ADFControllerName"...." -ForegroundColor Yellow  -NoNewline
