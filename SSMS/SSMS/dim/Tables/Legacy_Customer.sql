@@ -27,64 +27,66 @@
 );
 
 
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'Legacy_CustomerValidToDate';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'Legacy_CustomerValidFromDate';
 
-
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'Legacy_CustomerIsCurrent';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'CustomerStatus';
 
-
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'CustomerGender';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'CustomerBirthDate';
 
-
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'CustomerCVRAbroadCode';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'CustomerCVRCode';
 
-
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'CustomerCategory';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'CustomerNameLong';
 
-
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'CustomerBusinessName2';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'CustomerBusinessName1';
 
-
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'CustomerLastName';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'CustomerFirstname';
+
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Customer', @level2type = N'COLUMN', @level2name = N'CustomerCode';
+
+
+
+GO
+
+
+
+GO
+
+
+
+GO
+
+
+
+GO
+
+
+
+GO
+
+
+
+GO
+
+
+
+GO
+
 
 
 GO

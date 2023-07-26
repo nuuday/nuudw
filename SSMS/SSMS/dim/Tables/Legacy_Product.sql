@@ -27,64 +27,66 @@
 );
 
 
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'Legacy_ProductValidToDate';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'Legacy_ProductValidFromDate';
 
-
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'Legacy_ProductIsCurrent';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'ProductGroupName';
 
-
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'ProductGroupCode';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'ProductTechnologyName';
 
-
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'ProductBrandCategoryName';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'ProductWeight';
 
-
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'ProductSubCategorySplitName';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'ProductSubCategoryName';
 
-
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'ProductCategoryName';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'ProductMainCategoryName';
 
-
-GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'ProductTypeUpdated';
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'ProductTypeName';
+
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Legacy_Product', @level2type = N'COLUMN', @level2name = N'ProductName';
+
+
+
+GO
+
+
+
+GO
+
+
+
+GO
+
+
+
+GO
+
+
+
+GO
+
+
+
+GO
+
+
+
+GO
+
 
 
 GO
