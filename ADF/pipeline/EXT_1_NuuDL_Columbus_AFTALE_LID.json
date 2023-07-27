@@ -1,272 +1,287 @@
 {
-  "name": "EXT_1_NuuDL_Columbus_AFTALE_LID",
-  "properties": {
-    "activities": [
-      {
-        "name": "Update_Meta_Tables",
-        "type": "SqlServerStoredProcedure",
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "storedProcedureName": "[nuuMeta].[UpdateSourceTables]",
-          "storedProcedureParameters": {
-            "SourceConnectionName": {
-              "value": "NuuDL_Columbus",
-              "type": "String"
-            },
-            "SourceConnectionType": {
-              "value": "AzureDatabricksDeltaLake",
-              "type": "String"
-            },
-            "SourceSchemaName": {
-              "value": "cu",
-              "type": "String"
-            },
-            "SourceObjectName": {
-              "value": "AFTALE_LID",
-              "type": "String"
-            },
-            "DestinationSchemaName": {
-              "value": "sourceNuudlColumbus",
-              "type": "String"
-            },
-            "WatermarkColumnName": {
-              "value": "NUUDL_CuratedBatchID",
-              "type": "String"
-            },
-            "WatermarkIsDate": {
-              "value": "False",
-              "type": "Boolean"
-            },
-            "WatermarkRollingWindowDays": {
-              "value": "0",
-              "type": "Int32"
-            },
-            "WatermarkInQuery": {
-              "value": "",
-              "type": "String"
-            }
-          }
-        },
-        "linkedServiceName": {
-          "referenceName": "nuudwsqldb01",
-          "type": "LinkedServiceReference"
-        }
-      },
-      {
-        "name": "Lookup_Last_Value_Loaded",
-        "type": "Lookup",
-        "dependsOn": [
-          {
-            "activity": "Update_Meta_Tables",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "source": {
-            "type": "SqlSource",
-            "sqlReaderStoredProcedureName": "[nuuMeta].[GetLastValueLoaded]",
-            "storedProcedureParameters": {
-              "SourceConnectionName": {
-                "value": "NuuDL_Columbus",
-                "type": "String"
-              },
-              "SourceSchemaName": {
-                "value": "cu",
-                "type": "String"
-              },
-              "SourceTableName": {
-                "value": "AFTALE_LID",
-                "type": "String"
-              },
-              "JobIsIncremental": {
-                "value": "@pipeline().parameters.JobIsIncremental",
-                "type": "Boolean"
-              },
-              "ConnectionType": {
-                "value": "AzureDatabricksDeltaLake",
-                "type": "String"
-              },
-              "WatermarkIsDate": {
-                "value": "False",
-                "type": "Boolean"
-              }
-            }
-          },
-          "dataset": {
-            "referenceName": "nuudwsqldb01_DynamicDataset",
-            "type": "DatasetReference",
-            "parameters": {
-              "TableName": "nuuMeta.SourceObjects"
-            }
-          }
-        }
-      },
-      {
-        "name": "Copy_AFTALE_LID",
-        "type": "Copy",
-        "dependsOn": [
-          {
-            "activity": "Lookup_Last_Value_Loaded",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "source": {
-            "type": "AzureDatabricksDeltaLakeSource",
-            "query": {
-              "value": "\r\nSELECT \r\n`NUUDL_SourceCreated` \r\n,`NUUDL_SourceUpdated` \r\n,`ABM_NR` \r\n,`ABONNEMENT_ID` \r\n,`AENDRINGSSTATUS` \r\n,`AFTALE_NR` \r\n,`BEM_TEKST` \r\n,`FAST_SPAERRING` \r\n,`FJERNTELEFON` \r\n,`FORBIND_ID` \r\n,`GEN_DUT` \r\n,`KUNDESAG_KD_AFS` \r\n,`KUNDESAG_KD_OPR` \r\n,`LID` \r\n,`LID_STATUS` \r\n,`MOMSFRI_MRK` \r\n,`NAVNE_NR` \r\n,`NBR_DUT` \r\n,`OP_SOEGEFELT` \r\n,`ORDRE_NR_AFS` \r\n,`ORDRE_NR_OPR` \r\n,`PRIS_SOEJLE` \r\n,`SIDST_OPD_INIT` \r\n,`SIDST_OPD_TSTMP` \r\n,`SLUT_DATO` \r\n,`START_DATO` \r\n,`TLF_BOG_OPT_KD` \r\n,`TRAFIK_OPSM_MRK` \r\n,`UDSTIL_LID_MRK` \r\n,`NUUDL_ID` \r\n,`NUUDL_ID` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`BIZ_BatchCreatedID` \r\n,`BIZ_BatchUpdatedID` \r\n,`NUUDL_PKLatest` \r\n,`NUUDL_ID` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM cu.`AFTALE_LID`\r\n WHERE NUUDL_ValidTo>='2017-01-01' AND NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
-              "type": "Expression"
-            },
-            "exportSettings": {
-              "type": "AzureDatabricksDeltaLakeExportCommand"
-            }
-          },
-          "sink": {
-            "type": "AzureSqlSink",
-            "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [sourceNuudlColumbus].[AFTALE_LID]"
-          },
-          "enableStaging": true,
-          "stagingSettings": {
-            "linkedServiceName": {
-              "referenceName": "datalakest01exploration",
-              "type": "LinkedServiceReference"
-            },
-            "path": "adfstage"
-          }
-        },
-        "inputs": [
-          {
-            "referenceName": "NuuDL_Columbus_DynamicDataset",
-            "type": "DatasetReference",
-            "parameters": {
-              "TableName": "cu.AFTALE_LID"
-            }
-          }
-        ],
-        "outputs": [
-          {
-            "referenceName": "nuudwsqldb01_DynamicDataset",
-            "type": "DatasetReference",
-            "parameters": {
-              "TableName": "[sourceNuudlColumbus].[AFTALE_LID]"
-            }
-          }
-        ]
-      },
-      {
-        "name": "Merge_To_History",
-        "type": "SqlServerStoredProcedure",
-        "dependsOn": [
-          {
-            "activity": "Copy_AFTALE_LID",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistory]",
-          "storedProcedureParameters": {
-            "ExtractTable": {
-              "value": "sourceNuudlColumbus.AFTALE_LID",
-              "type": "String"
-            },
-            "LoadIsIncremental": {
-              "value": "@pipeline().parameters.JobIsIncremental",
-              "type": "Boolean"
-            },
-            "HistoryTrackingColumns": {
-              "value": "",
-              "type": "String"
-            }
-          }
-        },
-        "linkedServiceName": {
-          "referenceName": "nuudwsqldb01",
-          "type": "LinkedServiceReference"
-        }
-      },
-      {
-        "name": "Set_Last_Value_Loaded",
-        "type": "SqlServerStoredProcedure",
-        "dependsOn": [
-          {
-            "activity": "Merge_To_History",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "storedProcedureName": "[nuuMeta].[SetLastLoadedValue]",
-          "storedProcedureParameters": {
-            "SourceConnectionName": {
-              "value": "NuuDL_Columbus",
-              "type": "String"
-            },
-            "SourceSchemaName": {
-              "value": "cu",
-              "type": "String"
-            },
-            "SourceTableName": {
-              "value": "AFTALE_LID",
-              "type": "String"
-            },
-            "WatermarkIsDate": {
-              "value": "False",
-              "type": "Boolean"
-            }
-          }
-        },
-        "linkedServiceName": {
-          "referenceName": "nuudwsqldb01",
-          "type": "LinkedServiceReference"
-        }
-      }
-    ],
-    "parameters": {
-      "JobIsIncremental": {
-        "type": "Bool",
-        "defaultValue": "true",
-        "identity": "JobIsIncremental"
-      },
-      "WriteBatchSize": {
-        "type": "Int",
-        "defaultValue": 10000,
-        "identity": "WriteBatchSize"
-      }
-    },
-    "folder": {
-      "name": "0.1_Extracts"
-    }
-  }
+	"name": "EXT_1_NuuDL_Columbus_AFTALE_LID",
+	"properties": {
+		"activities": [
+			{
+				"name": "Update_Meta_Tables",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[UpdateSourceTables]",
+					"storedProcedureParameters": {
+						"SourceConnectionName": {
+							"value": "NuuDL_Columbus",
+							"type": "String"
+						},
+						"SourceConnectionType": {
+							"value": "AzureDatabricksDeltaLake",
+							"type": "String"
+						},
+						"SourceSchemaName": {
+							"value": "cu",
+							"type": "String"
+						},
+						"SourceObjectName": {
+							"value": "AFTALE_LID",
+							"type": "String"
+						},
+						"DestinationSchemaName": {
+							"value": "sourceNuudlColumbus",
+							"type": "String"
+						},
+						"WatermarkColumnName": {
+							"value": "NUUDL_CuratedBatchID",
+							"type": "String"
+						},
+						"WatermarkIsDate": {
+							"value": "False",
+							"type": "Boolean"
+						},
+						"WatermarkRollingWindowDays": {
+							"value": "0",
+							"type": "Int32"
+						},
+						"WatermarkInQuery": {
+							"value": "",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Lookup_Last_Value_Loaded",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Update_Meta_Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlSource",
+						"sqlReaderStoredProcedureName": "[nuuMeta].[GetLastValueLoaded]",
+						"storedProcedureParameters": {
+							"SourceConnectionName": {
+								"type": "String",
+								"value": "NuuDL_Columbus"
+							},
+							"SourceSchemaName": {
+								"type": "String",
+								"value": "cu"
+							},
+							"SourceTableName": {
+								"type": "String",
+								"value": "AFTALE_LID"
+							},
+							"JobIsIncremental": {
+								"type": "Boolean",
+								"value": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								}
+							},
+							"ConnectionType": {
+								"type": "String",
+								"value": "AzureDatabricksDeltaLake"
+							},
+							"WatermarkIsDate": {
+								"type": "Boolean",
+								"value": "False"
+							}
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "nuudwsqldb01_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "nuuMeta.SourceObjects"
+						}
+					}
+				}
+			},
+			{
+				"name": "Copy_AFTALE_LID",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Lookup_Last_Value_Loaded",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureDatabricksDeltaLakeSource",
+						"query": {
+							"value": "\nSELECT \n`NUUDL_SourceCreated` \n,`NUUDL_SourceUpdated` \n,`ABM_NR` \n,`ABONNEMENT_ID` \n,`AENDRINGSSTATUS` \n,`AFTALE_NR` \n,`BEM_TEKST` \n,`FAST_SPAERRING` \n,`FJERNTELEFON` \n,`FORBIND_ID` \n,`GEN_DUT` \n,`KUNDESAG_KD_AFS` \n,`KUNDESAG_KD_OPR` \n,`LID` \n,`LID_STATUS` \n,`MOMSFRI_MRK` \n,`NAVNE_NR` \n,`NBR_DUT` \n,`OP_SOEGEFELT` \n,`ORDRE_NR_AFS` \n,`ORDRE_NR_OPR` \n,`PRIS_SOEJLE` \n,`SIDST_OPD_INIT` \n,`SIDST_OPD_TSTMP` \n,`SLUT_DATO` \n,`START_DATO` \n,`TLF_BOG_OPT_KD` \n,`TRAFIK_OPSM_MRK` \n,`UDSTIL_LID_MRK` \n,`NUUDL_ID` \n,`NUUDL_ID` \n,`NUUDL_ValidFrom` \n,`NUUDL_ValidTo` \n,`NUUDL_IsCurrent` \n,`BIZ_BatchCreatedID` \n,`BIZ_BatchUpdatedID` \n,`NUUDL_PKLatest` \n,`NUUDL_ID` \n,`NUUDL_CuratedBatchID` \n \nFROM cu.`AFTALE_LID`\n WHERE NUUDL_ValidTo>='2017-01-01' AND NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "AzureDatabricksDeltaLakeExportCommand"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						},
+						"preCopyScript": "TRUNCATE TABLE [sourceNuudlColumbus].[AFTALE_LID]"
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "datalakest01exploration",
+							"type": "LinkedServiceReference"
+						},
+						"path": "adfstage"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "NuuDL_Columbus_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "cu.AFTALE_LID"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "nuudwsqldb01_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "[sourceNuudlColumbus].[AFTALE_LID]"
+						}
+					}
+				]
+			},
+			{
+				"name": "Merge_To_History",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy_AFTALE_LID",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[LoadSourceObjectHistory]",
+					"storedProcedureParameters": {
+						"ExtractTable": {
+							"value": "sourceNuudlColumbus.AFTALE_LID",
+							"type": "String"
+						},
+						"LoadIsIncremental": {
+							"value": {
+								"value": "@pipeline().parameters.JobIsIncremental",
+								"type": "Expression"
+							},
+							"type": "Boolean"
+						},
+						"HistoryTrackingColumns": {
+							"value": "",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Set_Last_Value_Loaded",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Merge_To_History",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[SetLastLoadedValue]",
+					"storedProcedureParameters": {
+						"SourceConnectionName": {
+							"value": "NuuDL_Columbus",
+							"type": "String"
+						},
+						"SourceSchemaName": {
+							"value": "cu",
+							"type": "String"
+						},
+						"SourceTableName": {
+							"value": "AFTALE_LID",
+							"type": "String"
+						},
+						"WatermarkIsDate": {
+							"value": "False",
+							"type": "Boolean"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"JobIsIncremental": {
+				"type": "Bool",
+				"defaultValue": true
+			},
+			"WriteBatchSize": {
+				"type": "Int",
+				"defaultValue": 10000
+			}
+		},
+		"folder": {
+			"name": "0.1_Extracts"
+		},
+		"annotations": []
+	}
 }
