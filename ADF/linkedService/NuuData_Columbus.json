@@ -1,0 +1,17 @@
+{
+	"name": "NuuData_Columbus",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "ConnectionString-nuudatasqldb01"
+			}
+		}
+	}
+}
