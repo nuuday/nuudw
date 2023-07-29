@@ -1,0 +1,65 @@
+{
+	"name": "Migrate_Columbus_AFTALE_LID",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy AFTALE_LID",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.23:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "TRUNCATE TABLE sourceNuudlColumbus.AFTALE_LID_History",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "NuuData_Columbus_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "sourceNuudlColumbus.AFTALE_LID_History"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "nuudwsqldb01_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "sourceNuudlColumbus.AFTALE_LID_History"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "0.0 Solutions/FAM_FaultManagement/Migration"
+		},
+		"annotations": []
+	}
+}
