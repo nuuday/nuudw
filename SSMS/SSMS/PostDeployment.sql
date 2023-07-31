@@ -1,6 +1,4 @@
-﻿
-
-PRINT 'Importing valid values before deployment'
-
-EXEC nuuMeta.InitiateValidValues
-PRINT 'Valid values loaded'
+﻿-- Importing valid values after deployment
+;
+EXEC nuuMeta.InitiateValidValues;
+PRINT 'Valid nuuMeta values loaded';
