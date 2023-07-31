@@ -4,7 +4,7 @@ CREATE PROCEDURE [stage].[Transform_Fact_ActiveCustomers]
 AS 
 
 
-DECLARE @TheDate DATETIME = (SELECT DATEADD(DAY, 1, CONVERT(DATE, MAX(ActiveCustomersCountDate))) FROM Fact.ActiveCustomers)
+DECLARE @TheDate DATETIME = ISNULL((SELECT DATEADD(DAY, 1, CONVERT(DATE, MAX(ActiveCustomersCountDate))) FROM Fact.ActiveCustomers),'2022-10-01')
 DECLARE @MaxDate DATETIME = (SELECT CONVERT(DATE, DATEADD(DAY, -1, GETDATE())))
 
 DROP TABLE IF EXISTS #ActiveCustomers
