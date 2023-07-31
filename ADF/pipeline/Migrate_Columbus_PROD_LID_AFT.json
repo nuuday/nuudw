@@ -1,0 +1,108 @@
+{
+	"name": "Migrate_Columbus_PROD_LID_AFT",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy PROD_LID_AFT",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.23:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "TRUNCATE TABLE sourceNuudlColumbus.PROD_LID_AFT_History",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "NuuData_Columbus_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "sourceNuudlColumbus.PROD_LID_AFT_History"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "nuudwsqldb01_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "sourceNuudlColumbus.PROD_LID_AFT_History"
+						}
+					}
+				]
+			},
+			{
+				"name": "Set_Last_Value_Loaded",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy PROD_LID_AFT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[SetLastLoadedValue]",
+					"storedProcedureParameters": {
+						"SourceConnectionName": {
+							"value": "NuuDL_Columbus",
+							"type": "String"
+						},
+						"SourceSchemaName": {
+							"value": "cu",
+							"type": "String"
+						},
+						"SourceTableName": {
+							"value": "PROD_LID_AFT",
+							"type": "String"
+						},
+						"WatermarkIsDate": {
+							"value": "False",
+							"type": "Boolean"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "0.0 Solutions/FAM_FaultManagement/Migration"
+		},
+		"annotations": []
+	}
+}
