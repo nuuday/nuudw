@@ -423,9 +423,11 @@
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="PreDeploymentCleanup.sql" />
-    <None Include="PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Schema Compare development with local.scmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="PostDeployment.sql" />
   </ItemGroup>
 </Project>
