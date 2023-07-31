@@ -412,6 +412,7 @@
     <Build Include="stage\Stored Procedures\Transform_Fact_ActiveCustomers.sql" />
     <Build Include="cubeView_FAM\Views\Dim Date Periods.sql" />
     <Build Include="nuuMeta\Stored Procedures\MaintainDWCreateCubeViews.sql" />
+    <Build Include="nuuMeta\Stored Procedures\InitiateValidValues.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
@@ -425,5 +426,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Schema Compare development with local.scmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="PostDeployment.sql" />
   </ItemGroup>
 </Project>

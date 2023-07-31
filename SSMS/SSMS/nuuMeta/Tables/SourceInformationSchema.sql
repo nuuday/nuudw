@@ -3,7 +3,7 @@
     [SourceSystemTypeName]     NVARCHAR (128) NULL,
     [TableCatalogName]         NVARCHAR (128) NULL,
     [SchemaName]               NVARCHAR (128) NULL,
-    [TableName]                NVARCHAR (128) NULL,
+    [TableName]                NVARCHAR (200) NULL,
     [ColumnName]               NVARCHAR (128) NULL,
     [OrdinalPositionNumber]    INT            NULL,
     [FullDataTypeName]         NVARCHAR (128) NULL,
@@ -22,4 +22,6 @@
     [PreserveHistoryFlag]      BIT            NULL,
     [NavisionFlag]             BIT            NULL
 );
+
+
 
