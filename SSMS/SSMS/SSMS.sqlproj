@@ -422,8 +422,8 @@
     </ArtifactReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="PreDeploymentCleanup.sql" />
-    <PreDeploy Include="InitiateNuuMeta.sql" />
+    <PreDeploy Include="PreDeploymentCleanup.sql" />
+    <None Include="PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Schema Compare development with local.scmp" />
