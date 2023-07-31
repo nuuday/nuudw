@@ -15,6 +15,7 @@ SET NOCOUNT ON
 UPDATE nuuMeta.DWObject
 SET
 	HistoryTrackingColumns = REPLACE(TRANSLATE(HistoryTrackingColumns,char(9)+char(13)+char(10)+'['+']','     '),' ','') /* Remove blank, tab, line feed, carriage return */
+	, CubeSolutions = REPLACE(TRANSLATE(CubeSolutions,char(9)+char(13)+char(10)+'['+']','     '),' ','') /* Remove blank, tab, line feed, carriage return */
 
 
 EXECUTE nuuMeta.[MaintainDWCreateTableAndView] @DestinationSchema = @DestinationSchema, @DestinationTable = @DestinationTable, @PrintSQL = @PrintSQL

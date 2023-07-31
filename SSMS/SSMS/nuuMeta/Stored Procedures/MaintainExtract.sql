@@ -7,6 +7,12 @@ AS
 
 SET NOCOUNT ON
 
+/*
+DECLARE 	
+	@SourceObjectID INT = 1,
+	@CreateTable BIT = 1,
+	@UpdateSourceScript BIT = 1
+--*/
 
 /* Cleanup csv */
 UPDATE nuuMeta.SourceObject
