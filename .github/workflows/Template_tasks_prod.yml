@@ -90,7 +90,7 @@ jobs:
       uses: azure/powershell@v1
       with:
         inlineScript: |
-          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\ContentExplorer" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "ContentExplorer" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -V -E
+          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\ContentExplorer" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "ContentExplorer" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -G -E
         azPSVersion: "latest"
  
     - name: Build SSAS FaultManagement
@@ -106,7 +106,7 @@ jobs:
       uses: azure/powershell@v1
       with:
         inlineScript: |
-          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\FaultManagement" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "FaultManagement" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -V -E
+          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\FaultManagement" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "FaultManagement2" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -G -E
         azPSVersion: "latest"
  
     - name: Build SSAS ProductExplorer
@@ -122,7 +122,7 @@ jobs:
       uses: azure/powershell@v1
       with:
         inlineScript: |
-          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\ProductExplorer" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "ProductExplorer" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -V -E
+          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\ProductExplorer" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "ProductExplorer" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -G -E
         azPSVersion: "latest"
 
     - name: Suspend SSAS
