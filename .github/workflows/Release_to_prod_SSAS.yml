@@ -1,0 +1,20 @@
+name: Release to prod (SSAS)
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  Deploy:
+    name: Release to prod
+    uses: ./.github/workflows/Template_tasks_prod.yml
+    with:
+      DeploySSMS: false
+      DeployADF: false
+      DeploySSAS: true
+      DeploySSASContentExplorer: false
+      DeploySSASFaultManagement: true
+      DeploySSASProductExplorer: false
+      SuspendSSAS: false
+    secrets: inherit
