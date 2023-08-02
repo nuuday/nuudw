@@ -13,6 +13,6 @@ jobs:
       DeploySSMS: true
       DeployADF: true
       DeploySSAS: true
-      DeploySSASModel: "FaultManagement"
+      DeploySSASModel: "All"
       SuspendSSAS: false
     secrets: inherit
