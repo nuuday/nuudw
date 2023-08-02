@@ -12,7 +12,7 @@ jobs:
     with:
       DeploySSMS: false
       DeployADF: false
-      DeploySSAS: false
+      DeploySSAS: true
       DeploySSASModel: "FaultManagement"
       SuspendSSAS: false
     secrets: inherit
