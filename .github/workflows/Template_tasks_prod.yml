@@ -106,7 +106,7 @@ jobs:
       uses: azure/powershell@v1
       with:
         inlineScript: |
-          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\FaultManagement" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "FaultManagement2" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -G -E
+          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\FaultManagement" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "646546546654${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "FaultManagement" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -G -E
         azPSVersion: "latest"
  
     - name: Build SSAS ProductExplorer
