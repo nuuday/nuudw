@@ -18,11 +18,18 @@ on:
         description: Deploy SSAS
         default: true
         required: true
-      DeploySSASModel:
-        type: string
-        description: Deploy SSAS Models
-        default: 'All'
-        required: true
+      DeploySSASContentExplorer:
+        type: boolean
+        description: Deploy ContentExplorer
+        default: false
+      DeploySSASFaultManagement:
+        type: boolean
+        description: Deploy FaultManagmenet
+        default: false
+      DeploySSASProductExplorer:
+        type: boolean
+        description: Deploy ProductExplorer
+        default: false
       SuspendSSAS:
         type: boolean
         description: Suspend SSAS
@@ -70,20 +77,52 @@ jobs:
           ./Automation/SSAS/ResumeAAS.ps1 -ResourceGroup ${{ vars.AZURE_RESOURCE_GROUP_NAME }} -SSASServer ${{ vars.AZURE_ANALYSIS_SERVER_NAME }}
         azPSVersion: "latest"
  
-    - name: Build SSAS
-      if: ${{ inputs.DeploySSAS == true}}
+    - name: Build SSAS ContentExplorer
+      if: ${{ inputs.DeploySSASContentExplorer == true}}
       uses: azure/powershell@v1
       with:
         inlineScript: |
-          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\${{ inputs.DeploySSASModel }}" -B ".\src\SSAS\${{ inputs.DeploySSASModel }}\${{ inputs.DeploySSASModel }}.bim"
+          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\ContentExplorer" -B ".\src\SSAS\ContentExplorer\ContentExplorer.bim"
         azPSVersion: "latest"        
 
-    - name: Release SSAS
-      if: ${{ inputs.DeploySSAS == true && inputs.Environment != 'dev'}}
+    - name: Deploy SSAS ContentExplorer
+      if: ${{ inputs.DeploySSASContentExplorer == true}}
       uses: azure/powershell@v1
       with:
         inlineScript: |
-          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\${{ inputs.DeploySSASModel }}" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "${{ inputs.DeploySSASModel }}" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -V -E
+          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\ContentExplorer" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "ContentExplorer" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -G -E
+        azPSVersion: "latest"
+ 
+    - name: Build SSAS FaultManagement
+      if: ${{ inputs.DeploySSASFaultManagement == true}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\FaultManagement" -B ".\src\SSAS\FaultManagement\FaultManagement.bim"
+        azPSVersion: "latest"        
+
+    - name: Deploy SSAS FaultManagement
+      if: ${{ inputs.DeploySSASFaultManagement == true}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\FaultManagement" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "FaultManagement" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -G -E
+        azPSVersion: "latest"
+ 
+    - name: Build SSAS ProductExplorer
+      if: ${{ inputs.DeploySSASProductExplorer == true}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\ProductExplorer" -B ".\src\SSAS\ProductExplorer\ProductExplorer.bim"
+        azPSVersion: "latest"        
+
+    - name: Deploy SSAS ProductExplorer
+      if: ${{ inputs.DeploySSASProductExplorer == true}}
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          ./Tools/TabularEditor/TabularEditor.exe ".\SSAS\ProductExplorer" -S ".\Automation\SSAS\UpdateConnectionString.cs" -D "${{ secrets.ARM_SSAS_CONNECTION_STRING }}" "ProductExplorer" -C "|ConnectionString|" "${{ secrets.ARM_SQL_CONNECTION_STRING }}" -O -P -R -M -G -E
         azPSVersion: "latest"
 
     - name: Suspend SSAS
