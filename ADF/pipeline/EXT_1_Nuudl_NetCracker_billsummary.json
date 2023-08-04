@@ -1,5 +1,5 @@
 {
-  "name": "EXT_1_Nuudl_NetCracker_phone_number",
+  "name": "EXT_1_Nuudl_NetCracker_billsummary",
   "properties": {
     "activities": [
       {
@@ -26,7 +26,7 @@
               "type": "String"
             },
             "SourceObjectName": {
-              "value": "phone_number",
+              "value": "billsummary",
               "type": "String"
             },
             "DestinationSchemaName": {
@@ -86,7 +86,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "phone_number",
+                "value": "billsummary",
                 "type": "String"
               },
               "JobIsIncremental": {
@@ -113,7 +113,7 @@
         }
       },
       {
-        "name": "Copy_phone_number",
+        "name": "Copy_billsummary",
         "type": "Copy",
         "dependsOn": [
           {
@@ -132,7 +132,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`phone_number` \r\n,`description` \r\n,`status` \r\n,`category` \r\n,`perform_auto_categorization` \r\n,`serving_switch_id` \r\n,`top_range_id` \r\n,`subrange_id` \r\n,`customer_account_id` \r\n,`ported_in` \r\n,`ported_out` \r\n,`extended_parameters` \r\n,`aging_period_end_date` \r\n,`status_change_date` \r\n,`first_owner_id` \r\n,`ported_in_from` \r\n,`ported_out_to` \r\n,`country_code` \r\n,`area_code` \r\n,`national_prefix` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`phone_number`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "",
               "type": "Expression"
             },
             "exportSettings": {
@@ -142,7 +142,7 @@
           "sink": {
             "type": "AzureSqlSink",
             "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[phone_number]"
+            "preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[billsummary]"
           },
           "enableStaging": true,
           "stagingSettings": {
@@ -158,7 +158,7 @@
             "referenceName": "Nuudl_NetCracker_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "netcracker.phone_number"
+              "TableName": "netcracker.billsummary"
             }
           }
         ],
@@ -167,7 +167,7 @@
             "referenceName": "nuudwsqldb01_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "[sourceNuudlNetCracker].[phone_number]"
+              "TableName": "[sourceNuudlNetCracker].[billsummary]"
             }
           }
         ]
@@ -177,7 +177,7 @@
         "type": "SqlServerStoredProcedure",
         "dependsOn": [
           {
-            "activity": "Copy_phone_number",
+            "activity": "Copy_billsummary",
             "dependencyConditions": [
               "Succeeded"
             ]
@@ -192,7 +192,7 @@
           "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistory]",
           "storedProcedureParameters": {
             "ExtractTable": {
-              "value": "sourceNuudlNetCracker.phone_number",
+              "value": "sourceNuudlNetCracker.billsummary",
               "type": "String"
             },
             "LoadIsIncremental": {
@@ -238,7 +238,7 @@
               "type": "String"
             },
             "SourceTableName": {
-              "value": "phone_number",
+              "value": "billsummary",
               "type": "String"
             },
             "WatermarkIsDate": {
