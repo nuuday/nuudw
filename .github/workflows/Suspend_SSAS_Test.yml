@@ -13,6 +13,5 @@ jobs:
       DeploySSMS: false
       DeployADF: false
       DeploySSAS: false
-      DeploySSASModel: "Template"
       SuspendSSAS: true
     secrets: inherit
