@@ -236,8 +236,7 @@
 				"defaultValue": "westeurope"
 			},
 			"ModelName": {
-				"type": "string",
-				"defaultValue": "Nuudata"
+				"type": "string"
 			},
 			"RefreshCommand": {
 				"type": "string",
@@ -250,7 +249,7 @@
 			},
 			"KeyVaultName": {
 				"type": "string",
-				"defaultValue": "nuudata-kv01"
+				"defaultValue": "nuudw-kv01"
 			},
 			"KeyVaultSecretName": {
 				"type": "string",
