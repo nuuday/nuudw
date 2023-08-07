@@ -75,7 +75,8 @@ WHERE 1=0
 INSERT INTO #ValidExtractPattern ([ExtractPattern], [Description])
 VALUES 
 	('Dummy','This is only used for production.'),
-	('Incremental_History','The extract is able to fetch data incrementally from the source using the settings for watermark. The data is moved to a history table after the extract from the source. '),
+	('Incremental_History','The extract is able to fetch data incrementally from the source using the settings for watermark. The data is merged to a history table after the extract from the source. '),
+	('Incremental_Inherit','The extract is able to fetch data incrementally from the source using the settings for watermark. The historic data is based on the source and the primary key(s). Type 2 history is only managed in the source. '),
 	('Full','The data is extracted as a full load to the source table. Previous data is always truncated. No history is kept.')
 
 INSERT INTO [nuuMeta].ValidExtractPattern ([ExtractPattern],  Description)
