@@ -30,7 +30,7 @@
               "type": "String"
             },
             "DestinationSchemaName": {
-              "value": "SourceNuudlBIZ",
+              "value": "sourceNuudlBIZ",
               "type": "String"
             },
             "WatermarkColumnName": {
@@ -142,7 +142,7 @@
           "sink": {
             "type": "AzureSqlSink",
             "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [SourceNuudlBIZ].[DimProduct]"
+            "preCopyScript": "TRUNCATE TABLE [sourceNuudlBIZ].[DimProduct]"
           },
           "enableStaging": true,
           "stagingSettings": {
@@ -167,7 +167,7 @@
             "referenceName": "nuudwsqldb01_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "[SourceNuudlBIZ].[DimProduct]"
+              "TableName": "[sourceNuudlBIZ].[DimProduct]"
             }
           }
         ]
@@ -189,18 +189,10 @@
           "retryIntervalInSeconds": 30
         },
         "typeProperties": {
-          "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistory]",
+          "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
           "storedProcedureParameters": {
             "ExtractTable": {
-              "value": "SourceNuudlBIZ.DimProduct",
-              "type": "String"
-            },
-            "LoadIsIncremental": {
-              "value": "@pipeline().parameters.JobIsIncremental",
-              "type": "Boolean"
-            },
-            "HistoryTrackingColumns": {
-              "value": "",
+              "value": "sourceNuudlBIZ.DimProduct",
               "type": "String"
             }
           }
