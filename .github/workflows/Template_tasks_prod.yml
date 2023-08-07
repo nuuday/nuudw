@@ -6,18 +6,18 @@ on:
       DeploySSMS:
         type: boolean
         description: Deploy SSMS
-        default: true
-        required: true
+        default: false
+        required: false
       DeployADF:
         type: boolean
         description: Deploy ADF
-        default: true
-        required: true
+        default: false
+        required: false
       DeploySSAS:
         type: boolean
         description: Deploy SSAS
-        default: true
-        required: true
+        default: false
+        required: false
       DeploySSASContentExplorer:
         type: boolean
         description: Deploy ContentExplorer
@@ -34,7 +34,7 @@ on:
         type: boolean
         description: Suspend SSAS
         default: false
-        required: true
+        required: false
 
 jobs:
   deploy:
