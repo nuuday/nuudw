@@ -1,0 +1,28 @@
+{
+	"name": "FAM_3_AS",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "SSAS_Process",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ModelName": "FaultManagement",
+						"RefreshCommand": "{\"Type\":\"Full\",\"CommitMode\":\"transactional\",\"MaxParallelism\":10,\"RetryCount\":2}"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "0.0 Solutions/FAM_FaultManagement"
+		},
+		"annotations": []
+	}
+}
