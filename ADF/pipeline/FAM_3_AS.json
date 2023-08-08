@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Execute Pipeline1",
+				"name": "FaultManagement",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
