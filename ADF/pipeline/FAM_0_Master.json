@@ -34,6 +34,26 @@
 					},
 					"waitOnCompletion": true
 				}
+			},
+			{
+				"name": "FAM_3_AS",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "FAM_2_FACT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "FAM_3_AS",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"folder": {
