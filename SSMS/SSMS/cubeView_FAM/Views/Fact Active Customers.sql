@@ -1,9 +1,8 @@
-﻿CREATE VIEW cubeView_FAM.[Fact Active Customers]
+﻿
+CREATE VIEW [cubeView_FAM].[Fact Active Customers]
 AS
 SELECT
 	[CalendarID],
 	[ActiveCustomersCountDate],
-	[ActiveCustomersCount],
-	[DWCreatedDate],
-	[DWModifiedDate]
+	[ActiveCustomersCount]
 FROM [factView].[Active Customers]
