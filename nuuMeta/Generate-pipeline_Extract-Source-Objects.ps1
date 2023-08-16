@@ -33,8 +33,8 @@ $AzureSubscriptionID = "155e9e90-807a-43a9-811b-8f7bdb95a801";
 # Login i Azure
 # =====================
 
-#Login-AzAccount -Tenant 'c95a25de-f20a-4216-bc84-99694442c1b5'
-#Select-AzSubscription $AzureSubscriptionID
+Login-AzAccount -Tenant 'c95a25de-f20a-4216-bc84-99694442c1b5'
+Select-AzSubscription $AzureSubscriptionID
 
 #Connect-AzAccount -TenantId "c95a25de-f20a-4216-bc84-99694442c1b5" -SubscriptionId "155e9e90-807a-43a9-811b-8f7bdb95a801"
 
