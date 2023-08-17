@@ -1,29 +1,30 @@
 {
-  "name": "Nuudl_NetCracker_DynamicDataset",
-  "properties": {
-    "linkedServiceName": {
-      "referenceName": "Nuudl_NetCracker",
-      "type": "LinkedServiceReference"
-    },
-    "parameters": {
-      "TableName": {
-        "type": "string"
-      }
-    },
-    "type": "AzureDatabricksDeltaLakeDataset",
-    "schema": [],
-    "typeProperties": {
-      "schema": {
-        "value": "@replace(replace(split(dataset().TableName,'.')[0],'[',''),']','')",
-        "type": "Expression"
-      },
-      "table": {
-        "value": "@replace(replace(split(dataset().TableName,'.')[1],'[',''),']','')",
-        "type": "Expression"
-      }
-    },
-    "folder": {
-      "name": "DynamicDatasets"
-    }
-  }
+	"name": "Nuudl_NetCracker_DynamicDataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Nuudl_BIZ",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TableName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "DynamicDatasets"
+		},
+		"annotations": [],
+		"type": "AzureDatabricksDeltaLakeDataset",
+		"typeProperties": {
+			"table": {
+				"value": "@replace(replace(split(dataset().TableName,'.')[1],'[',''),']','')",
+				"type": "Expression"
+			},
+			"schema": {
+				"value": "@replace(replace(split(dataset().TableName,'.')[0],'[',''),']','')",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
 }
