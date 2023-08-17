@@ -2,6 +2,7 @@
 
 
 
+
 CREATE VIEW [nuuMetaView].[SourceObjectDefinitions]
 AS
 SELECT
@@ -9,6 +10,7 @@ SELECT
 	con.ID AS SourceConnectionID,
 	con.SourceConnectionName,
 	con.SourceConnectionType,
+	con.Environment,
 	obj.SourceSchemaName,
 	obj.SourceObjectName,
 	obj.ExtractSQLFilter,
