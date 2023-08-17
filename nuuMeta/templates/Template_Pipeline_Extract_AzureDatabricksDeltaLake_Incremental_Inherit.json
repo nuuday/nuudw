@@ -1,4 +1,4 @@
-﻿﻿{
+﻿{
     "name": "<%ADFPipelineName%>",
     "properties": {
         "activities": [
@@ -233,18 +233,10 @@
                     "retryIntervalInSeconds": 30
                 },
                 "typeProperties": {
-                    "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistory]",
+                    "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
                     "storedProcedureParameters": {
                         "ExtractTable": {
                             "value": "<%ADFDestinationSchema%>.<%ADFDestinationTable%>",
-                            "type": "String"
-                        },
-                        "LoadIsIncremental": {
-                            "value": "@pipeline().parameters.JobIsIncremental",
-                            "type": "Boolean"
-                        },
-                        "HistoryTrackingColumns": {
-                            "value": "<%ADFHistoryTrackingColumns%>",
                             "type": "String"
                         }
                     }
