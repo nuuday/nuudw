@@ -13,8 +13,8 @@ AS
 SET NOCOUNT ON
 
 /*
-DECLARE @SourceObjectID INT = 5
-DECLARE @PrintSQL BIT = 0
+DECLARE @SourceObjectID INT = 177
+DECLARE @PrintSQL BIT = 1
 --*/
 
 
@@ -25,13 +25,16 @@ DECLARE @Columns NVARCHAR(MAX)
 DECLARE @DelimitedIdentifier NVARCHAR(30)
 DECLARE @SQLScript NVARCHAR(MAX)
 DECLARE @SQLLastValue NVARCHAR(MAX)
+DECLARE @SQLSchema NVARCHAR(MAX)
 DECLARE @WatermarkIsDate bit
+DECLARE @Environment NVARCHAR(30)
 
 SELECT
 	@Schema = SourceSchemaName,
 	@Table = SourceObjectName,
 	@DelimitedIdentifier = DelimitedIdentifier,
-	@WatermarkIsDate = WatermarkIsDate
+	@WatermarkIsDate = WatermarkIsDate,
+	@Environment = Environment
 FROM nuuMetaView.SourceObjectDefinitions
 WHERE
 	SourceObjectID = @SourceObjectID
@@ -48,12 +51,17 @@ SET @SQLLastValue =
 		ELSE '''@{activity(''Lookup_Last_Value_Loaded'').output.firstRow.LastValueLoaded}'''	
 	END 
 
+SET @SQLSchema = 
+	CASE
+		WHEN ISNULL(@Environment,'') <> '' THEN '@{activity(''Lookup_Source_Schema_Name'').output.firstRow.SourceSchemaName}'
+		ELSE @Schema
+	END
 
 SELECT
 	@SQLScript = '
 SELECT 
 ' + @Columns + + ' 
-FROM ' + @Schema + IIF( @Schema = '', '', '.' ) + '[' + @Table + ']
+FROM ' + @SQLSchema + IIF( @SQLSchema = '', '', '.' ) + '[' + @Table + ']
 ' +
 	CASE
 		WHEN NULLIF(WatermarkColumnName,'') IS NULL THEN IIF(ExtractSQLFilter <> '', 'WHERE '+ExtractSQLFilter, '')
