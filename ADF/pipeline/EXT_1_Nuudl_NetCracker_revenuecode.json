@@ -176,7 +176,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`revenue_code_id` \r\n,`revenue_code_name` \r\n,`tax_only_boo` \r\n,`revenue_code_type` \r\n,`revenue_code_desc` \r\n,`invoicing_co_id` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM @{activity('Lookup_Source_Schema_Name').output.firstRow.SourceSchemaName}.`revenuecode`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`revenue_code_id` \r\n,`revenue_code_name` \r\n,`tax_only_boo` \r\n,`revenue_code_type` \r\n,`revenue_code_desc` \r\n,`invoicing_co_id` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`revenuecode`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
