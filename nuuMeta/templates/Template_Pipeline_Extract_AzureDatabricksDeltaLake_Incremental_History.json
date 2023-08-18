@@ -1,4 +1,4 @@
-﻿﻿{
+﻿{
     "name": "<%ADFPipelineName%>",
     "properties": {
         "activities": [
