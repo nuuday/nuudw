@@ -176,7 +176,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "",
+              "value": "\r\nSELECT \r\n`name` \r\n,`product_instance_id` \r\n,`product_offering_char_id` \r\n,`product_spec_char_id` \r\n,`value_json__corrupt_record` \r\n,`attribute_id` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`ibs_nrml_characteristic`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {

@@ -176,7 +176,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "",
+              "value": "\r\nSELECT \r\n`customer_ref` \r\n,`product_seq` \r\n,`start_dat` \r\n,`end_dat` \r\n,`account_num` \r\n,`budget_centre_seq` \r\n,`product_label` \r\n,`cust_product_contact_seq` \r\n,`contract_seq` \r\n,`cps_id` \r\n,`tax_exempt_ref` \r\n,`tax_exempt_txt` \r\n,`default_event_source` \r\n,`domain_id` \r\n,`budget_payment_plan_id` \r\n,`community_group_id` \r\n,`community_group_owner_boo` \r\n,`override_product_name` \r\n,`tax_inclusive_boo` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`custproductdetails`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {

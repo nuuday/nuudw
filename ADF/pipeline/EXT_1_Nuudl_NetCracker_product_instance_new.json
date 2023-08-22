@@ -176,7 +176,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "",
+              "value": "\r\nSELECT \r\n`account_ref_id` \r\n,`business_group` \r\n,`contracted_date` \r\n,`customer_id` \r\n,`description` \r\n,`disconnection_reason` \r\n,`disconnection_reason_description` \r\n,`effective_date` \r\n,`eligibility_param_id` \r\n,`extended_attributes_json__corrupt_record` \r\n,`extended_eligibility` \r\n,`external_id` \r\n,`id` \r\n,`idempotency_key` \r\n,`last_modified` \r\n,`name` \r\n,`number_of_installments` \r\n,`offering_id` \r\n,`override_mode` \r\n,`parent_id` \r\n,`place_ref_id` \r\n,`product_order_id` \r\n,`product_specification_id` \r\n,`product_specification_version` \r\n,`quantity` \r\n,`quote_id` \r\n,`root_id` \r\n,`source_quote_item_id` \r\n,`start_date` \r\n,`state` \r\n,`suspended` \r\n,`termination_date` \r\n,`type` \r\n,`version` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`is_current` \r\n,`extended_attributes_json_key` \r\n,`extended_attributes_json_value` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`product_instance_new`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {

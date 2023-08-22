@@ -176,7 +176,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "",
+              "value": "\r\nSELECT \r\n`localized_name_json_dan` \r\n,`id` \r\n,`name` \r\n,`external_id` \r\n,`extended_parameters_json__corrupt_record` \r\n,`extended_parameters_json_channelType` \r\n,`extended_parameters_json_channelType1` \r\n,`extended_parameters_json_storeID` \r\n,`extended_parameters_json_storeName` \r\n,`cdc_revision_id` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM netcracker.`pim_nrml_distribution_channel`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
