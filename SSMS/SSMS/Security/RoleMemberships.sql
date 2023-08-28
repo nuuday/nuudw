@@ -1,4 +1,4 @@
-﻿ALTER ROLE [db_owner] ADD MEMBER [nuudw-adg01-contributor];
+﻿ALTER ROLE [db_owner] ADD MEMBER [nuudw-acl01-sql-db-owner];
 
 
 GO
