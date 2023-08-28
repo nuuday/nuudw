@@ -287,7 +287,6 @@
     <Build Include="dimView\Views\Customer.sql" />
     <Build Include="dim\Tables\Product.sql" />
     <Build Include="dimView\Views\Product.sql" />
-    <Build Include="Security\nuudw-adg01-contributor.sql" />
     <Build Include="Security\RoleMemberships.sql" />
     <Build Include="fact\Tables\ProductTransactions.sql" />
     <Build Include="factView\Views\Product Transactions.sql" />
@@ -415,6 +414,8 @@
     <Build Include="nuuMeta\Tables\SourceObjectDynamicSchema_History.sql" />
     <Build Include="nuuMeta\Tables\SourceObjectDynamicSchema.sql" />
     <Build Include="nuuMeta\Stored Procedures\GetSourceSchemaName.sql" />
+    <Build Include="Security\nuudw-acl01-sql-db-reader.sql" />
+    <Build Include="Security\nuudw-acl01-sql-db-owner.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
