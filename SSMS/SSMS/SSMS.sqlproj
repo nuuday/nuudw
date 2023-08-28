@@ -98,6 +98,8 @@
     <Folder Include="bridge\Tables\" />
     <Folder Include="bridgeView\" />
     <Folder Include="bridgeView\Views\" />
+    <Folder Include="dba\" />
+    <Folder Include="dba\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -416,6 +418,11 @@
     <Build Include="nuuMeta\Stored Procedures\GetSourceSchemaName.sql" />
     <Build Include="Security\nuudw-acl01-sql-db-reader.sql" />
     <Build Include="Security\nuudw-acl01-sql-db-owner.sql" />
+    <Build Include="dba\Views\ShowDatabaseUsers.sql" />
+    <Build Include="dba\Views\ShowDatabaseSchemaPermissions.sql" />
+    <Build Include="dba\Views\ShowDatabasePermissions.sql" />
+    <Build Include="dba\Views\ShowDatabaseRoles.sql" />
+    <Build Include="Security\dba.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
