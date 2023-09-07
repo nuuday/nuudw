@@ -1,13 +1,20 @@
 {
 	"name": "Nuudl_NetCracker",
-	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"annotations": [],
 		"type": "AzureDatabricksDeltaLake",
 		"typeProperties": {
 			"domain": "https://adb-2929753254893719.19.azuredatabricks.net",
 			"clusterId": "0905-134532-2jn7av69",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDQyRDZGNjc0LUUyRTAtNDBFMi1CNjE4LTYxRkJDMUE4M0VCRF85ZmI3MDViZS0xODRkLTQzNGUtOWE5NS04NTE5YTI2ZDg3MmYiDQp9"
+			"accessToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "databrickstoken"
+			}
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
 }
