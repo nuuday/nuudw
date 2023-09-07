@@ -56,7 +56,7 @@ $ADFPath = $ReposPath + '\ADF\'
 # Login i Azure
 # =====================
 
-#Connect-AzAccount -TenantId "c95a25de-f20a-4216-bc84-99694442c1b5" -SubscriptionId "155e9e90-807a-43a9-811b-8f7bdb95a801"
+Connect-AzAccount -TenantId "c95a25de-f20a-4216-bc84-99694442c1b5" -SubscriptionId "155e9e90-807a-43a9-811b-8f7bdb95a801"
 
 
 # The connectionstring for the Azure SQL DB

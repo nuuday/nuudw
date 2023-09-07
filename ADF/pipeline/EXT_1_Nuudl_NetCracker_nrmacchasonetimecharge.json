@@ -1,0 +1,316 @@
+{
+  "name": "EXT_1_Nuudl_NetCracker_nrmacchasonetimecharge",
+  "properties": {
+    "activities": [
+      {
+        "name": "Update_Meta_Tables",
+        "type": "SqlServerStoredProcedure",
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[UpdateSourceTables]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "Nuudl_NetCracker",
+              "type": "String"
+            },
+            "SourceConnectionType": {
+              "value": "AzureDatabricksDeltaLake",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "dai.netcrackertest",
+              "type": "String"
+            },
+            "SourceObjectName": {
+              "value": "nrmacchasonetimecharge",
+              "type": "String"
+            },
+            "DestinationSchemaName": {
+              "value": "sourceNuudlNetCracker",
+              "type": "String"
+            },
+            "WatermarkColumnName": {
+              "value": "NUUDL_CuratedBatchID",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "False",
+              "type": "Boolean"
+            },
+            "WatermarkRollingWindowDays": {
+              "value": "0",
+              "type": "Int32"
+            },
+            "WatermarkInQuery": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Lookup_Last_Value_Loaded",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Update_Meta_Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderStoredProcedureName": "[nuuMeta].[GetLastValueLoaded]",
+            "storedProcedureParameters": {
+              "SourceConnectionName": {
+                "value": "Nuudl_NetCracker",
+                "type": "String"
+              },
+              "SourceSchemaName": {
+                "value": "dai.netcrackertest",
+                "type": "String"
+              },
+              "SourceTableName": {
+                "value": "nrmacchasonetimecharge",
+                "type": "String"
+              },
+              "JobIsIncremental": {
+                "value": "@pipeline().parameters.JobIsIncremental",
+                "type": "Boolean"
+              },
+              "ConnectionType": {
+                "value": "AzureDatabricksDeltaLake",
+                "type": "String"
+              },
+              "WatermarkIsDate": {
+                "value": "False",
+                "type": "Boolean"
+              }
+            }
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjects"
+            }
+          }
+        }
+      },
+      {
+        "name": "Lookup_Source_Schema_Name",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Last_Value_Loaded",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderStoredProcedureName": "[nuuMeta].[GetSourceSchemaName]",
+            "storedProcedureParameters": {
+              "SourceConnectionName": {
+                "value": "Nuudl_NetCracker",
+                "type": "String"
+              },
+              "SourceSchemaName": {
+                "value": "dai.netcrackertest",
+                "type": "String"
+              },
+              "SourceTableName": {
+                "value": "nrmacchasonetimecharge",
+                "type": "String"
+              }
+            }
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjects"
+            }
+          }
+        }
+      },
+      {
+        "name": "Copy_nrmacchasonetimecharge",
+        "type": "Copy",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Source_Schema_Name",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "AzureDatabricksDeltaLakeSource",
+            "query": {
+              "value": "\r\nSELECT \r\n`account_num` \r\n,`otc_seq` \r\n,`otc_dtm` \r\n,`otc_id` \r\n,`otc_status` \r\n,`otc_mny` \r\n,`cps_id` \r\n,`created_dtm` \r\n,`geneva_user_ora` \r\n,`realtime_charge_boo` \r\n,`revenue_code_id` \r\n,`receivable_class_id` \r\n,`otc_class` \r\n,`domain_id` \r\n,`otc_label` \r\n,`service_address_seq` \r\n,`product_seq` \r\n,`budget_centre_seq` \r\n,`bill_seq` \r\n,`rev_recognition_class_id` \r\n,`otc_txt` \r\n,`cancelled_txt` \r\n,`originating_bill_seq` \r\n,`originating_bill_version` \r\n,`otc_installment_seq` \r\n,`installment_number` \r\n,`termination_dtm` \r\n,`product_quantity` \r\n,`previous_otc_mny` \r\n,`revenue_start_dat` \r\n,`revenue_end_dat` \r\n,`upre_seq` \r\n,`random_hash` \r\n,`domain_group_id` \r\n,`actual_mny` \r\n,`otc_tax_mny` \r\n,`disc_id_applied_on_otc_create` \r\n,`precalc_disc_amount_on_otc` \r\n,`discounted_otc_on_creation_boo` \r\n,`alt_currency_code` \r\n,`alt_currency_otc_mny` \r\n,`rtpc_otc_lines_tax_mny` \r\n,`currency_conversion_ref_dat` \r\n,`otc_name` \r\n,`prepaid_installment_boo` \r\n,`one_off_accrual_points` \r\n,`one_off_accrual_point_rate` \r\n,`one_off_redemption_points` \r\n,`one_off_redemption_point_rate` \r\n,`original_otc_instlmnt_seq` \r\n,`original_instlmnt_num` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcrackertest.`nrmacchasonetimecharge`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "type": "Expression"
+            },
+            "exportSettings": {
+              "type": "AzureDatabricksDeltaLakeExportCommand"
+            }
+          },
+          "sink": {
+            "type": "AzureSqlSink",
+            "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+            "preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[nrmacchasonetimecharge]"
+          },
+          "enableStaging": true,
+          "stagingSettings": {
+            "linkedServiceName": {
+              "referenceName": "datalakest01exploration",
+              "type": "LinkedServiceReference"
+            },
+            "path": "adfstage"
+          }
+        },
+        "inputs": [
+          {
+            "referenceName": "Nuudl_NetCracker_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "dai.netcrackertest.nrmacchasonetimecharge"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "[sourceNuudlNetCracker].[nrmacchasonetimecharge]"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Merge_To_History",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Copy_nrmacchasonetimecharge",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistory]",
+          "storedProcedureParameters": {
+            "ExtractTable": {
+              "value": "sourceNuudlNetCracker.nrmacchasonetimecharge",
+              "type": "String"
+            },
+            "LoadIsIncremental": {
+              "value": "@pipeline().parameters.JobIsIncremental",
+              "type": "Boolean"
+            },
+            "HistoryTrackingColumns": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Set_Last_Value_Loaded",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Merge_To_History",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[SetLastLoadedValue]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "Nuudl_NetCracker",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "dai.netcrackertest",
+              "type": "String"
+            },
+            "SourceTableName": {
+              "value": "nrmacchasonetimecharge",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "False",
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    }
+  }
+}
