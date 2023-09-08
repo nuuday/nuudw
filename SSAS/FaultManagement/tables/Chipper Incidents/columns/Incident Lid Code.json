@@ -1,5 +1,5 @@
 {
-  "name": "IncidentLidCode",
+  "name": "Incident Lid Code",
   "dataType": "string",
   "sourceColumn": "IncidentLidCode"
 }
