@@ -1,214 +1,205 @@
 {
-	"name": "EXT_Schema_Nuudl_NetCracker",
-	"properties": {
-		"activities": [
-			{
-				"name": "SP Maintain Extract Create Schemas",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "[nuuMeta].[MaintainExtractCreateSchemas]",
-					"storedProcedureParameters": {
-						"ExtractSchemaName": {
-							"value": "sourceNuudlNetCracker",
-							"type": "String"
-						},
-						"PrintSQL": {
-							"value": "false",
-							"type": "Boolean"
-						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "nuudwsqldb01",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "LKP Objects",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "SP Maintain Extract Create Schemas",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "SqlSource",
-						"sqlReaderQuery": "SELECT [SourceObjectID]\n,NUUDLJobCode\n FROM [nuuMetaView].[SourceObjectDefinitions]\n WHERE SourceConnectionName = 'Nuudl_NetCracker'",
-						"partitionOption": "None"
-					},
-					"dataset": {
-						"referenceName": "nuudwsqldb01_DynamicDataset",
-						"type": "DatasetReference",
-						"parameters": {
-							"TableName": "nuuMetaView.SourceObjectDefinitions"
-						}
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
-				"name": "ForEach Object",
-				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "LKP Objects",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('LKP Objects').output.value",
-						"type": "Expression"
-					},
-					"isSequential": true,
-					"activities": [
-						{
-							"name": "Copy Information Schema",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "SqlSource",
-									"sqlReaderQuery": {
-										"value": "SELECT\n[SourceSystemTypeName]\n,[TableCatalogName]\n,SchemaName\n--,URI AS [TableName]\n,[ColumnName]\n,[OrdinalPositionNumber]\n,[DataTypeName]\n,[MaximumLenghtNumber]\n,[NumericPrecisionNumber]\n,[NumericScaleNumber]\n,[KeySequenceNumber]\n,'@{item().SourceObjectID}' AS SourceObjectID\nFROM [nuudataload].[v_Schema]\nWHERE NUUDLJobCode = '@{item().NUUDLJobCode}'\n",
-										"type": "Expression"
-									},
-									"partitionOption": "None"
-								},
-								"sink": {
-									"type": "SqlSink",
-									"writeBatchSize": 10000,
-									"preCopyScript": {
-										"value": "DELETE FROM nuuMeta.SourceInformationSchema WHERE SourceObjectID = '@{item().SourceObjectID}'",
-										"type": "Expression"
-									}
-								},
-								"enableStaging": false,
-								"dataIntegrationUnits": 0
-							},
-							"inputs": [
-								{
-									"referenceName": "ingestsqldb01_DynamicDataset",
-									"type": "DatasetReference",
-									"parameters": {
-										"TableName": "INFORMATION_SCHEMA.COLUMNS"
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "nuudwsqldb01_DynamicDataset",
-									"type": "DatasetReference",
-									"parameters": {
-										"TableName": "nuuMeta.SourceInformationSchema"
-									}
-								}
-							]
-						},
-						{
-							"name": "SP Maintain Extract",
-							"type": "SqlServerStoredProcedure",
-							"dependsOn": [
-								{
-									"activity": "Copy Information Schema",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"storedProcedureName": "[nuuMeta].[MaintainExtract]",
-								"storedProcedureParameters": {
-									"SourceObjectID": {
-										"value": {
-											"value": "@{item().SourceObjectID}",
-											"type": "Expression"
-										},
-										"type": "Int32"
-									},
-									"CreateTable": {
-										"value": {
-											"value": "@pipeline().parameters.CreateTable",
-											"type": "Expression"
-										},
-										"type": "Boolean"
-									},
-									"UpdateSourceScript": {
-										"value": {
-											"value": "@pipeline().parameters.UpdateSourceScript",
-											"type": "Expression"
-										},
-										"type": "Boolean"
-									}
-								}
-							},
-							"linkedServiceName": {
-								"referenceName": "nuudwsqldb01",
-								"type": "LinkedServiceReference"
-							}
-						}
-					]
-				}
-			}
-		],
-		"parameters": {
-			"CreateTable": {
-				"type": "bool",
-				"defaultValue": true
-			},
-			"UpdateSourceScript": {
-				"type": "bool",
-				"defaultValue": true
-			}
-		},
-		"variables": {
-			"SchemaName": {
-				"type": "String"
-			}
-		},
-		"folder": {
-			"name": "0.9_Meta"
-		},
-		"annotations": []
-	}
+  "name": "EXT_Schema_Nuudl_NetCracker",
+  "properties": {
+    "activities": [
+      {
+        "name": "SP Maintain Extract Create Schemas",
+        "type": "SqlServerStoredProcedure",
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[MaintainExtractCreateSchemas]",
+          "storedProcedureParameters": {
+            "ExtractSchemaName": {
+              "value": "sourceNuudlNetCracker",
+              "type": "String"
+            },
+            "PrintSQL": {
+              "value": "false",
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "LKP Objects",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "SP Maintain Extract Create Schemas",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderQuery": "SELECT [SourceObjectID]\n,NUUDLJobCode\n FROM [nuuMetaView].[SourceObjectDefinitions]\n WHERE SourceConnectionName = 'Nuudl_NetCracker'"
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMetaView.SourceObjectDefinitions"
+            }
+          },
+          "firstRowOnly": false
+        }
+      },
+      {
+        "name": "ForEach Object",
+        "type": "ForEach",
+        "dependsOn": [
+          {
+            "activity": "LKP Objects",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "items": {
+            "value": "@activity('LKP Objects').output.value",
+            "type": "Expression"
+          },
+          "isSequential": true,
+          "activities": [
+            {
+              "name": "Copy Information Schema",
+              "type": "Copy",
+              "dependsOn": [],
+              "policy": {
+                "timeout": "7.00:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "source": {
+                  "type": "SqlSource",
+                  "sqlReaderQuery": {
+                    "value": "SELECT\n[SourceSystemTypeName]\n,[TableCatalogName]\n,SchemaName\n,URI AS [TableName]\n,[ColumnName]\n,[OrdinalPositionNumber]\n,[DataTypeName]\n,[MaximumLenghtNumber]\n,[NumericPrecisionNumber]\n,[NumericScaleNumber]\n,[KeySequenceNumber]\n,'@{item().SourceObjectID}' AS SourceObjectID\nFROM [nuudataload].[v_Schema]\nWHERE NUUDLJobCode = '@{item().NUUDLJobCode}'\n",
+                    "type": "Expression"
+                  }
+                },
+                "sink": {
+                  "type": "SqlSink",
+                  "writeBatchSize": 10000,
+                  "preCopyScript": {
+                    "value": "DELETE FROM nuuMeta.SourceInformationSchema WHERE SourceObjectID = '@{item().SourceObjectID}'",
+                    "type": "Expression"
+                  }
+                },
+                "enableStaging": false,
+                "cloudDataMovementUnits": 0
+              },
+              "inputs": [
+                {
+                  "referenceName": "ingestsqldb01_DynamicDataset",
+                  "type": "DatasetReference",
+                  "parameters": {
+                    "TableName": "INFORMATION_SCHEMA.COLUMNS"
+                  }
+                }
+              ],
+              "outputs": [
+                {
+                  "referenceName": "nuudwsqldb01_DynamicDataset",
+                  "type": "DatasetReference",
+                  "parameters": {
+                    "TableName": "nuuMeta.SourceInformationSchema"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "SP Maintain Extract",
+              "type": "SqlServerStoredProcedure",
+              "dependsOn": [
+                {
+                  "activity": "Copy Information Schema",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ],
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "storedProcedureName": "[nuuMeta].[MaintainExtract]",
+                "storedProcedureParameters": {
+                  "SourceObjectID": {
+                    "value": {
+                      "value": "@{item().SourceObjectID}",
+                      "type": "Expression"
+                    },
+                    "type": "Int32"
+                  },
+                  "CreateTable": {
+                    "value": {
+                      "value": "@pipeline().parameters.CreateTable",
+                      "type": "Expression"
+                    },
+                    "type": "Boolean"
+                  },
+                  "UpdateSourceScript": {
+                    "value": {
+                      "value": "@pipeline().parameters.UpdateSourceScript",
+                      "type": "Expression"
+                    },
+                    "type": "Boolean"
+                  }
+                }
+              },
+              "linkedServiceName": {
+                "referenceName": "nuudwsqldb01",
+                "type": "LinkedServiceReference"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "parameters": {
+      "CreateTable": {
+        "type": "bool",
+        "defaultValue": true
+      },
+      "UpdateSourceScript": {
+        "type": "bool",
+        "defaultValue": true
+      }
+    },
+    "variables": {
+      "SchemaName": {
+        "type": "String"
+      }
+    },
+    "folder": {
+      "name": "0.9_Meta"
+    }
+  }
 }
