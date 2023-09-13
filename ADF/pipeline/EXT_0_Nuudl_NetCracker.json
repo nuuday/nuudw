@@ -1,918 +1,622 @@
 {
-	"name": "EXT_0_Nuudl_NetCracker",
-	"properties": {
-		"activities": [
-			{
-				"name": "cimconsent",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_cimconsent",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "cimconsentspecification",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_cimconsentspecification",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "cimconsentsubjectentity",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_cimconsentsubjectentity",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "cimcontactmedium",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_cimcontactmedium",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "cimcontactmediumassociation",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_cimcontactmediumassociation",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "cimcustomer",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_cimcustomer",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "cimindividual",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_cimindividual",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "cimnotificationpreference",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_cimnotificationpreference",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "cimpartyrole",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_cimpartyrole",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "cimpartyroleassociation",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_cimpartyroleassociation",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "ibsnrmlcharacteristic",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_ibsnrmlcharacteristic",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "ibsnrmlproductinstance",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_ibsnrmlproductinstance",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmacchasonetimecharge",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmacchasonetimecharge",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmaccountkeyname",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmaccountkeyname",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmadjustment",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmadjustment",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmbillproductcharge",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmbillproductcharge",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmbillsummary",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmbillsummary",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmcusthasproduct",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmcusthasproduct",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmcusthasproductkeyname",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmcusthasproductkeyname",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmcustproductdetails",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmcustproductdetails",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmeventdiscount",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmeventdiscount",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmeventdiscountkeyname",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmeventdiscountkeyname",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmeventlifecycletyp",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmeventlifecycletyp",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmeventlifecycletypkeyname",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmeventlifecycletypkeyname",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmeventtype",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmeventtype",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmeventtypekeyname",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmeventtypekeyname",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmratingtariff",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmratingtariff",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmratingtariffkeyname",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmratingtariffkeyname",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmreceivableclass",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmreceivableclass",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmreceivableclasskeyname",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmreceivableclasskeyname",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmrejectevent",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmrejectevent",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmrevenuecode",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmrevenuecode",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "nrmrevenuecodekeyname",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_nrmrevenuecodekeyname",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimnrmlcustomercategory",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlcustomercategory",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimnrmldistributionchannel",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmldistributionchannel",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimnrmlprodcatbundledoffer",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlprodcatbundledoffer",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimnrmlprodcatprodoffering",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlprodcatprodoffering",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimnrmlproductcatalog",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductcatalog",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimnrmlproductfamily",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductfamily",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			}
-		],
-		"parameters": {
-			"JobIsIncremental": {
-				"type": "Bool",
-				"defaultValue": true
-			},
-			"WriteBatchSize": {
-				"type": "Int",
-				"defaultValue": 10000
-			}
-		},
-		"folder": {
-			"name": "0.1_Extracts"
-		},
-		"annotations": []
-	}
+  "name": "EXT_0_Nuudl_NetCracker",
+  "properties": {
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    },
+    "activities": [
+      {
+        "name": "cimconsent",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_cimconsent",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "cimconsentspecification",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_cimconsentspecification",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "cimconsentsubjectentity",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_cimconsentsubjectentity",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "cimcontactmedium",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_cimcontactmedium",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "cimcontactmediumassociation",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_cimcontactmediumassociation",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "cimcustomer",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_cimcustomer",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "cimindividual",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_cimindividual",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "cimnotificationpreference",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_cimnotificationpreference",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "cimpartyrole",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_cimpartyrole",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "cimpartyroleassociation",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_cimpartyroleassociation",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "ibsnrmlcharacteristic",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_ibsnrmlcharacteristic",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "ibsnrmlproductinstance",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_ibsnrmlproductinstance",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmacchasonetimecharge",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmacchasonetimecharge",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmaccountkeyname",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmaccountkeyname",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmadjustment",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmadjustment",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmbillproductcharge",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmbillproductcharge",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmbillsummary",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmbillsummary",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmcostedevents",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmcostedevents",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmcusthasproduct",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmcusthasproduct",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmcusthasproductkeyname",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmcusthasproductkeyname",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmcustproductdetails",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmcustproductdetails",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmeventdiscount",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmeventdiscount",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmeventdiscountkeyname",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmeventdiscountkeyname",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmeventlifecycletyp",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmeventlifecycletyp",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmeventlifecycletypkeyname",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmeventlifecycletypkeyname",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmeventtype",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmeventtype",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmeventtypekeyname",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmeventtypekeyname",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmratingtariff",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmratingtariff",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmratingtariffkeyname",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmratingtariffkeyname",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmreceivableclass",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmreceivableclass",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmreceivableclasskeyname",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmreceivableclasskeyname",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmrejectevent",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmrejectevent",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmrevenuecode",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmrevenuecode",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "nrmrevenuecodekeyname",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_nrmrevenuecodekeyname",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmlcustomercategory",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlcustomercategory",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmldistributionchannel",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmldistributionchannel",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmlprodcatbundledoffer",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlprodcatbundledoffer",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmlprodcatprodoffering",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlprodcatprodoffering",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmlproductcatalog",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductcatalog",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmlproductfamily",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductfamily",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      }
+    ]
+  }
 }
