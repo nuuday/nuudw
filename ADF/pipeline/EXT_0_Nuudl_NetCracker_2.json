@@ -18,6 +18,21 @@
     },
     "activities": [
       {
+        "name": "pimnrmlproductfamily",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductfamily",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
         "name": "pimnrmlproductoffering",
         "type": "ExecutePipeline",
         "typeProperties": {
