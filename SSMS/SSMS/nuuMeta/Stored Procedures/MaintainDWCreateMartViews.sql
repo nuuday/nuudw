@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [nuuMeta].[MaintainDWCreateCubeViews]
+﻿CREATE PROCEDURE [nuuMeta].[MaintainDWCreateMartViews]
 	@Solution nvarchar(10)
 AS
 /*
@@ -68,7 +68,7 @@ AS
 SELECT '+@ColumnList+'
 FROM ['+@DWSchema+'].['+@DWView+']
 	'
-		PRINT @SQL
+		--PRINT @SQL
 		EXEC (@SQL)
 
 		PRINT 'Created '+'['+@SolutionSchema+'].['+@SolutionView+']'
