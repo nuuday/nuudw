@@ -423,6 +423,7 @@
     <Build Include="dba\Views\ShowDatabasePermissions.sql" />
     <Build Include="dba\Views\ShowDatabaseRoles.sql" />
     <Build Include="Security\dba.sql" />
+    <Build Include="nuuMeta\Stored Procedures\MaintainDWCreateMartViews.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
