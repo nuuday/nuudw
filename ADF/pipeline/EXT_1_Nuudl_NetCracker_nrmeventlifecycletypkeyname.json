@@ -233,18 +233,10 @@
           "retryIntervalInSeconds": 30
         },
         "typeProperties": {
-          "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistory]",
+          "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
           "storedProcedureParameters": {
             "ExtractTable": {
               "value": "sourceNuudlNetCracker.nrmeventlifecycletypkeyname",
-              "type": "String"
-            },
-            "LoadIsIncremental": {
-              "value": "@pipeline().parameters.JobIsIncremental",
-              "type": "Boolean"
-            },
-            "HistoryTrackingColumns": {
-              "value": "",
               "type": "String"
             }
           }
