@@ -22,7 +22,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceObjectName": {
@@ -82,7 +82,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -138,7 +138,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -176,7 +176,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`account_num` \r\n,`charge_seq` \r\n,`charge_number` \r\n,`domain_id` \r\n,`customer_ref` \r\n,`product_seq` \r\n,`product_id` \r\n,`charge_start_dat` \r\n,`charge_end_dat` \r\n,`charge_cost_mny` \r\n,`charge_type` \r\n,`charge_sub_type` \r\n,`tariff_id` \r\n,`revenue_code_id` \r\n,`cps_id` \r\n,`product_attr_2` \r\n,`taxcode_id` \r\n,`percentage_pct` \r\n,`product_quantity` \r\n,`product_age` \r\n,`bpc_status` \r\n,`created_dtm` \r\n,`anchor_dat` \r\n,`tariff_version` \r\n,`receivable_class_id` \r\n,`in_advance_boo` \r\n,`budget_centre_seq` \r\n,`package_seq` \r\n,`package_id` \r\n,`product_package_instance` \r\n,`parent_product_seq` \r\n,`additions_quantity` \r\n,`terminations_quantity` \r\n,`package_basic_tariff_id` \r\n,`package_basic_cost_mny` \r\n,`package_disc_rev_code_id` \r\n,`pre_override_cost_mny` \r\n,`override_rev_code_id` \r\n,`early_term_mult_cost_mny` \r\n,`early_term_mult_rev_code_id` \r\n,`contract_ref` \r\n,`contract_term` \r\n,`contract_term_units` \r\n,`product_attr_1` \r\n,`product_attr_3` \r\n,`product_attr_4` \r\n,`product_attr_5` \r\n,`product_attr_6` \r\n,`override_number` \r\n,`override_mod_type_id` \r\n,`age_dependent_price_id` \r\n,`adp_from_number` \r\n,`adp_to_number` \r\n,`adp_period_units` \r\n,`pre_adp_cost_mny` \r\n,`adp_recur_disc_rev_code_id` \r\n,`full_period_cost_mny` \r\n,`charge_start_dtm` \r\n,`charge_end_dtm` \r\n,`activation_rule` \r\n,`suspension_rule` \r\n,`reactivation_rule` \r\n,`termination_rule` \r\n,`rev_recognition_class_id` \r\n,`charge_source` \r\n,`contract_start_dat` \r\n,`contract_type_id` \r\n,`tax_rate_pct` \r\n,`tax_rate_mny` \r\n,`tax_rate_currency_code` \r\n,`cog_member_qty` \r\n,`accumulated_points` \r\n,`redeemed_points` \r\n,`pre_loyalty_cost_mny` \r\n,`price_attr_1` \r\n,`price_attr_2` \r\n,`price_attr_3` \r\n,`price_attr_4` \r\n,`price_attr_5` \r\n,`price_attr_6` \r\n,`split_charge_amount_mny` \r\n,`pre_split_full_period_cost_mny` \r\n,`split_charge_source` \r\n,`actual_charge_start_dat` \r\n,`actual_charge_end_dat` \r\n,`split_amount_overruled_boo` \r\n,`full_period_boo` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcrackertest.`nrmbillproductcharge`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`account_num` \r\n,`charge_seq` \r\n,`charge_number` \r\n,`domain_id` \r\n,`customer_ref` \r\n,`product_seq` \r\n,`product_id` \r\n,`charge_start_dat` \r\n,`charge_end_dat` \r\n,`charge_cost_mny` \r\n,`charge_type` \r\n,`charge_sub_type` \r\n,`tariff_id` \r\n,`revenue_code_id` \r\n,`cps_id` \r\n,`product_attr_2` \r\n,`taxcode_id` \r\n,`percentage_pct` \r\n,`product_quantity` \r\n,`product_age` \r\n,`bpc_status` \r\n,`created_dtm` \r\n,`anchor_dat` \r\n,`tariff_version` \r\n,`receivable_class_id` \r\n,`in_advance_boo` \r\n,`budget_centre_seq` \r\n,`package_seq` \r\n,`package_id` \r\n,`product_package_instance` \r\n,`parent_product_seq` \r\n,`additions_quantity` \r\n,`terminations_quantity` \r\n,`package_basic_tariff_id` \r\n,`package_basic_cost_mny` \r\n,`package_disc_rev_code_id` \r\n,`pre_override_cost_mny` \r\n,`override_rev_code_id` \r\n,`early_term_mult_cost_mny` \r\n,`early_term_mult_rev_code_id` \r\n,`contract_ref` \r\n,`contract_term` \r\n,`contract_term_units` \r\n,`product_attr_1` \r\n,`product_attr_3` \r\n,`product_attr_4` \r\n,`product_attr_5` \r\n,`product_attr_6` \r\n,`override_number` \r\n,`override_mod_type_id` \r\n,`age_dependent_price_id` \r\n,`adp_from_number` \r\n,`adp_to_number` \r\n,`adp_period_units` \r\n,`pre_adp_cost_mny` \r\n,`adp_recur_disc_rev_code_id` \r\n,`full_period_cost_mny` \r\n,`charge_start_dtm` \r\n,`charge_end_dtm` \r\n,`activation_rule` \r\n,`suspension_rule` \r\n,`reactivation_rule` \r\n,`termination_rule` \r\n,`rev_recognition_class_id` \r\n,`charge_source` \r\n,`contract_start_dat` \r\n,`contract_type_id` \r\n,`tax_rate_pct` \r\n,`tax_rate_mny` \r\n,`tax_rate_currency_code` \r\n,`cog_member_qty` \r\n,`accumulated_points` \r\n,`redeemed_points` \r\n,`pre_loyalty_cost_mny` \r\n,`price_attr_1` \r\n,`price_attr_2` \r\n,`price_attr_3` \r\n,`price_attr_4` \r\n,`price_attr_5` \r\n,`price_attr_6` \r\n,`split_charge_amount_mny` \r\n,`pre_split_full_period_cost_mny` \r\n,`split_charge_source` \r\n,`actual_charge_start_dat` \r\n,`actual_charge_end_dat` \r\n,`split_amount_overruled_boo` \r\n,`full_period_boo` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcracker.`nrmbillproductcharge`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -202,7 +202,7 @@
             "referenceName": "Nuudl_NetCracker_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "dai.netcrackertest.nrmbillproductcharge"
+              "TableName": "dai.netcracker.nrmbillproductcharge"
             }
           }
         ],
@@ -270,7 +270,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceTableName": {

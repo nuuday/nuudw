@@ -22,7 +22,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceObjectName": {
@@ -82,7 +82,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -138,7 +138,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -176,7 +176,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`name` \r\n,`product_instance_id` \r\n,`product_offering_char_id` \r\n,`product_spec_char_id` \r\n,`value_json__corrupt_record` \r\n,`attribute_id` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcrackertest.`ibsnrmlcharacteristic`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`name` \r\n,`product_instance_id` \r\n,`product_offering_char_id` \r\n,`product_spec_char_id` \r\n,`value_json__corrupt_record` \r\n,`attribute_id` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcracker.`ibsnrmlcharacteristic`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -202,7 +202,7 @@
             "referenceName": "Nuudl_NetCracker_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "dai.netcrackertest.ibsnrmlcharacteristic"
+              "TableName": "dai.netcracker.ibsnrmlcharacteristic"
             }
           }
         ],
@@ -270,7 +270,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceTableName": {

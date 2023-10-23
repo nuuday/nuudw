@@ -22,7 +22,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceObjectName": {
@@ -82,7 +82,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -138,7 +138,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -176,7 +176,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`event_discount_id` \r\n,`catalogue_change_id` \r\n,`discount_name` \r\n,`discount_desc` \r\n,`summation_attr_num` \r\n,`marginal_discount_boo` \r\n,`bonus_scheme_id` \r\n,`periodic_only_boo` \r\n,`revenue_code_id` \r\n,`assessment_aggregation_level` \r\n,`discounting_aggregation_level` \r\n,`assessment_event_type_id` \r\n,`discounting_event_type_id` \r\n,`assessment_filter_id` \r\n,`discounting_filter_id` \r\n,`pro_rating_boo` \r\n,`discount_period` \r\n,`discount_period_units` \r\n,`parametric_boo` \r\n,`aggregation_unit_name` \r\n,`aggregation_rate_multiplier` \r\n,`aggregation_rate_units` \r\n,`synchronise_boo` \r\n,`rating_carry_over_boo` \r\n,`max_carry_over_num` \r\n,`discount_type` \r\n,`priority_num` \r\n,`filter_set` \r\n,`disc_act_thold_set_id` \r\n,`rating_assessment_criteria` \r\n,`include_post_term_boo` \r\n,`rating_accumulate_boo` \r\n,`disc_distribution_boo` \r\n,`amount_per_unit_boo` \r\n,`discount_sum_attr_num` \r\n,`discount_sum_multiplier` \r\n,`discount_sum_name` \r\n,`period_maximum_mny` \r\n,`reset_counter_boo` \r\n,`store_qualifying_usage_boo` \r\n,`apply_until_expired_boo` \r\n,`allocate_full_periods_boo` \r\n,`allocation_period` \r\n,`allocation_period_units` \r\n,`perm_override_enable_rule` \r\n,`temp_override_enable_rule` \r\n,`keep_periods` \r\n,`initial_bonus_award` \r\n,`initial_bonus_reason_id` \r\n,`initial_counter_usage` \r\n,`period_priority_strategy` \r\n,`cost_per_1000_units_mny` \r\n,`lc_profile_id` \r\n,`shared_discount_boo` \r\n,`merge_buckets_boo` \r\n,`dynamic_discount_boo` \r\n,`otc_id` \r\n,`dynamic_allocation_rule` \r\n,`max_num_buckets` \r\n,`allied_discounts_group_id` \r\n,`charge_cash_bundles_boo` \r\n,`net_charge_boo` \r\n,`no_further_discounts_boo` \r\n,`no_further_assessment_boo` \r\n,`discount_pct_granularity` \r\n,`additional_validity_mode` \r\n,`additional_priority_num` \r\n,`ocs_insession_action_type` \r\n,`negotiable_discount_boo` \r\n,`min_discount_pct` \r\n,`max_discount_pct` \r\n,`min_discount_mny` \r\n,`max_discount_mny` \r\n,`shrd_lookup_threshold_value` \r\n,`threshold_assesment_criteria` \r\n,`disc_status_action_set_id` \r\n,`rounding_unit_size` \r\n,`discount_rounding_type` \r\n,`discount_unit_name` \r\n,`zbr_bucket_type` \r\n,`ignore_zero_chg_events` \r\n,`carryover_allowable_count` \r\n,`bucket_release_notif_delay` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcrackertest.`nrmeventdiscount`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`event_discount_id` \r\n,`catalogue_change_id` \r\n,`discount_name` \r\n,`discount_desc` \r\n,`summation_attr_num` \r\n,`marginal_discount_boo` \r\n,`bonus_scheme_id` \r\n,`periodic_only_boo` \r\n,`revenue_code_id` \r\n,`assessment_aggregation_level` \r\n,`discounting_aggregation_level` \r\n,`assessment_event_type_id` \r\n,`discounting_event_type_id` \r\n,`assessment_filter_id` \r\n,`discounting_filter_id` \r\n,`pro_rating_boo` \r\n,`discount_period` \r\n,`discount_period_units` \r\n,`parametric_boo` \r\n,`aggregation_unit_name` \r\n,`aggregation_rate_multiplier` \r\n,`aggregation_rate_units` \r\n,`synchronise_boo` \r\n,`rating_carry_over_boo` \r\n,`max_carry_over_num` \r\n,`discount_type` \r\n,`priority_num` \r\n,`filter_set` \r\n,`disc_act_thold_set_id` \r\n,`rating_assessment_criteria` \r\n,`include_post_term_boo` \r\n,`rating_accumulate_boo` \r\n,`disc_distribution_boo` \r\n,`amount_per_unit_boo` \r\n,`discount_sum_attr_num` \r\n,`discount_sum_multiplier` \r\n,`discount_sum_name` \r\n,`period_maximum_mny` \r\n,`reset_counter_boo` \r\n,`store_qualifying_usage_boo` \r\n,`apply_until_expired_boo` \r\n,`allocate_full_periods_boo` \r\n,`allocation_period` \r\n,`allocation_period_units` \r\n,`perm_override_enable_rule` \r\n,`temp_override_enable_rule` \r\n,`keep_periods` \r\n,`initial_bonus_award` \r\n,`initial_bonus_reason_id` \r\n,`initial_counter_usage` \r\n,`period_priority_strategy` \r\n,`cost_per_1000_units_mny` \r\n,`lc_profile_id` \r\n,`shared_discount_boo` \r\n,`merge_buckets_boo` \r\n,`dynamic_discount_boo` \r\n,`otc_id` \r\n,`dynamic_allocation_rule` \r\n,`max_num_buckets` \r\n,`allied_discounts_group_id` \r\n,`charge_cash_bundles_boo` \r\n,`net_charge_boo` \r\n,`no_further_discounts_boo` \r\n,`no_further_assessment_boo` \r\n,`discount_pct_granularity` \r\n,`additional_validity_mode` \r\n,`additional_priority_num` \r\n,`ocs_insession_action_type` \r\n,`negotiable_discount_boo` \r\n,`min_discount_pct` \r\n,`max_discount_pct` \r\n,`min_discount_mny` \r\n,`max_discount_mny` \r\n,`shrd_lookup_threshold_value` \r\n,`threshold_assesment_criteria` \r\n,`disc_status_action_set_id` \r\n,`rounding_unit_size` \r\n,`discount_rounding_type` \r\n,`discount_unit_name` \r\n,`zbr_bucket_type` \r\n,`ignore_zero_chg_events` \r\n,`carryover_allowable_count` \r\n,`bucket_release_notif_delay` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcracker.`nrmeventdiscount`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -202,7 +202,7 @@
             "referenceName": "Nuudl_NetCracker_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "dai.netcrackertest.nrmeventdiscount"
+              "TableName": "dai.netcracker.nrmeventdiscount"
             }
           }
         ],
@@ -270,7 +270,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceTableName": {

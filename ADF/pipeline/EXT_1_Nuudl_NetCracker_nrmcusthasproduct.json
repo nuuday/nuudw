@@ -22,7 +22,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceObjectName": {
@@ -82,7 +82,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -138,7 +138,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -176,7 +176,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`customer_ref` \r\n,`product_seq` \r\n,`product_id` \r\n,`package_seq` \r\n,`product_package_instance` \r\n,`parent_product_seq` \r\n,`successor_product_seq` \r\n,`cust_order_num` \r\n,`supplier_order_num` \r\n,`suppress_init_charge_boo` \r\n,`suppress_term_charge_boo` \r\n,`suppress_early_term_charge_boo` \r\n,`event_source_count` \r\n,`subscription_boo` \r\n,`subs_product_seq` \r\n,`subscription_ref` \r\n,`template_optional_prod_boo` \r\n,`structural_integer_ref` \r\n,`template_seq` \r\n,`catalogue_changed_dtm` \r\n,`has_add_on_products_boo` \r\n,`domain_id` \r\n,`transfer_indicator` \r\n,`actual_product_start_dtm` \r\n,`has_descendants_boo` \r\n,`client_entity_tag` \r\n,`tax_status_change_date` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcrackertest.`nrmcusthasproduct`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`customer_ref` \r\n,`product_seq` \r\n,`product_id` \r\n,`package_seq` \r\n,`product_package_instance` \r\n,`parent_product_seq` \r\n,`successor_product_seq` \r\n,`cust_order_num` \r\n,`supplier_order_num` \r\n,`suppress_init_charge_boo` \r\n,`suppress_term_charge_boo` \r\n,`suppress_early_term_charge_boo` \r\n,`event_source_count` \r\n,`subscription_boo` \r\n,`subs_product_seq` \r\n,`subscription_ref` \r\n,`template_optional_prod_boo` \r\n,`structural_integer_ref` \r\n,`template_seq` \r\n,`catalogue_changed_dtm` \r\n,`has_add_on_products_boo` \r\n,`domain_id` \r\n,`transfer_indicator` \r\n,`actual_product_start_dtm` \r\n,`has_descendants_boo` \r\n,`client_entity_tag` \r\n,`tax_status_change_date` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcracker.`nrmcusthasproduct`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -202,7 +202,7 @@
             "referenceName": "Nuudl_NetCracker_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "dai.netcrackertest.nrmcusthasproduct"
+              "TableName": "dai.netcracker.nrmcusthasproduct"
             }
           }
         ],
@@ -270,7 +270,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceTableName": {

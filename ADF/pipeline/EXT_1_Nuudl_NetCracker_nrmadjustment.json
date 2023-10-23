@@ -22,7 +22,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceObjectName": {
@@ -82,7 +82,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -138,7 +138,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -176,7 +176,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`account_num` \r\n,`adjustment_seq` \r\n,`adjustment_dat` \r\n,`adjustment_type_id` \r\n,`adjustment_txt` \r\n,`adjustment_net_mny` \r\n,`created_dtm` \r\n,`dispute_seq` \r\n,`adjustment_status` \r\n,`budget_centre_seq` \r\n,`bill_seq` \r\n,`cps_id` \r\n,`geneva_user_ora` \r\n,`approved_dtm` \r\n,`outcome_desc` \r\n,`receivable_class_id` \r\n,`adjustment_debt_mny` \r\n,`adjustment_tax_mny` \r\n,`linked_writeoff_payment_seq` \r\n,`billtimecharge_created_adj_boo` \r\n,`group_name` \r\n,`revenue_code_id` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcrackertest.`nrmadjustment`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`account_num` \r\n,`adjustment_seq` \r\n,`adjustment_dat` \r\n,`adjustment_type_id` \r\n,`adjustment_txt` \r\n,`adjustment_net_mny` \r\n,`created_dtm` \r\n,`dispute_seq` \r\n,`adjustment_status` \r\n,`budget_centre_seq` \r\n,`bill_seq` \r\n,`cps_id` \r\n,`geneva_user_ora` \r\n,`approved_dtm` \r\n,`outcome_desc` \r\n,`receivable_class_id` \r\n,`adjustment_debt_mny` \r\n,`adjustment_tax_mny` \r\n,`linked_writeoff_payment_seq` \r\n,`billtimecharge_created_adj_boo` \r\n,`group_name` \r\n,`revenue_code_id` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcracker.`nrmadjustment`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -202,7 +202,7 @@
             "referenceName": "Nuudl_NetCracker_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "dai.netcrackertest.nrmadjustment"
+              "TableName": "dai.netcracker.nrmadjustment"
             }
           }
         ],
@@ -270,7 +270,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceTableName": {

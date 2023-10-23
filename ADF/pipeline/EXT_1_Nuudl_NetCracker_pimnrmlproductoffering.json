@@ -22,7 +22,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceObjectName": {
@@ -82,7 +82,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -138,7 +138,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -176,7 +176,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`available_from` \r\n,`available_to` \r\n,`localized_name_json_dan` \r\n,`id` \r\n,`is_active` \r\n,`name` \r\n,`product_family_id` \r\n,`product_offering_charging_type` \r\n,`sku_id` \r\n,`tags_json__corrupt_record` \r\n,`weight` \r\n,`external_id` \r\n,`extended_parameters_json__corrupt_record` \r\n,`extended_parameters_json_deviceType` \r\n,`extended_parameters_json_migrationId` \r\n,`extended_parameters_json_mobileAddOnType` \r\n,`extended_parameters_json_noInWarehouse` \r\n,`extended_parameters_json_NumberInWarehouse` \r\n,`extended_parameters_json_offeringBusinessType` \r\n,`extended_parameters_json_offeringBusinessUse` \r\n,`extended_parameters_json_phoneNumberOfferingType` \r\n,`extended_parameters_json_simOfferingType` \r\n,`extended_parameters_json_termsConditionsType` \r\n,`tangible_product_id` \r\n,`included_brand_json__corrupt_record` \r\n,`included_customer_categories_json__corrupt_record` \r\n,`included_distribution_channels_json__corrupt_record` \r\n,`included_markets_json__corrupt_record` \r\n,`excluded_markets` \r\n,`excluded_customer_categories` \r\n,`excluded_distribution_channels` \r\n,`product_specification_id` \r\n,`cdc_revision_id` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcrackertest.`pimnrmlproductoffering`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`available_from` \r\n,`available_to` \r\n,`localized_name_json_dan` \r\n,`id` \r\n,`is_active` \r\n,`name` \r\n,`product_family_id` \r\n,`product_offering_charging_type` \r\n,`sku_id` \r\n,`tags_json__corrupt_record` \r\n,`weight` \r\n,`external_id` \r\n,`extended_parameters_json__corrupt_record` \r\n,`extended_parameters_json_deviceType` \r\n,`extended_parameters_json_migrationId` \r\n,`extended_parameters_json_mobileAddOnType` \r\n,`extended_parameters_json_noInWarehouse` \r\n,`extended_parameters_json_NumberInWarehouse` \r\n,`extended_parameters_json_offeringBusinessType` \r\n,`extended_parameters_json_offeringBusinessUse` \r\n,`extended_parameters_json_phoneNumberOfferingType` \r\n,`extended_parameters_json_simOfferingType` \r\n,`extended_parameters_json_termsConditionsType` \r\n,`tangible_product_id` \r\n,`included_brand_json__corrupt_record` \r\n,`included_customer_categories_json__corrupt_record` \r\n,`included_distribution_channels_json__corrupt_record` \r\n,`included_markets_json__corrupt_record` \r\n,`excluded_markets` \r\n,`excluded_customer_categories` \r\n,`excluded_distribution_channels` \r\n,`product_specification_id` \r\n,`cdc_revision_id` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcracker.`pimnrmlproductoffering`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -202,7 +202,7 @@
             "referenceName": "Nuudl_NetCracker_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "dai.netcrackertest.pimnrmlproductoffering"
+              "TableName": "dai.netcracker.pimnrmlproductoffering"
             }
           }
         ],
@@ -270,7 +270,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceTableName": {

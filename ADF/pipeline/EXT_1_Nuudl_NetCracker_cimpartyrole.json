@@ -22,7 +22,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceObjectName": {
@@ -82,7 +82,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -138,7 +138,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "dai.netcrackertest",
+                "value": "dai.netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -176,7 +176,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`id` \r\n,`active_from` \r\n,`name` \r\n,`party_role_type` \r\n,`status` \r\n,`status_reason` \r\n,`engaged_party_name` \r\n,`engaged_party_description` \r\n,`engaged_party_id` \r\n,`engaged_party_ref_type` \r\n,`extended_attributes` \r\n,`changed_by_json_userId` \r\n,`start_date_time` \r\n,`end_date_time` \r\n,`billing_synchronization_status` \r\n,`idempotency_key` \r\n,`ola_ref` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`active_to` \r\n,`version` \r\n,`is_current` \r\n,`changed_by_json_userName` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcrackertest.`cimpartyrole`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`id` \r\n,`active_from` \r\n,`name` \r\n,`party_role_type` \r\n,`status` \r\n,`status_reason` \r\n,`engaged_party_name` \r\n,`engaged_party_description` \r\n,`engaged_party_id` \r\n,`engaged_party_ref_type` \r\n,`extended_attributes` \r\n,`changed_by_json_userId` \r\n,`start_date_time` \r\n,`end_date_time` \r\n,`billing_synchronization_status` \r\n,`idempotency_key` \r\n,`ola_ref` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`active_to` \r\n,`version` \r\n,`is_current` \r\n,`changed_by_json_userName` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcracker.`cimpartyrole`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -202,7 +202,7 @@
             "referenceName": "Nuudl_NetCracker_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "dai.netcrackertest.cimpartyrole"
+              "TableName": "dai.netcracker.cimpartyrole"
             }
           }
         ],
@@ -270,7 +270,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "dai.netcrackertest",
+              "value": "dai.netcracker",
               "type": "String"
             },
             "SourceTableName": {
