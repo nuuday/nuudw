@@ -16,7 +16,7 @@ DECLARE
 	, @ColumnList nvarchar(max)
 
 
-SET @SolutionSchema  = 'cubeView_'  +@Solution
+SET @SolutionSchema  = 'martView_'  +@Solution
 
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = @SolutionSchema)
 BEGIN

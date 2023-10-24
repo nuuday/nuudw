@@ -54,7 +54,7 @@ Prepare SQL
 -- Get list of all columns in correct order
 SELECT 
 	@CreateColumns = STRING_AGG(cast(@CRLF+CHAR(9)+'[' + CASE WHEN LEFT(ColumnName,2) = 'DW' THEN 'SRC_' ELSE '' END + ColumnName + '] ' + FullDataTypeName + ' ' + NullableName as nvarchar(max)), ',') WITHIN GROUP (ORDER BY OrdinalPositionNumber),
-	@SelectColumns = STRING_AGG(@CRLF+CHAR(9)+'[' + CASE WHEN LEFT(ColumnName,2) = 'DW' THEN 'SRC_' ELSE '' END + ColumnName + '] ', ',') WITHIN GROUP (ORDER BY OrdinalPositionNumber)
+	@SelectColumns = STRING_AGG(cast(@CRLF+CHAR(9)+'[' + CASE WHEN LEFT(ColumnName,2) = 'DW' THEN 'SRC_' ELSE '' END + ColumnName + '] ' as nvarchar(max)), ',') WITHIN GROUP (ORDER BY OrdinalPositionNumber)
 FROM nuuMetaView.SourceInformationSchemaDefinitions AS MetaData
 WHERE
 	MetaData.[SourceObjectID] = @SourceObjectID
