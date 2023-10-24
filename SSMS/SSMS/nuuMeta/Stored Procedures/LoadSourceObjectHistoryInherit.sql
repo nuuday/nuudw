@@ -3,7 +3,7 @@
 
 CREATE PROCEDURE [nuuMeta].[LoadSourceObjectHistoryInherit] 
 	@ExtractTable  NVARCHAR(200),--Input is the extract table with schema
-	@PrintSQL BIT = 1
+	@PrintSQL BIT = 0
 
 AS
 
@@ -11,7 +11,7 @@ SET NOCOUNT ON
 
 /*
 DECLARE 
-	@ExtractTable NVARCHAR(200) = 'sourceNuudlColumbus.AFTALE_LID',
+	@ExtractTable NVARCHAR(200) = 'sourceNuudlNetcracker.cimcustomer',
 	@PrintSQL BIT = 1
 --*/
 
