@@ -168,6 +168,21 @@
         }
       },
       {
+        "name": "ibseligibilityparameters",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_ibseligibilityparameters",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
         "name": "ibsitemshistory",
         "type": "ExecutePipeline",
         "typeProperties": {
@@ -188,21 +203,6 @@
         "typeProperties": {
           "pipeline": {
             "referenceName": "EXT_1_Nuudl_NetCracker_ibsnrmlcharacteristic",
-            "type": "PipelineReference"
-          },
-          "waitOnCompletion": true,
-          "parameters": {
-            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
-            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
-          }
-        }
-      },
-      {
-        "name": "ibsnrmleligibilityparameters",
-        "type": "ExecutePipeline",
-        "typeProperties": {
-          "pipeline": {
-            "referenceName": "EXT_1_Nuudl_NetCracker_ibsnrmleligibilityparameters",
             "type": "PipelineReference"
           },
           "waitOnCompletion": true,
