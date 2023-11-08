@@ -511,6 +511,18 @@
     <Build Include="sourceNuudlNetCrackerView\Views\ibsnrmlcharacteristic_History.sql" />
     <Build Include="sourceNuudlNetCrackerView\Views\ibsitemshistory_History.sql" />
     <Build Include="sourceNuudlNetCrackerView\Views\ibseligibilityparameters_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\qssnrmlquoteitem_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\qssnrmlquoteitem.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\qssnrmlquote_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\qssnrmlquote.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlproductcatalog_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlproductcatalog.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlprodcatprodoffering_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlprodcatprodoffering.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\qssnrmlquoteitem_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\qssnrmlquote_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlproductcatalog_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlprodcatprodoffering_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
