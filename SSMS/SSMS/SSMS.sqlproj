@@ -462,8 +462,6 @@
     <Build Include="sourceNuudlNetCracker\Tables\pimnrmlcustomercategory.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\nrmcustproductdetails_History.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\nrmcustproductdetails.sql" />
-    <Build Include="sourceNuudlNetCracker\Tables\nrmaccountkeyname_History.sql" />
-    <Build Include="sourceNuudlNetCracker\Tables\nrmaccountkeyname.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\ibsnrmlproductinstance_History.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\ibsnrmlproductinstance.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\ibsnrmlcharacteristic_History.sql" />
