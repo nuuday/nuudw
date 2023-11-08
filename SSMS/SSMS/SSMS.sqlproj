@@ -500,6 +500,8 @@
     <Build Include="sourceNuudlNetCrackerView\Views\cimcustomer_History.sql" />
     <Build Include="sourceNuudlNetCrackerView\Views\cimcontactmediumassociation_History.sql" />
     <Build Include="sourceNuudlNetCrackerView\Views\cimcontactmedium_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\nrmcusthasproductkeyname_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\nrmcusthasproductkeyname.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
