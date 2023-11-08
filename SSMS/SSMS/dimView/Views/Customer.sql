@@ -2,11 +2,11 @@
 AS
 SELECT
 	[CustomerID]
-	,[CustomerKey] AS [Customer Key]
-	,[CustomerNo] AS [Customer No]
-	,[CustomerName] AS [Customer Name]
-	,[CustomerSegment] AS [Customer Segment]
-	,[CustomerStatus] AS [Customer Status]
+	,[CustomerKey] AS [CustomerKey]
+	,[CustomerName] AS [CustomerName]
+	,[CustomerSegment] AS [CustomerSegment]
+	,[CustomerStatus] AS [CustomerStatus]
+	,[PartyRoleType] AS [PartyRoleType]
 	,[DWIsCurrent]
 	,[DWValidFromDate]
 	,[DWValidToDate]
