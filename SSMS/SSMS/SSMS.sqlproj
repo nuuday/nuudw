@@ -437,7 +437,6 @@
     <Build Include="stage\Stored Procedures\Transform_Dim_SalesChannel.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_PhoneDetail.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_HouseHold.sql" />
-    <Build Include="stage\Stored Procedures\Transform_Dim_ContentGenre.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_Address.sql" />
     <Build Include="Security\sourceNuudlNetCrackerView.sql" />
     <Build Include="Security\sourceNuudlNetCracker.sql" />
