@@ -429,6 +429,7 @@
     <Build Include="dba\Views\ShowDatabasePermissions.sql" />
     <Build Include="dba\Views\ShowDatabaseRoles.sql" />
     <Build Include="Security\dba.sql" />
+
     <Build Include="stage\Tables\Dim_TransactionState_2.sql" />
     <Build Include="stage\Tables\Dim_SalesChannel_2.sql" />
     <Build Include="stage\Tables\Dim_PhoneDetail_2.sql" />
@@ -523,6 +524,9 @@
     <Build Include="sourceNuudlNetCrackerView\Views\qssnrmlquote_History.sql" />
     <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlproductcatalog_History.sql" />
     <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlprodcatprodoffering_History.sql" />
+
+    <Build Include="nuuMeta\Stored Procedures\MaintainDWCreateMartViews.sql" />
+
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

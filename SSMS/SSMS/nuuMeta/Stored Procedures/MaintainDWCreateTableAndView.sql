@@ -18,8 +18,8 @@ SET NOCOUNT ON
 
 /*
 DECLARE
-	@DestinationTable NVARCHAR(100) = 'UserAccess',
-	@DestinationSchema NVARCHAR(10) = 'bridge', 
+	@DestinationTable NVARCHAR(100) = 'ProductTransactions',
+	@DestinationSchema NVARCHAR(10) = 'fact', 
 	@PrintSQL BIT = 1
 --*/
 
@@ -31,7 +31,7 @@ DECLARE @CRLF NVARCHAR(2) = CHAR(13) + CHAR(10)
 DECLARE @SurrogatKeySuffix NVARCHAR(10) = (SELECT VariableValue FROM nuuMetaView.Variables WHERE VariableName = 'SurrogateKeySuffix')
 DECLARE @BusinessKeySuffix NVARCHAR(10) = (SELECT VariableValue FROM nuuMetaView.Variables WHERE VariableName = 'BusinessKeySuffix')
 DECLARE @LoadPattern NVARCHAR(50) = (SELECT LoadPattern FROM nuuMeta.DWObject WHERE DWObjectName = @DestinationTable)
-DECLARE @ViewName NVARCHAR(100) = nuuMeta.[SplitCamelCase](@DestinationTable)
+DECLARE @ViewName NVARCHAR(100) = @DestinationTable
 DECLARE @StageSchema NVARCHAR(10) = 'stage'
 DECLARE @StageTablePrefix NVARCHAR(100) = @DestinationSchema + '_'
 DECLARE @StageTable NVARCHAR(128) = @StageTablePrefix + @DestinationTable
@@ -180,7 +180,7 @@ FROM (
 					+ @SurrogatKeySuffix + ']'
 			--If not the column is given an alias where the name is splited on upper characters
 			WHEN (@DestinationSchema = 'dim' AND ColumnName NOT LIKE '%' + @SurrogatKeySuffix)
-				THEN '[' + ColumnName + '] AS [' + nuuMeta.SplitCamelCase(ColumnName) +']'
+				THEN '[' + ColumnName + '] AS [' + ColumnName +']'
 			ELSE '[' + ColumnName + ']'
 		END AS ViewLine,
 		inf.OrdinalPosition

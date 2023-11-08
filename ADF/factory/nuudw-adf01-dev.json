@@ -6,6 +6,9 @@
 				"type": "String",
 				"value": "nuudw-kv01-dev"
 			}
+		},
+		"globalConfigurations": {
+			"PipelineBillingEnabled": "true"
 		}
 	},
 	"location": "westeurope",
