@@ -49,25 +49,6 @@
 				}
 			},
 			{
-				"name": "pimnrmlproductcharacteristicspecification",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
 				"name": "pimnrmlproductfamily",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
@@ -100,44 +81,6 @@
 						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductoffering",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimnrmlsoftbundledoffering",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimproductspecification",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
 					"waitOnCompletion": true,
 					"parameters": {
 						"JobIsIncremental": {
