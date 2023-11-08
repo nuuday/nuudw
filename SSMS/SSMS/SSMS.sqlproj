@@ -100,6 +100,8 @@
     <Folder Include="bridgeView\Views\" />
     <Folder Include="dba\" />
     <Folder Include="dba\Views\" />
+    <Folder Include="martView_PRX\" />
+    <Folder Include="martView_PRX\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -400,6 +402,42 @@
     <Build Include="dba\Views\ShowDatabaseRoles.sql" />
     <Build Include="Security\dba.sql" />
     <Build Include="nuuMeta\Stored Procedures\MaintainDWCreateMartViews.sql" />
+    <Build Include="stage\Tables\Dim_TransactionState.sql" />
+    <Build Include="stage\Tables\Dim_SalesChannel.sql" />
+    <Build Include="stage\Tables\Dim_PhoneDetail.sql" />
+    <Build Include="stage\Tables\Dim_HouseHold.sql" />
+    <Build Include="stage\Tables\Dim_Address.sql" />
+    <Build Include="dim\Tables\TransactionState.sql" />
+    <Build Include="dim\Tables\SalesChannel.sql" />
+    <Build Include="dim\Tables\PhoneDetail.sql" />
+    <Build Include="dim\Tables\HouseHold.sql" />
+    <Build Include="dim\Tables\Address.sql" />
+    <Build Include="factView\Views\ProductTransactions.sql" />
+    <Build Include="dimView\Views\TransactionState.sql" />
+    <Build Include="dimView\Views\SalesChannel.sql" />
+    <Build Include="dimView\Views\PhoneDetail.sql" />
+    <Build Include="dimView\Views\HouseHold.sql" />
+    <Build Include="dimView\Views\Address.sql" />
+    <Build Include="martView_PRX\Views\FactProductTransactions.sql" />
+    <Build Include="martView_PRX\Views\DimTransactionState.sql" />
+    <Build Include="martView_PRX\Views\DimTime.sql" />
+    <Build Include="martView_PRX\Views\DimSalesChannel.sql" />
+    <Build Include="martView_PRX\Views\DimProduct.sql" />
+    <Build Include="martView_PRX\Views\DimPhoneDetail.sql" />
+    <Build Include="martView_PRX\Views\DimHouseHold.sql" />
+    <Build Include="martView_PRX\Views\DimCustomer.sql" />
+    <Build Include="martView_PRX\Views\DimCalendar.sql" />
+    <Build Include="martView_PRX\Views\DimAddress.sql" />
+    <Build Include="Security\nuudw-acl01-sql-schema-mart-prx-reader.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_TransactionState.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_SalesChannel.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_PhoneDetail.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_HouseHold.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_ContentGenre.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_Address.sql" />
+    <Build Include="Security\sourceNuudlNetCrackerView.sql" />
+    <Build Include="Security\sourceNuudlNetCracker.sql" />
+    <Build Include="Security\martView_PRX.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

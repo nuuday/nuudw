@@ -1,0 +1,20 @@
+﻿CREATE VIEW [dimView].[SalesChannel] 
+AS
+SELECT
+	[SalesChannelID]
+	,[SalesChannelKey] AS [SalesChannelKey]
+	,[SalesChannelName] AS [SalesChannelName]
+	,[SalesChannelLongName] AS [SalesChannelLongName]
+	,[SalesChannelType] AS [SalesChannelType]
+	,[InsurancePolicy] AS [InsurancePolicy]
+	,[StoreAddress] AS [StoreAddress]
+	,[StoreNumber] AS [StoreNumber]
+	,[StoreName] AS [StoreName]
+	,[DWIsCurrent]
+	,[DWValidFromDate]
+	,[DWValidToDate]
+	,[DWCreatedDate]
+	,[DWModifiedDate]
+	,[DWIsDeleted]
+	
+FROM [dim].[SalesChannel]
