@@ -1,1 +1,3 @@
-﻿CREATE SCHEMA [dimView] AUTHORIZATION [dbo];
+﻿CREATE SCHEMA [dimView]
+    AUTHORIZATION [dbo];
+

@@ -102,6 +102,8 @@
     <Folder Include="dba\Views\" />
     <Folder Include="martView_PRX\" />
     <Folder Include="martView_PRX\Views\" />
+    <Folder Include="sourceNuudlNetCracker\" />
+    <Folder Include="sourceNuudlNetCracker\Tables\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -438,6 +440,46 @@
     <Build Include="Security\sourceNuudlNetCrackerView.sql" />
     <Build Include="Security\sourceNuudlNetCracker.sql" />
     <Build Include="Security\martView_PRX.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\riphonenumber_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\riphonenumber.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\qssnrmlquoteitem_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\qssnrmlquoteitem.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\qssnrmlquote_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\qssnrmlquote.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlproductoffering_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlproductoffering.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlproductfamily_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlproductfamily.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlproductcatalog_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlproductcatalog.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlprodcatprodoffering_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlprodcatprodoffering.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmldistributionchannel_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmldistributionchannel.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlcustomercategory_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlcustomercategory.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\nrmcustproductdetails_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\nrmcustproductdetails.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\nrmaccountkeyname_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\nrmaccountkeyname.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibsnrmlproductinstance_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibsnrmlproductinstance.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibsnrmlcharacteristic_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibsnrmlcharacteristic.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibsitemshistory_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibsitemshistory.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibseligibilityparameters_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibseligibilityparameters.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cimpartyroleassociation_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cimpartyroleassociation.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cimpartyrole_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cimpartyrole.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cimcustomer_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cimcustomer.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cimcontactmediumassociation_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cimcontactmediumassociation.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cimcontactmedium_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cimcontactmedium.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
