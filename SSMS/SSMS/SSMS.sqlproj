@@ -104,6 +104,8 @@
     <Folder Include="martView_PRX\Views\" />
     <Folder Include="sourceNuudlNetCracker\" />
     <Folder Include="sourceNuudlNetCracker\Tables\" />
+    <Folder Include="sourceNuudlNetCrackerView\" />
+    <Folder Include="sourceNuudlNetCrackerView\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -480,6 +482,26 @@
     <Build Include="sourceNuudlNetCracker\Tables\cimcontactmediumassociation.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\cimcontactmedium_History.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\cimcontactmedium.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\riphonenumber_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\qssnrmlquoteitem_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\qssnrmlquote_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlproductoffering_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlproductfamily_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlproductcatalog_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlprodcatprodoffering_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\pimnrmldistributionchannel_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlcustomercategory_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\nrmcustproductdetails_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\nrmcusthasproductkeyname_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\ibsnrmlproductinstance_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\ibsnrmlcharacteristic_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\ibsitemshistory_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\ibseligibilityparameters_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\cimpartyroleassociation_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\cimpartyrole_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\cimcustomer_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\cimcontactmediumassociation_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\cimcontactmedium_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
