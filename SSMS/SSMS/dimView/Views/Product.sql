@@ -2,9 +2,10 @@
 AS
 SELECT
 	[ProductID]
-	,[ProductKey] AS [Product Key]
-	,[ProductName] AS [Product Name]
-	,[ProductType] AS [Product Type]
+	,[ProductKey] AS [ProductKey]
+	,[ProductName] AS [ProductName]
+	,[ProductType] AS [ProductType]
+	,[ProductWeight] AS [ProductWeight]
 	,[DWIsCurrent]
 	,[DWValidFromDate]
 	,[DWValidToDate]

@@ -5,17 +5,19 @@ AS
 
 TRUNCATE TABLE [stage].[Dim_Customer]
 
-INSERT INTO stage.[Dim_Customer] WITH (TABLOCK) ( [CustomerKey], [CustomerNo], [CustomerName], [CustomerSegment], [CustomerStatus], [DWCreatedDate] )
-SELECT
-	CONVERT( NVARCHAR(50), customer.[ID] ) AS CustomerKey,
-	CONVERT( NVARCHAR(50), [customer_number] ) AS CustomerNo,
+INSERT INTO stage.[Dim_Customer] WITH (TABLOCK) ( [CustomerKey],[CustomerName], [CustomerSegment], [CustomerStatus],[PartyRoleType], [DWCreatedDate] )
+
+
+SELECT 
+	CONVERT( NVARCHAR(12), customer.[customer_number] ) AS CustomerKey,
 	CONVERT( NVARCHAR(250), ISNULL( NULLIF( customer.[name], '' ), '?' ) ) AS CustomerName,
 	CONVERT( NVARCHAR(50), ISNULL( NULLIF( customer_category.[name], '' ), '?' ) ) AS CustomerSegment,
 	CONVERT( NVARCHAR(20), ISNULL( NULLIF( customer.[status], '' ), '?' ) ) AS CustomerStatus,
+	CONVERT( NVARCHAR(20), ISNULL( NULLIF( p.party_role_type, '' ), '?' ) ) AS PartyRoleType,
 	GETDATE() AS DWCreatedDate
 
 -- Subquery to SELECT Active and Prospect customers without duplicates on CustomerKey
-/* Decide to use Type 2 or not. If yes, what specific columns should include Type 2 history */
+
 FROM (
 	SELECT
 		ID,
@@ -26,12 +28,22 @@ FROM (
 		[status],
 		customer_category_id,
 		ROW_NUMBER() OVER (PARTITION BY ID ORDER BY ISNULL( active_to, '9999-12-31' ) DESC) rn
-	/* Using the most recenct customer record for now untill decision on Type 2 history */
-	FROM [sourceDataLakeNetcracker_interim].[customer]
+	FROM [sourceNuudlNetCrackerView].[cimcustomer_History] 
 ) customer
 
-LEFT JOIN sourceDataLakeNetcracker_interim.customer_category customer_category
+LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlcustomercategory_History]  customer_category
 	ON customer_category.ID = customer.customer_category_id
+	
+ LEFT JOIN (select * from (
+select 
+id,id_to,id_from,
+ROW_NUMBER() OVER (PARTITION BY id_to ORDER BY ISNULL( active_from, '9999-12-31' ) DESC) rn
+from [sourceNuudlNetCrackerView].[cimpartyroleassociation_History]
+where  is_current=1
+) ab where rn=1
+ )ac ON ac.id_to = customer.id 
 
-WHERE
-	customer.rn = 1 --Remove if type 2 history 
+ LEFT JOIN [sourceNuudlNetCrackerView].[cimpartyrole_History] p ON
+	p.id = ac.id_from and p.is_current=1
+
+	where customer.rn =1
