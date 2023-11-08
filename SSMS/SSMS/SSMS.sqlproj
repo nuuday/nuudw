@@ -496,6 +496,21 @@
     <Build Include="Security\sourceNuudlNetCrackerView.sql" />
     <Build Include="Security\sourceNuudlNetCracker.sql" />
     <Build Include="Security\martView_PRX_1.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\nrmcustproductdetails_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\nrmcustproductdetails.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\nrmcusthasproductkeyname_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\nrmcusthasproductkeyname.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibsnrmlcharacteristic_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibsnrmlcharacteristic.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibsitemshistory_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibsitemshistory.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibseligibilityparameters_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibseligibilityparameters.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\nrmcustproductdetails_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\nrmcusthasproductkeyname_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\ibsnrmlcharacteristic_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\ibsitemshistory_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\ibseligibilityparameters_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
