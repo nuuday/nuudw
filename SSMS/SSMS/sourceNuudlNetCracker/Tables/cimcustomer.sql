@@ -1,0 +1,53 @@
+﻿CREATE TABLE [sourceNuudlNetCracker].[cimcustomer] (
+    [id]                                       NVARCHAR (36)  NULL,
+    [active_from]                              DATETIME2 (7)  NULL,
+    [customer_category_id]                     NVARCHAR (36)  NULL,
+    [brand_id]                                 NVARCHAR (36)  NULL,
+    [status]                                   NVARCHAR (300) NULL,
+    [status_reason]                            NVARCHAR (300) NULL,
+    [name]                                     NVARCHAR (300) NULL,
+    [customer_number]                          NVARCHAR (300) NULL,
+    [engaged_party_name]                       NVARCHAR (300) NULL,
+    [engaged_party_description]                NVARCHAR (300) NULL,
+    [engaged_party_id]                         NVARCHAR (36)  NULL,
+    [engaged_party_ref_type]                   NVARCHAR (300) NULL,
+    [external_id]                              NVARCHAR (36)  NULL,
+    [extended_attributes_json__corrupt_record] NVARCHAR (300) NULL,
+    [extended_attributes_json_brandName]       NVARCHAR (300) NULL,
+    [extended_attributes_json_employeeBrand]   NVARCHAR (300) NULL,
+    [extended_attributes_json_employeeId]      NVARCHAR (36)  NULL,
+    [changed_by_json_userName]                 NVARCHAR (300) NULL,
+    [start_date_time]                          NVARCHAR (300) NULL,
+    [end_date_time]                            NVARCHAR (300) NULL,
+    [billing_synchronization_status]           NVARCHAR (300) NULL,
+    [customer_since]                           DATETIME2 (7)  NULL,
+    [billing_data_json_customerType]           NVARCHAR (300) NULL,
+    [idempotency_key]                          NVARCHAR (300) NULL,
+    [fts]                                      NVARCHAR (300) NULL,
+    [portfolio]                                NVARCHAR (300) NULL,
+    [ola_ref]                                  NVARCHAR (300) NULL,
+    [org_chart_ref]                            NVARCHAR (300) NULL,
+    [last_nps_survey_ref]                      NVARCHAR (300) NULL,
+    [net_promoter_score]                       NVARCHAR (300) NULL,
+    [is_deleted]                               BIT            NULL,
+    [last_modified_ts]                         DATETIME2 (7)  NULL,
+    [active_to]                                DATETIME2 (7)  NULL,
+    [version]                                  INT            NULL,
+    [is_current]                               BIT            NULL,
+    [changed_by_json_userId]                   NVARCHAR (36)  NULL,
+    [billing_data_json_invoicingCompany]       NVARCHAR (300) NULL,
+    [billing_data_json_customerPermission]     NVARCHAR (300) NULL,
+    [NUUDL_ValidFrom]                          DATETIME2 (7)  NULL,
+    [NUUDL_ValidTo]                            DATETIME2 (7)  NULL,
+    [NUUDL_IsCurrent]                          BIT            NULL,
+    [NUUDL_ID]                                 BIGINT         NOT NULL,
+    [NUUDL_CuratedBatchID]                     BIGINT         NULL,
+    [DWCreatedDate]                            DATETIME2 (7)  DEFAULT (getdate()) NULL,
+    CONSTRAINT [PK_cimcustomer] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC)
+);
+
+
+GO
+CREATE CLUSTERED COLUMNSTORE INDEX [CCI_cimcustomer]
+    ON [sourceNuudlNetCracker].[cimcustomer];
+
