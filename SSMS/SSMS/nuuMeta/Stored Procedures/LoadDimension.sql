@@ -14,8 +14,8 @@ SET NOCOUNT ON
 
 /*
 DECLARE 
-	@StageTable  NVARCHAR(100) = 'Dim_CustomerTest', --Input is the dimensions name without schema
-	@DWTable  NVARCHAR(100) = 'CustomerTest', --Input is the dimensions name without schema
+	@StageTable  NVARCHAR(100) = 'Dim_HouseHold', --Input is the dimensions name without schema
+	@DWTable  NVARCHAR(100) = 'HouseHold', --Input is the dimensions name without schema
 	@PrintSQL BIT = 1
 --*/
 
@@ -428,7 +428,19 @@ WHERE MERGE_OUTPUT.[MERGE_ACTION] = ''UPDATE''
 	AND ' + @MergeOutput + ';
 '
 
-SET @TypeFullScript = CONCAT(@ParametersScript,CASE WHEN NULLIF(@MatchType1,'') IS NULL THEN NULL ELSE @Type1Script END,CASE WHEN NULLIF(@MatchType2,'') IS NULL THEN NULL ELSE @Type2Script END)
+SET @TypeFullScript =	
+	CONCAT(
+		@ParametersScript,
+		CASE 
+			WHEN NULLIF(@MatchType1,'') IS NOT NULL 
+				OR NULLIF(@MatchType2,'') IS NULL THEN @Type1Script 
+			ELSE NULL 
+		END,
+		CASE 
+			WHEN NULLIF(@MatchType2,'') IS NULL THEN NULL 
+			ELSE @Type2Script 
+		END
+	)
 
 /**********************************************************************************************************************************************************************
 9. Execute dynamic SQL script variables

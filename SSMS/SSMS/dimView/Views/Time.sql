@@ -1,2 +1,9 @@
-﻿Create View dimView.Time AS
-					SELECT * FROM dim.Time
+﻿CREATE VIEW dimView.Time 
+AS
+SELECT 
+	[TimeID]
+	,[TimeKey]
+	,[TimeDayPart]
+	,[TimeHourFromTo]
+	,[TimeNotation] 
+FROM dim.Time
