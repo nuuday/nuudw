@@ -1,6 +1,21 @@
 {
 	"name": "PRX_2_FACT",
 	"properties": {
+		"activities": [
+			{
+				"name": "PRX_ProductTransactions",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "FACT_0_ProductTransactions",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
 		"folder": {
 			"name": "0.0 Solutions/PRX_Product_Explorer"
 		},
