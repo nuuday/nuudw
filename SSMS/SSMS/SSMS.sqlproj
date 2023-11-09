@@ -501,6 +501,7 @@
     <Build Include="sourceNuudlNetCrackerView\Views\cimcontactmedium_History.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\nrmcusthasproductkeyname_History.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\nrmcusthasproductkeyname.sql" />
+    <Build Include="nuuMeta\Stored Procedures\CreateTimeDimension.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
