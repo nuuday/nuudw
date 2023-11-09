@@ -1,6 +1,41 @@
 {
 	"name": "PRX_0_Master",
 	"properties": {
+		"activities": [
+			{
+				"name": "PRX_1_DIM",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PRX_1_DIM",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PRX_2_FACT",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "PRX_1_DIM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PRX_2_FACT",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
 		"folder": {
 			"name": "0.0 Solutions/PRX_Product_Explorer"
 		},
