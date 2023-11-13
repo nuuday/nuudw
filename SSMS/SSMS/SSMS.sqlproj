@@ -505,6 +505,9 @@
     <Build Include="stage\Tables\Dim_Demo.sql" />
     <Build Include="dim\Tables\Demo.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_Demo.sql" />
+    <Build Include="stage\Tables\Fact_Fdemo.sql" />
+    <Build Include="fact\Tables\Fdemo.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Fact_Fdemo.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
