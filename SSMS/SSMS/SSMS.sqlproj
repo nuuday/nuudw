@@ -502,6 +502,9 @@
     <Build Include="sourceNuudlNetCracker\Tables\nrmcusthasproductkeyname_History.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\nrmcusthasproductkeyname.sql" />
     <Build Include="nuuMeta\Stored Procedures\CreateTimeDimension.sql" />
+    <Build Include="stage\Tables\Dim_Demo.sql" />
+    <Build Include="dim\Tables\Demo.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_Demo.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
