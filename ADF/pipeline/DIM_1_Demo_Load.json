@@ -1,0 +1,38 @@
+{
+  "name": "DIM_1_Demo_Load",
+  "properties": {
+    "activities": [
+      {
+        "name": "Load_Dim_Demo",
+        "type": "SqlServerStoredProcedure",
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[LoadDimension]",
+          "storedProcedureParameters": {
+            "StageTable": {
+              "value": "Dim_Demo",
+              "type": "String"
+            },
+            "DWTable": {
+              "value": "Demo",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "folder": {
+      "name": "0.3_Dimensions"
+    }
+  }
+}
