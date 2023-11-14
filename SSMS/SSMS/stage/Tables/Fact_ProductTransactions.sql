@@ -1,5 +1,6 @@
 ﻿CREATE TABLE [stage].[Fact_ProductTransactions] (
-    [ProductTransactionsIdentifier] NVARCHAR (36) NULL,
+    [ProductTransactionsIdentifier] NVARCHAR (64) NULL,
+    [ProductInstance]               NVARCHAR (36) NULL,
     [CalendarKey]                   DATE          NULL,
     [TimeKey]                       TIME (0)      NULL,
     [ProductKey]                    NVARCHAR (36) NULL,
@@ -22,6 +23,8 @@
     [ProductUpgrade]                NVARCHAR (1)  NULL,
     [DWCreatedDate]                 DATETIME      NOT NULL
 );
+
+
 
 
 

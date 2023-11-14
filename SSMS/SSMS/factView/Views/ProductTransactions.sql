@@ -1,7 +1,8 @@
 ﻿CREATE VIEW [factView].[ProductTransactions] 
 AS
 SELECT
-	[CalendarID]
+	[ProductInstance]
+	,[CalendarID]
 	,[TimeID]
 	,[ProductID]
 	,[CustomerID]

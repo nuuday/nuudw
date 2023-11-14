@@ -1,5 +1,6 @@
 ﻿CREATE TABLE [fact].[ProductTransactions_Temp] (
-    [ProductTransactionsIdentifier] NVARCHAR (36) NULL,
+    [ProductTransactionsIdentifier] NVARCHAR (64) NULL,
+    [ProductInstance]               NVARCHAR (36) NULL,
     [CalendarID]                    INT           DEFAULT ((-1)) NOT NULL,
     [TimeID]                        INT           DEFAULT ((-1)) NOT NULL,
     [ProductID]                     INT           DEFAULT ((-1)) NOT NULL,
@@ -23,6 +24,8 @@
     [DWCreatedDate]                 DATETIME2 (0) NOT NULL,
     [DWModifiedDate]                DATETIME2 (0) NOT NULL
 );
+
+
 
 
 
