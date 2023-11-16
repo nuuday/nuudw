@@ -135,10 +135,40 @@ left  join [sourceNuudlNetCrackerView].[pimnrmlproductfamily_History] d on c.pro
 )
 
 
-INSERT INTO stage.[Fact_ProductTransactions] WITH (TABLOCK) ( ProductTransactionsIdentifier, CalendarKey,TimeKey, ProductKey, CustomerKey,AddressBillingKey,HouseHoldkey,SalesChannelKey,TransactionStateKey,ProductTransactionsQuantity,ProductChurnQuantity,CalendarToKey,TimeToKey,CalendarCommitmentToKey,TimeCommitmentToKey,PhoneDetailkey,TLO,ProductParentKey,RGU,Migration,ProductUpgrade, DWCreatedDate )
+INSERT INTO stage.[Fact_ProductTransactions] WITH (TABLOCK) ( ProductTransactionsIdentifier,ProductInstance, CalendarKey,TimeKey, ProductKey, CustomerKey,AddressBillingKey,HouseHoldkey,SalesChannelKey,TransactionStateKey,ProductTransactionsQuantity,ProductChurnQuantity,CalendarToKey,TimeToKey,CalendarCommitmentToKey,TimeCommitmentToKey,PhoneDetailkey,TLO,ProductParentKey,RGU,Migration,ProductUpgrade, DWCreatedDate )
 
-SELECT 
-	CONVERT( NVARCHAR(36), pin.id ) AS ProductTransactionsIdentifier,  
+SELECT
+
+	CONVERT(
+    VARCHAR(64),
+    HASHBYTES(
+        'SHA2_256'
+        , CONCAT(            
+            /* Add all dimension keys to secure the row will be unique */
+              LOWER(ISNULL(CAST(CalendarKey AS VARCHAR(8000)), '')), '|'
+            , LOWER(ISNULL(CAST(TimeKey AS VARCHAR(8000)), '')), '|'
+            , LOWER(ISNULL(CAST(ProductKey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(ProductKey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(CustomerKey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(AddressBillingKey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(HouseHoldkey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(TransactionStateKey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(CalendarToKey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(TimeToKey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(CalendarCommitmentToKey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(TimeCommitmentToKey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(PhoneDetailkey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(ProductParentKey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(ProductInstance AS VARCHAR(8000)), '')), '|'
+            )
+        ),
+    2
+    ) AS ProductTransactionsIdentifier
+	,z.*
+	From
+	(
+	SELECT
+	CONVERT( NVARCHAR(36), pin.id ) AS ProductInstance,  
 	CONVERT( DATE, REPLACE( pin.start_date, '"', '' ) ) AS CalendarKey,
 	LEFT(CONVERT(VARCHAR,start_date,108),5)+':00' AS TimeKey,
 	CONVERT( NVARCHAR(36), REPLACE( pin.offering_id, '"', '' ) ) AS ProductKey, 
@@ -289,3 +319,5 @@ LEFT JOIN (
 LEFT JOIN [sourceNuudlNetCrackerView].[cimcustomer_History] cim on pin.customer_id=cim.id
 where pin.state in('COMPLETED') and pin.name ='Assign Phone Number [MV or Smart SIM] #1'
 and cim.is_current=1
+
+) z

@@ -1,1 +1,3 @@
-﻿CREATE SCHEMA [factView] AUTHORIZATION [dbo];
+﻿CREATE SCHEMA [factView]
+    AUTHORIZATION [dbo];
+
