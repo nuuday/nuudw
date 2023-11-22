@@ -1,5 +1,5 @@
 {
-  "name": "EXT_1_Nuudl_NetCracker_cimcustomer",
+  "name": "EXT_1_Nuudl_NetCracker_nrmaccount",
   "properties": {
     "activities": [
       {
@@ -26,7 +26,7 @@
               "type": "String"
             },
             "SourceObjectName": {
-              "value": "cimcustomer",
+              "value": "nrmaccount",
               "type": "String"
             },
             "DestinationSchemaName": {
@@ -86,7 +86,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "cimcustomer",
+                "value": "nrmaccount",
                 "type": "String"
               },
               "JobIsIncremental": {
@@ -142,7 +142,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "cimcustomer",
+                "value": "nrmaccount",
                 "type": "String"
               }
             }
@@ -157,7 +157,7 @@
         }
       },
       {
-        "name": "Copy_cimcustomer",
+        "name": "Copy_nrmaccount",
         "type": "Copy",
         "dependsOn": [
           {
@@ -176,7 +176,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`id` \r\n,`active_from` \r\n,`customer_category_id` \r\n,`brand_id` \r\n,`status` \r\n,`status_reason` \r\n,`name` \r\n,`customer_number` \r\n,`engaged_party_name` \r\n,`engaged_party_description` \r\n,`engaged_party_id` \r\n,`engaged_party_ref_type` \r\n,`external_id` \r\n,`extended_attributes_json__corrupt_record` \r\n,`extended_attributes_json_brandName` \r\n,`extended_attributes_json_employeeBrand` \r\n,`extended_attributes_json_employeeId` \r\n,`changed_by_json_userName` \r\n,`start_date_time` \r\n,`end_date_time` \r\n,`billing_synchronization_status` \r\n,`customer_since` \r\n,`billing_data_json_customerType` \r\n,`idempotency_key` \r\n,`fts` \r\n,`portfolio` \r\n,`ola_ref` \r\n,`org_chart_ref` \r\n,`last_nps_survey_ref` \r\n,`net_promoter_score` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`active_to` \r\n,`version` \r\n,`is_current` \r\n,`changed_by_json_userId` \r\n,`billing_data_json_invoicingCompany` \r\n,`billing_data_json_customerPermission` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcracker.`cimcustomer`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`account_num` \r\n,`customer_ref` \r\n,`billing_status` \r\n,`next_bill_dtm` \r\n,`random_hash` \r\n,`total_points_earned` \r\n,`total_points_redeemed` \r\n,`billing_driver` \r\n,`currency_code` \r\n,`bill_event_seq` \r\n,`bills_since_statement` \r\n,`invoicing_co_id` \r\n,`delete_events_on_billing_boo` \r\n,`permission_id` \r\n,`bill_charge_seq` \r\n,`allow_prod_changes_from_dat` \r\n,`tax_inclusive_boo` \r\n,`account_num_upper` \r\n,`prepay_boo` \r\n,`unbilled_adjustment_mny` \r\n,`internal_account_boo` \r\n,`events_per_day` \r\n,`domain_id` \r\n,`account_lock_version` \r\n,`trans_billed_to_dtm` \r\n,`event_billed_to_dtm` \r\n,`deposit_mny` \r\n,`last_bill_seq` \r\n,`last_bill_dtm` \r\n,`last_bill_mny` \r\n,`last_bill_points` \r\n,`last_debt_analysis_dtm` \r\n,`credit_adj_billed_to_dtm` \r\n,`debit_adj_billed_to_dtm` \r\n,`loyalty_trans_billed_to_dtm` \r\n,`info_currency_code` \r\n,`termination_reason_id` \r\n,`account_name` \r\n,`don_pack_disc_billed_to_dtm` \r\n,`don_event_disc_billed_to_dtm` \r\n,`termination_dat` \r\n,`default_cps_id` \r\n,`last_billed_deposit_mny` \r\n,`ust_account_class_id` \r\n,`next_band_summary_dat` \r\n,`next_debt_action_dat` \r\n,`debt_analysis_required_dtm` \r\n,`last_band_summary_dtm` \r\n,`last_debt_action_dtm` \r\n,`earliest_prod_change_dat` \r\n,`acc_act_thold_set_id` \r\n,`external_action_1_id` \r\n,`threshold_1_total_type` \r\n,`threshold_1_value_mny` \r\n,`threshold_1_direction` \r\n,`action_threshold_1_owner` \r\n,`external_action_2_id` \r\n,`threshold_2_total_type` \r\n,`threshold_2_value_mny` \r\n,`threshold_2_direction` \r\n,`action_threshold_2_owner` \r\n,`external_action_3_id` \r\n,`threshold_3_total_type` \r\n,`threshold_3_value_mny` \r\n,`threshold_3_direction` \r\n,`action_threshold_3_owner` \r\n,`external_action_4_id` \r\n,`threshold_4_total_type` \r\n,`threshold_4_value_mny` \r\n,`threshold_4_direction` \r\n,`action_threshold_4_owner` \r\n,`external_action_5_id` \r\n,`threshold_5_total_type` \r\n,`threshold_5_value_mny` \r\n,`threshold_5_direction` \r\n,`action_threshold_5_owner` \r\n,`external_action_6_id` \r\n,`threshold_6_total_type` \r\n,`threshold_6_value_mny` \r\n,`threshold_6_direction` \r\n,`action_threshold_6_owner` \r\n,`holiday_profile_id` \r\n,`customer_category` \r\n,`out_of_sync_counter` \r\n,`out_of_sync_mny` \r\n,`out_of_sync_dtm` \r\n,`template_ref` \r\n,`structural_integer_ref` \r\n,`event_store_transition_seq` \r\n,`fast_cache_seq` \r\n,`language_id` \r\n,`lc_profile_id` \r\n,`collection_effective_dtm` \r\n,`collection_expiration_dtm` \r\n,`disable_realtime_bill_boo` \r\n,`unbilled_revenue_change` \r\n,`upre_action_boo` \r\n,`upre_next_bill_dtm` \r\n,`next_upre_seq` \r\n,`collection_balance_seq` \r\n,`offer_exists_for_cust_boo` \r\n,`total_unbilled_otc_tot` \r\n,`unbilled_realtime_otc_mny` \r\n,`otc_billed_to_dtm` \r\n,`unbilled_paid_dep_req_mny` \r\n,`recharge_event_source` \r\n,`recharge_event_type_id` \r\n,`overwritten_invoice_mny` \r\n,`payment_plan_type` \r\n,`logically_deleted_boo` \r\n,`output_event_to_file_boo` \r\n,`last_transfer_dtm` \r\n,`transfer_indicator` \r\n,`event_dispatch_profile_id` \r\n,`aggregate_start_dat` \r\n,`dormancy_lc_profile_id` \r\n,`promotion_start_dtm` \r\n,`promotion_end_dtm` \r\n,`highest_promotion_scope` \r\n,`exclude_from_promo_boo` \r\n,`unbilled_term_instlmnt_mny` \r\n,`last_event_seq_num` \r\n,`last_bill_period_num` \r\n,`tax_re_engineer_boo` \r\n,`last_upre_run_dtm` \r\n,`credit_checked_boo` \r\n,`event_store_type` \r\n,`earliest_disc_change_dat` \r\n,`deposit_req_billed_to_dtm` \r\n,`client_entity_tag` \r\n,`unbilled_stand_adj_credit` \r\n,`unbilled_stand_adj_debit` \r\n,`unbilled_disp_adj_credit_mny` \r\n,`unbilled_disp_adj_debit_mny` \r\n,`unbilled_realtime_otc_credit` \r\n,`unbilled_realtime_otc_debit` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcracker.`nrmaccount`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -186,7 +186,7 @@
           "sink": {
             "type": "AzureSqlSink",
             "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[cimcustomer]"
+            "preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[nrmaccount]"
           },
           "enableStaging": true,
           "stagingSettings": {
@@ -202,7 +202,7 @@
             "referenceName": "Nuudl_NetCracker_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "dai.netcracker.cimcustomer"
+              "TableName": "dai.netcracker.nrmaccount"
             }
           }
         ],
@@ -211,7 +211,7 @@
             "referenceName": "nuudwsqldb01_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "[sourceNuudlNetCracker].[cimcustomer]"
+              "TableName": "[sourceNuudlNetCracker].[nrmaccount]"
             }
           }
         ]
@@ -221,7 +221,7 @@
         "type": "SqlServerStoredProcedure",
         "dependsOn": [
           {
-            "activity": "Copy_cimcustomer",
+            "activity": "Copy_nrmaccount",
             "dependencyConditions": [
               "Succeeded"
             ]
@@ -236,7 +236,7 @@
           "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
           "storedProcedureParameters": {
             "ExtractTable": {
-              "value": "sourceNuudlNetCracker.cimcustomer",
+              "value": "sourceNuudlNetCracker.nrmaccount",
               "type": "String"
             }
           }
@@ -274,7 +274,7 @@
               "type": "String"
             },
             "SourceTableName": {
-              "value": "cimcustomer",
+              "value": "nrmaccount",
               "type": "String"
             },
             "WatermarkIsDate": {
