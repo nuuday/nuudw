@@ -28,7 +28,7 @@
               "type": "String"
             },
             "LoadPattern": {
-              "value": "FactMerge",
+              "value": "FactFull",
               "type": "String"
             },
             "IncrementalFlag": {
