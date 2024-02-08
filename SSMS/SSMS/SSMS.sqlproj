@@ -502,6 +502,24 @@
     <Build Include="sourceNuudlNetCracker\Tables\nrmcusthasproductkeyname_History.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\nrmcusthasproductkeyname.sql" />
     <Build Include="nuuMeta\Stored Procedures\CreateTimeDimension.sql" />
+    <Build Include="stage\Tables\Dim_Subscription.sql" />
+    <Build Include="stage\Tables\Dim_Quote.sql" />
+    <Build Include="stage\Tables\Dim_BillingAccount.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\nrmaccountkeyname_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\nrmaccountkeyname.sql" />
+    <Build Include="dim\Tables\Subscription.sql" />
+    <Build Include="dim\Tables\Quote.sql" />
+    <Build Include="dim\Tables\BillingAccount.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\nrmaccountkeyname_History.sql" />
+    <Build Include="martView_PRX\Views\DimSubscription.sql" />
+    <Build Include="martView_PRX\Views\DimQuote.sql" />
+    <Build Include="martView_PRX\Views\DimBillingAccount.sql" />
+    <Build Include="dimView\Views\Subscription.sql" />
+    <Build Include="dimView\Views\Quote.sql" />
+    <Build Include="dimView\Views\BillingAccount.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_Subscription.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_Quote.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_BillingAccount.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

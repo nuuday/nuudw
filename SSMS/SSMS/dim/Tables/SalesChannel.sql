@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dim].[SalesChannel] (
     [SalesChannelID]       INT            IDENTITY (1, 1) NOT NULL,
-    [SalesChannelKey]      NVARCHAR (50)  NULL,
+    [SalesChannelKey]      NVARCHAR (36)  NULL,
     [SalesChannelName]     NVARCHAR (50)  NULL,
     [SalesChannelLongName] NVARCHAR (50)  NULL,
     [SalesChannelType]     NVARCHAR (50)  NULL,
@@ -17,6 +17,8 @@
     PRIMARY KEY CLUSTERED ([SalesChannelID] ASC),
     CONSTRAINT [NCI_SalesChannel] UNIQUE NONCLUSTERED ([SalesChannelKey] ASC, [DWValidFromDate] ASC)
 );
+
+
 
 
 GO

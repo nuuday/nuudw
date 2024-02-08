@@ -4,141 +4,85 @@ CREATE PROCEDURE [stage].[Transform_Fact_ProductTransactions]
 AS 
 TRUNCATE TABLE [stage].[Fact_ProductTransactions]
 
--- Historical active TLO transactions involve product change and the current subscriptions are active.
+-- Historical and current active,disconnected,completed TLO and SLO Product transactions.
 ;with productinstance as
 (
-SELECT
-id,
-start_date,
-offering_id,
-customer_id,
-state,
-termination_date,
-parent_id,
-root_id,
-eligibility_param_id
-FROM(
+
 SELECT DISTINCT 
-a.id,
-a.active_from start_date,
-a.item_json_offeringId offering_id,
-a.item_json_customerId customer_id,
-a.state,
-a.active_to termination_date,
-a.item_json_parentId parent_id,
-a.item_json_rootId root_id,
-b.eligibility_param_id eligibility_param_id,
-ROW_NUMBER() OVER (PARTITION BY a.id,a.item_json_offeringId ORDER BY active_to  DESC) rn
-from  [sourceNuudlNetCrackerView].[ibsitemshistory_History] a
-left join [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History] b on a.id=b.id and b.state in('ACTIVE') and a.item_json_offeringId <>b.offering_id
-where a.state='ACTIVE' and a.active_to is not null and b.state is not null and (a.item_json_parentId is null or a.item_json_rootId=a.id)) a
-
-where a.rn=1 
-
--- Historical active TLO transactions where current subscriptions are DISCONNECTED.
-union all
-
-SELECT
 id,
-start_date,
-offering_id,
-customer_id,
+active_from start_date,
+item_json_offeringId offering_id,
+item_json_customerId customer_id,
 state,
-termination_date,
-parent_id,
-root_id,
-eligibility_param_id
-FROM(
-SELECT DISTINCT 
-a.id,
-a.active_from start_date,
-a.item_json_offeringId offering_id,
-a.item_json_customerId customer_id,
-a.state,
-a.active_to termination_date,
-a.item_json_parentId parent_id,
-a.item_json_rootId root_id,
-b.eligibility_param_id eligibility_param_id,
-ROW_NUMBER() OVER (PARTITION BY a.id,a.item_json_offeringId ORDER BY active_to  DESC) rn
-from  [sourceNuudlNetCrackerView].[ibsitemshistory_History] a
-left join [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History] b on a.id=b.id and b.state in('DISCONNECTED')
-where a.state='ACTIVE' and a.active_to is not null and b.state is not null and (a.item_json_parentId is null or a.item_json_rootId=a.id)) a
+item_json_quoteId quote_id,
+active_to termination_date,
+item_json_parentId parent_id,
+item_json_rootId root_id,
+item_json_offeringName offeringname,
+item_json_distributionChannelId distributionChannelId
 
-where a.rn=1 
+FROM  [sourceNuudlNetCrackerView].[ibsitemshistory_History]
 
--- Historical active SLO transactions where current subscriptions are DISCONNECTED.
-union all
-
-SELECT
-id,
-start_date,
-offering_id,
-customer_id,
-state,
-termination_date,
-parent_id,
-root_id,
-eligibility_param_id
-FROM(
-SELECT DISTINCT 
-a.id,
-a.active_from start_date,
-a.item_json_offeringId offering_id,
-a.item_json_customerId customer_id,
-a.state,
-a.active_to termination_date,
-a.item_json_parentId parent_id,
-a.item_json_rootId root_id,
-b.eligibility_param_id eligibility_param_id,
-ROW_NUMBER() OVER (PARTITION BY a.id,a.item_json_offeringId ORDER BY active_to  DESC) rn
-from  [sourceNuudlNetCrackerView].[ibsitemshistory_History] a
-left join [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History] b on a.id=b.id and b.state in('DISCONNECTED')
-where a.state='ACTIVE' and a.active_to is not null and b.state is not null and (a.item_json_parentId is not null)) a
-
-where a.rn=1
-
-union all
-
---Current subscriptions with state 'DISCONNECTED','ACTIVE' and 'COMPLETED' except the offering 'Assign Phone Number [MV or Smart SIM] #1' that it will be handled in the transform code below to be able identify Old phone number
-select id,start_date,offering_id,customer_id,state,termination_date,parent_id,root_id,eligibility_param_id 
-FROM [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History]
-where state in('DISCONNECTED','ACTIVE','COMPLETED') and name <>'Assign Phone Number [MV or Smart SIM] #1' 
+WHERE state in ('ACTIVE','DISCONNECTED','COMPLETED')
 
 ),
+-- reference to BillingAccount
+BillingAccount AS
+(
+SELECT id,account_num FROM
+(
+SELECT DISTINCT id,item_json_accountRef_json_refId account_ref_id FROM [sourceNuudlNetCrackerView].[ibsitemshistory_History]
 
--- Changing the start date for the current suscription -- Migration =1 if it's product change within the same category , Migration=0 if it's product change withing different category.
-productinstance_t as (
-Select
+WHERE item_json_parentId  IS NULL
+
+UNION
+
+SELECT DISTINCT a.id,b.account_ref_id FROM [sourceNuudlNetCrackerView].[ibsitemshistory_History] a
+
+
+LEFT JOIN 
+(
+SELECT DISTINCT id,item_json_accountRef_json_refId account_ref_id FROM [sourceNuudlNetCrackerView].[ibsitemshistory_History]
+WHERE item_json_parentId  IS NULL
+) b ON a.item_json_rootId=b.id
+WHERE a.item_json_parentId IS NOT NULL
+
+) ww
+INNER JOIN   [sourceNuudlNetCrackerView].[nrmaccountkeyname_History] xx on ww.account_ref_id=xx.name
+),
+
+-- Migration =1 if it's product change within the same category , Migration=0 if it's product change withing different category.
+productinstance_t AS (
+SELECT
 id,
-case when rn=1 and LastValue is not null  then LastValue else start_date end as start_date,
+start_date,
 offering_id,
 customer_id,
 state,
+quote_id,
 termination_date,
 parent_id,
 root_id,
+offeringname,
 Migration,
-eligibility_param_id
-from (
-select a.*,b.name,
-ROW_NUMBER() OVER (PARTITION BY a.id ORDER BY isnull(termination_date,'9999-12-31' ) DESC) rn,
- lag(termination_date) OVER (
-        PARTITION BY a.id ORDER BY isnull(termination_date,'9999-12-31')
-        ) AS LastValue,
-case when lag(b.name) over (partition by a.id order by isnull(termination_date,'9999-12-31') )=b.name   and parent_id is null and lag(a.offering_id) over (partition by a.id order by isnull(termination_date,'9999-12-31') ) <> a.offering_id then 1 
-     when lag(b.name) over (partition by a.id order by isnull(termination_date,'9999-12-31') )<>b.name   and parent_id is null and lag(a.offering_id) over (partition by a.id order by isnull(termination_date,'9999-12-31') ) <> a.offering_id then 0 else NULL END Migration
-from productinstance a
-left join ( select c.id,case when d.name ='Mobile Voice Offline' then 'Mobile Voice'else d.name  end as name  -- 'Mobile Voice Offline' and 'Mobile Voice should be treated like same category.
-from [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] c
-left  join [sourceNuudlNetCrackerView].[pimnrmlproductfamily_History] d on c.product_family_id=d.id) b on a.offering_id=b.id
+distributionChannelId
+FROM (
+SELECT a.*,b.name,
+
+CASE WHEN LAG(b.name) OVER (PARTITION BY a.id ORDER BY ISNULL(termination_date,'9999-12-31') )=b.name   AND parent_id IS NULL AND LAG(A.OFFERING_ID) OVER (PARTITION BY a.id ORDER BY ISNULL(termination_date,'9999-12-31') ) <> a.offering_id THEN 1 
+     WHEN LAG(b.name) OVER (PARTITION BY a.id ORDER BY ISNULL(termination_date,'9999-12-31') )<>b.name  AND parent_id IS NULL AND LAG(A.OFFERING_ID) OVER (PARTITION BY a.id ORDER BY ISNULL(termination_date,'9999-12-31') ) <> a.offering_id THEN 0 ELSE NULL END Migration
+FROM productinstance a
+-- 'Mobile Voice Offline' and 'Mobile Voice should be treated like same category and 'Mobile Broadband Offline','Mobile Broadband'
+LEFT JOIN ( SELECT c.id,CASE WHEN d.name ='Mobile Voice Offline' THEN 'Mobile Voice' WHEN d.name ='Mobile Broadband Offline' THEN 'Mobile Broadband' ELSE d.name  END AS name  
+FROM [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] c
+LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductfamily_History] d ON c.product_family_id=d.id) b ON a.offering_id=b.id
 ) c
 )
 
-
-INSERT INTO stage.[Fact_ProductTransactions] WITH (TABLOCK) ( ProductTransactionsIdentifier,ProductInstance, CalendarKey,TimeKey, ProductKey, CustomerKey,AddressBillingKey,HouseHoldkey,SalesChannelKey,TransactionStateKey,ProductTransactionsQuantity,ProductChurnQuantity,CalendarToKey,TimeToKey,CalendarCommitmentToKey,TimeCommitmentToKey,PhoneDetailkey,TLO,ProductParentKey,RGU,Migration,ProductUpgrade, DWCreatedDate )
+INSERT INTO stage.[Fact_ProductTransactions] WITH (TABLOCK) ( ProductTransactionsIdentifier,BillingAccountKey,SubscriptionKey, CalendarKey,TimeKey, ProductKey, CustomerKey,AddressBillingKey,HouseHoldkey,SalesChannelKey,TransactionStateKey,QuoteKey,ProductTransactionsQuantity,ProductChurnQuantity,CalendarToKey,TimeToKey,CalendarCommitmentToKey,TimeCommitmentToKey,PhoneDetailkey,TLO,ProductParentKey,SubscriptionParentKey,RGU,CalendarRGUkey,CalendarRGUTokey,Migration,ProductUpgrade, DWCreatedDate )
 
 SELECT
-
+DISTINCT
 	CONVERT(
     VARCHAR(64),
     HASHBYTES(
@@ -159,7 +103,10 @@ SELECT
 			, LOWER(ISNULL(CAST(TimeCommitmentToKey AS VARCHAR(8000)), '')), '|'
 			, LOWER(ISNULL(CAST(PhoneDetailkey AS VARCHAR(8000)), '')), '|'
 			, LOWER(ISNULL(CAST(ProductParentKey AS VARCHAR(8000)), '')), '|'
-			, LOWER(ISNULL(CAST(ProductInstance AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(Subscriptionkey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(SubscriptionParentKey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(BillingAccountkey AS VARCHAR(8000)), '')), '|'
+			, LOWER(ISNULL(CAST(Quotekey AS VARCHAR(8000)), '')), '|'
             )
         ),
     2
@@ -168,61 +115,67 @@ SELECT
 	From
 	(
 	SELECT
-	CONVERT( NVARCHAR(36), pin.id ) AS ProductInstance,  
+	CONVERT( NVARCHAR(12), acc.account_num ) AS BillingAccountKey,  
+	CONVERT( NVARCHAR(36), pin.id ) AS SubscriptionKey,  
 	CONVERT( DATE, REPLACE( pin.start_date, '"', '' ) ) AS CalendarKey,
 	LEFT(CONVERT(VARCHAR,start_date,108),5)+':00' AS TimeKey,
 	CONVERT( NVARCHAR(36), REPLACE( pin.offering_id, '"', '' ) ) AS ProductKey, 
 	CONVERT( NVARCHAR(12), REPLACE( cim.customer_number, '"', '' ) ) AS CustomerKey,
 	CONVERT( NVARCHAR(50), REPLACE( ab.AddressBillingKey, '"', '' ) ) AS AddressBillingKey, 
 	CONVERT( NVARCHAR(36), REPLACE( HouseHold.id, '"', '' ) ) AS HouseHoldkey ,
-	CONVERT( NVARCHAR(36), REPLACE( iep.distribution_channel_id, '"', '' ) ) AS SalesChannelKey,
-	Case when pin.state='ACTIVE' then 1 when pin.state='DISCONNECTED' then 2 when pin.state='COMPLETED' then 3 END AS TransactionStateKey,
-	CASE WHEN  Migration=0 or( Migration is null and pin.state='ACTIVE'and (lead(Migration) over (partition by pin.id order by isnull(pin.termination_date,'9999-12-31')))=1) 
-	or (Migration is null and pin.state='ACTIVE' and pin.termination_date is null) THEN 1 
-	WHEN pin.state='DISCONNECTED'  THEN -1 
-	When pin.state='COMPLETED' or Migration=1 Then 0 ELSE 1 END AS ProductTransactionsQuantity,
-	Case when lead(Migration) over (partition by pin.id order by isnull(pin.termination_date,'9999-12-31'))=0 THEN -1 ELSE 0 END AS ProductChurnQuantity,
-	CONVERT( Date, pin.termination_date ) AS CalendarToKey,
-	LEFT(CONVERT(VARCHAR,pin.termination_date ,108),5)+':00' AS TimeToKey,
-	CONVERT( Date, com.expiration_date ) AS CalendarCommitmentToKey,
-	LEFT(CONVERT(VARCHAR,com.expiration_date ,108),5)+':00' AS TimeCommitmentToKey,
+	CONVERT( NVARCHAR(36), REPLACE( pin.distributionChannelId, '"', '' ) ) AS SalesChannelKey,
+	CASE WHEN pin.state='ACTIVE' THEN 1 WHEN pin.state='DISCONNECTED' THEN 2 WHEN pin.state='COMPLETED' THEN 3 END AS TransactionStateKey,
+	CONVERT( NVARCHAR(10), REPLACE( quote.number, '"', '' ) ) AS QuoteKey, 
+	
+	CASE WHEN  Migration=0 OR( Migration IS NULL AND pin.state='ACTIVE' AND (LEAD(Migration) OVER (PARTITION BY pin.id ORDER BY ISNULL(pin.termination_date,'9999-12-31')))=1 AND ROW_NUMBER() OVER (PARTITION BY pin.id ,pin.offering_id ORDER BY pin.start_date )=1  ) OR (Migration IS NULL AND pin.state='ACTIVE' AND pin.termination_date IS NULL AND ROW_NUMBER() OVER (PARTITION BY pin.id ,pin.offering_id ORDER BY pin.start_date )=1 ) THEN 1 
+		 WHEN pin.state='DISCONNECTED' THEN -1 
+		 WHEN pin.state='COMPLETED' OR Migration=1 OR  ROW_NUMBER() OVER (PARTITION BY pin.id ,pin.offering_id ORDER BY pin.start_date )<>1  THEN 0 ELSE 1 END AS ProductTransactionsQuantity,
+	
+	CASE WHEN LEAD(Migration) OVER (PARTITION BY pin.id ORDER BY ISNULL(pin.termination_date,'9999-12-31'))=0 THEN -1 ELSE 0 END AS ProductChurnQuantity,
+	CASE WHEN pin.state='DISCONNECTED' THEN CONVERT( DATE, REPLACE( pin.start_date, '"', '' ) ) ELSE  CONVERT( DATE, pin.termination_date ) END AS CalendarToKey,
+	CASE WHEN pin.state='DISCONNECTED' THEN LEFT(CONVERT(VARCHAR,start_date,108),5)+':00' ELSE LEFT(CONVERT(VARCHAR,pin.termination_date ,108),5)+':00' END AS TimeToKey,
+	CONVERT( DATE, com.expiration_date ) AS CalendarCommitmentToKey,
+	LEFT(CONVERT(VARCHAR,CONVERT( DATETIME, com.expiration_date  ) ,108),5)+':00' AS TimeCommitmentToKey,
 	CONVERT( NVARCHAR(20), REPLACE(REPLACE(chr.value_json__corrupt_record,'["',''),'"]','') ) AS PhoneDetailkey,
-	CONVERT( NVARCHAR(1), CASE WHEN pin.parent_id is null or pin.root_id = pin.id THEN 1 ELSE 0 END ) AS TLO,
-	CONVERT( NVARCHAR(36), REPLACE( parent.offering_id, '"', '' ) ) AS ProductParentKey, 
-	CONVERT( NVARCHAR(1),Case when cu.ref is not null and (pin.parent_id is null or pin.root_id = pin.id) THEN 1 ELSE 0 END) AS RGU,
-	CONVERT( NVARCHAR(1), Migration) AS Migration,
-	case when Migration=1 and prof.weight - lag(prof.weight) over (partition by pin.id order by isnull(termination_date,'9999-12-31') ) > 0 then 1
-	     when Migration=1 and prof.weight - lag(prof.weight) over (partition by pin.id order by isnull(termination_date,'9999-12-31') ) < 0 then 0 else NULL END AS ProductUpgrade,
+	CONVERT( NVARCHAR(1), CASE WHEN pin.parent_id IS NULL OR pin.root_id = pin.id THEN 1 ELSE 0 END ) AS TLO,
+	CONVERT( NVARCHAR(36), REPLACE( parent.offering_id, '"', '' ) ) AS ProductParentKey,
+	CONVERT( NVARCHAR(36), REPLACE( parent.parent_id, '"', '' ) ) AS SubscriptionParentKey, 
+	CONVERT( NVARCHAR(1),CASE WHEN cu.ref IS NOT NULL AND (pin.parent_id IS NULL OR pin.root_id = pin.id) THEN 1 ELSE 0 END) AS RGU,
+	CONVERT( DATE, CASE WHEN pin.parent_id IS NULL OR pin.root_id = pin.id THEN start_dat ELSE NULL END ) AS  CalendarRGUkey,
+	CONVERT( DATE, CASE WHEN pin.parent_id IS NULL OR pin.root_id = pin.id THEN end_dat ELSE NULL END ) AS CalendarRGUTokey,
+	CASE WHEN ( LEAD( CONVERT( NVARCHAR(1), Migration)) OVER (ORDER BY pin.id,pin.start_date))='1' THEN '-1' ELSE CONVERT( NVARCHAR(1), Migration) END AS Migration,
+	CASE WHEN Migration=1 AND prof.weight - LAG(prof.weight) OVER (PARTITION BY pin.id ORDER BY ISNULL(termination_date,'9999-12-31') ) > 0 THEN 1
+	     WHEN Migration=1 AND prof.weight - LAG(prof.weight) OVER (PARTITION BY pin.id ORDER BY ISNULL(termination_date,'9999-12-31') ) < 0 THEN 0 ELSE NULL END AS ProductUpgrade,
 	GETDATE() AS DWCreatedDate
 
 FROM productinstance_t pin
 
+-- reference to Quotekey,
+LEFT JOIN [sourceNuudlNetCrackerView].[qssnrmlquote_History] quote ON quote.id=pin.quote_id
+
 -- reference to PhoneDetailkey, SLO will have TLO phone number
-LEFT JOIN [sourceNuudlNetCrackerView].[ibsnrmlcharacteristic_History] chr  ON chr.product_instance_id=isnull(pin.parent_id,pin.id) and chr.name='International Phone Number' 
+LEFT JOIN [sourceNuudlNetCrackerView].[ibsnrmlcharacteristic_History] chr  ON chr.product_instance_id=ISNULL(pin.parent_id,pin.id) AND chr.name='International Phone Number' 
 
 -- It's a RGU if a suscription have a financial start date
 LEFT JOIN [sourceNuudlNetCrackerView].[nrmcusthasproductkeyname_History] kn ON kn.name=pin.id
 LEFT JOIN 
-			(   SELECT --account_num,
-				CONCAT(product_seq,customer_ref) ref,ROW_NUMBER() OVER (PARTITION BY CONCAT(product_seq,customer_ref) ORDER BY ISNULL( start_dat, '9999-12-31' ) DESC) rn
-				FROM [sourceNuudlNetCrackerView].[nrmcustproductdetails_History] ) cu ON cu.ref=CONCAT(kn.product_seq,kn.customer_ref) and rn=1
+			(   SELECT 
+				CONCAT(product_seq,customer_ref) ref,product_label,override_product_name,start_dat,end_dat
+				FROM [sourceNuudlNetCrackerView].[nrmcustproductdetails_History] ) cu ON cu.ref=CONCAT(kn.product_seq,kn.customer_ref) AND (pin.offeringname=cu.product_label OR pin.offeringname=cu.override_product_name ) AND  (CONVERT( DATE,pin.start_date )=DATEADD(day,1,CONVERT( DATE, cu.start_dat )))
 
 -- reference to CalendarCommitmentToKey both for TLO & SLO
-LEFT JOIN (select id,expiration_date  FROM [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History]
-where name='Commitment #1'
-union all
-select parent_id id ,expiration_date  FROM [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History]
-where name='Commitment #1'
-) com on com.id=pin.id
+LEFT JOIN (SELECT DISTINCT id,item_json_expirationDate expiration_date,active_from FROM [sourceNuudlNetCrackerView].[ibsitemshistory_History]
+WHERE  item_json_offeringName ='Commitment' AND item_json_expirationDate IS NOT NULL and state in ('ACTIVE','DISCONNECTED')
+UNION ALL
+SELECT DISTINCT item_json_parentId id,item_json_expirationDate expiration_date,active_from FROM [sourceNuudlNetCrackerView].[ibsitemshistory_History]
+WHERE  item_json_offeringName ='Commitment' AND item_json_expirationDate IS NOT NULL and state='ACTIVE'
+) com ON com.id=pin.id and CONVERT( SMALLDATETIME, com.active_from)<= CONVERT( SMALLDATETIME, pin.start_date)
 
 -- reference to ProductParentKey for SLO
-LEFT JOIN (select a.id,b.offering_id from [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History] a
-left join [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History] b on a.parent_id=b.id
-where a.parent_id is not null 
-) parent on pin.id=parent.id
-
--- reference to SalesChannelKey
-LEFT JOIN sourceNuudlNetCrackerView.ibseligibilityparameters_History iep on pin.eligibility_param_id=iep.id
+LEFT JOIN (SELECT a.id,b.offering_id,a.parent_id FROM [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History] a
+LEFT JOIN [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History] b ON a.parent_id=b.id
+WHERE a.parent_id IS NOT NULL 
+) parent ON pin.id=parent.id
 
 -- reference to HouseHoldkey
 LEFT JOIN (	   SELECT DISTINCT
@@ -232,12 +185,12 @@ LEFT JOIN (	   SELECT DISTINCT
        INNER JOIN [sourceNuudlNetCrackerView].[cimcontactmedium_History] cm
               ON cm.ID = cma.contact_medium_id
                       AND cm.is_current = 1
-                      AND type_of_contact_method = 'Billing contact details') HouseHold on pin.customer_id=HouseHold.ref_id
+                      AND type_of_contact_method = 'Billing contact details') HouseHold ON pin.customer_id=HouseHold.ref_id
 
 -- reference to AddressBillingKey
 LEFT JOIN (
        SELECT
-              cma.ref_id AS customer_id,
+       cma.ref_id AS customer_id,
        CONCAT(ISNULL(cm.Street1,''),';',ISNULL(cm.Street2,''),';',ISNULL(cm.Postcode,''),';',ISNULL(cm.City,'')) AddressBillingKey
        FROM [sourceNuudlNetCrackerView].[cimcontactmediumassociation_History] cma
        INNER JOIN [sourceNuudlNetCrackerView].[cimcontactmedium_History] cm
@@ -249,27 +202,29 @@ LEFT JOIN (
 ) ab ON ab.customer_id = pin.customer_id
 
 -- ProductUpgrade
-LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] prof on pin.offering_id=prof.id
+LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] prof ON pin.offering_id=prof.id
+
+-- BillingAccount
+LEFT JOIN BillingAccount acc ON pin.id=acc.id
 
 -- reference to CustomerKey
-LEFT JOIN [sourceNuudlNetCrackerView].[cimcustomer_History] cim on pin.customer_id=cim.id
-where cim.is_current=1
+LEFT JOIN [sourceNuudlNetCrackerView].[cimcustomer_History] cim ON pin.customer_id=cim.id
+WHERE pin.offeringname NOT IN ('Assign Phone Number [MV or Smart SIM] #1','Assign Phone Number [MV or Smart SIM]') AND cim.is_current=1 -- offering 'Assign Phone Number [MV or Smart SIM] #1' is treated separately to be able to identify the old phone number.
 
-
--- offering 'Assign Phone Number [MV or Smart SIM] #1' is treated separately to be able to identify the old phone number.
-
-union all
+UNION ALL
 
 SELECT 
-	CONVERT( NVARCHAR(36), pin.id ) AS ProductTransactionsIdentifier,  
+	CONVERT( NVARCHAR(12), acc.account_num ) AS BillingAccountkey,
+	CONVERT( NVARCHAR(36), pin.id ) AS Subscriptionkey,  
 	CONVERT( DATE, REPLACE( pin.start_date, '"', '' ) ) AS CalendarKey,
 	LEFT(CONVERT(VARCHAR,start_date,108),5)+':00' AS TimeKey,
 	CONVERT( NVARCHAR(36), REPLACE( pin.offering_id, '"', '' ) ) AS ProductKey, 
 	CONVERT( NVARCHAR(12), REPLACE( cim.customer_number, '"', '' ) ) AS CustomerKey,
 	CONVERT( NVARCHAR(50), REPLACE( ab.AddressBillingKey, '"', '' ) ) AS AddressBillingKey,
 	CONVERT( NVARCHAR(36), REPLACE( HouseHold.id, '"', '' ) ) AS HouseHoldkey,
-	CONVERT( NVARCHAR(36), REPLACE( iep.distribution_channel_id, '"', '' ) ) AS SalesChannelKey,
-	Case when pin.state='ACTIVE' then 1 when pin.state='DISCONNECTED' then 2 when pin.state='COMPLETED' then 3 END AS TransactionStateKey,
+	CONVERT( NVARCHAR(36), REPLACE( pin.distributionChannelId, '"', '' ) ) AS SalesChannelKey,
+	CASE WHEN pin.state='ACTIVE' THEN 1 WHEN pin.state='DISCONNECTED' THEN 2 WHEN pin.state='COMPLETED' THEN 3 END AS TransactionStateKey,
+	CONVERT( NVARCHAR(10), REPLACE( quote.number, '"', '' ) ) AS Quotekey,
     0 AS ProductTransactionsQuantity,
 	0 AS ProductChurnQuantity,
 	CONVERT( Date, pin.termination_date ) AS CalendarToKey,
@@ -278,23 +233,26 @@ SELECT
 	NULL AS TimeCommitmentToKey,
 	CONVERT( NVARCHAR(20), REPLACE(REPLACE(chr.value_json__corrupt_record,'["',''),'"]','') ) AS PhoneDetailkey,
 	CONVERT( NVARCHAR(1), CASE WHEN pin.parent_id is null or pin.root_id = pin.id THEN 1 ELSE 0 END ) AS TLO,
-	CONVERT( NVARCHAR(36), REPLACE( parent.offering_id, '"', '' ) ) AS ProductParentKey, 
+	CONVERT( NVARCHAR(36), REPLACE( parent.offering_id, '"', '' ) ) AS ProductParentKey,
+	CONVERT( NVARCHAR(36), REPLACE( parent.parent_id, '"', '' ) ) AS SubscriptionParentKey,
 	0 AS RGU,
 	NULL AS Migration,
+	NULL CalendarRGUkey,
+	NULL CalendarRGUTokey,
 	NULL AS ProductUpgrade,
 	
 	GETDATE() AS DWCreatedDate
 
-FROM [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History] pin
+FROM productinstance_t pin
 
-
+LEFT JOIN [sourceNuudlNetCrackerView].[qssnrmlquote_History] quote ON quote.id=pin.quote_id
 LEFT JOIN [sourceNuudlNetCrackerView].[ibsnrmlcharacteristic_History] chr  ON chr.product_instance_id=pin.id and chr.name='International Phone Number'
-LEFT JOIN (select a.id,b.offering_id from [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History] a
-left join [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History] b on a.parent_id=b.id
-where a.parent_id is not null 
-) parent on pin.id=parent.id
 
-LEFT JOIN sourceNuudlNetCrackerView.ibseligibilityparameters_History iep on pin.eligibility_param_id=iep.id
+LEFT JOIN (SELECT a.id,b.offering_id,a.parent_id FROM [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History] a
+LEFT JOIN [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History] b ON a.parent_id=b.id
+WHERE a.parent_id IS NOT NULL 
+) parent ON pin.id=parent.id
+
 LEFT JOIN (	   SELECT DISTINCT
 	   cm.id,
 	   cma.ref_id
@@ -302,10 +260,10 @@ LEFT JOIN (	   SELECT DISTINCT
        INNER JOIN [sourceNuudlNetCrackerView].[cimcontactmedium_History] cm
               ON cm.ID = cma.contact_medium_id
                       AND cm.is_current = 1
-                      AND type_of_contact_method = 'Billing contact details') HouseHold on pin.customer_id=HouseHold.ref_id
+                      AND type_of_contact_method = 'Billing contact details') HouseHold ON pin.customer_id=HouseHold.ref_id
 LEFT JOIN (
        SELECT
-              cma.ref_id AS customer_id,
+       cma.ref_id AS customer_id,
        CONCAT(ISNULL(cm.Street1,''),';',ISNULL(cm.Street2,''),';',ISNULL(cm.Postcode,''),';',ISNULL(cm.City,'')) AddressBillingKey
        FROM [sourceNuudlNetCrackerView].[cimcontactmediumassociation_History] cma
        INNER JOIN [sourceNuudlNetCrackerView].[cimcontactmedium_History] cm
@@ -316,8 +274,10 @@ LEFT JOIN (
               cma.is_current = 1
 ) ab ON ab.customer_id = pin.customer_id
 
-LEFT JOIN [sourceNuudlNetCrackerView].[cimcustomer_History] cim on pin.customer_id=cim.id
-where pin.state in('COMPLETED') and pin.name ='Assign Phone Number [MV or Smart SIM] #1'
-and cim.is_current=1
+LEFT JOIN BillingAccount acc ON pin.id=acc.id
+
+LEFT JOIN [sourceNuudlNetCrackerView].[cimcustomer_History] cim ON pin.customer_id=cim.id
+where pin.offeringname  IN ('Assign Phone Number [MV or Smart SIM] #1','Assign Phone Number [MV or Smart SIM]') AND pin.state IN('COMPLETED')
+AND cim.is_current=1
 
 ) z

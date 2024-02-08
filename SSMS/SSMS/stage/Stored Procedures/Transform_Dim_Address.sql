@@ -21,6 +21,6 @@ INSERT INTO stage.[Dim_Address] WITH (TABLOCK) (AddressKey, Street1, Street2,Pos
               ON cm.ID = cma.contact_medium_id
                       AND cm.is_current = 1
                       AND type_of_contact_method = 'Billing contact details'
-	   INNER JOIN (select distinct customer_id from [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History]) pin on pin.customer_id=cma.ref_id
+	   INNER JOIN (select distinct item_json_customerId customer_id from [sourceNuudlNetCrackerView].[ibsitemshistory_History] ) pin on pin.customer_id=cma.ref_id
        WHERE
               cma.is_current = 1 and CONCAT(ISNULL(cm.Street1,''),';',ISNULL(cm.Street2,''),';',ISNULL(cm.Postcode,''),';',ISNULL(cm.City,'')) <>';;;'
