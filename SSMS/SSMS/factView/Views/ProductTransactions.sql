@@ -1,7 +1,8 @@
 ﻿CREATE VIEW [factView].[ProductTransactions] 
 AS
 SELECT
-	[ProductInstance]
+	[BillingAccountID]
+	,[SubscriptionID]
 	,[CalendarID]
 	,[TimeID]
 	,[ProductID]
@@ -10,6 +11,7 @@ SELECT
 	,[HouseHoldID]
 	,[SalesChannelID]
 	,[TransactionStateID]
+	,[QuoteID]
 	,[ProductTransactionsQuantity]
 	,[ProductChurnQuantity]
 	,[CalendarToID]
@@ -19,7 +21,10 @@ SELECT
 	,[PhoneDetailID]
 	,[TLO]
 	,[ProductParentID]
+	,[SubscriptionParentID]
 	,[RGU]
+	,[CalendarRGUID]
+	,[CalendarRGUToID]
 	,[Migration]
 	,[ProductUpgrade]
 	,[DWCreatedDate]

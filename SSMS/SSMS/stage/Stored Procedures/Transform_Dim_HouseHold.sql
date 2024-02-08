@@ -5,9 +5,10 @@ AS
 
 TRUNCATE TABLE [stage].[Dim_HouseHold]
 
-INSERT INTO stage.[Dim_HouseHold] WITH (TABLOCK) (HouseHoldkey)
+INSERT INTO stage.[Dim_HouseHold] WITH (TABLOCK) (HouseHoldKey,DWCreatedDate)
 
 
 SELECT DISTINCT
-CONVERT( NVARCHAR(36),id ) AS HouseHoldkey
+CONVERT( NVARCHAR(36),id ) AS HouseHoldKey,
+GETDATE() AS DWCreatedDate
 from [sourceNuudlNetCrackerView].[cimcontactmedium_History]

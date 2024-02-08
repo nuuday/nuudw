@@ -1,4 +1,7 @@
 ﻿CREATE TABLE [stage].[Dim_HouseHold] (
-    [HouseHoldkey] NVARCHAR (36) NULL
+    [HouseHoldKey]  NVARCHAR (36) NULL,
+    [DWCreatedDate] DATETIME      NOT NULL
 );
+
+
 
