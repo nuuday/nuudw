@@ -54,8 +54,6 @@
     <Folder Include="meta\Stored Procedures\" />
     <Folder Include="Security\" />
     <Folder Include="extended properties" />
-    <Folder Include="sourceDataLakeNetcracker_interim\" />
-    <Folder Include="sourceDataLakeNetcracker_interim\Tables\" />
     <Folder Include="nuuMeta\" />
     <Folder Include="nuuMeta\Tables\" />
     <Folder Include="nuuMetaView\" />
