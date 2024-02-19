@@ -520,7 +520,6 @@
     <Build Include="stage\Stored Procedures\Transform_Dim_Subscription.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_Quote.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_BillingAccount.sql" />
-    <Build Include="cubeView_PRX\Views\FactProductTransactionsMerge.sql" />
     <Build Include="cubeView_PRX\Views\FactProductTransactions.sql" />
     <Build Include="cubeView_PRX\Views\DimTransactionState.sql" />
     <Build Include="cubeView_PRX\Views\DimTime.sql" />
