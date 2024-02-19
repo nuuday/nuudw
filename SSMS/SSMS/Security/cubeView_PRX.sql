@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [cubeView_PRX]
+    AUTHORIZATION [dbo];
+

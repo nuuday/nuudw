@@ -4,7 +4,7 @@ CREATE PROCEDURE [stage].[Transform_Fact_ProductTransactions]
 AS 
 TRUNCATE TABLE [stage].[Fact_ProductTransactions]
 
--- Historical and current active,disconnected,completed TLO and SLO Product transactions.
+-- Historical and current active,disconnected,completed TLO Product transactions.
 ;with productinstance as
 (
 
@@ -19,12 +19,36 @@ active_to termination_date,
 item_json_parentId parent_id,
 item_json_rootId root_id,
 item_json_offeringName offeringname,
-item_json_distributionChannelId distributionChannelId
+item_json_distributionChannelId distributionChannelId,
+item_json_accountRef_json_refId account_ref_id 
 
 FROM  [sourceNuudlNetCrackerView].[ibsitemshistory_History]
 
-WHERE state in ('ACTIVE','DISCONNECTED','COMPLETED')
+WHERE (state in ('ACTIVE','DISCONNECTED') and (item_json_parentId IS NULL OR item_json_rootId  = id) 
+or (state='COMPLETED' and item_json_accountRef_json_refId is not null and (item_json_parentId IS NULL OR item_json_rootId  = id)))
+and id not in ('b5beb355-0379-41f2-aaad-47297c9548cb','39476242-7ab7-467e-b88a-b3968a8cb7e9') --we are excluding those subscriptions because of data issues due to testing activities in production
 
+union all
+
+-- Historical and current active,disconnected,completed SLO Product transactions.
+SELECT DISTINCT 
+a.id,
+active_from start_date,
+item_json_offeringId offering_id,
+item_json_customerId customer_id,
+state,
+item_json_quoteId quote_id,
+active_to termination_date,
+item_json_parentId parent_id,
+item_json_rootId root_id,
+item_json_offeringName offeringname,
+item_json_distributionChannelId distributionChannelId,
+b.item_json_accountRef_json_refId account_ref_id 
+FROM  [sourceNuudlNetCrackerView].[ibsitemshistory_History] a
+Left join ( SELECT DISTINCT item_json_rootId id,item_json_accountRef_json_refId FROM  [sourceNuudlNetCrackerView].[ibsitemshistory_History] 
+			where state in ('ACTIVE','DISCONNECTED','COMPLETED') and (item_json_parentId IS NULL OR item_json_rootId  = id) and id not in ('b5beb355-0379-41f2-aaad-47297c9548cb','39476242-7ab7-467e-b88a-b3968a8cb7e9')) b on a.item_json_rootId=b.id
+
+WHERE a.state in ('ACTIVE','DISCONNECTED','COMPLETED') and a.item_json_parentId IS NOT NULL 
 ),
 -- reference to BillingAccount
 BillingAccount AS
@@ -65,7 +89,8 @@ parent_id,
 root_id,
 offeringname,
 Migration,
-distributionChannelId
+distributionChannelId,
+account_ref_id
 FROM (
 SELECT a.*,b.name,
 
@@ -143,7 +168,7 @@ DISTINCT
 	CONVERT( NVARCHAR(1),CASE WHEN cu.ref IS NOT NULL AND (pin.parent_id IS NULL OR pin.root_id = pin.id) THEN 1 ELSE 0 END) AS RGU,
 	CONVERT( DATE, CASE WHEN pin.parent_id IS NULL OR pin.root_id = pin.id THEN start_dat ELSE NULL END ) AS  CalendarRGUkey,
 	CONVERT( DATE, CASE WHEN pin.parent_id IS NULL OR pin.root_id = pin.id THEN end_dat ELSE NULL END ) AS CalendarRGUTokey,
-	CASE WHEN ( LEAD( CONVERT( NVARCHAR(1), Migration)) OVER (ORDER BY pin.id,pin.start_date))='1' THEN '-1' ELSE CONVERT( NVARCHAR(1), Migration) END AS Migration,
+	CASE WHEN ( LEAD( Migration) OVER (ORDER BY pin.id,pin.start_date))=1 THEN -1 ELSE Migration END AS Migration,
 	CASE WHEN Migration=1 AND prof.weight - LAG(prof.weight) OVER (PARTITION BY pin.id ORDER BY ISNULL(termination_date,'9999-12-31') ) > 0 THEN 1
 	     WHEN Migration=1 AND prof.weight - LAG(prof.weight) OVER (PARTITION BY pin.id ORDER BY ISNULL(termination_date,'9999-12-31') ) < 0 THEN 0 ELSE NULL END AS ProductUpgrade,
 	GETDATE() AS DWCreatedDate
@@ -205,12 +230,13 @@ LEFT JOIN (
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] prof ON pin.offering_id=prof.id
 
 -- BillingAccount
-LEFT JOIN BillingAccount acc ON pin.id=acc.id
+--LEFT JOIN BillingAccount acc ON pin.id=acc.id
+LEFT JOIN [sourceNuudlNetCrackerView].[nrmaccountkeyname_History] acc on pin.account_ref_id=acc.name
 
 -- reference to CustomerKey
 LEFT JOIN [sourceNuudlNetCrackerView].[cimcustomer_History] cim ON pin.customer_id=cim.id
 WHERE pin.offeringname NOT IN ('Assign Phone Number [MV or Smart SIM] #1','Assign Phone Number [MV or Smart SIM]') AND cim.is_current=1 -- offering 'Assign Phone Number [MV or Smart SIM] #1' is treated separately to be able to identify the old phone number.
-
+--and pin.id='39476242-7ab7-467e-b88a-b3968a8cb7e9'
 UNION ALL
 
 SELECT 
@@ -274,10 +300,11 @@ LEFT JOIN (
               cma.is_current = 1
 ) ab ON ab.customer_id = pin.customer_id
 
-LEFT JOIN BillingAccount acc ON pin.id=acc.id
+--LEFT JOIN BillingAccount acc ON pin.id=acc.id
+LEFT JOIN [sourceNuudlNetCrackerView].[nrmaccountkeyname_History] acc on pin.account_ref_id=acc.name
 
 LEFT JOIN [sourceNuudlNetCrackerView].[cimcustomer_History] cim ON pin.customer_id=cim.id
 where pin.offeringname  IN ('Assign Phone Number [MV or Smart SIM] #1','Assign Phone Number [MV or Smart SIM]') AND pin.state IN('COMPLETED')
-AND cim.is_current=1
+AND cim.is_current=1 --and pin.id='39476242-7ab7-467e-b88a-b3968a8cb7e9'
 
 ) z

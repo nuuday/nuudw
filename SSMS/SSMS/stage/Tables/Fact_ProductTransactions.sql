@@ -24,10 +24,12 @@
     [RGU]                           NVARCHAR (1)  NULL,
     [CalendarRGUkey]                DATETIME2 (7) NULL,
     [CalendarRGUTokey]              DATETIME2 (7) NULL,
-    [Migration]                     NVARCHAR (2)  NULL,
+    [Migration]                     SMALLINT      NULL,
     [ProductUpgrade]                NVARCHAR (1)  NULL,
     [DWCreatedDate]                 DATETIME      NOT NULL
 );
+
+
 
 
 

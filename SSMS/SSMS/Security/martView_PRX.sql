@@ -6,6 +6,8 @@
 
 
 
+
+
 GO
 GRANT SELECT
     ON SCHEMA::[martView_PRX] TO [nuudw-acl01-sql-db-reader];
@@ -13,6 +15,7 @@ GRANT SELECT
 
 GO
 GRANT SELECT
-    ON SCHEMA::[martView_PRX] TO [nuudw-acl01-sql-schema-mart-prx-reader]
-    WITH GRANT OPTION;
+    ON SCHEMA::[martView_PRX] TO [nuudw-acl01-sql-schema-mart-prx-reader];
+
+
 
