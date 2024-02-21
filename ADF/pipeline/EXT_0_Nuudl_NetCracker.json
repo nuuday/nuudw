@@ -93,6 +93,36 @@
         }
       },
       {
+        "name": "cpmnrmltroubleticket",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_cpmnrmltroubleticket",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "cpmnrmltroubleticketrelatedentityref",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_cpmnrmltroubleticketrelatedentityref",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
         "name": "ibseligibilityparameters",
         "type": "ExecutePipeline",
         "typeProperties": {
