@@ -54,8 +54,6 @@
     <Folder Include="meta\Stored Procedures\" />
     <Folder Include="Security\" />
     <Folder Include="extended properties" />
-    <Folder Include="sourceDataLakeNetcracker_interim\" />
-    <Folder Include="sourceDataLakeNetcracker_interim\Tables\" />
     <Folder Include="nuuMeta\" />
     <Folder Include="nuuMeta\Tables\" />
     <Folder Include="nuuMetaView\" />
@@ -106,6 +104,8 @@
     <Folder Include="sourceNuudlNetCracker\Tables\" />
     <Folder Include="sourceNuudlNetCrackerView\" />
     <Folder Include="sourceNuudlNetCrackerView\Views\" />
+    <Folder Include="cubeView_PRX\" />
+    <Folder Include="cubeView_PRX\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -520,6 +520,20 @@
     <Build Include="stage\Stored Procedures\Transform_Dim_Subscription.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_Quote.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_BillingAccount.sql" />
+    <Build Include="cubeView_PRX\Views\FactProductTransactions.sql" />
+    <Build Include="cubeView_PRX\Views\DimTransactionState.sql" />
+    <Build Include="cubeView_PRX\Views\DimTime.sql" />
+    <Build Include="cubeView_PRX\Views\DimSubscription.sql" />
+    <Build Include="cubeView_PRX\Views\DimSalesChannel.sql" />
+    <Build Include="cubeView_PRX\Views\DimQuote.sql" />
+    <Build Include="cubeView_PRX\Views\DimProduct.sql" />
+    <Build Include="cubeView_PRX\Views\DimPhoneDetail.sql" />
+    <Build Include="cubeView_PRX\Views\DimHouseHold.sql" />
+    <Build Include="cubeView_PRX\Views\DimCustomer.sql" />
+    <Build Include="cubeView_PRX\Views\DimCalendar.sql" />
+    <Build Include="cubeView_PRX\Views\DimBillingAccount.sql" />
+    <Build Include="cubeView_PRX\Views\DimAddress.sql" />
+    <Build Include="Security\cubeView_PRX.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

@@ -24,11 +24,13 @@
     [RGU]                           NVARCHAR (1)  NULL,
     [CalendarRGUID]                 INT           DEFAULT ((-1)) NOT NULL,
     [CalendarRGUToID]               INT           DEFAULT ((-1)) NOT NULL,
-    [Migration]                     NVARCHAR (2)  NULL,
+    [Migration]                     SMALLINT      NULL,
     [ProductUpgrade]                NVARCHAR (1)  NULL,
     [DWCreatedDate]                 DATETIME2 (0) NOT NULL,
     [DWModifiedDate]                DATETIME2 (0) NOT NULL
 );
+
+
 
 
 
