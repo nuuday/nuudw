@@ -61,8 +61,8 @@ DECLARE @LastValueLoadedParam bigint = 0;
 SET @max_lastvalueloaded = @LastValueLoaded;  
 SET @ParmDefinition = N'@level TINYINT, @max_lastvalueloadedOUT VARCHAR(30) OUTPUT';  
 
-SET @SQLMaxLvl = 'SELECT @max_lastvalueloadedOUT = ISNULL((SELECT CONVERT(BIGINT, ' + iif (@WatermarkIsDate = 1,'FORMAT(MAX(' + @WatermarkValueColumn + '), ''yyyyMMddHHmmss''))', 
-	'MAX(' + @WatermarkValueColumn + '))') + ' FROM [' + @ExtractSchemaName + '].[' + @SourceTableName + ']), '+@LastValueLoaded+')'
+SET @SQLMaxLvl = 'SELECT @max_lastvalueloadedOUT = ISNULL((SELECT CONVERT(NVARCHAR, ' + iif (@WatermarkIsDate = 1,'FORMAT(MAX(' + @WatermarkValueColumn + '), ''yyyy-MM-dd HH:mm:ss.ffffff''))', 
+	'MAX(' + @WatermarkValueColumn + '))') + ' FROM [' + @ExtractSchemaName + '].[' + @SourceTableName + ']), '''+@LastValueLoaded+''')'
 
 PRINT @SQLMaxLvl
 EXECUTE sp_executesql @SQLMaxLvl, @ParmDefinition, @level = 197, @max_lastvalueloadedOUT=@max_lastvalueloaded OUTPUT;  
