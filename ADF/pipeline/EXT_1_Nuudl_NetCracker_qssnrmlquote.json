@@ -1,308 +1,322 @@
 {
-  "name": "EXT_1_Nuudl_NetCracker_qssnrmlquote",
-  "properties": {
-    "activities": [
-      {
-        "name": "Update_Meta_Tables",
-        "type": "SqlServerStoredProcedure",
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "storedProcedureName": "[nuuMeta].[UpdateSourceTables]",
-          "storedProcedureParameters": {
-            "SourceConnectionName": {
-              "value": "Nuudl_NetCracker",
-              "type": "String"
-            },
-            "SourceConnectionType": {
-              "value": "AzureDatabricksDeltaLake",
-              "type": "String"
-            },
-            "SourceSchemaName": {
-              "value": "dai.netcracker",
-              "type": "String"
-            },
-            "SourceObjectName": {
-              "value": "qssnrmlquote",
-              "type": "String"
-            },
-            "DestinationSchemaName": {
-              "value": "sourceNuudlNetCracker",
-              "type": "String"
-            },
-            "WatermarkColumnName": {
-              "value": "NUUDL_CuratedBatchID",
-              "type": "String"
-            },
-            "WatermarkIsDate": {
-              "value": "False",
-              "type": "Boolean"
-            },
-            "WatermarkRollingWindowDays": {
-              "value": "0",
-              "type": "Int32"
-            },
-            "WatermarkInQuery": {
-              "value": "",
-              "type": "String"
-            }
-          }
-        },
-        "linkedServiceName": {
-          "referenceName": "nuudwsqldb01",
-          "type": "LinkedServiceReference"
-        }
-      },
-      {
-        "name": "Lookup_Last_Value_Loaded",
-        "type": "Lookup",
-        "dependsOn": [
-          {
-            "activity": "Update_Meta_Tables",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "source": {
-            "type": "SqlSource",
-            "sqlReaderStoredProcedureName": "[nuuMeta].[GetLastValueLoaded]",
-            "storedProcedureParameters": {
-              "SourceConnectionName": {
-                "value": "Nuudl_NetCracker",
-                "type": "String"
-              },
-              "SourceSchemaName": {
-                "value": "dai.netcracker",
-                "type": "String"
-              },
-              "SourceTableName": {
-                "value": "qssnrmlquote",
-                "type": "String"
-              },
-              "JobIsIncremental": {
-                "value": "@pipeline().parameters.JobIsIncremental",
-                "type": "Boolean"
-              },
-              "ConnectionType": {
-                "value": "AzureDatabricksDeltaLake",
-                "type": "String"
-              },
-              "WatermarkIsDate": {
-                "value": "False",
-                "type": "Boolean"
-              }
-            }
-          },
-          "dataset": {
-            "referenceName": "nuudwsqldb01_DynamicDataset",
-            "type": "DatasetReference",
-            "parameters": {
-              "TableName": "nuuMeta.SourceObjects"
-            }
-          }
-        }
-      },
-      {
-        "name": "Lookup_Source_Schema_Name",
-        "type": "Lookup",
-        "dependsOn": [
-          {
-            "activity": "Lookup_Last_Value_Loaded",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "source": {
-            "type": "SqlSource",
-            "sqlReaderStoredProcedureName": "[nuuMeta].[GetSourceSchemaName]",
-            "storedProcedureParameters": {
-              "SourceConnectionName": {
-                "value": "Nuudl_NetCracker",
-                "type": "String"
-              },
-              "SourceSchemaName": {
-                "value": "dai.netcracker",
-                "type": "String"
-              },
-              "SourceTableName": {
-                "value": "qssnrmlquote",
-                "type": "String"
-              }
-            }
-          },
-          "dataset": {
-            "referenceName": "nuudwsqldb01_DynamicDataset",
-            "type": "DatasetReference",
-            "parameters": {
-              "TableName": "nuuMeta.SourceObjects"
-            }
-          }
-        }
-      },
-      {
-        "name": "Copy_qssnrmlquote",
-        "type": "Copy",
-        "dependsOn": [
-          {
-            "activity": "Lookup_Source_Schema_Name",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "source": {
-            "type": "AzureDatabricksDeltaLakeSource",
-            "query": {
-              "value": "\r\nSELECT \r\n`approval_level` \r\n,`assign_to` \r\n,`brand_id` \r\n,`business_action` \r\n,`cancellation_reason` \r\n,`customer_category_id` \r\n,`customer_committed_date` \r\n,`customer_id` \r\n,`customer_requested_date` \r\n,`delivery_method` \r\n,`distribution_channel_id` \r\n,`expiration_date` \r\n,`extended_parameters_json_activityTime` \r\n,`extended_parameters_json_loanRequestStatus` \r\n,`extended_parameters_json_creditCheckExpirationDate` \r\n,`extended_parameters_json_documentLastDigits` \r\n,`extended_parameters_json_authDateTime` \r\n,`extended_parameters_json_portalQuoteReviewConfirmed` \r\n,`extended_parameters_json_loanTerm` \r\n,`extended_parameters_json_agreementId` \r\n,`extended_parameters_json_cardType` \r\n,`extended_parameters_json_stockName` \r\n,`extended_parameters_json_mpNumber` \r\n,`extended_parameters_json_customerFirstName` \r\n,`extended_parameters_json_PAYMENT_STATUS` \r\n,`extended_parameters_json_cardExpiryDate` \r\n,`extended_parameters_json_creditCheckDetails` \r\n,`extended_parameters_json_documentType` \r\n,`extended_parameters_json_portalPersonalInformationIsConfirmed` \r\n,`extended_parameters_json_contactForAbandoned` \r\n,`extended_parameters_json_currentStockId` \r\n,`extended_parameters_json_extPaymentId` \r\n,`extended_parameters_json_reservationExpirationDate` \r\n,`extended_parameters_json_flowId` \r\n,`extended_parameters_json_formId` \r\n,`extended_parameters_json_marketId` \r\n,`extended_parameters_json_ApplicationGuid` \r\n,`extended_parameters_json_isLoanAvailable` \r\n,`extended_parameters_json_marketingConsent` \r\n,`extended_parameters_json_paymentSubscriptionId` \r\n,`extended_parameters_json_creditCheckStatus` \r\n,`extended_parameters_json_loanApplicationId` \r\n,`extended_parameters_json_portalFinancingOptionsConfirmed` \r\n,`extended_parameters_json_autoPaymentFlag` \r\n,`extended_parameters_json_loanApplicationGuid` \r\n,`extended_parameters_json_partnerId` \r\n,`extended_parameters_json_flow_id` \r\n,`extended_parameters_json_cardNumber` \r\n,`extended_parameters_json_initialTotalLoanAmount` \r\n,`extended_parameters_json_creditCheckRequired` \r\n,`extended_parameters_json_loanRequestNotAvailable` \r\n,`extended_parameters_json_creditCheckDate` \r\n,`extended_parameters_json_mobilePhoneNumber` \r\n,`extended_parameters_json_customerAccountNumber` \r\n,`extended_parameters_json_paymentProvider` \r\n,`extended_parameters_json_disruptionConsent` \r\n,`extended_parameters_json_portalExpressBankLoanApproved` \r\n,`extended_parameters_json_stockAddress` \r\n,`extended_parameters_json_requestStatus` \r\n,`extended_parameters_json_hardReservationState` \r\n,`extended_parameters_json_portalDeliveryIsConfirmed` \r\n,`extended_parameters_json_infoId` \r\n,`external_id` \r\n,`id` \r\n,`initial_distribution_channel_id` \r\n,`name` \r\n,`new_msa` \r\n,`number` \r\n,`opportunity_id` \r\n,`override_mode` \r\n,`owner` \r\n,`price_list_id` \r\n,`quote_creation_date` \r\n,`revision` \r\n,`state` \r\n,`updated_when` \r\n,`version` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`is_current` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcracker.`qssnrmlquote`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
-              "type": "Expression"
-            },
-            "exportSettings": {
-              "type": "AzureDatabricksDeltaLakeExportCommand"
-            }
-          },
-          "sink": {
-            "type": "AzureSqlSink",
-            "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[qssnrmlquote]"
-          },
-          "enableStaging": true,
-          "stagingSettings": {
-            "linkedServiceName": {
-              "referenceName": "datalakest01exploration",
-              "type": "LinkedServiceReference"
-            },
-            "path": "adfstage"
-          }
-        },
-        "inputs": [
-          {
-            "referenceName": "Nuudl_NetCracker_DynamicDataset",
-            "type": "DatasetReference",
-            "parameters": {
-              "TableName": "dai.netcracker.qssnrmlquote"
-            }
-          }
-        ],
-        "outputs": [
-          {
-            "referenceName": "nuudwsqldb01_DynamicDataset",
-            "type": "DatasetReference",
-            "parameters": {
-              "TableName": "[sourceNuudlNetCracker].[qssnrmlquote]"
-            }
-          }
-        ]
-      },
-      {
-        "name": "Merge_To_History",
-        "type": "SqlServerStoredProcedure",
-        "dependsOn": [
-          {
-            "activity": "Copy_qssnrmlquote",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
-          "storedProcedureParameters": {
-            "ExtractTable": {
-              "value": "sourceNuudlNetCracker.qssnrmlquote",
-              "type": "String"
-            }
-          }
-        },
-        "linkedServiceName": {
-          "referenceName": "nuudwsqldb01",
-          "type": "LinkedServiceReference"
-        }
-      },
-      {
-        "name": "Set_Last_Value_Loaded",
-        "type": "SqlServerStoredProcedure",
-        "dependsOn": [
-          {
-            "activity": "Merge_To_History",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30
-        },
-        "typeProperties": {
-          "storedProcedureName": "[nuuMeta].[SetLastLoadedValue]",
-          "storedProcedureParameters": {
-            "SourceConnectionName": {
-              "value": "Nuudl_NetCracker",
-              "type": "String"
-            },
-            "SourceSchemaName": {
-              "value": "dai.netcracker",
-              "type": "String"
-            },
-            "SourceTableName": {
-              "value": "qssnrmlquote",
-              "type": "String"
-            },
-            "WatermarkIsDate": {
-              "value": "False",
-              "type": "Boolean"
-            }
-          }
-        },
-        "linkedServiceName": {
-          "referenceName": "nuudwsqldb01",
-          "type": "LinkedServiceReference"
-        }
-      }
-    ],
-    "parameters": {
-      "JobIsIncremental": {
-        "type": "Bool",
-        "defaultValue": "true",
-        "identity": "JobIsIncremental"
-      },
-      "WriteBatchSize": {
-        "type": "Int",
-        "defaultValue": 10000,
-        "identity": "WriteBatchSize"
-      }
-    },
-    "folder": {
-      "name": "0.1_Extracts"
-    }
-  }
+	"name": "EXT_1_Nuudl_NetCracker_qssnrmlquote",
+	"properties": {
+		"activities": [
+			{
+				"name": "Update_Meta_Tables",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[UpdateSourceTables]",
+					"storedProcedureParameters": {
+						"SourceConnectionName": {
+							"value": "Nuudl_NetCracker",
+							"type": "String"
+						},
+						"SourceConnectionType": {
+							"value": "AzureDatabricksDeltaLake",
+							"type": "String"
+						},
+						"SourceSchemaName": {
+							"value": "dai.netcracker",
+							"type": "String"
+						},
+						"SourceObjectName": {
+							"value": "qssnrmlquote",
+							"type": "String"
+						},
+						"DestinationSchemaName": {
+							"value": "sourceNuudlNetCracker",
+							"type": "String"
+						},
+						"WatermarkColumnName": {
+							"value": "NUUDL_CuratedBatchID",
+							"type": "String"
+						},
+						"WatermarkIsDate": {
+							"value": "False",
+							"type": "Boolean"
+						},
+						"WatermarkRollingWindowDays": {
+							"value": "0",
+							"type": "Int32"
+						},
+						"WatermarkInQuery": {
+							"value": "",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Lookup_Last_Value_Loaded",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Update_Meta_Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlSource",
+						"sqlReaderStoredProcedureName": "[nuuMeta].[GetLastValueLoaded]",
+						"storedProcedureParameters": {
+							"SourceConnectionName": {
+								"type": "String",
+								"value": "Nuudl_NetCracker"
+							},
+							"SourceSchemaName": {
+								"type": "String",
+								"value": "dai.netcracker"
+							},
+							"SourceTableName": {
+								"type": "String",
+								"value": "qssnrmlquote"
+							},
+							"JobIsIncremental": {
+								"type": "Boolean",
+								"value": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								}
+							},
+							"ConnectionType": {
+								"type": "String",
+								"value": "AzureDatabricksDeltaLake"
+							},
+							"WatermarkIsDate": {
+								"type": "Boolean",
+								"value": "False"
+							}
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "nuudwsqldb01_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "nuuMeta.SourceObjects"
+						}
+					}
+				}
+			},
+			{
+				"name": "Lookup_Source_Schema_Name",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Lookup_Last_Value_Loaded",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlSource",
+						"sqlReaderStoredProcedureName": "[nuuMeta].[GetSourceSchemaName]",
+						"storedProcedureParameters": {
+							"SourceConnectionName": {
+								"type": "String",
+								"value": "Nuudl_NetCracker"
+							},
+							"SourceSchemaName": {
+								"type": "String",
+								"value": "dai.netcracker"
+							},
+							"SourceTableName": {
+								"type": "String",
+								"value": "qssnrmlquote"
+							}
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "nuudwsqldb01_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "nuuMeta.SourceObjects"
+						}
+					}
+				}
+			},
+			{
+				"name": "Copy_qssnrmlquote",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Lookup_Source_Schema_Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureDatabricksDeltaLakeSource",
+						"query": {
+							"value": "SELECT \n`approval_level` \n,`assign_to` \n,`brand_id` \n,`business_action` \n,`cancellation_reason` \n,`customer_category_id` \n,`customer_committed_date` \n,`customer_id` \n,`customer_requested_date` \n,`delivery_method` \n,`distribution_channel_id` \n,`expiration_date` \n,`extended_parameters_json_activityTime` \n,`extended_parameters_json_loanRequestStatus` \n,`extended_parameters_json_creditCheckExpirationDate` \n,`extended_parameters_json_documentLastDigits` \n,`extended_parameters_json_authDateTime` \n,`extended_parameters_json_portalQuoteReviewConfirmed` \n,`extended_parameters_json_loanTerm` \n,`extended_parameters_json_agreementId` \n,`extended_parameters_json_cardType` \n,`extended_parameters_json_stockName` \n--,`extended_parameters_json_mpNumber` \n,`extended_parameters_json_customerFirstName` \n--,`extended_parameters_json_PAYMENT_STATUS` \n,`extended_parameters_json_cardExpiryDate` \n,`extended_parameters_json_creditCheckDetails` \n,`extended_parameters_json_documentType` \n,`extended_parameters_json_portalPersonalInformationIsConfirmed` \n,`extended_parameters_json_contactForAbandoned` \n,`extended_parameters_json_currentStockId` \n,`extended_parameters_json_extPaymentId` \n,`extended_parameters_json_reservationExpirationDate` \n--,`extended_parameters_json_flowId` \n,`extended_parameters_json_formId` \n,`extended_parameters_json_marketId` \n,`extended_parameters_json_ApplicationGuid` \n,`extended_parameters_json_isLoanAvailable` \n--,`extended_parameters_json_marketingConsent` \n,`extended_parameters_json_paymentSubscriptionId` \n,`extended_parameters_json_creditCheckStatus` \n,`extended_parameters_json_loanApplicationId` \n,`extended_parameters_json_portalFinancingOptionsConfirmed` \n,`extended_parameters_json_autoPaymentFlag` \n--,`extended_parameters_json_loanApplicationGuid` \n,`extended_parameters_json_partnerId` \n,`extended_parameters_json_flow_id` \n,`extended_parameters_json_cardNumber` \n,`extended_parameters_json_initialTotalLoanAmount` \n,`extended_parameters_json_creditCheckRequired` \n,`extended_parameters_json_loanRequestNotAvailable` \n,`extended_parameters_json_creditCheckDate` \n,`extended_parameters_json_mobilePhoneNumber` \n,`extended_parameters_json_customerAccountNumber` \n--,`extended_parameters_json_paymentProvider` \n--,`extended_parameters_json_disruptionConsent` \n--,`extended_parameters_json_portalExpressBankLoanApproved` \n,`extended_parameters_json_stockAddress` \n--,`extended_parameters_json_requestStatus` \n,`extended_parameters_json_hardReservationState` \n,`extended_parameters_json_portalDeliveryIsConfirmed` \n,`extended_parameters_json_infoId` \n,`external_id` \n,`id` \n,`initial_distribution_channel_id` \n,`name` \n,`new_msa` \n,`number` \n,`opportunity_id` \n,`override_mode` \n,`owner` \n,`price_list_id` \n,`quote_creation_date` \n,`revision` \n,`state` \n,`updated_when` \n,`version` \n,`is_deleted` \n,`last_modified_ts` \n,`is_current` \n,`NUUDL_ValidFrom` \n,`NUUDL_ValidTo` \n,`NUUDL_IsCurrent` \n,`NUUDL_ID` \n,`NUUDL_CuratedBatchID` \n \nFROM dai.netcracker.`qssnrmlquote`\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "AzureDatabricksDeltaLakeExportCommand"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						},
+						"preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[qssnrmlquote]"
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "datalakest01exploration",
+							"type": "LinkedServiceReference"
+						},
+						"path": "adfstage"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Nuudl_NetCracker_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "dai.netcracker.qssnrmlquote"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "nuudwsqldb01_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "[sourceNuudlNetCracker].[qssnrmlquote]"
+						}
+					}
+				]
+			},
+			{
+				"name": "Merge_To_History",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy_qssnrmlquote",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
+					"storedProcedureParameters": {
+						"ExtractTable": {
+							"value": "sourceNuudlNetCracker.qssnrmlquote",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Set_Last_Value_Loaded",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Merge_To_History",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[SetLastLoadedValue]",
+					"storedProcedureParameters": {
+						"SourceConnectionName": {
+							"value": "Nuudl_NetCracker",
+							"type": "String"
+						},
+						"SourceSchemaName": {
+							"value": "dai.netcracker",
+							"type": "String"
+						},
+						"SourceTableName": {
+							"value": "qssnrmlquote",
+							"type": "String"
+						},
+						"WatermarkIsDate": {
+							"value": "False",
+							"type": "Boolean"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"JobIsIncremental": {
+				"type": "Bool",
+				"defaultValue": true
+			},
+			"WriteBatchSize": {
+				"type": "Int",
+				"defaultValue": 10000
+			}
+		},
+		"folder": {
+			"name": "0.1_Extracts"
+		},
+		"annotations": []
+	}
 }
