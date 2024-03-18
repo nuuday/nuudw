@@ -5,7 +5,14 @@
 			{
 				"name": "DIM_0_BillingAccount",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -21,7 +28,14 @@
 			{
 				"name": "DIM_0_Address",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -37,7 +51,14 @@
 			{
 				"name": "DIM_0_Customer",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -53,7 +74,14 @@
 			{
 				"name": "DIM_0_HouseHold",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -69,7 +97,14 @@
 			{
 				"name": "DIM_0_PhoneDetail",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -85,7 +120,14 @@
 			{
 				"name": "DIM_0_OrderEvent",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -101,7 +143,14 @@
 			{
 				"name": "DIM_0_Product",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -117,7 +166,14 @@
 			{
 				"name": "DIM_0_Quote",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -133,7 +189,14 @@
 			{
 				"name": "DIM_0_SalesChannel",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -149,7 +212,14 @@
 			{
 				"name": "DIM_0_Subscription",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -234,6 +304,22 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "PRX_0_Master",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EXT_0_Nuudl_NetCracker",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_0_Nuudl_NetCracker",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
