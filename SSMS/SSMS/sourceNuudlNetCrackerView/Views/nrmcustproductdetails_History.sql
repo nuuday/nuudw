@@ -1,4 +1,5 @@
 ﻿
+
 CREATE VIEW [sourceNuudlNetCrackerView].[nrmcustproductdetails_History]
 AS
 SELECT 
@@ -6,6 +7,8 @@ SELECT
 	[product_seq] ,
 	[start_dat] ,
 	[end_dat] ,
+	CAST([start_dat] AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime) [start_dat_CET],
+	CAST([end_dat] AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime) [end_dat_CET],
 	[account_num] ,
 	[budget_centre_seq] ,
 	[product_label] ,

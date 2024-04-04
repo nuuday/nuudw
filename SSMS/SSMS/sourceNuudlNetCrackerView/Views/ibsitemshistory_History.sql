@@ -1,4 +1,5 @@
 ﻿
+
 CREATE VIEW [sourceNuudlNetCrackerView].[ibsitemshistory_History]
 AS
 SELECT 
@@ -7,15 +8,17 @@ SELECT
 	[schema_version] ,
 	[active_from] ,
 	[active_to] ,
+	CAST(active_from AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime) [active_from_CET],
+	CAST([active_to] AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime) [active_to_CET],
 	[is_snapshot] ,
 	[state] ,
 	[idempotency_key] ,
 	[is_deleted] ,
 	[last_modified_ts] ,
-	[is_current] ,
 	[item_json_appliedBusinessBarringId] ,
-	[item_json_appliedByBusinessRuleId] ,
+	[is_current] ,
 	[NUUDL_ValidTo] ,
+	[item_json_appliedByBusinessRuleId] ,
 	[NUUDL_ValidFrom] ,
 	[NUUDL_IsCurrent] ,
 	[item_json_creationDate] ,
