@@ -1,5 +1,5 @@
 {
-	"name": "FACT_0_ActiveCustomers",
+	"name": "FACT_0_OrderEvents",
 	"properties": {
 		"activities": [
 			{
@@ -12,7 +12,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "FACT_1_ActiveCustomers_Transform",
+						"referenceName": "FACT_1_OrderEvents_Transform",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -41,7 +41,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "FACT_1_ActiveCustomers_Load",
+						"referenceName": "FACT_1_OrderEvents_Load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,

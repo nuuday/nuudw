@@ -3,7 +3,7 @@ AS
 SELECT 
 	[TimeID]
 	,[TimeKey]
-	,[TimeDayPart]
-	,[TimeHourFromTo]
 	,[TimeNotation] 
+	,TimeHour
+	,TimeMinute
 FROM dim.Time

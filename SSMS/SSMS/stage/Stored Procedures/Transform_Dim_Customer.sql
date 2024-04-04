@@ -8,7 +8,7 @@ TRUNCATE TABLE [stage].[Dim_Customer]
 INSERT INTO stage.[Dim_Customer] WITH (TABLOCK) ( [CustomerKey],[CustomerName], [CustomerSegment], [CustomerStatus],[PartyRoleType], [DWCreatedDate] )
 
 
-SELECT 
+SELECT DISTINCT
 	CONVERT( NVARCHAR(12), customer.[customer_number] ) AS CustomerKey,
 	CONVERT( NVARCHAR(250), ISNULL( NULLIF( customer.[name], '' ), '?' ) ) AS CustomerName,
 	CONVERT( NVARCHAR(50), ISNULL( NULLIF( customer_category.[name], '' ), '?' ) ) AS CustomerSegment,
