@@ -139,7 +139,6 @@
     <Build Include="meta\Functions\RemoveNonASCII.sql" />
     <Build Include="meta\Functions\GetVariableValue.sql" />
     <Build Include="meta\Functions\SplitString.sql" />
-    <Build Include="meta\Stored Procedures\CreateTimeDimension.sql" />
     <Build Include="meta\Stored Procedures\CreateCalendarDimension.sql" />
     <Build Include="meta\Stored Procedures\PreDeploymentCleanup.sql" />
     <Build Include="meta\Stored Procedures\ViewTableProperties.sql" />
