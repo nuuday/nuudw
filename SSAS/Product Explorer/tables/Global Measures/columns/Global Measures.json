@@ -1,9 +1,0 @@
-{
-  "type": "calculatedTableColumn",
-  "name": "Global Measures",
-  "dataType": "string",
-  "isNameInferred": true,
-  "isDataTypeInferred": true,
-  "isHidden": true,
-  "sourceColumn": "[Global Measures]"
-}

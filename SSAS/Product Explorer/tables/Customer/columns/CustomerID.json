@@ -1,6 +1,0 @@
-{
-  "name": "CustomerID",
-  "dataType": "int64",
-  "isHidden": true,
-  "sourceColumn": "CustomerID"
-}

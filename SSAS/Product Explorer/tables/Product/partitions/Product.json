@@ -1,9 +1,0 @@
-{
-  "name": "Product",
-  "mode": "import",
-  "source": {
-    "type": "query",
-    "query": "SELECT * FROM [dimView].[Product]",
-    "dataSource": "nuudwsqldb01"
-  }
-}

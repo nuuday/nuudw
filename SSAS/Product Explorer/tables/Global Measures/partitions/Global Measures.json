@@ -1,8 +1,0 @@
-{
-  "name": "Global Measures",
-  "mode": "import",
-  "source": {
-    "type": "calculated",
-    "expression": "DATATABLE ( \"Global Measures\", STRING, {{ \"\"} })"
-  }
-}
