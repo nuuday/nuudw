@@ -1,11 +1,9 @@
 ﻿
 
+
 CREATE VIEW [cubeView_PRX].[DimTime]
 AS
 SELECT 
 	[TimeID],
-	[TimeKey],
-	[TimeNotation],
-	TimeHour,
-	TimeMinute
+	[TimeKey]
 FROM [dimView].[Time]

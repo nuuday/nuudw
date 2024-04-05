@@ -3,7 +3,4 @@ AS
 SELECT 
 	[TimeID]
 	,[TimeKey]
-	,[TimeNotation] 
-	,TimeHour
-	,TimeMinute
 FROM dim.Time
