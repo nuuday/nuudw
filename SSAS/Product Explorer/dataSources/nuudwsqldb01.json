@@ -1,7 +1,0 @@
-{
-  "name": "nuudwsqldb01",
-  "connectionString": "Data Source=nuudw-sql01-dev.database.windows.net,1433;Initial Catalog=nuudwsqldb01;Persist Security Info=True;User ID=NuuDWAdminDev",
-  "impersonationMode": "impersonateServiceAccount",
-  "account": "NuuDWAdminDev",
-  "provider": "System.Data.SqlClient"
-}

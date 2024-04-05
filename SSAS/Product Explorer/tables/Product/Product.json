@@ -1,9 +1,0 @@
-{
-  "name": "Product",
-  "annotations": [
-    {
-      "name": "TabularEditor_Relationships",
-      "value": "[]"
-    }
-  ]
-}
