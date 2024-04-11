@@ -49,7 +49,8 @@ SELECT DISTINCT
 	CASE WHEN item_json_parentId IS NULL THEN 1 ELSE 0 END IsTLO,
 	i.item_json_customerId AS customer_id,
 	i.active_from_CET,
-	CAST(i.item_json_expirationDate as datetime2(0)) AS expiration_date
+	CAST(i.item_json_expirationDate as datetime2(0)) AS expiration_date,
+	SUBSTRING(tec.value_json__corrupt_record,3,LEN(tec.value_json__corrupt_record)-4) TechnologyKey
 INTO #all_lines
 FROM [sourceNuudlNetCrackerView].[ibsitemshistory_History] i
 LEFT JOIN dim.OrderEvent ev 
@@ -70,11 +71,14 @@ LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] po
 	ON po.id = i.item_json_offeringId
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductfamily_History] pf
 	ON pf.id = po.product_family_id
+LEFT JOIN sourceNuudlNetCrackerView.ibsnrmlcharacteristic_History tec
+	ON tec.product_instance_id = i.id AND tec.name = 'Technology'
 WHERE 1=1
 	-- Compensate for duplicate rows
 	AND CASE WHEN i.state = 'COMPLETED' THEN item_json_accountRef_json_refId ELSE '' END IS NOT NULL 
 	--we are excluding those subscriptions because of data issues due to testing activities in production
 	AND i.id NOT IN ('b5beb355-0379-41f2-aaad-47297c9548cb', '39476242-7ab7-467e-b88a-b3968a8cb7e9') 
+
 
 
 -- Fetch second part
@@ -207,6 +211,7 @@ SELECT DISTINCT
 	al.PhoneDetailKey,
 	al.AddressBillingKey,
 	al.HouseHoldKey,
+	al.TechnologyKey,
 	al.IsTLO,
 	al.active_from_CET
 INTO #rgu_lines
@@ -246,6 +251,7 @@ SELECT
 	al.PhoneDetailKey,
 	al.AddressBillingKey,
 	al.HouseHoldKey,
+	al.TechnologyKey,
 	tlo.IsTLO,
 	al.active_from_CET
 INTO #commitment_lines
@@ -319,6 +325,7 @@ SELECT
 	s.PhoneDetailKey,
 	s.AddressBillingKey,
 	s.HouseHoldKey,
+	s.TechnologyKey,
 	s.IsTLO,
 	s.active_from_CET
 INTO #migration_lines
@@ -356,6 +363,7 @@ SELECT
 	s.PhoneDetailKey,
 	s.AddressBillingKey,
 	s.HouseHoldKey,
+	s.TechnologyKey,
 	s.IsTLO,
 	s.active_from_CET
 INTO #change_lines
@@ -387,6 +395,7 @@ SELECT
 	s.PhoneDetailKey,
 	s.AddressBillingKey,
 	s.HouseHoldKey,
+	s.TechnologyKey,
 	s.IsTLO,
 	s.active_from_CET
 INTO #disconnect_lines_from_migrations
@@ -422,6 +431,7 @@ SELECT
 	s.PhoneDetailKey,
 	s.AddressBillingKey,
 	s.HouseHoldKey,
+	s.TechnologyKey,
 	s.IsTLO,
 	s.active_from_CET,
 	1 AS NewSubscription
@@ -457,6 +467,7 @@ SELECT
 	s.PhoneDetailKey,
 	s.AddressBillingKey,
 	s.HouseHoldKey,
+	s.TechnologyKey,
 	s.IsTLO,
 	s.active_from_CET
 INTO #planned_lines_from_product_type_change
@@ -481,7 +492,7 @@ INTO #result
 FROM (
 
 	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
-		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, IsTLO, 1 Quantity
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, IsTLO, 1 Quantity
 		,active_from_CET
 	FROM #all_lines_filtered_2
 	WHERE OrderEventKey IS NOT NULL
@@ -489,49 +500,49 @@ FROM (
 	UNION ALL
 
 	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
-		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, IsTLO, 1 Quantity 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #migration_lines
 	
 	UNION ALL
 
 	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
-		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, IsTLO, 1 Quantity 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #disconnect_lines_from_migrations
 
 	UNION ALL
 
 	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
-		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, IsTLO, 1 Quantity 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #disconnect_lines_from_product_type_change
 
 	UNION ALL
 
 	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
-		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, IsTLO, 1 Quantity 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #planned_lines_from_product_type_change
 	
 	UNION ALL
 
 	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
-		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, IsTLO, 1 Quantity 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #change_lines
 	
 	UNION ALL
 
 	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
-		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, IsTLO, 1 Quantity 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #commitment_lines
 	
 	UNION ALL
 
 	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
-		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, IsTLO, 1 Quantity 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #rgu_lines
 
@@ -581,11 +592,11 @@ WHERE 1=1
 
 
 /*
---SELECT *
---FROM #all_lines
---WHERE SubscriptionKey = '1ed59543-b526-4e7f-a069-5e5c03fd95d4'
---	AND IsTLO=1
---ORDER By 2, 3, IsTlo DESC
+SELECT *
+FROM #all_lines
+WHERE SubscriptionKey = '1ed59543-b526-4e7f-a069-5e5c03fd95d4'
+	AND IsTLO=1
+ORDER By 2, 3, IsTlo DESC
 
 --SELECT *
 --FROM #all_lines_filtered
@@ -608,7 +619,7 @@ ORDER By SubscriptionGroup, 1, 2, IsTlo DESC, OrderEventKey
 TRUNCATE TABLE [stage].[Fact_OrderEvents]
 
 INSERT INTO [stage].[Fact_OrderEvents] ([CalendarKey], [TimeKey], [ProductKey], [ProductParentKey], [CustomerKey], [SubscriptionKey], [QuoteKey], [OrderEventKey], [SalesChannelKey], [BillingAccountKey], 
-	[PhoneDetailKey], [AddressBillingKey], [HouseHoldKey], [IsTLO], [Quantity])
+	[PhoneDetailKey], [AddressBillingKey], [HouseHoldKey], TechnologyKey, [IsTLO], [Quantity])
 SELECT
 	CalendarKey,
 	TimeKey,
@@ -623,6 +634,7 @@ SELECT
 	PhoneDetailKey,
 	AddressBillingKey,
 	HouseHoldKey,
+	TechnologyKey,
 	IsTLO,
 	Quantity
 FROM #result

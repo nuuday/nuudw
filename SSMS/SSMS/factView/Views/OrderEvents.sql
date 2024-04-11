@@ -14,6 +14,7 @@ SELECT
 	,[PhoneDetailID]
 	,[AddressBillingID]
 	,[HouseHoldID]
+	,[TechnologyID]
 	,[IsTLO]
 	,[Quantity]
 	,[NetAmount]
