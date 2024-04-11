@@ -295,6 +295,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "DIM_0_Technology",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -320,6 +326,29 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "EXT_0_Nuudl_NetCracker",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DIM_0_Technology",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DIM_0_Technology",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
