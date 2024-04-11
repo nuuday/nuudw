@@ -546,6 +546,12 @@
     <Build Include="cubeView_PRX\Views\DimOrderEvent.sql" />
     <Build Include="stage\Stored Procedures\Transform_Fact_OrderEvents.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_OrderEvent.sql" />
+    <Build Include="stage\Tables\Dim_Technology.sql" />
+    <Build Include="dim\Tables\Technology.sql" />
+    <Build Include="dimView\Views\Technology.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_Technology.sql" />
+    <Build Include="martView_PRX\Views\DimTechnology.sql" />
+    <Build Include="cubeView_PRX\Views\DimTechnology.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
