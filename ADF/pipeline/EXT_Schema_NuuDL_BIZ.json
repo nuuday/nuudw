@@ -54,7 +54,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlSource",
-						"sqlReaderQuery": "SELECT [SourceObjectID]\n,NUUDLJobCode\n FROM [nuuMetaView].[SourceObjectDefinitions]\n WHERE SourceConnectionName = 'NuuDL_BIZ'",
+						"sqlReaderQuery": "SELECT \n    SourceCatalogName,\n    SourceSchemaName,\n    SourceTableName,  \n    [SourceObjectID]\n FROM [nuuMetaView].[SourceObjectDefinitions]\n WHERE SourceConnectionName = 'NuuDL_BIZ'",
 						"partitionOption": "None"
 					},
 					"dataset": {
