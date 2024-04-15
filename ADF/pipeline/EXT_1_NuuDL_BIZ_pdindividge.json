@@ -1,5 +1,5 @@
 {
-  "name": "EXT_1_NuuDL_BIZ_RefV_WS.PD_INDIVID_GE",
+  "name": "EXT_1_NuuDL_BIZ_pdindividge",
   "properties": {
     "activities": [
       {
@@ -22,11 +22,11 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "biz",
+              "value": "dai.ref",
               "type": "String"
             },
             "SourceObjectName": {
-              "value": "RefV_WS.PD_INDIVID_GE",
+              "value": "pdindividge",
               "type": "String"
             },
             "DestinationSchemaName": {
@@ -82,11 +82,11 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "biz",
+                "value": "dai.ref",
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "RefV_WS.PD_INDIVID_GE",
+                "value": "pdindividge",
                 "type": "String"
               },
               "JobIsIncremental": {
@@ -138,11 +138,11 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "biz",
+                "value": "dai.ref",
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "RefV_WS.PD_INDIVID_GE",
+                "value": "pdindividge",
                 "type": "String"
               }
             }
@@ -157,7 +157,7 @@
         }
       },
       {
-        "name": "Copy_RefV_WS.PD_INDIVID_GE",
+        "name": "Copy_pdindividge",
         "type": "Copy",
         "dependsOn": [
           {
@@ -186,7 +186,7 @@
           "sink": {
             "type": "AzureSqlSink",
             "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [sourceNuudlBIZ].[RefV_WS.PD_INDIVID_GE]"
+            "preCopyScript": "TRUNCATE TABLE [sourceNuudlBIZ].[pdindividge]"
           },
           "enableStaging": true,
           "stagingSettings": {
@@ -202,7 +202,7 @@
             "referenceName": "NuuDL_BIZ_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "biz.RefV_WS.PD_INDIVID_GE"
+              "TableName": "dai.ref.pdindividge"
             }
           }
         ],
@@ -211,7 +211,7 @@
             "referenceName": "nuudwsqldb01_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "[sourceNuudlBIZ].[RefV_WS.PD_INDIVID_GE]"
+              "TableName": "[sourceNuudlBIZ].[pdindividge]"
             }
           }
         ]
@@ -221,7 +221,7 @@
         "type": "SqlServerStoredProcedure",
         "dependsOn": [
           {
-            "activity": "Copy_RefV_WS.PD_INDIVID_GE",
+            "activity": "Copy_pdindividge",
             "dependencyConditions": [
               "Succeeded"
             ]
@@ -236,7 +236,7 @@
           "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
           "storedProcedureParameters": {
             "ExtractTable": {
-              "value": "sourceNuudlBIZ.RefV_WS.PD_INDIVID_GE",
+              "value": "sourceNuudlBIZ.pdindividge",
               "type": "String"
             }
           }
@@ -270,11 +270,11 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "biz",
+              "value": "dai.ref",
               "type": "String"
             },
             "SourceTableName": {
-              "value": "RefV_WS.PD_INDIVID_GE",
+              "value": "pdindividge",
               "type": "String"
             },
             "WatermarkIsDate": {

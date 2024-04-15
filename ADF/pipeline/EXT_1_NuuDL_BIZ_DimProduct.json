@@ -1,5 +1,5 @@
 {
-  "name": "EXT_1_NuuDL_BIZ_DimProduct",
+  "name": "EXT_1_NuuDL_BIZ_dimproduct",
   "properties": {
     "activities": [
       {
@@ -26,7 +26,7 @@
               "type": "String"
             },
             "SourceObjectName": {
-              "value": "DimProduct",
+              "value": "dimproduct",
               "type": "String"
             },
             "DestinationSchemaName": {
@@ -86,7 +86,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "DimProduct",
+                "value": "dimproduct",
                 "type": "String"
               },
               "JobIsIncremental": {
@@ -142,7 +142,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "DimProduct",
+                "value": "dimproduct",
                 "type": "String"
               }
             }
@@ -157,7 +157,7 @@
         }
       },
       {
-        "name": "Copy_DimProduct",
+        "name": "Copy_dimproduct",
         "type": "Copy",
         "dependsOn": [
           {
@@ -186,7 +186,7 @@
           "sink": {
             "type": "AzureSqlSink",
             "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [sourceNuudlBIZ].[DimProduct]"
+            "preCopyScript": "TRUNCATE TABLE [sourceNuudlBIZ].[dimproduct]"
           },
           "enableStaging": true,
           "stagingSettings": {
@@ -202,7 +202,7 @@
             "referenceName": "NuuDL_BIZ_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "biz.DimProduct"
+              "TableName": "biz.dimproduct"
             }
           }
         ],
@@ -211,7 +211,7 @@
             "referenceName": "nuudwsqldb01_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "[sourceNuudlBIZ].[DimProduct]"
+              "TableName": "[sourceNuudlBIZ].[dimproduct]"
             }
           }
         ]
@@ -221,7 +221,7 @@
         "type": "SqlServerStoredProcedure",
         "dependsOn": [
           {
-            "activity": "Copy_DimProduct",
+            "activity": "Copy_dimproduct",
             "dependencyConditions": [
               "Succeeded"
             ]
@@ -236,7 +236,7 @@
           "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
           "storedProcedureParameters": {
             "ExtractTable": {
-              "value": "sourceNuudlBIZ.DimProduct",
+              "value": "sourceNuudlBIZ.dimproduct",
               "type": "String"
             }
           }
@@ -274,7 +274,7 @@
               "type": "String"
             },
             "SourceTableName": {
-              "value": "DimProduct",
+              "value": "dimproduct",
               "type": "String"
             },
             "WatermarkIsDate": {
