@@ -96,7 +96,7 @@
                                 "source": {
                                     "type": "SqlSource",
                                     "sqlReaderQuery": {
-                                        "value": "SELECT\n[SourceSystemTypeName]\n,[TableCatalogName]\n,SchemaName\n,[TableName]\n,[ColumnName]\n,[OrdinalPositionNumber]\n,[DataTypeName]\n,[MaximumLenghtNumber]\n,[NumericPrecisionNumber]\n,[NumericScaleNumber]\n,[KeySequenceNumber]\n,'@{item().SourceObjectID}' AS SourceObjectID\nFROM [nuudataload].[v_Schema]\nWHERE NUUDLJobCode = '@{item().NUUDLJobCode}'\n",
+                                        "value": "SELECT\n[SourceSystemTypeName]\n, UC_Catalog AS [TableCatalogName]\n, UC_Schema AS SchemaName\n, UC_TableName AS [TableName]\n,[ColumnName]\n,[OrdinalPositionNumber]\n,[DataTypeName]\n,[MaximumLenghtNumber]\n,[NumericPrecisionNumber]\n,[NumericScaleNumber]\n,[KeySequenceNumber]\n,'@{item().SourceObjectID}' AS SourceObjectID\nFROM [nuudataload].[v_Schema]\nWHERE NUUDLJobCode = '@{item().NUUDLJobCode}'\n",
                                         "type": "Expression"
                                     }
                                 },
