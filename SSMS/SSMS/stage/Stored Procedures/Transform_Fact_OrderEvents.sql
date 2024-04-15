@@ -251,7 +251,7 @@ SELECT
 	al.PhoneDetailKey,
 	al.AddressBillingKey,
 	al.HouseHoldKey,
-	al.TechnologyKey,
+	tlo.TechnologyKey,
 	tlo.IsTLO,
 	al.active_from_CET
 INTO #commitment_lines
@@ -262,7 +262,7 @@ CROSS APPLY (
 	WHERE OrderEventName = 'Offer Commitment End'
 ) e
 CROSS APPLY (
-	SELECT TOP 1 ProductKey, ProductParentKey, ProductName, ProductType, IsTLO
+	SELECT TOP 1 ProductKey, ProductParentKey, ProductName, ProductType, TechnologyKey, IsTLO
 	FROM #all_lines_filtered
 	WHERE SubscriptionKey = al.SubscriptionKey 
 		AND active_from_CET <= al.active_from_CET
@@ -281,8 +281,7 @@ WHERE 1=1
 			AND OrderEventName = 'Offer Disconnected'
 			AND active_from_CET >= al.active_from_CET
 		)
---	AND al.SubscriptionKey = 'cdbb8da4-74de-4aa5-8d36-3b0153907378'
-
+	--AND al.SubscriptionKey = '2e3e5b05-c86a-4e47-a731-eea2cab36dcf'
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Add events do to change in product type and product
@@ -583,12 +582,11 @@ WHERE 1=1
 		FROM #result 
 		WHERE SubscriptionKey = ra.SubscriptionKey 
 			AND SubscriptionGroup = ra.SubscriptionGroup
-			AND OrderEventName = ra.OrderEventName
+			AND ( OrderEventName = REPLACE(ra.OrderEventName,'Disconnected','Activated') )
 			AND IsTLO = ra.IsTLO
 			AND active_from_CET > ra.active_from_CET
 	)
---	AND ra.SubscriptionKey = 'b5f00442-6c45-4c82-93fe-b5394ee207ee'
-
+	--AND ra.SubscriptionKey = '2e3e5b05-c86a-4e47-a731-eea2cab36dcf'
 
 
 /*
@@ -606,7 +604,16 @@ ORDER By 2, 3, IsTlo DESC
 
 SELECT  *
 FROM #result
-WHERE SubscriptionKey = '54f8fed8-a117-4104-b02d-eabf3c40a0b9'
+WHERE SubscriptionKey = '2e3e5b05-c86a-4e47-a731-eea2cab36dcf'
+	AND IsTLO=1
+--	AND OrderEventName IN ('Offer Disconnected')
+ORDER By SubscriptionGroup, 1, 2, IsTlo DESC, OrderEventKey
+
+
+
+SELECT  *
+FROM #result
+WHERE phonedetailkey = '4551152144'
 	AND IsTLO=1
 --	AND OrderEventName IN ('Offer Disconnected')
 ORDER By SubscriptionGroup, 1, 2, IsTlo DESC, OrderEventKey
