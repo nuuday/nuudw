@@ -119,7 +119,7 @@
               },
               "inputs": [
                 {
-                  "referenceName": "ingestsqldb01_DynamicDataset",
+                  "referenceName": "NuuDL_UnityCatalog_DynamicDataset",
                   "type": "DatasetReference",
                   "parameters": {
                     "TableName": "INFORMATION_SCHEMA.COLUMNS"
