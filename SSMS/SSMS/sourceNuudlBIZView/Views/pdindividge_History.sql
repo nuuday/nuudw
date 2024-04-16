@@ -1,4 +1,5 @@
 ﻿
+
 CREATE VIEW [sourceNuudlBIZView].[pdindividge_History]
 AS
 SELECT 
@@ -75,4 +76,4 @@ SELECT
 	,[DWIsDeletedInSource]
 	,[DWDeletedInSourceDate]
 FROM [sourceNuudlBIZ].[pdindividge_History]
-WHERE DWIsCurrent = 1
+WHERE DWIsCurrent = 1 AND [NUUDL_IsCurrent] = 1
