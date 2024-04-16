@@ -11,6 +11,7 @@ SELECT
 	con.SourceConnectionName,
 	con.SourceConnectionType,
 	con.Environment,
+	obj.SourceCatalogName,
 	obj.SourceSchemaName,
 	obj.SourceObjectName,
 	obj.ExtractSQLFilter,
