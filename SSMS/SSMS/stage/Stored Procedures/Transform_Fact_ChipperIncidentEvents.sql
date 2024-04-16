@@ -133,7 +133,7 @@ INNER JOIN sourceNuuDataChipperView.[ChipperTicketsTickets_History] c
 
 
 
-LEFT JOIN SourceNuudlBIZView.[DimProduct_History] p
+LEFT JOIN SourceNuudlBIZView.[DimDimProduct_History] p
 	ON p.ProductID = ifp.Product
 		AND p.DWIsCurrent = 1
 
