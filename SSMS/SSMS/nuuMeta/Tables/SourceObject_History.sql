@@ -1,6 +1,7 @@
 ﻿CREATE TABLE [nuuMeta].[SourceObject_History] (
     [ID]                         INT            NOT NULL,
     [SourceConnectionName]       NVARCHAR (250) NOT NULL,
+    [SourceCatalogName]          NVARCHAR (200) NULL,
     [SourceSchemaName]           NVARCHAR (200) NOT NULL,
     [SourceObjectName]           NVARCHAR (200) NOT NULL,
     [ExtractPattern]             NVARCHAR (100) NOT NULL,
@@ -19,4 +20,6 @@
     [ValidFrom]                  DATETIME2 (7)  NOT NULL,
     [ValidTo]                    DATETIME2 (7)  NOT NULL
 );
+
+
 

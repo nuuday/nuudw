@@ -2,6 +2,7 @@
 
 
 
+
 CREATE VIEW [nuuMetaView].[SourceInformationSchemaDefinitions] AS
 
 
@@ -15,55 +16,66 @@ WITH ExtractSchema AS
 			eis.TableName,
 			eis.ColumnName,
 			eis.OrdinalPositionNumber,
-			IIF( con.IsFileObject = 1,
-				CASE eis.DataTypeName
-					WHEN 'STRING' THEN 'nvarchar'
-					WHEN 'SINGLE' THEN 'decimal'
-					WHEN 'INT16' THEN 'smallint'
-					WHEN 'INT32' THEN 'int'
-					WHEN 'INT64' THEN 'bigint'
-					WHEN 'BOOLEAN' THEN 'bit'
-					WHEN 'DOUBLE' THEN 'decimal'
-					WHEN 'DECIMAL' THEN 'decimal'
-					WHEN 'GUID' THEN 'uniqueidentifier'
-					WHEN 'DATETIME' THEN 'datetime'
-					WHEN 'DATETIMEOFFSET' THEN 'datetimeoffset'
-					WHEN 'TIMESPAN' THEN 'bigint'
-					WHEN 'BYTE[]' THEN 'varbinary'
-					ELSE 'nvarchar'
-				END,
-				CASE
-					WHEN eis.DataTypeName = 'VARCHAR' THEN 'NVARCHAR'
-					WHEN eis.DataTypeName = 'CHAR' THEN 'NVARCHAR'
-					WHEN eis.DataTypeName = 'NCHAR' THEN 'NVARCHAR'
-					WHEN eis.DataTypeName = 'LONG' AND eis.SourceSystemTypeName = 'Oracle' THEN 'NVARCHAR'
-					WHEN eis.DataTypeName = 'MONEY' THEN 'DECIMAL'
-					WHEN eis.DataTypeName = 'NUMBER' THEN 'DECIMAL'
-					WHEN eis.DataTypeName = 'FLOAT' THEN 'DECIMAL'
-					WHEN eis.DataTypeName = 'TIMESTMP' AND eis.SourceSystemTypeName = 'Db2' THEN 'DATETIME2'
-					WHEN eis.DataTypeName LIKE 'TIMESTAMP%' AND eis.SourceSystemTypeName = 'Oracle' THEN 'DATETIME2'
-					WHEN eis.DataTypeName = 'DATE' AND eis.SourceSystemTypeName = 'Oracle' THEN 'DATETIME2'
-					WHEN eis.DataTypeName = 'VARCHAR2' THEN 'NVARCHAR'
-					WHEN eis.DataTypeName = 'ORDIMAGE' THEN 'NVARCHAR'
-					WHEN eis.DataTypeName = 'NVARCHAR2' THEN 'NVARCHAR'
-					WHEN eis.DataTypeName = 'TIMESTAMP' THEN 'BIGINT'
-					WHEN eis.DataTypeName = 'IMAGE' THEN 'NVARCHAR'
-					WHEN eis.DataTypeName = 'CHARACTER' THEN 'VARCHAR'
-					WHEN eis.DataTypeName = 'NATIONAL CHARACTER' THEN 'VARCHAR'
-					WHEN eis.DataTypeName IN ('DEC', 'DECIMAL') AND eis.SourceSystemTypeName = 'Db2' THEN 'DECIMAL'
-					WHEN eis.DataTypeName = 'NUMERIC' THEN 'DECIMAL'
-					ELSE eis.DataTypeName
-				END
-			) AS DataTypeName,
+			CASE 
+				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'STRING' THEN 'nvarchar'
+				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'SINGLE' THEN 'decimal'
+				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'INT16' THEN 'smallint'
+				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'INT32' THEN 'int'
+				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'INT64' THEN 'bigint'
+				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'BOOLEAN' THEN 'bit'
+				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'DOUBLE' THEN 'decimal'
+				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'DECIMAL' THEN 'decimal'
+				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'GUID' THEN 'uniqueidentifier'
+				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'DATETIME' THEN 'datetime'
+				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'DATETIMEOFFSET' THEN 'datetimeoffset'
+				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'TIMESPAN' THEN 'bigint'
+				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'BYTE[]' THEN 'varbinary'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName = 'STRING' THEN 'nvarchar'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName = 'DOUBLE' THEN 'float'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName LIKE 'DECIMAL%' THEN 'decimal'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName = 'FLOAT' THEN 'float'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName = 'SHORT' THEN 'smallint'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName = 'INT' THEN 'int'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName = 'LONG' THEN 'bigint'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName = 'BOOLEAN' THEN 'bit'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName = 'DATE' THEN 'date'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName = 'TIMESTAMP' THEN 'datetime2'
+				WHEN eis.DataTypeName = 'VARCHAR' THEN 'NVARCHAR'
+				WHEN eis.DataTypeName = 'CHAR' THEN 'NVARCHAR'
+				WHEN eis.DataTypeName = 'NCHAR' THEN 'NVARCHAR'
+				WHEN eis.DataTypeName = 'LONG' AND eis.SourceSystemTypeName = 'Oracle' THEN 'NVARCHAR'
+				WHEN eis.DataTypeName = 'MONEY' THEN 'DECIMAL'
+				WHEN eis.DataTypeName = 'NUMBER' THEN 'DECIMAL'
+				WHEN eis.DataTypeName = 'FLOAT' THEN 'DECIMAL'
+				WHEN eis.DataTypeName = 'TIMESTMP' AND eis.SourceSystemTypeName = 'Db2' THEN 'DATETIME2'
+				WHEN eis.DataTypeName LIKE 'TIMESTAMP%' AND eis.SourceSystemTypeName = 'Oracle' THEN 'DATETIME2'
+				WHEN eis.DataTypeName = 'DATE' AND eis.SourceSystemTypeName = 'Oracle' THEN 'DATETIME2'
+				WHEN eis.DataTypeName = 'VARCHAR2' THEN 'NVARCHAR'
+				WHEN eis.DataTypeName = 'ORDIMAGE' THEN 'NVARCHAR'
+				WHEN eis.DataTypeName = 'NVARCHAR2' THEN 'NVARCHAR'
+				WHEN eis.DataTypeName = 'TIMESTAMP' THEN 'BIGINT'
+				WHEN eis.DataTypeName = 'IMAGE' THEN 'NVARCHAR'
+				WHEN eis.DataTypeName = 'CHARACTER' THEN 'VARCHAR'
+				WHEN eis.DataTypeName = 'NATIONAL CHARACTER' THEN 'VARCHAR'
+				WHEN eis.DataTypeName IN ('DEC', 'DECIMAL') AND eis.SourceSystemTypeName = 'Db2' THEN 'DECIMAL'
+				WHEN eis.DataTypeName = 'NUMERIC' THEN 'DECIMAL'
+				ELSE eis.DataTypeName
+			END AS DataTypeName,
 			CASE
+				WHEN eis.DataTypeName = 'STRING' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.ColumnName LIKE '%id'  THEN 36
+				WHEN eis.DataTypeName = 'STRING' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake'  THEN 300
 				WHEN eis.DataTypeName = 'LONG' AND eis.SourceSystemTypeName = 'Oracle' THEN -1
 				ELSE [eis].MaximumLenghtNumber
 			END AS MaximumLenghtNumber,
-			CASE
+			CASE				
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND DataTypeName like 'decimal%' THEN SUBSTRING(DataTypeName,CHARINDEX('(',DataTypeName )+1, CHARINDEX(',',DataTypeName )-CHARINDEX('(',DataTypeName )-1)
 				WHEN eis.DataTypeName = 'FLOAT' AND [eis].NumericPrecisionNumber > 36 THEN 36
 				ELSE [eis].NumericPrecisionNumber
 			END AS NumericPrecisionNumber,
-			[eis].NumericScaleNumber,
+			CASE				
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND DataTypeName like 'decimal%' THEN SUBSTRING(DataTypeName,CHARINDEX(',',DataTypeName )+1, CHARINDEX(')',DataTypeName )-CHARINDEX(',',DataTypeName )-1)
+				ELSE [eis].NumericScaleNumber
+			END AS NumericScaleNumber,
 			COALESCE(IIF( pk.Value IS NULL, NULL, ROW_NUMBER() OVER (PARTITION BY [eis].SourceObjectID ORDER BY pk.ordinal )), KeySequenceNumber) AS KeySequenceNumber,
 			DataTypeName AS OriginalDataTypeName
 		FROM [nuuMeta].[SourceInformationSchema] eis

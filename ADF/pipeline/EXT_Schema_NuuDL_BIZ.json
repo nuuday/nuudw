@@ -16,7 +16,7 @@
           "storedProcedureName": "[nuuMeta].[MaintainExtractCreateSchemas]",
           "storedProcedureParameters": {
             "ExtractSchemaName": {
-              "value": "SourceNuudlBIZ",
+              "value": "sourceNuudlBIZ",
               "type": "String"
             },
             "PrintSQL": {
@@ -51,7 +51,7 @@
         "typeProperties": {
           "source": {
             "type": "SqlSource",
-            "sqlReaderQuery": "SELECT [SourceObjectID]\n,NUUDLJobCode\n FROM [nuuMetaView].[SourceObjectDefinitions]\n WHERE SourceConnectionName = 'NuuDL_BIZ'"
+            "sqlReaderQuery": "SELECT \n    SourceCatalogName,\n    SourceSchemaName,\n    SourceObjectName,  \n    [SourceObjectID]\n FROM [nuuMetaView].[SourceObjectDefinitions]\n WHERE SourceConnectionName = 'NuuDL_BIZ'"
           },
           "dataset": {
             "referenceName": "nuudwsqldb01_DynamicDataset",
@@ -94,11 +94,8 @@
               },
               "typeProperties": {
                 "source": {
-                  "type": "SqlSource",
-                  "sqlReaderQuery": {
-                    "value": "SELECT\n[SourceSystemTypeName]\n,[TableCatalogName]\n,SchemaName\n,URI AS [TableName]\n,[ColumnName]\n,[OrdinalPositionNumber]\n,[DataTypeName]\n,[MaximumLenghtNumber]\n,[NumericPrecisionNumber]\n,[NumericScaleNumber]\n,[KeySequenceNumber]\n,'@{item().SourceObjectID}' AS SourceObjectID\nFROM [nuudataload].[v_Schema]\nWHERE NUUDLJobCode = '@{item().NUUDLJobCode}'\n",
-                    "type": "Expression"
-                  }
+                  "type": "AzureDatabricksDeltaLakeSource",
+                  "query": "SELECT\n    'AzureDatabricksDeltaLake' AS SourceSystemTypeName\n    , table_catalog AS TableCatalogName\n    , table_schema AS SchemaName\n    , table_name AS TableName\n    , column_name AS ColumnName\n    , ordinal_position AS OrdinalPositionNumber\n    , full_data_type AS DataTypeName\n    ,'@{item().SourceObjectID}' AS SourceObjectID\nFROM system.information_schema.columns\nWHERE table_catalog = '@{item().SourceCatalogName}'\n  AND table_schema = '@{item().SourceSchemaName}'\n  AND table_name = '@{item().SourceObjectName}'"
                 },
                 "sink": {
                   "type": "SqlSink",
@@ -108,12 +105,18 @@
                     "type": "Expression"
                   }
                 },
-                "enableStaging": false,
-                "cloudDataMovementUnits": 0
+                "enableStaging": true,
+                "stagingSettings": {
+                  "linkedServiceName": {
+                    "referenceName": "datalakest01exploration",
+                    "type": "LinkedServiceReference"
+                  },
+                  "path": "adfstage"
+                }
               },
               "inputs": [
                 {
-                  "referenceName": "ingestsqldb01_DynamicDataset",
+                  "referenceName": "NuuDL_UnityCatalog_DynamicDataset",
                   "type": "DatasetReference",
                   "parameters": {
                     "TableName": "INFORMATION_SCHEMA.COLUMNS"

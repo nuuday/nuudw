@@ -12,7 +12,7 @@ SELECT
 		,CASE WHEN ProductName LIKE '%INFRASTRUKTUR' THEN LOWER(LEFT(ProductName, charindex(' ', ProductName) - 1))
 				WHEN ProductName LIKE '%TF FIBER%'     THEN 'Ewii' ELSE LOWER(ProductName) END AS InfrastructureName
 INTO #LowerCase
-FROM SourceNuudlBIZView.DimProduct_History
+FROM SourceNuudlBIZView.DimDimProduct_History
 WHERE 1 = 1
 AND ProductID IN ('C0010766087', 'C0010766866', 'C0010766865', 'C0010766864', 'C0010766868', 'C0010766869', 'C0010766879', 'C0010766867')
 AND DWIsCurrent = 1 

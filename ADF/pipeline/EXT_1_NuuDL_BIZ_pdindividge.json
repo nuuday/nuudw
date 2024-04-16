@@ -1,0 +1,322 @@
+{
+	"name": "EXT_1_NuuDL_BIZ_pdindividge",
+	"properties": {
+		"activities": [
+			{
+				"name": "Update_Meta_Tables",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[UpdateSourceTables]",
+					"storedProcedureParameters": {
+						"SourceConnectionName": {
+							"value": "NuuDL_BIZ",
+							"type": "String"
+						},
+						"SourceConnectionType": {
+							"value": "AzureDatabricksDeltaLake",
+							"type": "String"
+						},
+						"SourceSchemaName": {
+							"value": "ref",
+							"type": "String"
+						},
+						"SourceObjectName": {
+							"value": "pdindividge",
+							"type": "String"
+						},
+						"DestinationSchemaName": {
+							"value": "sourceNuudlBIZ",
+							"type": "String"
+						},
+						"WatermarkColumnName": {
+							"value": "NUUDL_CuratedBatchID",
+							"type": "String"
+						},
+						"WatermarkIsDate": {
+							"value": "False",
+							"type": "Boolean"
+						},
+						"WatermarkRollingWindowDays": {
+							"value": "0",
+							"type": "Int32"
+						},
+						"WatermarkInQuery": {
+							"value": "",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Lookup_Last_Value_Loaded",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Update_Meta_Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlSource",
+						"sqlReaderStoredProcedureName": "[nuuMeta].[GetLastValueLoaded]",
+						"storedProcedureParameters": {
+							"SourceConnectionName": {
+								"type": "String",
+								"value": "NuuDL_BIZ"
+							},
+							"SourceSchemaName": {
+								"type": "String",
+								"value": "ref"
+							},
+							"SourceTableName": {
+								"type": "String",
+								"value": "pdindividge"
+							},
+							"JobIsIncremental": {
+								"type": "Boolean",
+								"value": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								}
+							},
+							"ConnectionType": {
+								"type": "String",
+								"value": "AzureDatabricksDeltaLake"
+							},
+							"WatermarkIsDate": {
+								"type": "Boolean",
+								"value": "False"
+							}
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "nuudwsqldb01_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "nuuMeta.SourceObjects"
+						}
+					}
+				}
+			},
+			{
+				"name": "Lookup_Source_Schema_Name",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Lookup_Last_Value_Loaded",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlSource",
+						"sqlReaderStoredProcedureName": "[nuuMeta].[GetSourceSchemaName]",
+						"storedProcedureParameters": {
+							"SourceConnectionName": {
+								"type": "String",
+								"value": "NuuDL_BIZ"
+							},
+							"SourceSchemaName": {
+								"type": "String",
+								"value": "ref"
+							},
+							"SourceTableName": {
+								"type": "String",
+								"value": "pdindividge"
+							}
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "nuudwsqldb01_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "nuuMeta.SourceObjects"
+						}
+					}
+				}
+			},
+			{
+				"name": "Copy_pdindividge",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Lookup_Source_Schema_Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureDatabricksDeltaLakeSource",
+						"query": {
+							"value": "\nSELECT \n`NUUDL_SourceCreated` \n,`NUUDL_SourceUpdated` \n--,`FIRMA` \n--,`ENHED` \n--,`VIRKNR` \n,`LOENNR` \n--,`LOEBENR` \n--,`STATUS` \n--,`ANUMMER` \n,`EMAIL` \n--,`STEDNR` \n--,`AONR` \n,`KONTORFORK` \n--,`KONTORNAVN` \n--,`FYSADR` \n--,`POSTADR` \n--,`STIL_KODE` \n--,`INITIALER` \n,`NAVN` \n--,`FORNAVN` \n--,`MELLEMNAVN` \n--,`EFTERNAVN` \n--,`ADRESSE` \n--,`ADRLIN_1` \n--,`ADRLIN_2` \n--,`ADRLIN_3` \n--,`POSTNR` \n--,`KOEN` \n--,`ANS_DATO` \n--,`AFG_DATO` \n--,`FOD_DATO` \n--,`START_ORLOV` \n--,`SLUT_ORLOV` \n--,`OMRAADE` \n--,`TLFLOK` \n--,`TLFDIR` \n--,`TLFMOB` \n--,`TLFALT` \n--,`TLFFAX` \n--,`TLFOPS` \n--,`TLFUDL` \n--,`TJEGREN` \n--,`KATEGORI` \n--,`AFLFORM` \n--,`TILHOER` \n--,`ARBSTEDKD` \n--,`AENDRET` \n--,`OPDATERET` \n--,`NORMTID` \n--,`TRGRUPPE` \n--,`BANKREGNR` \n--,`BANKKONTONR` \n--,`FAGGRUPPE` \n,`NUUDL_ID` \n,`NUUDL_ValidFrom` \n,`NUUDL_ValidTo` \n,`NUUDL_IsCurrent` \n--,`BIZ_BatchCreatedID` \n--,`BIZ_BatchUpdatedID` \n,`NUUDL_PKLatest` \n,`NUUDL_BaseSourceFilename` \n,`NUUDL_BaseBatchID` \n,`NUUDL_BaseProcessedTimestamp` \n,`NUUDL_CuratedBatchID` \n,`NUUDL_CuratedProcessedTimestamp` \n \nFROM dai.ref.`pdindividge`\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'\n\tAND NUUDL_ValidTo > '2023-01-01'",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "AzureDatabricksDeltaLakeExportCommand"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						},
+						"preCopyScript": "TRUNCATE TABLE [sourceNuudlBIZ].[pdindividge]"
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "datalakest01exploration",
+							"type": "LinkedServiceReference"
+						},
+						"path": "adfstage"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "NuuDL_BIZ_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "ref.pdindividge"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "nuudwsqldb01_DynamicDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "[sourceNuudlBIZ].[pdindividge]"
+						}
+					}
+				]
+			},
+			{
+				"name": "Merge_To_History",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy_pdindividge",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
+					"storedProcedureParameters": {
+						"ExtractTable": {
+							"value": "sourceNuudlBIZ.pdindividge",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Set_Last_Value_Loaded",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Merge_To_History",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[SetLastLoadedValue]",
+					"storedProcedureParameters": {
+						"SourceConnectionName": {
+							"value": "NuuDL_BIZ",
+							"type": "String"
+						},
+						"SourceSchemaName": {
+							"value": "ref",
+							"type": "String"
+						},
+						"SourceTableName": {
+							"value": "pdindividge",
+							"type": "String"
+						},
+						"WatermarkIsDate": {
+							"value": "False",
+							"type": "Boolean"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"JobIsIncremental": {
+				"type": "Bool",
+				"defaultValue": true
+			},
+			"WriteBatchSize": {
+				"type": "Int",
+				"defaultValue": 10000
+			}
+		},
+		"folder": {
+			"name": "0.1_Extracts"
+		},
+		"annotations": []
+	}
+}

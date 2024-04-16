@@ -1,7 +1,5 @@
 ﻿
-
-
-CREATE VIEW [SourceNuudlBIZView].[DimProduct_History]
+CREATE VIEW [sourceNuudlBIZView].[dimdimproduct_History]
 AS
 SELECT 
 	[NUUDL_SourceCreated] ,
@@ -66,7 +64,11 @@ SELECT
 	[BundleType] ,
 	[Technology] ,
 	[ProductWeight] ,
-	[NUUDL_CuratedBatchID] 
+	[NUUDL_BaseSourceFilename] ,
+	[NUUDL_BaseBatchID] ,
+	[NUUDL_BaseProcessedTimestamp] ,
+	[NUUDL_CuratedBatchID] ,
+	[NUUDL_CuratedProcessedTimestamp] 
 	,[DWIsCurrent]
 	,[DWValidFromDate]
 	,[DWValidToDate]
@@ -74,6 +76,5 @@ SELECT
 	,[DWModifiedDate]
 	,[DWIsDeletedInSource]
 	,[DWDeletedInSourceDate]
-FROM [SourceNuudlBIZ].[DimProduct_History]
---WHERE DWIsCurrent = 1
-WHERE DWValidFromDate <> DWValidToDate
+FROM [sourceNuudlBIZ].[dimdimproduct_History]
+WHERE DWIsCurrent = 1

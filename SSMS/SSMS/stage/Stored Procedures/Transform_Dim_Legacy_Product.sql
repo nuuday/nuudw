@@ -60,7 +60,7 @@ SELECT DISTINCT
 		ELSE 'Ikke i Produktgruppe'
 	END AS [ProductGroupName],
 	GETDATE() AS [DWCreatedDate]
-FROM SourceNuudlBIZView.DimProduct_History pro
+FROM SourceNuudlBIZView.DimDimProduct_History pro
 WHERE
 	(ProductID NOT IN ('No product', 'Internal', 'No changes', 'Not part of bundle', 'External'))
 	AND SourceSystem IN ('CU', 'DF', 'FP', 'NABS', 'NM', 'CS', 'MB', 'SF')

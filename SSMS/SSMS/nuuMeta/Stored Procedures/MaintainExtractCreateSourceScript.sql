@@ -19,6 +19,7 @@ DECLARE @PrintSQL BIT = 1
 
 
 DECLARE @CRLF NVARCHAR(2) = CHAR(13) + CHAR(10)
+DECLARE @Catalog NVARCHAR(MAX)
 DECLARE @Schema NVARCHAR(MAX)
 DECLARE @Table NVARCHAR(50)  
 DECLARE @Columns NVARCHAR(MAX)
@@ -30,6 +31,7 @@ DECLARE @WatermarkIsDate bit
 DECLARE @Environment NVARCHAR(30)
 
 SELECT
+	@Catalog = SourceCatalogName,
 	@Schema = SourceSchemaName,
 	@Table = SourceObjectName,
 	@DelimitedIdentifier = DelimitedIdentifier,
@@ -61,7 +63,7 @@ SELECT
 	@SQLScript = '
 SELECT 
 ' + @Columns + + ' 
-FROM ' + @SQLSchema + IIF( @SQLSchema = '', '', '.' ) + '[' + @Table + ']
+FROM ' + @Catalog + IIF( @Catalog = '', '', '.' ) + @SQLSchema + IIF( @SQLSchema = '', '', '.' ) + '[' + @Table + ']
 ' +
 	CASE
 		WHEN NULLIF(WatermarkColumnName,'') IS NULL THEN IIF(ExtractSQLFilter <> '', 'WHERE '+ExtractSQLFilter, '')

@@ -1,6 +1,7 @@
 ﻿CREATE TABLE [nuuMeta].[SourceObject] (
     [ID]                         INT                                                IDENTITY (1, 1) NOT NULL,
     [SourceConnectionName]       NVARCHAR (250)                                     NOT NULL,
+    [SourceCatalogName]          NVARCHAR (200)                                     NULL DEFAULT (''),
     [SourceSchemaName]           NVARCHAR (200)                                     NOT NULL,
     [SourceObjectName]           NVARCHAR (200)                                     NOT NULL,
     [ExtractPattern]             NVARCHAR (100)                                     CONSTRAINT [DF_SourceObject_ExtractPattern] DEFAULT (N'Standard') NOT NULL,
@@ -26,4 +27,6 @@
     PERIOD FOR SYSTEM_TIME ([ValidFrom], [ValidTo])
 )
 WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE=[nuuMeta].[SourceObject_History], DATA_CONSISTENCY_CHECK=ON));
+
+
 
