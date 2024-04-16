@@ -4,9 +4,17 @@
 		"annotations": [],
 		"type": "AzureDatabricksDeltaLake",
 		"typeProperties": {
-			"domain": "https://adb-5766851830059509.9.azuredatabricks.net",
-			"clusterId": "0111-130909-iqv8kbwp",
-			"workspaceResourceId": "/subscriptions/f1dd3e21-b687-4062-9de2-b55be2eed76f/resourceGroups/datalake-rg01-exploration-product/providers/Microsoft.Databricks/workspaces/datalake-dbw01-explor-product"
+			"domain": "https://adb-2929753254893719.19.azuredatabricks.net",
+			"clusterId": "0905-134532-2jn7av69",
+			"accessToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "databrickstoken"
+			}
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
 }
