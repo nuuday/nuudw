@@ -555,6 +555,12 @@
     <Build Include="sourceNuudlBIZ\Tables\dimdimproduct.sql" />
     <Build Include="sourceNuudlBIZView\Views\pdindividge_History.sql" />
     <Build Include="sourceNuudlBIZView\Views\dimdimproduct_History.sql" />
+    <Build Include="stage\Tables\Dim_Employee.sql" />
+    <Build Include="dim\Tables\Employee.sql" />
+    <Build Include="dimView\Views\Employee.sql" />
+    <Build Include="martView_PRX\Views\DimEmployee.sql" />
+    <Build Include="cubeView_PRX\Views\DimEmployee.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_Employee.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
