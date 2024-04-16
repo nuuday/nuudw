@@ -101,7 +101,7 @@
 							"typeProperties": {
 								"source": {
 									"type": "AzureDatabricksDeltaLakeSource",
-									"query": "select",
+									"query": "select * FROm information_schema.columns",
 									"exportSettings": {
 										"type": "AzureDatabricksDeltaLakeExportCommand"
 									},
@@ -129,11 +129,8 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "NuuDL_UnityCatalog_DynamicDataset",
-									"type": "DatasetReference",
-									"parameters": {
-										"TableName": "INFORMATION_SCHEMA.COLUMNS"
-									}
+									"referenceName": "Nuudl_NetCracker_DynamicDataset",
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
