@@ -351,12 +351,9 @@
     <Build Include="Security\sourceNuudlColumbus.sql" />
     <Build Include="sourceNuudlLinkit\Tables\LINK_KUNDE_History.sql" />
     <Build Include="sourceNuudlLinkit\Tables\LINK_KUNDE.sql" />
-    <Build Include="sourceNuudlBIZ\Tables\DimProduct_History.sql" />
-    <Build Include="sourceNuudlBIZ\Tables\DimProduct.sql" />
     <Build Include="sourceCubusMasterData\Tables\DimEmployee.sql" />
     <Build Include="sourceCubus31PCTI\Tables\BUI_915_Customers_CU.sql" />
     <Build Include="sourceNuudlLinkitView\Views\LINK_KUNDE_History.sql" />
-    <Build Include="sourceNuudlBIZView\Views\DimProduct_History.sql" />
     <Build Include="Security\sourceNuudlLinkitView.sql" />
     <Build Include="Security\sourceNuudlLinkit.sql" />
     <Build Include="Security\sourceNuudlBIZView.sql" />
@@ -552,6 +549,12 @@
     <Build Include="stage\Stored Procedures\Transform_Dim_Technology.sql" />
     <Build Include="martView_PRX\Views\DimTechnology.sql" />
     <Build Include="cubeView_PRX\Views\DimTechnology.sql" />
+    <Build Include="sourceNuudlBIZ\Tables\pdindividge_History.sql" />
+    <Build Include="sourceNuudlBIZ\Tables\pdindividge.sql" />
+    <Build Include="sourceNuudlBIZ\Tables\dimdimproduct_History.sql" />
+    <Build Include="sourceNuudlBIZ\Tables\dimdimproduct.sql" />
+    <Build Include="sourceNuudlBIZView\Views\pdindividge_History.sql" />
+    <Build Include="sourceNuudlBIZView\Views\dimdimproduct_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
