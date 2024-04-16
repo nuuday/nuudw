@@ -95,10 +95,7 @@
                             "typeProperties": {
                                 "source": {
                                     "type": "AzureDatabricksDeltaLakeSource",
-                                    "sqlReaderQuery": {
-                                        "value": "SELECT\n    'AzureDatabricksDeltaLake' AS SourceSystemTypeName\n    , table_catalog AS TableCatalogName\n    , table_schema AS SchemaName\n    , table_name AS TableName\n    , column_name AS ColumnName\n    , ordinal_position AS OrdinalPositionNumber\n    , full_data_type AS DataTypeName\n    ,'@{item().SourceObjectID}' AS SourceObjectID\nFROM system.information_schema.columns\nWHERE table_catalog = '@{item().SourceCatalogName}'\n  AND table_schema = '@{item().SourceSchemaName}'\n  AND table_name = '@{item().SourceObjectName}'",
-                                        "type": "Expression"
-                                    }
+                                    "query": "SELECT\n    'AzureDatabricksDeltaLake' AS SourceSystemTypeName\n    , table_catalog AS TableCatalogName\n    , table_schema AS SchemaName\n    , table_name AS TableName\n    , column_name AS ColumnName\n    , ordinal_position AS OrdinalPositionNumber\n    , full_data_type AS DataTypeName\n    ,'@{item().SourceObjectID}' AS SourceObjectID\nFROM system.information_schema.columns\nWHERE table_catalog = '@{item().SourceCatalogName}'\n  AND table_schema = '@{item().SourceSchemaName}'\n  AND table_name = '@{item().SourceObjectName}'"
                                 },
                                 "sink": {
                                     "type": "SqlSink",
