@@ -21,6 +21,10 @@
                             "value": "<%ADFSourceConnectionType%>",
                             "type": "String"
                         },
+                        "SourceCatalogName": {
+                            "value": "<%ADFSourceCatalog%>",
+                            "type": "String"
+                        },
                         "SourceSchemaName": {
                             "value": "<%ADFSourceSchema%>",
                             "type": "String"
@@ -81,6 +85,10 @@
                                 "value": "<%ADFSourceConnection%>",
                                 "type": "String"
                             },
+                            "SourceCatalogName": {
+                                "value": "<%ADFSourceCatalog%>",
+                                "type": "String"
+                            },
                             "SourceSchemaName": {
                                 "value": "<%ADFSourceSchema%>",
                                 "type": "String"
@@ -135,6 +143,10 @@
                         "storedProcedureParameters": {
                             "SourceConnectionName": {
                                 "value": "<%ADFSourceConnection%>",
+                                "type": "String"
+                            },
+                            "SourceCatalogName": {
+                                "value": "<%ADFSourceCatalog%>",
                                 "type": "String"
                             },
                             "SourceSchemaName": {
@@ -202,7 +214,7 @@
                         "referenceName": "<%ADFSourceDatasetName%>",
                         "type": "DatasetReference",
                         "parameters": {
-                            "TableName": "<%ADFSourceSchema%>.<%ADFSourceTable%>"
+                            "TableName": "<%ADFSourceCatalog%>.<%ADFSourceSchema%>.<%ADFSourceTable%>"
                         }
                     }
                 ],
@@ -275,6 +287,10 @@
                     "storedProcedureParameters": {
                         "SourceConnectionName": {
                             "value": "<%ADFSourceConnection%>",
+                            "type": "String"
+                        },
+                        "SourceCatalogName": {
+                            "value": "<%ADFSourceCatalog%>",
                             "type": "String"
                         },
                         "SourceSchemaName": {

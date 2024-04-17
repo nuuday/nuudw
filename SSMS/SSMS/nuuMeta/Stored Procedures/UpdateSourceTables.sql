@@ -6,6 +6,7 @@ CREATE PROCEDURE [nuuMeta].[UpdateSourceTables]
 
 	@SourceConnectionType nvarchar(250),
 	@SourceConnectionName nvarchar(250),
+	@SourceCatalogName nvarchar(200),
 	@SourceSchemaName nvarchar(200),
 	@SourceObjectName nvarchar(200),
 	@DestinationSchemaName nvarchar(128),
@@ -40,8 +41,8 @@ BEGIN
 		SELECT @SourceConnectionType, @SourceConnectionName, @DestinationSchemaName
 	END 
 
-	INSERT INTO nuuMeta.SourceObject ([SourceConnectionName], [SourceSchemaName], [SourceObjectName], [ExtractPattern], [HistoryType], [WatermarkColumnName], [WatermarkIsDate], [WatermarkRollingWindowDays], [WatermarkInQuery])
-	SELECT @SourceConnectionName, @SourceSchemaName, @SourceObjectName, 'Dummy', 'None', @WatermarkColumnName, @WatermarkIsDate, @WatermarkRollingWindowDays, @WatermarkInQuery
+	INSERT INTO nuuMeta.SourceObject ([SourceConnectionName], SourceCatalogName, [SourceSchemaName], [SourceObjectName], [ExtractPattern], [HistoryType], [WatermarkColumnName], [WatermarkIsDate], [WatermarkRollingWindowDays], [WatermarkInQuery])
+	SELECT @SourceConnectionName, @SourceCatalogName, @SourceSchemaName, @SourceObjectName, 'Dummy', 'None', @WatermarkColumnName, @WatermarkIsDate, @WatermarkRollingWindowDays, @WatermarkInQuery
 
 END
 

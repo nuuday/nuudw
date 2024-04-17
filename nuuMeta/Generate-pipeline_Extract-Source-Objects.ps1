@@ -96,6 +96,7 @@ foreach ($obj in $SourceObjectDefinitions) {
         -replace "<%ADFSourceConnection%>",$obj.SourceConnectionName `
         -replace "<%ADFSourceConnectionType%>",$obj.SourceConnectionType `
         -replace "<%ADFSourceDatasetName%>",$obj.SourceDatasetName `
+        -replace "<%ADFSourceCatalog%>",$obj.SourceCatalogName `
         -replace "<%ADFSourceSchema%>",$obj.SourceSchemaName `
         -replace "<%ADFSourceTable%>",$obj.SourceObjectName `
         -replace "<%ADFSourceFileSystem%>",$obj.FileSystem `

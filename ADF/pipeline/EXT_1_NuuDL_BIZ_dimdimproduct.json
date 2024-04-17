@@ -21,6 +21,10 @@
               "value": "AzureDatabricksDeltaLake",
               "type": "String"
             },
+            "SourceCatalogName": {
+              "value": "dai",
+              "type": "String"
+            },
             "SourceSchemaName": {
               "value": "dim",
               "type": "String"
@@ -81,6 +85,10 @@
                 "value": "NuuDL_BIZ",
                 "type": "String"
               },
+              "SourceCatalogName": {
+                "value": "dai",
+                "type": "String"
+              },
               "SourceSchemaName": {
                 "value": "dim",
                 "type": "String"
@@ -135,6 +143,10 @@
             "storedProcedureParameters": {
               "SourceConnectionName": {
                 "value": "NuuDL_BIZ",
+                "type": "String"
+              },
+              "SourceCatalogName": {
+                "value": "dai",
                 "type": "String"
               },
               "SourceSchemaName": {
@@ -202,7 +214,7 @@
             "referenceName": "NuuDL_BIZ_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "dim.dimdimproduct"
+              "TableName": "dai.dim.dimdimproduct"
             }
           }
         ],
@@ -267,6 +279,10 @@
           "storedProcedureParameters": {
             "SourceConnectionName": {
               "value": "NuuDL_BIZ",
+              "type": "String"
+            },
+            "SourceCatalogName": {
+              "value": "dai",
               "type": "String"
             },
             "SourceSchemaName": {

@@ -88,6 +88,10 @@
               "value": "SqlServer",
               "type": "String"
             },
+            "SourceCatalogName": {
+              "value": "",
+              "type": "String"
+            },
             "SourceSchemaName": {
               "value": "CUBUS_READER",
               "type": "String"
@@ -97,7 +101,7 @@
               "type": "String"
             },
             "DestinationSchemaName": {
-              "value": "SourceCubus31PCTI",
+              "value": "sourceCubus31PCTI",
               "type": "String"
             },
             "WatermarkColumnName": {
@@ -150,7 +154,7 @@
           "sink": {
             "type": "SqlSink",
             "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [SourceCubus31PCTI].[BUI_915_Customers_CU]"
+            "preCopyScript": "TRUNCATE TABLE [sourceCubus31PCTI].[BUI_915_Customers_CU]"
           },
           "enableStaging": false,
           "cloudDataMovementUnits": 0
@@ -169,7 +173,7 @@
             "referenceName": "nuudwsqldb01_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "[SourceCubus31PCTI].[BUI_915_Customers_CU]"
+              "TableName": "[sourceCubus31PCTI].[BUI_915_Customers_CU]"
             }
           }
         ]

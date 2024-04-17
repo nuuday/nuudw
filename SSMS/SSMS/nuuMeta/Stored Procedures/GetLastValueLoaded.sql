@@ -5,6 +5,7 @@
 CREATE PROCEDURE [nuuMeta].[GetLastValueLoaded] 
 
 	@SourceConnectionName nvarchar(200)
+	, @SourceCatalogName nvarchar(200)
 	, @SourceSchemaName nvarchar(200)
 	, @SourceTableName nvarchar(200)
 	, @JobIsIncremental BIT
@@ -16,6 +17,7 @@ AS
 /*
 DECLARE 
 	@SourceConnectionName nvarchar(200) = 'nuudata'
+	, @SourceCatalogName nvarchar(200) = 'dai'
 	, @SourceSchemaName nvarchar(200) = 'sourceDataLakeChipper'
 	, @SourceTableName nvarchar(200) = 'TicketsEventLog_History'
 	, @JobIsIncremental BIT = 1
@@ -39,6 +41,7 @@ SELECT
 FROM nuuMeta.SourceObject so
 WHERE
 	so.SourceConnectionName = @SourceConnectionName
+	AND so.SourceCatalogName = @SourceCatalogName
 	AND so.SourceSchemaName = @SourceSchemaName
 	AND so.SourceObjectName = @SourceTableName
 
