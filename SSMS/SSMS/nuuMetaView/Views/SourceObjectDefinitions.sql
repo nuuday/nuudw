@@ -143,7 +143,8 @@ SELECT
 		WHEN 'Odata' THEN 'query'
 		WHEN 'Odbc' THEN 'query'
 		ELSE ''
-	END AS AzureSQLType
+	END AS AzureSQLType,
+	obj.LockObject
 FROM nuuMeta.[SourceObject] AS obj
 LEFT JOIN nuuMeta.SourceConnection con
 	ON con.SourceConnectionName = obj.SourceConnectionName

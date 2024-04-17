@@ -51,7 +51,7 @@
                 "typeProperties": {
                     "source": {
                         "type": "SqlSource",
-                        "sqlReaderQuery": "SELECT \n    SourceCatalogName,\n    SourceSchemaName,\n    SourceObjectName,  \n    [SourceObjectID]\n FROM [nuuMetaView].[SourceObjectDefinitions]\n WHERE SourceConnectionName = '<%ADFLinkedServiceName%>'"
+                        "sqlReaderQuery": "SELECT \n    SourceCatalogName,\n    SourceSchemaName,\n    SourceObjectName,  \n    [SourceObjectID]\n FROM [nuuMetaView].[SourceObjectDefinitions]\n WHERE SourceConnectionName = '<%ADFLinkedServiceName%>' AND LockObject = 0"
                     },
                     "dataset": {
                         "referenceName": "<%ADFDatabaseName%>_DynamicDataset",

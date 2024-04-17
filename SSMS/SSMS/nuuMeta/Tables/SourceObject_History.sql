@@ -18,7 +18,8 @@
     [WatermarkRollingWindowDays] INT            NOT NULL,
     [WatermarkInQuery]           NVARCHAR (500) NOT NULL,
     [ValidFrom]                  DATETIME2 (7)  NOT NULL,
-    [ValidTo]                    DATETIME2 (7)  NOT NULL
+    [ValidTo]                    DATETIME2 (7)  NOT NULL, 
+    [LockObject] BIT NULL DEFAULT 0
 );
 
 

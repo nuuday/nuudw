@@ -19,6 +19,7 @@
     [WatermarkInQuery]           NVARCHAR (500)                                     DEFAULT ('') NOT NULL,
     [ValidFrom]                  DATETIME2 (7) GENERATED ALWAYS AS ROW START HIDDEN CONSTRAINT [DF_SourceObject_ValidFrom] DEFAULT (sysutcdatetime()) NOT NULL,
     [ValidTo]                    DATETIME2 (7) GENERATED ALWAYS AS ROW END HIDDEN   CONSTRAINT [DF_SourceObject_ValidTo] DEFAULT (CONVERT([datetime2],'9999-12-31 23:59:59.9999999')) NOT NULL,
+    [LockObject] BIT NULL DEFAULT 0, 
     CONSTRAINT [PK_SourceObject] PRIMARY KEY CLUSTERED ([ID] ASC),
     CONSTRAINT [fk_ExtractPattern] FOREIGN KEY ([ExtractPattern]) REFERENCES [nuuMeta].[ValidExtractPattern] ([ExtractPattern]),
     CONSTRAINT [fk_HistoryType] FOREIGN KEY ([HistoryType]) REFERENCES [nuuMeta].[ValidHistoryType] ([HistoryType]),
