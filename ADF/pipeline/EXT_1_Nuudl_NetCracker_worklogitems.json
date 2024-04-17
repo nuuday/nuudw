@@ -188,7 +188,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`id` \r\n,`name` \r\n,`description` \r\n,`date` \r\n,`source` \r\n,`ref_id` \r\n,`ref_type` \r\n,`source_state` \r\n,`target_state` \r\n,`attributes` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`is_current` \r\n,`changedby_json_m2m` \r\n,`changedby_json_service` \r\n,`changedby_json_userId` \r\n,`changedby_json_userName` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_StandardizedProcessedTimestamp` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n,`NUUDL_CuratedSourceFilename` \r\n \r\nFROM dai.netcracker.`worklogitems`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`id` \r\n,`name` \r\n,`description` \r\n,`date` \r\n,`source` \r\n,`ref_id` \r\n,`ref_type` \r\n,`source_state` \r\n,`target_state` \r\n--,`attributes` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`is_current` \r\n,`changedby_json_m2m` \r\n,`changedby_json_service` \r\n,`changedby_json_userId` \r\n,`changedby_json_userName` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_StandardizedProcessedTimestamp` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n,`NUUDL_CuratedSourceFilename` \r\n \r\nFROM dai.netcracker.`worklogitems`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
