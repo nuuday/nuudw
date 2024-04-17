@@ -561,6 +561,15 @@
     <Build Include="martView_PRX\Views\DimEmployee.sql" />
     <Build Include="cubeView_PRX\Views\DimEmployee.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_Employee.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\worklogitems_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\worklogitems.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\orgchartteammember_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\orgchartteammember.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\orgchartteam_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\orgchartteam.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\worklogitems_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\orgchartteammember_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\orgchartteam_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
