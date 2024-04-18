@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dim].[Employee] (
     [EmployeeID]           INT           IDENTITY (1, 1) NOT NULL,
-    [EmployeeKey]          NVARCHAR (6)  NULL,
+    [EmployeeKey]          NVARCHAR (10) NULL,
     [EmployeeName]         NVARCHAR (50) NULL,
     [EmployeeEmail]        NVARCHAR (50) NULL,
     [OrganizationalLevel1] NVARCHAR (1)  NULL,
@@ -15,6 +15,8 @@
     PRIMARY KEY CLUSTERED ([EmployeeID] ASC),
     CONSTRAINT [NCI_Employee] UNIQUE NONCLUSTERED ([EmployeeKey] ASC, [DWValidFromDate] ASC)
 );
+
+
 
 
 GO

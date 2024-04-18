@@ -8,7 +8,7 @@ TRUNCATE TABLE [stage].[Dim_Employee]
 
 INSERT INTO stage.[Dim_Employee] WITH (TABLOCK) ([EmployeeKey], [EmployeeName], [EmployeeEmail], [OrganizationalLevel1], [OrganizationalLevel2], [OrganizationalLevel3])
 SELECT 
-	Loennr AS EmployeeKey
+	ANUMMER AS EmployeeKey
 	, Navn AS EmployeeName
 	, EMAIL AS EmployeeEmail
 	, substring(KONTORFORK,1,1) as OrganizationalLevel1

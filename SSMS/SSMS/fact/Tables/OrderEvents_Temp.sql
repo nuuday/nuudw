@@ -13,7 +13,7 @@
     [AddressBillingID] INT             DEFAULT ((-1)) NOT NULL,
     [HouseHoldID]      INT             DEFAULT ((-1)) NOT NULL,
     [TechnologyID]     INT             DEFAULT ((-1)) NOT NULL,
-    [EmplyeeID]        INT             DEFAULT ((-1)) NOT NULL,
+    [EmployeeID]       INT             DEFAULT ((-1)) NOT NULL,
     [IsTLO]            INT             NULL,
     [Quantity]         INT             NULL,
     [NetAmount]        DECIMAL (19, 4) NULL,
@@ -23,6 +23,8 @@
     [DWCreatedDate]    DATETIME2 (0)   NOT NULL,
     [DWModifiedDate]   DATETIME2 (0)   NOT NULL
 );
+
+
 
 
 
