@@ -15,3 +15,4 @@ SELECT
 	, substring(KONTORFORK,1,2) as OrganizationalLevel2 
 	, substring(KONTORFORK,1,3) as OrganizationalLevel3 
 FROM sourceNuudlBIZView.pdindividge_History
+WHERE ANUMMER IS NOT NULL
