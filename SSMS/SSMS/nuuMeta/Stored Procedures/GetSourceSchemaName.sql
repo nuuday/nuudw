@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE [nuuMeta].[GetSourceSchemaName] 
 
 	@SourceConnectionName nvarchar(200)
+	, @SourceCatalogName nvarchar(200)
 	, @SourceSchemaName nvarchar(200)
 	, @SourceTableName nvarchar(200)
 
@@ -9,6 +10,7 @@ AS
 /*
 DECLARE 
 	@SourceConnectionName nvarchar(200) = 'nuudl_netcracker'
+	, @SourceCatalogName nvarchar(200) = 'dai'
 	, @SourceSchemaName nvarchar(200) = 'netcracker'
 	, @SourceTableName nvarchar(200) = 'customer'
 --*/
@@ -21,6 +23,7 @@ INNER JOIN nuuMeta.SourceConnection sc ON sc.SourceConnectionName = so.SourceCon
 LEFT JOIN nuuMeta.SourceObjectDynamicSchema ds ON ds.SourceObjectID = so.ID AND ds.Environment = sc.Environment
 WHERE
 	so.SourceConnectionName = @SourceConnectionName
+	AND so.SourceCatalogName = @SourceCatalogName
 	AND so.SourceSchemaName = @SourceSchemaName
 	AND so.SourceObjectName = @SourceTableName
 

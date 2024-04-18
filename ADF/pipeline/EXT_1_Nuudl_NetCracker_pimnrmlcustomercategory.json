@@ -21,8 +21,12 @@
               "value": "AzureDatabricksDeltaLake",
               "type": "String"
             },
+            "SourceCatalogName": {
+              "value": "dai",
+              "type": "String"
+            },
             "SourceSchemaName": {
-              "value": "dai.netcracker",
+              "value": "netcracker",
               "type": "String"
             },
             "SourceObjectName": {
@@ -81,8 +85,12 @@
                 "value": "Nuudl_NetCracker",
                 "type": "String"
               },
+              "SourceCatalogName": {
+                "value": "dai",
+                "type": "String"
+              },
               "SourceSchemaName": {
-                "value": "dai.netcracker",
+                "value": "netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -137,8 +145,12 @@
                 "value": "Nuudl_NetCracker",
                 "type": "String"
               },
+              "SourceCatalogName": {
+                "value": "dai",
+                "type": "String"
+              },
               "SourceSchemaName": {
-                "value": "dai.netcracker",
+                "value": "netcracker",
                 "type": "String"
               },
               "SourceTableName": {
@@ -269,8 +281,12 @@
               "value": "Nuudl_NetCracker",
               "type": "String"
             },
+            "SourceCatalogName": {
+              "value": "dai",
+              "type": "String"
+            },
             "SourceSchemaName": {
-              "value": "dai.netcracker",
+              "value": "netcracker",
               "type": "String"
             },
             "SourceTableName": {

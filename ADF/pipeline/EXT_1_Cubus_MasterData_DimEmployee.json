@@ -88,6 +88,10 @@
               "value": "SqlServer",
               "type": "String"
             },
+            "SourceCatalogName": {
+              "value": "",
+              "type": "String"
+            },
             "SourceSchemaName": {
               "value": "Dimension",
               "type": "String"
@@ -97,7 +101,7 @@
               "type": "String"
             },
             "DestinationSchemaName": {
-              "value": "SourceCubusMasterData",
+              "value": "sourceCubusMasterData",
               "type": "String"
             },
             "WatermarkColumnName": {
@@ -150,7 +154,7 @@
           "sink": {
             "type": "SqlSink",
             "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [SourceCubusMasterData].[DimEmployee]"
+            "preCopyScript": "TRUNCATE TABLE [sourceCubusMasterData].[DimEmployee]"
           },
           "enableStaging": false,
           "cloudDataMovementUnits": 0
@@ -169,7 +173,7 @@
             "referenceName": "nuudwsqldb01_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "[SourceCubusMasterData].[DimEmployee]"
+              "TableName": "[sourceCubusMasterData].[DimEmployee]"
             }
           }
         ]

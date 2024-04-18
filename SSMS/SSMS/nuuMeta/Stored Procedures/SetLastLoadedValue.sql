@@ -7,6 +7,7 @@ The purpose of this scripts is set LastValueLoaded in the table SourceObjectWate
 CREATE PROCEDURE [nuuMeta].[SetLastLoadedValue] 
 
 	@SourceConnectionName nvarchar(200)
+	, @SourceCatalogName nvarchar(200)
 	, @SourceSchemaName nvarchar(200)
 	, @SourceTableName nvarchar(200)
 	, @WatermarkIsDate BIT
@@ -44,6 +45,7 @@ FROM nuuMeta.SourceObject so
 INNER JOIN nuuMeta.SourceConnection co ON co.SourceConnectionName = so.SourceConnectionName
 WHERE
 	so.SourceConnectionName = @SourceConnectionName
+	AND so.SourceCatalogName = @SourceCatalogName
 	AND so.SourceSchemaName = @SourceSchemaName
 	AND so.SourceObjectName = @SourceTableName
 

@@ -21,6 +21,10 @@
               "value": "AzureDatabricksDeltaLake",
               "type": "String"
             },
+            "SourceCatalogName": {
+              "value": "",
+              "type": "String"
+            },
             "SourceSchemaName": {
               "value": "cu",
               "type": "String"
@@ -81,6 +85,10 @@
                 "value": "NuuDL_Columbus",
                 "type": "String"
               },
+              "SourceCatalogName": {
+                "value": "",
+                "type": "String"
+              },
               "SourceSchemaName": {
                 "value": "cu",
                 "type": "String"
@@ -113,11 +121,59 @@
         }
       },
       {
+        "name": "Lookup_Source_Schema_Name",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Last_Value_Loaded",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderStoredProcedureName": "[nuuMeta].[GetSourceSchemaName]",
+            "storedProcedureParameters": {
+              "SourceConnectionName": {
+                "value": "NuuDL_Columbus",
+                "type": "String"
+              },
+              "SourceCatalogName": {
+                "value": "",
+                "type": "String"
+              },
+              "SourceSchemaName": {
+                "value": "cu",
+                "type": "String"
+              },
+              "SourceTableName": {
+                "value": "AFTALE_LID",
+                "type": "String"
+              }
+            }
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjects"
+            }
+          }
+        }
+      },
+      {
         "name": "Copy_AFTALE_LID",
         "type": "Copy",
         "dependsOn": [
           {
-            "activity": "Lookup_Last_Value_Loaded",
+            "activity": "Lookup_Source_Schema_Name",
             "dependencyConditions": [
               "Succeeded"
             ]
@@ -158,7 +214,7 @@
             "referenceName": "NuuDL_Columbus_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "cu.AFTALE_LID"
+              "TableName": ".cu.AFTALE_LID"
             }
           }
         ],
@@ -223,6 +279,10 @@
           "storedProcedureParameters": {
             "SourceConnectionName": {
               "value": "NuuDL_Columbus",
+              "type": "String"
+            },
+            "SourceCatalogName": {
+              "value": "",
               "type": "String"
             },
             "SourceSchemaName": {

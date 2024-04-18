@@ -88,6 +88,10 @@
                             "value": "<%ADFSourceConnectionType%>",
                             "type": "String"
                         },
+                        "SourceCatalogName": {
+                            "value": "<%ADFSourceCatalog%>",
+                            "type": "String"
+                        },
                         "SourceSchemaName": {
                             "value": "<%ADFSourceSchema%>",
                             "type": "String"

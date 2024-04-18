@@ -23,6 +23,10 @@
 							"value": "AzureDatabricksDeltaLake",
 							"type": "String"
 						},
+						"SourceCatalogName": {
+							"value": "dai",
+							"type": "String"
+						},
 						"SourceSchemaName": {
 							"value": "ref",
 							"type": "String"
@@ -83,6 +87,10 @@
 							"SourceConnectionName": {
 								"type": "String",
 								"value": "NuuDL_BIZ"
+							},
+							"SourceCatalogName": {
+								"type": "String",
+								"value": "dai"
 							},
 							"SourceSchemaName": {
 								"type": "String",
@@ -145,6 +153,10 @@
 								"type": "String",
 								"value": "NuuDL_BIZ"
 							},
+							"SourceCatalogName": {
+								"type": "String",
+								"value": "dai"
+							},
 							"SourceSchemaName": {
 								"type": "String",
 								"value": "ref"
@@ -186,7 +198,7 @@
 					"source": {
 						"type": "AzureDatabricksDeltaLakeSource",
 						"query": {
-							"value": "\nSELECT \n`NUUDL_SourceCreated` \n,`NUUDL_SourceUpdated` \n--,`FIRMA` \n--,`ENHED` \n--,`VIRKNR` \n,`LOENNR` \n--,`LOEBENR` \n--,`STATUS` \n--,`ANUMMER` \n,`EMAIL` \n--,`STEDNR` \n--,`AONR` \n,`KONTORFORK` \n--,`KONTORNAVN` \n--,`FYSADR` \n--,`POSTADR` \n--,`STIL_KODE` \n--,`INITIALER` \n,`NAVN` \n--,`FORNAVN` \n--,`MELLEMNAVN` \n--,`EFTERNAVN` \n--,`ADRESSE` \n--,`ADRLIN_1` \n--,`ADRLIN_2` \n--,`ADRLIN_3` \n--,`POSTNR` \n--,`KOEN` \n--,`ANS_DATO` \n--,`AFG_DATO` \n--,`FOD_DATO` \n--,`START_ORLOV` \n--,`SLUT_ORLOV` \n--,`OMRAADE` \n--,`TLFLOK` \n--,`TLFDIR` \n--,`TLFMOB` \n--,`TLFALT` \n--,`TLFFAX` \n--,`TLFOPS` \n--,`TLFUDL` \n--,`TJEGREN` \n--,`KATEGORI` \n--,`AFLFORM` \n--,`TILHOER` \n--,`ARBSTEDKD` \n--,`AENDRET` \n--,`OPDATERET` \n--,`NORMTID` \n--,`TRGRUPPE` \n--,`BANKREGNR` \n--,`BANKKONTONR` \n--,`FAGGRUPPE` \n,`NUUDL_ID` \n,`NUUDL_ValidFrom` \n,`NUUDL_ValidTo` \n,`NUUDL_IsCurrent` \n--,`BIZ_BatchCreatedID` \n--,`BIZ_BatchUpdatedID` \n,`NUUDL_PKLatest` \n,`NUUDL_BaseSourceFilename` \n,`NUUDL_BaseBatchID` \n,`NUUDL_BaseProcessedTimestamp` \n,`NUUDL_CuratedBatchID` \n,`NUUDL_CuratedProcessedTimestamp` \n \nFROM dai.ref.`pdindividge`\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'\n\tAND NUUDL_ValidTo > '2023-01-01'",
+							"value": "SELECT \n`NUUDL_SourceCreated` \n,`NUUDL_SourceUpdated` \n--,`FIRMA` \n--,`ENHED` \n--,`VIRKNR` \n,`LOENNR` \n--,`LOEBENR` \n--,`STATUS` \n,`ANUMMER` \n,`EMAIL` \n--,`STEDNR` \n--,`AONR` \n,`KONTORFORK` \n--,`KONTORNAVN` \n--,`FYSADR` \n--,`POSTADR` \n--,`STIL_KODE` \n--,`INITIALER` \n,`NAVN` \n--,`FORNAVN` \n--,`MELLEMNAVN` \n--,`EFTERNAVN` \n--,`ADRESSE` \n--,`ADRLIN_1` \n--,`ADRLIN_2` \n--,`ADRLIN_3` \n--,`POSTNR` \n--,`KOEN` \n--,`ANS_DATO` \n--,`AFG_DATO` \n--,`FOD_DATO` \n--,`START_ORLOV` \n--,`SLUT_ORLOV` \n--,`OMRAADE` \n--,`TLFLOK` \n--,`TLFDIR` \n--,`TLFMOB` \n--,`TLFALT` \n--,`TLFFAX` \n--,`TLFOPS` \n--,`TLFUDL` \n--,`TJEGREN` \n--,`KATEGORI` \n--,`AFLFORM` \n--,`TILHOER` \n--,`ARBSTEDKD` \n--,`AENDRET` \n--,`OPDATERET` \n--,`NORMTID` \n--,`TRGRUPPE` \n--,`BANKREGNR` \n--,`BANKKONTONR` \n--,`FAGGRUPPE` \n,`NUUDL_ID` \n,`NUUDL_ValidFrom` \n,`NUUDL_ValidTo` \n,`NUUDL_IsCurrent` \n--,`BIZ_BatchCreatedID` \n--,`BIZ_BatchUpdatedID` \n,`NUUDL_PKLatest` \n,`NUUDL_BaseSourceFilename` \n,`NUUDL_BaseBatchID` \n,`NUUDL_BaseProcessedTimestamp` \n,`NUUDL_CuratedBatchID` \n,`NUUDL_CuratedProcessedTimestamp` \n \nFROM dai.ref.`pdindividge`\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'\n\tAND NUUDL_ValidTo > '2023-01-01'",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -215,7 +227,7 @@
 						"referenceName": "NuuDL_BIZ_DynamicDataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"TableName": "ref.pdindividge"
+							"TableName": "dai.ref.pdindividge"
 						}
 					}
 				],
@@ -282,6 +294,10 @@
 					"storedProcedureParameters": {
 						"SourceConnectionName": {
 							"value": "NuuDL_BIZ",
+							"type": "String"
+						},
+						"SourceCatalogName": {
+							"value": "dai",
 							"type": "String"
 						},
 						"SourceSchemaName": {

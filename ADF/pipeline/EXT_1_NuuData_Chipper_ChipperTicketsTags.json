@@ -88,6 +88,10 @@
               "value": "SqlServer",
               "type": "String"
             },
+            "SourceCatalogName": {
+              "value": "",
+              "type": "String"
+            },
             "SourceSchemaName": {
               "value": "exportNuuDW",
               "type": "String"
@@ -146,6 +150,10 @@
             "storedProcedureParameters": {
               "SourceConnectionName": {
                 "value": "NuuData_Chipper",
+                "type": "String"
+              },
+              "SourceCatalogName": {
+                "value": "",
                 "type": "String"
               },
               "SourceSchemaName": {
@@ -289,6 +297,10 @@
           "storedProcedureParameters": {
             "SourceConnectionName": {
               "value": "NuuData_Chipper",
+              "type": "String"
+            },
+            "SourceCatalogName": {
+              "value": "",
               "type": "String"
             },
             "SourceSchemaName": {

@@ -315,6 +315,32 @@
 				}
 			},
 			{
+				"name": "orgchartteammember",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_Nuudl_NetCracker_orgchartteammember",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
 				"name": "pimnrmlcustomercategory",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
@@ -533,6 +559,32 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "EXT_1_Nuudl_NetCracker_riphonenumber",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "worklogitems",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_Nuudl_NetCracker_worklogitems",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
