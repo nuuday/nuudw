@@ -567,6 +567,12 @@
     <Build Include="sourceNuudlNetCracker\Tables\orgchartteammember.sql" />
     <Build Include="sourceNuudlNetCrackerView\Views\worklogitems_History.sql" />
     <Build Include="sourceNuudlNetCrackerView\Views\orgchartteammember_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cpmnrmltroubleticketrelatedentityref_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cpmnrmltroubleticketrelatedentityref.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cpmnrmltroubleticket_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cpmnrmltroubleticket.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\cpmnrmltroubleticketrelatedentityref_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\cpmnrmltroubleticket_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
