@@ -1,0 +1,324 @@
+{
+  "name": "EXT_1_Nuudl_NetCracker_cpmnrmltroubleticket",
+  "properties": {
+    "activities": [
+      {
+        "name": "Update_Meta_Tables",
+        "type": "SqlServerStoredProcedure",
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[UpdateSourceTables]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "Nuudl_NetCracker",
+              "type": "String"
+            },
+            "SourceConnectionType": {
+              "value": "AzureDatabricksDeltaLake",
+              "type": "String"
+            },
+            "SourceCatalogName": {
+              "value": "dai",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "netcracker",
+              "type": "String"
+            },
+            "SourceObjectName": {
+              "value": "cpmnrmltroubleticket",
+              "type": "String"
+            },
+            "DestinationSchemaName": {
+              "value": "sourceNuudlNetCracker",
+              "type": "String"
+            },
+            "WatermarkColumnName": {
+              "value": "NUUDL_CuratedBatchID",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "False",
+              "type": "Boolean"
+            },
+            "WatermarkRollingWindowDays": {
+              "value": "0",
+              "type": "Int32"
+            },
+            "WatermarkInQuery": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Lookup_Last_Value_Loaded",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Update_Meta_Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderStoredProcedureName": "[nuuMeta].[GetLastValueLoaded]",
+            "storedProcedureParameters": {
+              "SourceConnectionName": {
+                "value": "Nuudl_NetCracker",
+                "type": "String"
+              },
+              "SourceCatalogName": {
+                "value": "dai",
+                "type": "String"
+              },
+              "SourceSchemaName": {
+                "value": "netcracker",
+                "type": "String"
+              },
+              "SourceTableName": {
+                "value": "cpmnrmltroubleticket",
+                "type": "String"
+              },
+              "JobIsIncremental": {
+                "value": "@pipeline().parameters.JobIsIncremental",
+                "type": "Boolean"
+              },
+              "ConnectionType": {
+                "value": "AzureDatabricksDeltaLake",
+                "type": "String"
+              },
+              "WatermarkIsDate": {
+                "value": "False",
+                "type": "Boolean"
+              }
+            }
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjects"
+            }
+          }
+        }
+      },
+      {
+        "name": "Lookup_Source_Schema_Name",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Last_Value_Loaded",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderStoredProcedureName": "[nuuMeta].[GetSourceSchemaName]",
+            "storedProcedureParameters": {
+              "SourceConnectionName": {
+                "value": "Nuudl_NetCracker",
+                "type": "String"
+              },
+              "SourceCatalogName": {
+                "value": "dai",
+                "type": "String"
+              },
+              "SourceSchemaName": {
+                "value": "netcracker",
+                "type": "String"
+              },
+              "SourceTableName": {
+                "value": "cpmnrmltroubleticket",
+                "type": "String"
+              }
+            }
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjects"
+            }
+          }
+        }
+      },
+      {
+        "name": "Copy_cpmnrmltroubleticket",
+        "type": "Copy",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Source_Schema_Name",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "AzureDatabricksDeltaLakeSource",
+            "query": {
+              "value": "\r\nSELECT \r\n`approval_reason` \r\n,`closed_by_date` \r\n,`closed_by_user_id` \r\n,`closed_by_user_name` \r\n,`created_by_date` \r\n,`created_by_user_id` \r\n,`created_by_user_name` \r\n,`description` \r\n,`first_resolution_date` \r\n,`is_solution_visible_for_contact` \r\n,`last_approved_by_date` \r\n,`last_approved_by_user_id` \r\n,`last_approved_by_user_name` \r\n,`last_updated_by_date` \r\n,`last_updated_by_user_id` \r\n,`last_updated_by_user_name` \r\n,`problem_start_date` \r\n,`resolution_reason` \r\n,`resolved_by_date` \r\n,`resolved_by_user_id` \r\n,`resolved_by_user_name` \r\n,`solution` \r\n,`ticket_category` \r\n,`version` \r\n,`channel_id` \r\n,`expected_resolution_date` \r\n,`external_id` \r\n,`priority` \r\n,`requested_resolution_date` \r\n,`severity` \r\n,`status` \r\n,`status_change_date` \r\n,`status_change_reason` \r\n,`ticket_type` \r\n,`id` \r\n,`name` \r\n,`group_assignee_id` \r\n,`group_assignee_name` \r\n,`user_assignee_id` \r\n,`user_assignee_name` \r\n,`reporter_id` \r\n,`reporter_name` \r\n,`project_id` \r\n,`project_name` \r\n,`group_assignee_type` \r\n,`reporter_type` \r\n,`user_assignee_type` \r\n,`closure_code` \r\n,`is_deleted` \r\n,`last_modified_ts` \r\n,`extended_attributes_json_DPT_RETRY` \r\n,`extended_attributes_json__corrupt_record` \r\n,`extended_attributes_json_accountNumber` \r\n,`extended_attributes_json_billId` \r\n,`extended_attributes_json_changeDate` \r\n,`extended_attributes_json_change_id` \r\n,`extended_attributes_json_commitmentFee` \r\n,`extended_attributes_json_cpmChannel` \r\n,`extended_attributes_json_deviceModel` \r\n,`extended_attributes_json_distributionChannel` \r\n,`extended_attributes_json_earlyTerminationFee` \r\n,`extended_attributes_json_ichOrderId` \r\n,`extended_attributes_json_imei` \r\n,`extended_attributes_json_internationalPhoneNumber` \r\n,`extended_attributes_json_lastExecutedStep` \r\n,`extended_attributes_json_legacyReturnOption` \r\n,`extended_attributes_json_noInWarehouse` \r\n,`extended_attributes_json_parentTicketCategory` \r\n,`extended_attributes_json_portedTo` \r\n,`extended_attributes_json_purchaseDate` \r\n,`extended_attributes_json_reason` \r\n,`extended_attributes_json_receiptNumber` \r\n,`extended_attributes_json_refundAmount` \r\n,`extended_attributes_json_refundOption` \r\n,`extended_attributes_json_registrationNumber` \r\n,`extended_attributes_json_returnBy` \r\n,`extended_attributes_json_returnMethod` \r\n,`extended_attributes_json_rphRefundLink` \r\n,`extended_attributes_json_serialNumber` \r\n,`extended_attributes_json_storeId` \r\n,`extended_attributes_json_trackingNumber` \r\n,`tags_json__corrupt_record` \r\n,`total_disputed_amount_json__corrupt_record` \r\n,`total_disputed_amount_json_amount` \r\n,`total_disputed_amount_json_currencyCode` \r\n,`total_disputed_amount_json_exponent` \r\n,`total_initial_amount_json__corrupt_record` \r\n,`total_initial_amount_json_amount` \r\n,`total_initial_amount_json_currencyCode` \r\n,`total_initial_amount_json_exponent` \r\n,`extended_attributes_json_refundParameters_json_POSPaymentBreakdown` \r\n,`extended_attributes_json_refundParameters_json_billingAccountId` \r\n,`extended_attributes_json_refundParameters_json_paymentId` \r\n,`extended_attributes_json_refundParameters_json_paymentProvider` \r\n,`extended_attributes_json_refundParameters_json_refundId` \r\n,`extended_attributes_json_refundParameters_json_refundPaymentId` \r\n,`extended_attributes_json_rentedEquipmentToReturn_json_id` \r\n,`extended_attributes_json_rentedEquipmentToReturn_json_name` \r\n,`extended_attributes_json_rentedEquipmentToReturn_json_returnOption` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_StandardizedProcessedTimestamp` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n,`NUUDL_CuratedSourceFilename` \r\n \r\nFROM dai.netcracker.`cpmnrmltroubleticket`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "type": "Expression"
+            },
+            "exportSettings": {
+              "type": "AzureDatabricksDeltaLakeExportCommand"
+            }
+          },
+          "sink": {
+            "type": "AzureSqlSink",
+            "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+            "preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[cpmnrmltroubleticket]"
+          },
+          "enableStaging": true,
+          "stagingSettings": {
+            "linkedServiceName": {
+              "referenceName": "datalakest01exploration",
+              "type": "LinkedServiceReference"
+            },
+            "path": "adfstage"
+          }
+        },
+        "inputs": [
+          {
+            "referenceName": "Nuudl_NetCracker_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "dai.netcracker.cpmnrmltroubleticket"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "[sourceNuudlNetCracker].[cpmnrmltroubleticket]"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Merge_To_History",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Copy_cpmnrmltroubleticket",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
+          "storedProcedureParameters": {
+            "ExtractTable": {
+              "value": "sourceNuudlNetCracker.cpmnrmltroubleticket",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Set_Last_Value_Loaded",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Merge_To_History",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[SetLastLoadedValue]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "Nuudl_NetCracker",
+              "type": "String"
+            },
+            "SourceCatalogName": {
+              "value": "dai",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "netcracker",
+              "type": "String"
+            },
+            "SourceTableName": {
+              "value": "cpmnrmltroubleticket",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "False",
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    }
+  }
+}
