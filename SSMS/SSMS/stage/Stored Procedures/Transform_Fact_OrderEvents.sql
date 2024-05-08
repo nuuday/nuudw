@@ -3,23 +3,11 @@ CREATE PROCEDURE [stage].[Transform_Fact_OrderEvents]
 	@JobIsIncremental BIT			
 AS 
 
--- Prepare billing contact data for next query
-DROP TABLE IF EXISTS #billing_contact_details
-SELECT DISTINCT
-	cm.id Householdkey,
-	cma.ref_id AS customer_id,
-	CONCAT( ISNULL( cm.street1, '' ), ';', ISNULL( cm.street2, '' ), ';', ISNULL( cm.postcode, '' ), ';', ISNULL( cm.city, '' ) ) AddressBillingKey
-INTO #billing_contact_details
-FROM [sourceNuudlNetCrackerView].[cimcontactmediumassociation_History] cma
-INNER JOIN [sourceNuudlNetCrackerView].[cimcontactmedium_History] cm
-	ON cm.id = cma.contact_medium_id
-		AND cm.is_current = 1
-		AND type_of_contact_method = 'Billing contact details'
-WHERE
-	cma.is_current = 1
-
-CREATE UNIQUE CLUSTERED INDEX CLIX ON #billing_contact_details (customer_id)
-
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+-- 1. Collecting core events based items history (product instance) states together with dimensional data
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
 
 -- Fetch first part of data connected to items history 
 DROP TABLE IF EXISTS #all_lines
@@ -75,10 +63,14 @@ LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductfamily_History] pf
 LEFT JOIN sourceNuudlNetCrackerView.ibsnrmlcharacteristic_History tec
 	ON tec.product_instance_id = i.id AND tec.name = 'Technology'
 WHERE 1=1
+	
+	/* 2024-05-07 Removed this part due to unintended removal of completed hardware states.   */
 	-- Compensate for duplicate rows
-	AND CASE WHEN i.state = 'COMPLETED' THEN item_json_accountRef_json_refId ELSE '' END IS NOT NULL 
+	--AND CASE WHEN i.state = 'COMPLETED' THEN item_json_accountRef_json_refId ELSE '' END IS NULL 
+	
 	--we are excluding those subscriptions because of data issues due to testing activities in production
 	AND i.id NOT IN ('b5beb355-0379-41f2-aaad-47297c9548cb', '39476242-7ab7-467e-b88a-b3968a8cb7e9') 
+	
 
 -- Get employees who either added or cancelled the quote
 DROP TABLE IF EXISTS #quote_employees
@@ -101,8 +93,25 @@ LEFT JOIN sourceNuudlNetCrackerView.worklogitems_History qcancelled
 LEFT JOIN sourceNuudlNetCrackerView.orgchartteammember_History ucancelled
 	ON ucancelled.idm_user_id = qcancelled.changedby_json_userId
 
+-- Prepare billing contact data for next query
+DROP TABLE IF EXISTS #billing_contact_details
+SELECT DISTINCT
+	cm.id Householdkey,
+	cma.ref_id AS customer_id,
+	CONCAT( ISNULL( cm.street1, '' ), ';', ISNULL( cm.street2, '' ), ';', ISNULL( cm.postcode, '' ), ';', ISNULL( cm.city, '' ) ) AddressBillingKey
+INTO #billing_contact_details
+FROM [sourceNuudlNetCrackerView].[cimcontactmediumassociation_History] cma
+INNER JOIN [sourceNuudlNetCrackerView].[cimcontactmedium_History] cm
+	ON cm.id = cma.contact_medium_id
+		AND cm.is_current = 1
+		AND type_of_contact_method = 'Billing contact details'
+WHERE
+	cma.is_current = 1
 
--- Fetch second part
+CREATE UNIQUE CLUSTERED INDEX CLIX ON #billing_contact_details (customer_id)
+
+
+-- Fetch second part of data connected to items history 
 -- Split in two queries due to performance
 DROP TABLE IF EXISTS #all_lines_2
 SELECT 
@@ -168,7 +177,7 @@ WHERE IsTLO = 0
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Filter out duplicate events. 
--- When a TLO appears several times due to changes on SLO level
+-- Duplicates occur when a TLO appears several times due to changes on SLO level
 -----------------------------------------------------------------------------------------------------------------------------
 DROP TABLE IF EXISTS #all_lines_filtered
 SELECT *
@@ -206,6 +215,106 @@ FROM (
 		--AND SubscriptionKey ='b5f00442-6c45-4c82-93fe-b5394ee207ee'
 ) q
 --ORDER BY active_from_CET, IsTLO DESC
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+-- 2. Adding artificial events that aren't based on the product instance states
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------
+-- Add planned disconnected events
+-----------------------------------------------------------------------------------------------------------------------------
+
+-- Get ticket data
+DROP TABLE IF EXISTS #terminations
+SELECT ticket_type,
+	b.id AS SubscriptionKey,
+	a.created_by_date AS PlannedDate,
+	CAST(a.extended_attributes_json_changeDate as datetime2) AS ExpectedDate,
+	status_change_date,
+	a.status,
+	b.type,
+	c.name AS EmployeeKey,
+	extended_attributes_json_distributionChannel AS SalesChannelKey
+INTO #terminations
+FROM [sourceNuudlNetCrackerView].[cpmnrmltroubleticket_History] a
+INNER JOIN [sourceNuudlNetCrackerView].[cpmnrmltroubleticketrelatedentityref_History] b
+	ON a.id = b.trouble_ticket_id
+LEFT JOIN [sourceNuudlNetCrackerView].orgchartteammember_History c ON c.idm_user_id = a.created_by_user_id
+WHERE 
+	a.ticket_type IN ('TERMINATION_REQUEST','PORT_OUT_REQUEST')
+	AND b.type = 'Product'
+
+DROP TABLE IF EXISTS #termination_lines
+SELECT DISTINCT
+	t.type,
+	CASE 
+		WHEN e.OrderEventName= 'Offer Disconnected Planned' THEN CAST(t.PlannedDate AS date)
+		WHEN e.OrderEventName= 'Offer Disconnected Expected' THEN CAST(t.ExpectedDate AS date)
+		WHEN e.OrderEventName= 'Offer Disconnected Cancelled' THEN CAST(t.status_change_date AS date)
+	END AS CalendarKey,
+	CASE 
+		WHEN e.OrderEventName= 'Offer Disconnected Planned' THEN LEFT( CONVERT( VARCHAR, t.PlannedDate, 108 ), 8 ) 
+		WHEN e.OrderEventName= 'Offer Disconnected Expected' THEN LEFT( CONVERT( VARCHAR, t.ExpectedDate, 108 ), 8 ) 
+		WHEN e.OrderEventName= 'Offer Disconnected Cancelled' THEN LEFT( CONVERT( VARCHAR, t.status_change_date, 108 ), 8 ) 
+	END AS TimeKey,
+	al.ProductKey, 
+	al.ProductParentKey,
+	al.CustomerKey,
+	al.SubscriptionGroup,
+	al.SubscriptionKey,
+	'' AS QuoteKey,
+	e.OrderEventKey,
+	e.OrderEventName,
+	al.ProductType,
+	al.ProductName,
+	t.SalesChannelKey,
+	al.BillingAccountKey,
+	al.PhoneDetailKey,
+	al.AddressBillingKey,
+	al.HouseHoldKey,
+	al.TechnologyKey,
+	t.EmployeeKey,
+	al.IsTLO,
+	null active_from_CET
+INTO #termination_lines
+FROM (
+	SELECT
+		al.ProductKey, 
+		al.ProductParentKey,
+		al.CustomerKey,
+		al.SubscriptionGroup,
+		al.SubscriptionKey,
+		al.ProductType,
+		al.ProductName,
+		al.BillingAccountKey,
+		al.PhoneDetailKey,
+		al.AddressBillingKey,
+		al.HouseHoldKey,
+		al.TechnologyKey,
+		al.IsTLO,
+		al.active_from_CET AS ValidFrom,
+		ISNULL( LEAD(al.active_from_CET,1) OVER (PARTITION BY SubscriptionKey ORDER BY al.active_from_CET) , '9999-12-31') ValidTo
+	FROM #all_lines_filtered_2 al
+	WHERE 1=1
+		--AND SubscriptionKey = '2a1e670d-fe4e-404d-aa05-1db884cb6371'
+		AND al.CurrentState IN ( 'ACTIVE')
+		AND al.IsTLO = 1
+) al
+INNER JOIN #terminations t ON t.SubscriptionKey = al.SubscriptionKey AND t.PlannedDate BETWEEN al.ValidFrom AND al.ValidTo
+CROSS APPLY (
+	SELECT *
+	FROM dim.OrderEvent 
+	WHERE 
+		OrderEventName = 'Offer Disconnected Planned'
+		OR CASE WHEN t.Status <> 'CANCELLED' THEN 'Offer Disconnected Expected' END = OrderEventName
+		OR CASE WHEN t.Status = 'CANCELLED' THEN 'Offer Disconnected Cancelled' END = OrderEventName
+) e
+WHERE 1=1
+
+
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Add RGU events
@@ -259,8 +368,14 @@ WHERE CalendarKey IS NULL
 -----------------------------------------------------------------------------------------------------------------------------
 DROP TABLE IF EXISTS #commitment_lines
 SELECT 
-	CAST(al.expiration_date as date) AS CalendarKey,
-	LEFT( CONVERT( VARCHAR, al.expiration_date, 108 ), 8 )  AS TimeKey,
+	CASE 
+		WHEN e.OrderEventName IN ('Offer Commitment End') THEN CAST(al.expiration_date as date)
+		WHEN e.OrderEventName IN ('Offer Commitment Start','Offer Commitment Broken') THEN CAST(al.active_from_CET as date)
+	END CalendarKey,
+	CASE 
+		WHEN e.OrderEventName IN ('Offer Commitment End')THEN LEFT( CONVERT( VARCHAR, al.expiration_date, 108 ), 8 )
+		WHEN e.OrderEventName IN ('Offer Commitment Start','Offer Commitment Broken') THEN LEFT( CONVERT( VARCHAR, al.active_from_CET, 108 ), 8 )
+	END AS TimeKey,
 	tlo.ProductKey, 
 	tlo.ProductParentKey,
 	al.CustomerKey,
@@ -285,7 +400,10 @@ FROM #all_lines_filtered_2 al
 CROSS APPLY (
 	SELECT *
 	FROM dim.OrderEvent 
-	WHERE OrderEventName = 'Offer Commitment End'
+	WHERE 1=2
+		OR al.CurrentState = 'ACTIVE' AND OrderEventName = 'Offer Commitment Start'
+		OR al.CurrentState = 'ACTIVE' AND OrderEventName = 'Offer Commitment End'
+		OR al.CurrentState = 'DISCONNECTED' AND OrderEventName = 'Offer Commitment Broken'
 ) e
 CROSS APPLY (
 	SELECT TOP 1 ProductKey, ProductParentKey, ProductName, ProductType, TechnologyKey, IsTLO
@@ -297,17 +415,63 @@ CROSS APPLY (
 	ORDER BY active_from_CET DESC
 ) tlo
 WHERE 1=1
-	AND al.CurrentState = 'ACTIVE'
 	AND al.ProductName = 'Commitment'
-	AND NOT EXISTS (
-		SELECT * 
-		FROM #all_lines_filtered 
-		WHERE SubscriptionKey = al.SubscriptionKey 
-			AND ProductKey = al.ProductKey
-			AND OrderEventName = 'Offer Disconnected'
-			AND active_from_CET >= al.active_from_CET
-		)
-	--AND al.SubscriptionKey = '2e3e5b05-c86a-4e47-a731-eea2cab36dcf'
+	--AND al.SubscriptionKey = '4151dd2b-5599-473e-860f-33d5c24b4a6c'
+
+
+DROP TABLE IF EXISTS #hardware_commitment_lines
+SELECT 
+	CASE 
+		WHEN e.OrderEventName IN ('Hardware Commitment End') THEN CAST(al.expiration_date as date)
+		WHEN e.OrderEventName IN ('Hardware Commitment Start','Hardware Commitment Broken') THEN CAST(al.active_from_CET as date)
+	END CalendarKey,
+	CASE 
+		WHEN e.OrderEventName IN ('Hardware Commitment End')THEN LEFT( CONVERT( VARCHAR, al.expiration_date, 108 ), 8 )
+		WHEN e.OrderEventName IN ('Hardware Commitment Start','Hardware Commitment Broken') THEN LEFT( CONVERT( VARCHAR, al.active_from_CET, 108 ), 8 )
+	END AS TimeKey,
+	tlo.ProductKey, 
+	tlo.ProductParentKey,
+	al.CustomerKey,
+	al.SubscriptionGroup,
+	al.SubscriptionKey,
+	al.QuoteKey,
+	e.OrderEventKey,
+	e.OrderEventName,
+	tlo.ProductType,
+	tlo.ProductName,
+	al.SalesChannelKey,
+	al.BillingAccountKey,
+	al.PhoneDetailKey,
+	al.AddressBillingKey,
+	al.HouseHoldKey,
+	tlo.TechnologyKey,
+	al.EmployeeKey,
+	tlo.IsTLO,
+	al.active_from_CET
+INTO #hardware_commitment_lines
+FROM #all_lines_filtered_2 al
+CROSS APPLY (
+	SELECT *
+	FROM dim.OrderEvent 
+	WHERE 1=2
+		OR al.CurrentState = 'ACTIVE' AND OrderEventName = 'Hardware Commitment Start'
+		OR al.CurrentState = 'ACTIVE' AND OrderEventName = 'Hardware Commitment End'
+		OR al.CurrentState = 'DISCONNECTED' AND OrderEventName = 'Hardware Commitment Broken'
+) e
+CROSS APPLY (
+	SELECT TOP 1 ProductKey, ProductParentKey, ProductName, ProductType, TechnologyKey, IsTLO
+	FROM #all_lines_filtered
+	WHERE SubscriptionKey = al.SubscriptionKey 
+		AND active_from_CET <= al.active_from_CET
+		AND CurrentState = 'COMPLETED'
+		AND IsTLO = 0
+		AND ProductType IN ('Handsets')
+	ORDER BY active_from_CET DESC
+) tlo
+WHERE 1=1
+	AND al.ProductName = 'Commitment'
+--	AND al.SubscriptionKey = '2a1e670d-fe4e-404d-aa05-1db884cb6371'
+--ORDER BY ProductName,1
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Add events do to change in product type and product
@@ -532,6 +696,13 @@ FROM (
 	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, IsTLO, 1 Quantity 
 		,active_from_CET
+	FROM #termination_lines
+	
+	UNION ALL
+
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, IsTLO, 1 Quantity 
+		,active_from_CET
 	FROM #migration_lines
 	
 	UNION ALL
@@ -568,6 +739,13 @@ FROM (
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #commitment_lines
+	
+	UNION ALL
+
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, IsTLO, 1 Quantity 
+		,active_from_CET
+	FROM #hardware_commitment_lines
 	
 	UNION ALL
 
@@ -623,19 +801,21 @@ WHERE 1=1
 /*
 SELECT *
 FROM #all_lines
-WHERE SubscriptionKey = '1ed59543-b526-4e7f-a069-5e5c03fd95d4'
+WHERE SubscriptionKey = '7743fb6b-8775-4349-910b-a3ec64275a64'
 	AND IsTLO=1
 ORDER By 2, 3, IsTlo DESC
 
---SELECT *
---FROM #all_lines_filtered
---WHERE SubscriptionKey = 'b5f00442-6c45-4c82-93fe-b5394ee207ee'
+SELECT *
+FROM #all_lines_filtered
+WHERE 1=1
+	--AND SubscriptionKey = '7743fb6b-8775-4349-910b-a3ec64275a64'
 --	AND IsTLO=1
---ORDER By 2, 3, IsTlo DESC
+	AND PhoneDetailKey='4551717273'
+ORDER By 2, 3, IsTlo DESC
 
 SELECT  *
 FROM #result
-WHERE SubscriptionKey = '2e3e5b05-c86a-4e47-a731-eea2cab36dcf'
+WHERE SubscriptionKey = '2a1e670d-fe4e-404d-aa05-1db884cb6371'
 	AND IsTLO=1
 --	AND OrderEventName IN ('Offer Disconnected')
 ORDER By SubscriptionGroup, 1, 2, IsTlo DESC, OrderEventKey
