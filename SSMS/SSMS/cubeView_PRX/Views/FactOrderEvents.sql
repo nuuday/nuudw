@@ -18,6 +18,7 @@ SELECT
 	[HouseHoldID],
 	TechnologyID,
 	EmployeeID,
+	TicketID,
 	[IsTLO],
 	[Quantity],
 	[NetAmount],

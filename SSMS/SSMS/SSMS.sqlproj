@@ -579,7 +579,6 @@
     <Build Include="dim\Tables\Ticket.sql" />
     <Build Include="dimView\Views\Ticket.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_Ticket.sql" />
-    <Build Include="stage\Stored Procedures\Transform_Dim_ContentGenre.sql" />
     <Build Include="martView_PRX\Views\Ticket.sql" />
     <Build Include="cubeView_PRX\Views\Ticket.sql" />
   </ItemGroup>

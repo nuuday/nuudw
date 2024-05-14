@@ -15,6 +15,7 @@
     [HouseHoldID]      INT             DEFAULT ((-1)) NOT NULL,
     [TechnologyID]     INT             DEFAULT ((-1)) NOT NULL,
     [EmployeeID]       INT             DEFAULT ((-1)) NOT NULL,
+    TicketID       INT             DEFAULT ((-1)) NOT NULL,
     [IsTLO]            INT             NULL,
     [Quantity]         INT             NULL,
     [NetAmount]        DECIMAL (19, 4) NULL,
