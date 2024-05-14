@@ -301,6 +301,18 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "DIM_0_Employee",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "DIM_0_Ticket",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -318,6 +330,8 @@
 			{
 				"name": "EXT_0_Nuudl_NetCracker",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -349,6 +363,52 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "DIM_0_Technology",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DIM_0_Employee",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DIM_0_Employee",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DIM_0_Ticket",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DIM_0_Ticket",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
