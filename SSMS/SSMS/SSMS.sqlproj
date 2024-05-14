@@ -573,6 +573,8 @@
     <Build Include="sourceNuudlNetCracker\Tables\cpmnrmltroubleticket.sql" />
     <Build Include="sourceNuudlNetCrackerView\Views\cpmnrmltroubleticketrelatedentityref_History.sql" />
     <Build Include="sourceNuudlNetCrackerView\Views\cpmnrmltroubleticket_History.sql" />
+    <Build Include="martView_PRX\Views\DimProductHardware.sql" />
+    <Build Include="cubeView_PRX\Views\DimProductHardware.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

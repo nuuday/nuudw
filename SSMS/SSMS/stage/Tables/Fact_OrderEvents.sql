@@ -3,6 +3,7 @@
     [TimeKey]           TIME (0)        NULL,
     [ProductKey]        NVARCHAR (36)   NULL,
     [ProductParentKey]  NVARCHAR (36)   NULL,
+    [ProductHardwareKey]  NVARCHAR (36)   NULL,
     [CustomerKey]       NVARCHAR (12)   NULL,
     [SubscriptionKey]   NVARCHAR (36)   NULL,
     [QuoteKey]          NVARCHAR (10)   NULL,

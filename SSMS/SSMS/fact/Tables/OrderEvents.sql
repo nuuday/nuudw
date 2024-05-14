@@ -3,6 +3,7 @@
     [TimeID]           INT             DEFAULT ((-1)) NOT NULL,
     [ProductID]        INT             DEFAULT ((-1)) NOT NULL,
     [ProductParentID]  INT             DEFAULT ((-1)) NOT NULL,
+    [ProductHardwareID]  INT           DEFAULT ((-1)) NOT NULL,
     [CustomerID]       INT             DEFAULT ((-1)) NOT NULL,
     [SubscriptionID]   INT             DEFAULT ((-1)) NOT NULL,
     [QuoteID]          INT             DEFAULT ((-1)) NOT NULL,

@@ -5,6 +5,7 @@ SELECT
 	,[TimeID]
 	,[ProductID]
 	,[ProductParentID]
+	,[ProductHardwareID]
 	,[CustomerID]
 	,[SubscriptionID]
 	,[QuoteID]
