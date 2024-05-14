@@ -575,6 +575,11 @@
     <Build Include="sourceNuudlNetCrackerView\Views\cpmnrmltroubleticket_History.sql" />
     <Build Include="martView_PRX\Views\DimProductHardware.sql" />
     <Build Include="cubeView_PRX\Views\DimProductHardware.sql" />
+    <Build Include="stage\Tables\Dim_Ticket.sql" />
+    <Build Include="dim\Tables\Ticket.sql" />
+    <Build Include="dimView\Views\Ticket.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_Ticket.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_ContentGenre.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
