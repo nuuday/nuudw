@@ -1,5 +1,7 @@
 ﻿
 
+
+
 CREATE VIEW [martView_PRX].[DimAddress]
 AS
 SELECT 
@@ -11,5 +13,8 @@ SELECT
 	[City],
 	[Floor],
 	Suite,
-	NAMID
+	NAMID,
+	DarId,
+	MadId,
+	KvhxId
 FROM [dimView].[Address]

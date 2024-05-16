@@ -8,6 +8,9 @@
     [Floor]           NVARCHAR (10)  NULL,
     [Suite]           NVARCHAR (10)  NULL,
     [NAMID]           NVARCHAR (10)  NULL,
+    [DarId]           NVARCHAR (32)  NULL,
+    [MadId]           NVARCHAR (32)  NULL,
+    [KvhxId]          NVARCHAR (20)  NULL,
     [DWIsCurrent]     BIT            NOT NULL,
     [DWValidFromDate] DATETIME2 (0)  NOT NULL,
     [DWValidToDate]   DATETIME2 (0)  NOT NULL,
@@ -17,6 +20,8 @@
     PRIMARY KEY CLUSTERED ([AddressID] ASC),
     CONSTRAINT [NCI_Address] UNIQUE NONCLUSTERED ([AddressKey] ASC, [DWValidFromDate] ASC)
 );
+
+
 
 
 

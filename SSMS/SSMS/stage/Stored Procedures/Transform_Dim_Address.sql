@@ -15,10 +15,10 @@ SELECT DISTINCT
 	CONCAT( 
 		ISNULL( cm.Street1, '' ), 
 		';', ISNULL( cm.Street2, '' ), 
-		';', ISNULL( cm.Postcode, '' ), 
-		';', ISNULL( cm.City, '' ), 
 		';', ISNULL( cm.[extended_attributes_json_floor], '' ), 
-		';', ISNULL( cm.[extended_attributes_json_suite], '' ) 
+		';', ISNULL( cm.[extended_attributes_json_suite], '' ) , 
+		';', ISNULL( cm.Postcode, '' ), 
+		';', ISNULL( cm.City, '' )
 	) AddressKey,
 	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.Street1, '' ), '?' ) ) AS Street1,
 	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.Street2, '' ), '?' ) ) AS Street2,
@@ -26,9 +26,20 @@ SELECT DISTINCT
 	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.City, '' ), '?' ) ) AS City,
 	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.[extended_attributes_json_floor], '' ), '?' ) ) AS [Floor],
 	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.[extended_attributes_json_suite], '' ), '?' ) ) AS Suite,
-	CONVERT( NVARCHAR(10), ISNULL( NULLIF( cm.extended_attributes_json_namId, '' ), '?' ) )  AS NAMID
+	CONVERT( NVARCHAR(10), ISNULL( CAST(nam.sub_address_id as nvarchar), '?' ) )  AS NAMID,
+	CONVERT( NVARCHAR(32), ISNULL( CAST(nam.sub_address_dar_id as nvarchar), '?' ) )  AS DarID,
+	CONVERT( NVARCHAR(32), ISNULL( CAST(nam.sub_address_mad_id as nvarchar), '?' ) )  AS MadID,
+	CONVERT( NVARCHAR(20), ISNULL( CAST(nam.sub_address_kvhx_id as nvarchar), '?' ) )  AS KvhxID
 INTO #gross_list
 FROM [sourceNuudlNetCrackerView].[cimcontactmedium_History] cm
+LEFT JOIN SourceNuudlNAMView.nam_History nam 
+	ON nam.address_city = cm.city
+		AND nam.address_postcode = cm.postcode
+		AND nam.address_street_name = cm.street1
+		AND CONCAT(nam.address_street_no, coalesce(nam.address_street_no_suffix,'')) = cm.street2
+		AND coalesce(nam.sub_address_floor,'') = coalesce(cm.extended_attributes_json_floor,'')
+		AND coalesce(nam.sub_address_suite,'') = coalesce(cm.extended_attributes_json_suite,'')
+		AND nam.sub_address_deleted = 0
 WHERE
 	cm.is_current = 1
 	AND cm.type_of_contact_method = 'Billing contact details'
@@ -36,67 +47,27 @@ WHERE
 	CONCAT( 
 		ISNULL( cm.Street1, '' ), 
 		ISNULL( cm.Street2, '' ), 
-		ISNULL( cm.Postcode, '' ), 
-		ISNULL( cm.City, '' ), 
 		ISNULL( cm.[extended_attributes_json_floor], '' ), 
-		ISNULL( cm.[extended_attributes_json_suite], '' ) 
+		ISNULL( cm.[extended_attributes_json_suite], '' ) , 
+		ISNULL( cm.Postcode, '' ), 
+		ISNULL( cm.City, '' )
 	) <> ''
-
-
-
+	
 -------------------------------------------------------------------------------
--- Identify errors between addresses and NAMIDs
+-- Identify errors 
 -------------------------------------------------------------------------------
 
 DROP TABLE IF EXISTS #error_list
 CREATE TABLE #error_list (
 	cimcontactmedium_id nvarchar(36),
-	NAMID NVARCHAR(10),
-	ErrorMessageId int,
 	ErrorMessage nvarchar(100)
 )
 
-
--- Identify IDs with no NAMID, eventhough an ID with the same address has an NAMID
-INSERT INTO #error_list ( cimcontactmedium_id, NAMID, ErrorMessageId, ErrorMessage )
-SELECT cimcontactmedium_id, NAMID, 1, 'Seems to be missing an NAMID'
+INSERT INTO #error_list (cimcontactmedium_id, ErrorMessage)
+SELECT cimcontactmedium_id, 'NAMID not found in master data from NAM'
 FROM #gross_list
-WHERE 
-	AddressKey IN (
-		SELECT AddressKey--, STRING_AGG(NAMID, ' | ') NAMIDs
-		FROM #gross_list
-		--WHERE NAMID <> '?'
-		GROUP BY AddressKey
-		HAVING COUNT(DISTINCT NAMID) = 2 AND MIN(NAMID) = '?'
-	)
-	AND NAMID = '?' 
+WHERE NAMID ='?'
 
--- Identify IDs with address that appear to have multiple NAMIDs associated
-INSERT INTO #error_list ( cimcontactmedium_id, NAMID, ErrorMessageId, ErrorMessage )
-SELECT cimcontactmedium_id, NAMID, 2, 'The address have multiple NAMIDs associated'
-FROM #gross_list
-WHERE 
-	AddressKey IN (
-		SELECT AddressKey--, STRING_AGG(NAMID, ' | ') NAMIDs
-		FROM #gross_list
-		WHERE NAMID <> '?'
-		GROUP BY AddressKey
-		HAVING COUNT(DISTINCT NAMID) > 1
-	)
-
-
--- Identify IDs with NAMIDs that appear to have multiple addresses associated
-INSERT INTO #error_list ( cimcontactmedium_id, NAMID, ErrorMessageId, ErrorMessage )
-SELECT cimcontactmedium_id, NAMID, 3, 'The NAMID have multiple addresses associated'
-FROM #gross_list
-WHERE 
-	NAMID IN (
-		SELECT NAMID--, STRING_AGG(AddressKey, ' | ') AddressKeys
-		FROM #gross_list
-		WHERE NAMID <> '?'
-		GROUP BY NAMID
-		HAVING COUNT(DISTINCT AddressKey) > 1
-	)
 
 -- Saving the latest result in an error table
 TRUNCATE TABLE [sourceNuudlNetCracker].[cimcontactmedium_History_Error] 
@@ -107,14 +78,13 @@ INNER JOIN #error_list el ON el.cimcontactmedium_id = cm.id
 WHERE cm.NUUDL_IsCurrent = 1
 
 
-
 -------------------------------------------------------------------------------
 -- Update stage table with addresses and excluding NAMIDs that appear in the error list
 -------------------------------------------------------------------------------
 
 TRUNCATE TABLE [stage].[Dim_Address]
 
-INSERT INTO stage.[Dim_Address] WITH (TABLOCK) (AddressKey, Street1, Street2, Postcode, City, [Floor], Suite, NAMID)
+INSERT INTO stage.[Dim_Address] WITH (TABLOCK) (AddressKey, Street1, Street2, Postcode, City, [Floor], Suite, NAMID, DarID, MadID, KvhxID)
 SELECT DISTINCT
 	AddressKey,
 	Street1,
@@ -123,10 +93,8 @@ SELECT DISTINCT
 	City,
 	[Floor],
 	Suite,
-	CASE 
-		WHEN EXISTS (SELECT * FROM #error_list WHERE NAMID = gl.NAMID AND ErrorMessageId IN (2,3)) THEN '?' /* Remove possible wrong NAMIDs */
-		ELSE gl.NAMID
-	END AS NAMID
+	NAMID,
+	DarID,
+	MadID,
+	KvhxID
 FROM #gross_list gl
-WHERE NOT EXISTS (SELECT * FROM #error_list WHERE cimcontactmedium_id = gl.cimcontactmedium_id AND ErrorMessageId IN (1)) /* Excluding null rows */ 
-	--AND AddressKey = 'Abildvej;12;6800;Varde;;'

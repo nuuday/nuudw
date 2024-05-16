@@ -1,5 +1,7 @@
 ﻿
 
+
+
 CREATE VIEW [cubeView_PRX].[DimAddress]
 AS
 SELECT 
@@ -12,4 +14,7 @@ SELECT
 	[Floor],
 	Suite,
 	NAMID
+	DarId,
+	MadId,
+	KvhxId
 FROM [dimView].[Address]

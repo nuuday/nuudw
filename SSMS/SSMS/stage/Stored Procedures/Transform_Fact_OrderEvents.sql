@@ -98,7 +98,14 @@ DROP TABLE IF EXISTS #billing_contact_details
 SELECT DISTINCT
 	cm.id Householdkey,
 	cma.ref_id AS customer_id,
-	CONCAT( ISNULL( cm.street1, '' ), ';', ISNULL( cm.street2, '' ), ';', ISNULL( cm.postcode, '' ), ';', ISNULL( cm.city, '' ) ) AddressBillingKey
+	CONCAT( 
+		ISNULL( cm.Street1, '' ), 
+		';', ISNULL( cm.Street2, '' ), 
+		';', ISNULL( cm.[extended_attributes_json_floor], '' ), 
+		';', ISNULL( cm.[extended_attributes_json_suite], '' ) , 
+		';', ISNULL( cm.Postcode, '' ), 
+		';', ISNULL( cm.City, '' )
+	) AddressBillingKey
 INTO #billing_contact_details
 FROM [sourceNuudlNetCrackerView].[cimcontactmediumassociation_History] cma
 INNER JOIN [sourceNuudlNetCrackerView].[cimcontactmedium_History] cm
