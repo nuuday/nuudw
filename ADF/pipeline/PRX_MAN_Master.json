@@ -34,6 +34,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "EXT_0_NuuDL_NAM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -330,8 +336,6 @@
 			{
 				"name": "EXT_0_Nuudl_NetCracker",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -409,6 +413,22 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "DIM_0_Ticket",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EXT_0_NuuDL_NAM",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_0_NuuDL_NAM",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
