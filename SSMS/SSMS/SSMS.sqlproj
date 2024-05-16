@@ -581,6 +581,9 @@
     <Build Include="stage\Stored Procedures\Transform_Dim_Ticket.sql" />
     <Build Include="martView_PRX\Views\Ticket.sql" />
     <Build Include="cubeView_PRX\Views\Ticket.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cimcontactmedium_History_Error.sql" />
+    <Build Include="Security\SourceNuudlNAMView.sql" />
+    <Build Include="Security\SourceNuudlNAM.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
