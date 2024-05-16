@@ -1,5 +1,5 @@
 {
-  "name": "EXT_Schema_Nuudl_NAM",
+  "name": "EXT_Schema_NuuDL_NAM",
   "properties": {
     "activities": [
       {
@@ -51,7 +51,7 @@
         "typeProperties": {
           "source": {
             "type": "SqlSource",
-            "sqlReaderQuery": "SELECT \n    SourceCatalogName,\n    SourceSchemaName,\n    SourceObjectName,  \n    [SourceObjectID]\n FROM [nuuMetaView].[SourceObjectDefinitions]\n WHERE SourceConnectionName = 'Nuudl_NAM' AND LockObject = 0"
+            "sqlReaderQuery": "SELECT \n    SourceCatalogName,\n    SourceSchemaName,\n    SourceObjectName,  \n    [SourceObjectID]\n FROM [nuuMetaView].[SourceObjectDefinitions]\n WHERE SourceConnectionName = 'NuuDL_NAM' AND LockObject = 0"
           },
           "dataset": {
             "referenceName": "nuudwsqldb01_DynamicDataset",

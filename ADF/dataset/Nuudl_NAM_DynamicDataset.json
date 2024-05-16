@@ -1,8 +1,8 @@
 {
-  "name": "Nuudl_NAM_DynamicDataset",
+  "name": "NuuDL_NAM_DynamicDataset",
   "properties": {
     "linkedServiceName": {
-      "referenceName": "Nuudl_NAM",
+      "referenceName": "NuuDL_NAM",
       "type": "LinkedServiceReference"
     },
     "parameters": {
