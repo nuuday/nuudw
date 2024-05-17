@@ -39,7 +39,8 @@ SELECT DISTINCT
 	i.active_from_CET,
 	CAST(i.item_json_expirationDate as datetime2(0)) AS expiration_date,
 	SUBSTRING(tec.value_json__corrupt_record,3,LEN(tec.value_json__corrupt_record)-4) TechnologyKey,
-	i.item_json_quoteId
+	i.item_json_quoteId,
+	CASE WHEN po.extended_parameters_json_deviceType IS NULL THEN 0 ELSE 1 END IsHardware
 INTO #all_lines
 FROM [sourceNuudlNetCrackerView].[ibsitemshistory_History] i
 LEFT JOIN dim.OrderEvent ev 
@@ -183,7 +184,7 @@ OUTER APPLY (
 	FROM #all_lines
 	WHERE QuoteKey = al.QuoteKey
 		AND SubscriptionKey = al.SubscriptionKey
-		AND ProductType IN ('Handsets','Premium Accessories', 'Modems', 'Tablets', 'Smart Watches')
+		AND IsHardware = 1
 	ORDER BY active_from_CET ASC
 ) ph
 OUTER APPLY (
@@ -192,7 +193,7 @@ OUTER APPLY (
 	WHERE active_from_CET >= al.active_from_CET
 		AND ProductParentKey = al.ProductKey
 		AND SubscriptionKey = al.SubscriptionKey
-		AND ProductType IN ('Handsets','Premium Accessories', 'Modems', 'Tablets', 'Smart Watches')
+		AND IsHardware = 1
 	ORDER BY active_from_CET ASC
 ) ph2
 --WHERE SubscriptionKey = 'c16998b7-84e7-428b-b498-9984c9d09346'
@@ -259,8 +260,94 @@ FROM (
 -----------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------
 
+
 -----------------------------------------------------------------------------------------------------------------------------
--- Add planned disconnected events
+-- Hardware refunds
+-----------------------------------------------------------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS #hardware_return
+SELECT 
+	a.id TicketKey,
+	a.ticket_category,
+	a.ticket_type,
+	b.id AS SubscriptionKey,
+	a.status_change_date,
+	a.status,
+	b.type,
+	c.name AS EmployeeKey,
+	a.extended_attributes_json_distributionChannel AS SalesChannelKey
+INTO #hardware_return
+FROM [sourceNuudlNetCrackerView].[cpmnrmltroubleticket_History] a
+INNER JOIN [sourceNuudlNetCrackerView].[cpmnrmltroubleticketrelatedentityref_History] b
+	ON a.id = b.trouble_ticket_id
+LEFT JOIN [sourceNuudlNetCrackerView].orgchartteammember_History c ON c.idm_user_id = a.created_by_user_id
+WHERE 1=1
+	AND a.ticket_type = 'OWNED_EQUIPMENT_RETURN'
+	AND a.status IN ('CLOSED', 'REFUND_COMPLETED')
+	AND b.type = 'Product'
+
+
+DROP TABLE IF EXISTS #hardware_return_lines
+SELECT DISTINCT
+	CAST(t.status_change_date AS date) AS CalendarKey,
+	LEFT( CONVERT( VARCHAR, t.status_change_date, 108 ), 8 ) AS TimeKey,
+	al.ProductKey, 
+	al.ProductParentKey,
+	al.ProductHardwareKey,
+	al.CustomerKey,
+	al.SubscriptionGroup,
+	al.SubscriptionKey,
+	al.QuoteKey,
+	e.OrderEventKey,
+	e.OrderEventName,
+	al.ProductType,
+	al.ProductName,
+	t.SalesChannelKey,
+	al.BillingAccountKey,
+	al.PhoneDetailKey,
+	al.AddressBillingKey,
+	al.HouseHoldKey,
+	al.TechnologyKey,
+	t.EmployeeKey,
+	t.TicketKey,
+	al.IsTLO,
+	null active_from_CET
+INTO #hardware_return_lines
+FROM (
+	SELECT
+		al.ProductKey, 
+		al.ProductParentKey,
+		al.ProductHardwareKey,
+		al.CustomerKey,
+		al.SubscriptionGroup,
+		al.SubscriptionKey,
+		al.QuoteKey,
+		al.ProductType,
+		al.ProductName,
+		al.BillingAccountKey,
+		al.PhoneDetailKey,
+		al.AddressBillingKey,
+		al.HouseHoldKey,
+		al.TechnologyKey,
+		al.IsTLO,
+		al.active_from_CET AS ValidFrom,
+		ISNULL( LEAD(al.active_from_CET,1) OVER (PARTITION BY SubscriptionKey ORDER BY al.active_from_CET) , '9999-12-31') ValidTo
+	FROM #all_lines_filtered_2 al
+	WHERE 1=1
+		AND al.CurrentState IN ( 'COMPLETED')
+		AND al.IsTLO = 1
+) al
+INNER JOIN #hardware_return t ON t.SubscriptionKey = al.SubscriptionKey AND t.status_change_date BETWEEN al.ValidFrom AND al.ValidTo
+CROSS APPLY (
+	SELECT *
+	FROM dim.OrderEvent 
+	WHERE 
+		OrderEventName = 'Hardware Return'
+) e
+WHERE 1=1
+
+-----------------------------------------------------------------------------------------------------------------------------
+-- Add planned disconnected events (aka terminations)
 -----------------------------------------------------------------------------------------------------------------------------
 
 -- Get ticket data
@@ -287,7 +374,6 @@ WHERE
 
 DROP TABLE IF EXISTS #termination_lines
 SELECT DISTINCT
-	t.type,
 	CASE 
 		WHEN e.OrderEventName= 'Offer Disconnected Planned' THEN CAST(t.PlannedDate AS date)
 		WHEN e.OrderEventName= 'Offer Disconnected Expected' THEN CAST(t.ExpectedDate AS date)
@@ -688,6 +774,13 @@ FROM (
 	
 	UNION ALL
 
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, TicketKey, IsTLO, 1 Quantity 
+		,active_from_CET
+	FROM #hardware_return_lines
+	
+	UNION ALL
+
 	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, TicketKey, IsTLO, 1 Quantity 
 		,active_from_CET
@@ -784,6 +877,7 @@ WHERE 1=1
 			AND active_from_CET > ra.active_from_CET
 	)
 	--AND ra.SubscriptionKey = '2e3e5b05-c86a-4e47-a731-eea2cab36dcf'
+
 
 
 /*

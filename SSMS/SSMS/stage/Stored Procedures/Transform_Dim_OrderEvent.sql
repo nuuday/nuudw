@@ -23,4 +23,5 @@ VALUES
 	('092','Offer Disconnected Cancelled', 'N/A'),
 	('093','Offer Disconnected', 'DISCONNECTED'),
 	('100','RGU Activated', 'N/A'),
-	('101','RGU Disconnected', 'N/A')
+	('101','RGU Disconnected', 'N/A'),
+	('110','Hardware Return', 'N/A')

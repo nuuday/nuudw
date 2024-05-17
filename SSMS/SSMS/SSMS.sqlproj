@@ -591,6 +591,7 @@
     <Build Include="SourceNuudlNAM\Tables\nam_History.sql" />
     <Build Include="SourceNuudlNAM\Tables\nam.sql" />
     <Build Include="SourceNuudlNAMView\Views\nam_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\cpmnrmltroubleticket_History_Error.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

@@ -79,7 +79,7 @@ WHERE cm.NUUDL_IsCurrent = 1
 
 
 -------------------------------------------------------------------------------
--- Update stage table with addresses and excluding NAMIDs that appear in the error list
+-- Update stage table 
 -------------------------------------------------------------------------------
 
 TRUNCATE TABLE [stage].[Dim_Address]
