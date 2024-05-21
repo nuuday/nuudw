@@ -16,14 +16,12 @@ VALUES
 	('060','Offer Completed', 'COMPLETED'),
 	('065','Offer Activated', 'ACTIVE'),
 	('070','Offer Commitment Start', 'N/A'),
-	('071','Hardware Commitment Start', 'N/A'),
 	('075','Offer Commitment End', 'N/A'),
-	('076','Hardware Commitment End', 'N/A'),
 	('080','Offer Commitment Broken', 'N/A'),
-	('081','Hardware Commitment Broken', 'N/A'),
 	('090','Offer Disconnected Planned', 'N/A'),
 	('091','Offer Disconnected Expected', 'N/A'),
 	('092','Offer Disconnected Cancelled', 'N/A'),
 	('093','Offer Disconnected', 'DISCONNECTED'),
 	('100','RGU Activated', 'N/A'),
-	('101','RGU Disconnected', 'N/A')
+	('101','RGU Disconnected', 'N/A'),
+	('110','Hardware Return', 'N/A')

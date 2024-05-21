@@ -1,10 +1,12 @@
-﻿CREATE VIEW [cubeView_PRX].[FactOrderEvents]
+﻿
+CREATE VIEW [cubeView_PRX].[FactOrderEvents]
 AS
 SELECT 
 	[CalendarID],
 	[TimeID],
 	[ProductID],
 	[ProductParentID],
+	[ProductHardwareID],
 	[CustomerID],
 	[SubscriptionID],
 	[QuoteID],
@@ -15,6 +17,8 @@ SELECT
 	[AddressBillingID],
 	[HouseHoldID],
 	TechnologyID,
+	EmployeeID,
+	TicketID,
 	[IsTLO],
 	[Quantity],
 	[NetAmount],

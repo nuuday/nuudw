@@ -34,6 +34,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "EXT_0_NuuDL_NAM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -301,6 +307,18 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "DIM_0_Employee",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "DIM_0_Ticket",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -349,6 +367,68 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "DIM_0_Technology",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DIM_0_Employee",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DIM_0_Employee",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DIM_0_Ticket",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DIM_0_Ticket",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EXT_0_NuuDL_NAM",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_0_NuuDL_NAM",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true

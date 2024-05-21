@@ -5,6 +5,7 @@ SELECT
 	,[TimeID]
 	,[ProductID]
 	,[ProductParentID]
+	,[ProductHardwareID]
 	,[CustomerID]
 	,[SubscriptionID]
 	,[QuoteID]
@@ -16,6 +17,7 @@ SELECT
 	,[HouseHoldID]
 	,[TechnologyID]
 	,[EmployeeID]
+	,TicketID
 	,[IsTLO]
 	,[Quantity]
 	,[NetAmount]

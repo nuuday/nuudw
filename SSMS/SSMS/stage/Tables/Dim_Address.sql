@@ -4,6 +4,16 @@
     [Street2]       NVARCHAR (50)  NULL,
     [Postcode]      NVARCHAR (50)  NULL,
     [City]          NVARCHAR (50)  NULL,
-    [DWCreatedDate] DATETIME       NOT NULL
+    [Floor]         NVARCHAR (10)  NULL,
+    [Suite]         NVARCHAR (10)  NULL,
+    [NAMID]         NVARCHAR (10)  NULL,
+    [DarId]         NVARCHAR (32)  NULL,
+    [MadId]         NVARCHAR (32)  NULL,
+    [KvhxId]        NVARCHAR (20)  NULL,
+    [DWCreatedDate] DATETIME2 (0)  DEFAULT (sysdatetime()) NULL
 );
+
+
+
+
 
