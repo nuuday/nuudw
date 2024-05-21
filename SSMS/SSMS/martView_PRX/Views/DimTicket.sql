@@ -1,4 +1,5 @@
-﻿CREATE VIEW cubeView_PRX.[Ticket] 
+﻿
+CREATE VIEW [martView_PRX].[DimTicket] 
 AS
 SELECT
 	[TicketID]

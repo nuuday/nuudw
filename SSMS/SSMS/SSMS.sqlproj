@@ -583,8 +583,6 @@
     <Build Include="dim\Tables\Ticket.sql" />
     <Build Include="dimView\Views\Ticket.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_Ticket.sql" />
-    <Build Include="martView_PRX\Views\Ticket.sql" />
-    <Build Include="cubeView_PRX\Views\Ticket.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\cimcontactmedium_History_Error.sql" />
     <Build Include="Security\SourceNuudlNAMView.sql" />
     <Build Include="Security\SourceNuudlNAM.sql" />
@@ -592,6 +590,8 @@
     <Build Include="SourceNuudlNAM\Tables\nam.sql" />
     <Build Include="SourceNuudlNAMView\Views\nam_History.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\cpmnrmltroubleticket_History_Error.sql" />
+    <Build Include="martView_PRX\Views\DimTicket.sql" />
+    <Build Include="cubeView_PRX\Views\DimTicket.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
