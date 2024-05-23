@@ -228,6 +228,21 @@
         }
       },
       {
+        "name": "phonenumbers",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_NuuDL_Dawn_phonenumbers",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
         "name": "pimnrmlcustomercategory",
         "type": "ExecutePipeline",
         "typeProperties": {
@@ -338,21 +353,6 @@
         "typeProperties": {
           "pipeline": {
             "referenceName": "EXT_1_NuuDL_Dawn_qssnrmlquoteitem",
-            "type": "PipelineReference"
-          },
-          "waitOnCompletion": true,
-          "parameters": {
-            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
-            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
-          }
-        }
-      },
-      {
-        "name": "riphonenumber",
-        "type": "ExecutePipeline",
-        "typeProperties": {
-          "pipeline": {
-            "referenceName": "EXT_1_NuuDL_Dawn_riphonenumber",
             "type": "PipelineReference"
           },
           "waitOnCompletion": true,
