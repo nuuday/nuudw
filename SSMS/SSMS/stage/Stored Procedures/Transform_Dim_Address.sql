@@ -27,8 +27,8 @@ SELECT DISTINCT
 	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.[extended_attributes_json_floor], '' ), '?' ) ) AS [Floor],
 	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.[extended_attributes_json_suite], '' ), '?' ) ) AS Suite,
 	CONVERT( NVARCHAR(10), ISNULL( CAST(nam.sub_address_id as nvarchar), '?' ) )  AS NAMID,
-	CONVERT( NVARCHAR(32), ISNULL( CAST(nam.sub_address_dar_id as nvarchar), '?' ) )  AS DarID,
-	CONVERT( NVARCHAR(32), ISNULL( CAST(nam.sub_address_mad_id as nvarchar), '?' ) )  AS MadID,
+	CONVERT( NVARCHAR(32), ISNULL( CAST(nam.sub_address_dar_id as nvarchar), '?' ) )  AS SubAddressDarID,
+	CONVERT( NVARCHAR(32), ISNULL( CAST(nam.sub_address_mad_id as nvarchar), '?' ) )  AS SubAddressMadID,
 	CONVERT( NVARCHAR(20), ISNULL( CAST(nam.sub_address_kvhx_id as nvarchar), '?' ) )  AS KvhxID
 INTO #gross_list
 FROM [sourceNuudlNetCrackerView].[cimcontactmedium_History] cm
@@ -84,7 +84,7 @@ WHERE cm.NUUDL_IsCurrent = 1
 
 TRUNCATE TABLE [stage].[Dim_Address]
 
-INSERT INTO stage.[Dim_Address] WITH (TABLOCK) (AddressKey, Street1, Street2, Postcode, City, [Floor], Suite, NAMID, DarID, MadID, KvhxID)
+INSERT INTO stage.[Dim_Address] WITH (TABLOCK) (AddressKey, Street1, Street2, Postcode, City, [Floor], Suite, NAMID, SubAddressDarID, SubAddressMadID, KvhxID)
 SELECT DISTINCT
 	AddressKey,
 	Street1,
@@ -94,7 +94,7 @@ SELECT DISTINCT
 	[Floor],
 	Suite,
 	NAMID,
-	DarID,
-	MadID,
+	SubAddressDarID,
+	SubAddressMadID,
 	KvhxID
 FROM #gross_list gl
