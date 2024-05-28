@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="01c15df5-0654-4346-abab-78e1a2d57756" ChangeDateTime="05/27/2024 11:46:17">
+    <Property Name="ElementName" Value="[dim].[Address].[DarId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dim].[Address]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[SubAddressDarId]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="34c29ed5-41b7-4401-a613-a11f09da58db" ChangeDateTime="05/27/2024 11:46:26">
+    <Property Name="ElementName" Value="[dim].[Address].[MadId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dim].[Address]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[SubAddressMadId]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="cde197f5-c752-4d7f-a41a-f4df3f11fa51" ChangeDateTime="05/27/2024 11:47:53">
+    <Property Name="ElementName" Value="[stage].[Dim_Address].[DarId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[stage].[Dim_Address]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[SubAddressDarId]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="f37de708-67b2-44d5-8a01-63cf44377496" ChangeDateTime="05/27/2024 11:48:02">
+    <Property Name="ElementName" Value="[stage].[Dim_Address].[MadId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[stage].[Dim_Address]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[SubAddressMadId]" />
+  </Operation>
+</Operations>

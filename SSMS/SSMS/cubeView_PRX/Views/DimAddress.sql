@@ -14,7 +14,7 @@ SELECT
 	[Floor],
 	Suite,
 	NAMID
-	DarId,
-	MadId,
+	SubAddressDarId,
+	[SubAddressMadId],
 	KvhxId
 FROM [dimView].[Address]
