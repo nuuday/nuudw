@@ -110,6 +110,8 @@
     <Folder Include="SourceNuudlNAM\Tables\" />
     <Folder Include="SourceNuudlNAMView\" />
     <Folder Include="SourceNuudlNAMView\Views\" />
+    <Folder Include="sourceNuudlDawn\" />
+    <Folder Include="sourceNuudlDawn\Tables\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -592,6 +594,16 @@
     <Build Include="sourceNuudlNetCracker\Tables\cpmnrmltroubleticket_History_Error.sql" />
     <Build Include="martView_PRX\Views\DimTicket.sql" />
     <Build Include="cubeView_PRX\Views\DimTicket.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimcontactmedium_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimpartyrole_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimcontactmedium.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimpartyrole.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimcontactmediumassociation_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimcontactmediumassociation.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimcustomer.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimcustomer_History.sql" />
+    <Build Include="Security\sourceNuudlDawnView.sql" />
+    <Build Include="Security\sourceNuudlDawn.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
