@@ -75,24 +75,35 @@ WHERE 1=1
 
 -- Get employees who either added or cancelled the quote
 DROP TABLE IF EXISTS #quote_employees
-SELECT DISTINCT
+SELECT 
 	al.QuoteKey,
-	ucreated.name AS EmployeeKey,
-	ucancelled.name AS EmployeeCancelledKey
+	MAX(created.EmployeeKey) EmployeeKey,
+	MAX(cancelled.EmployeeCancelledKey) EmployeeCancelledKey
 INTO #quote_employees
 FROM #all_lines al
-LEFT JOIN sourceNuudlNetCrackerView.worklogitems_History qcreated
-	ON qcreated.ref_id = al.item_json_quoteId
+OUTER APPLY (
+	SELECT TOP 1 ucreated.name AS EmployeeKey
+	FROM sourceNuudlNetCrackerView.worklogitems_History qcreated
+	INNER JOIN sourceNuudlNetCrackerView.orgchartteammember_History ucreated
+		ON ucreated.idm_user_id = qcreated.changedby_json_userId
+	WHERE qcreated.ref_id = al.item_json_quoteId
 		AND qcreated.source_state IS NULL
 		AND qcreated.target_state = 'IN_PROGRESS'
-LEFT JOIN sourceNuudlNetCrackerView.orgchartteammember_History ucreated
-	ON ucreated.idm_user_id = qcreated.changedby_json_userId
-LEFT JOIN sourceNuudlNetCrackerView.worklogitems_History qcancelled
-	ON qcancelled.ref_id = al.item_json_quoteId
+		AND al.CurrentState = 'PLANNED'
+		AND ucreated.name IS NOT NULL
+) created
+OUTER APPLY (
+	SELECT TOP 1 ucancelled.name AS EmployeeCancelledKey
+	FROM sourceNuudlNetCrackerView.worklogitems_History qcancelled
+	INNER JOIN sourceNuudlNetCrackerView.orgchartteammember_History ucancelled
+		ON ucancelled.idm_user_id = qcancelled.changedby_json_userId
+	WHERE qcancelled.ref_id = al.item_json_quoteId
 		AND qcancelled.target_state = 'CANCELLED'
 		AND al.CurrentState = 'CANCELLED'
-LEFT JOIN sourceNuudlNetCrackerView.orgchartteammember_History ucancelled
-	ON ucancelled.idm_user_id = qcancelled.changedby_json_userId
+		AND ucancelled.name IS NOT NULL
+) cancelled
+WHERE al.CurrentState IN ('PLANNED', 'CANCELLED')
+GROUP BY al.QuoteKey
 
 -- Prepare billing contact data for next query
 DROP TABLE IF EXISTS #billing_contact_details
@@ -229,6 +240,20 @@ WHERE 1=1
 --	AND istlo=1
 --ORDER BY active_from_CET
 
+
+-----------------------------------------------------------------------------------------------------------------------------
+-- Removing lines that don't follow expected flow. 
+-- If an offer has been cancelled it cannot be activated, completed or disconnected.
+-----------------------------------------------------------------------------------------------------------------------------
+DELETE a
+--SELECT *
+FROM #all_lines_filtered a
+WHERE 1=1
+	AND OrderEventName IN ('Offer Activated', 'Offer Completed', 'Offer Disconnected')
+	AND EXISTS (SELECT * FROM #all_lines_filtered WHERE SubscriptionChildKey = a.SubscriptionChildKey AND OrderEventName = 'Offer Cancelled')
+	--AND SubscriptionKey = '2dbee727-5c41-4df2-a12d-aac20eebe5ce'
+
+
 -----------------------------------------------------------------------------------------------------------------------------
 -- We divide the Subscription into groups when the Product Type is changed on the TLO
 -- Each grouping is considered as its own subscription when rules are applied
@@ -353,9 +378,10 @@ WHERE 1=1
 -- Get ticket data
 DROP TABLE IF EXISTS #terminations
 SELECT 
+	IDENTITY(INT,1,1) AS ID,
+	b.id AS SubscriptionKey,
 	a.id TicketKey,
 	ticket_type,
-	b.id AS SubscriptionKey,
 	a.created_by_date AS PlannedDate,
 	CAST(a.extended_attributes_json_changeDate as datetime2) AS ExpectedDate,
 	status_change_date,
@@ -371,6 +397,33 @@ LEFT JOIN [sourceNuudlNetCrackerView].orgchartteammember_History c ON c.idm_user
 WHERE 
 	a.ticket_type IN ('TERMINATION_REQUEST','PORT_OUT_REQUEST')
 	AND b.type = 'Product'
+	AND a.status not in ('ERROR')
+
+-- If there are multiple non-cancelled tickets on the same SubscriptionKey, we only keep the first.
+DELETE a
+--SELECT *
+FROM #terminations a
+INNER JOIN 
+	(
+	SELECT
+		ID,
+		ROW_NUMBER() OVER (PARTITION BY SubscriptionKey ORDER BY PlannedDate) rn,
+		a.SubscriptionKey
+	FROM #terminations a
+	WHERE 
+		SubscriptionKey IN (
+			SELECT SubscriptionKey
+			FROM #terminations
+			WHERE 1=1
+				--AND TicketKey = 'TER-20240424-07877'
+				AND status not in ('CANCELLED')
+			GROUP BY SubscriptionKey
+			HAVING COUNT(*)>1
+		)
+	) b ON b.ID = a.ID
+WHERE 
+	rn > 1
+
 
 DROP TABLE IF EXISTS #termination_lines
 SELECT DISTINCT
