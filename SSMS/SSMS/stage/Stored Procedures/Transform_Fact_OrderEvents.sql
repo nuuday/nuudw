@@ -38,7 +38,6 @@ SELECT DISTINCT
 	i.item_json_customerId AS customer_id,
 	i.active_from_CET,
 	CAST(i.item_json_expirationDate as datetime2(0)) AS expiration_date,
-	SUBSTRING(tec.value_json__corrupt_record,3,LEN(tec.value_json__corrupt_record)-4) TechnologyKey,
 	i.item_json_quoteId,
 	CASE WHEN po.extended_parameters_json_deviceType IS NULL THEN 0 ELSE 1 END IsHardware
 INTO #all_lines
@@ -61,8 +60,7 @@ LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] po
 	ON po.id = i.item_json_offeringId
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductfamily_History] pf
 	ON pf.id = po.product_family_id
-LEFT JOIN sourceNuudlNetCrackerView.ibsnrmlcharacteristic_History tec
-	ON tec.product_instance_id = i.id AND tec.name = 'Technology'
+
 WHERE 1=1
 	
 	/* 2024-05-07 Removed this part due to unintended removal of completed hardware states.   */
@@ -71,7 +69,9 @@ WHERE 1=1
 	
 	--we are excluding those subscriptions because of data issues due to testing activities in production
 	AND i.id NOT IN ('b5beb355-0379-41f2-aaad-47297c9548cb', '39476242-7ab7-467e-b88a-b3968a8cb7e9') 
-	
+	--AND COALESCE(i.item_json_parentId, i.id) = '8f166ff1-f4ab-4157-95ff-f94d7cd79e9d'
+
+
 
 -- Get employees who either added or cancelled the quote
 DROP TABLE IF EXISTS #quote_employees
@@ -183,12 +183,13 @@ WHERE 1=1
 --ORDER BY active_from_CET, IsTLO DESC
 
 
--- Adding ProductHardwareKey
-DROP TABLE IF EXISTS #all_lines_with_hardware
-SELECT 
-	al.*,
-	CASE WHEN IsTLO = 1 THEN COALESCE(ph.ProductHardwareKey, ph2.ProductHardwareKey) ELSE NULL END AS ProductHardwareKey
-INTO #all_lines_with_hardware
+-- Adding & updating ProductHardwareKey
+ALTER TABLE #all_lines_2
+ADD ProductHardwareKey nvarchar(36)
+
+UPDATE al
+SET ProductHardwareKey = CASE WHEN IsTLO = 1 THEN COALESCE(ph.ProductHardwareKey, ph2.ProductHardwareKey) ELSE NULL END
+-- SELECT *
 FROM #all_lines_2 al
 OUTER APPLY (
 	SELECT TOP 1 ProductKey AS ProductHardwareKey
@@ -211,11 +212,26 @@ OUTER APPLY (
 --ORDER BY active_from_CET, IsTLO DESC
 
 
+-- Adding TechnologyKey
+ALTER TABLE #all_lines_2
+ADD TechnologyKey nvarchar(50)
+
+UPDATE al
+SET TechnologyKey = tec.TechnologyKey
+--SELECT *
+FROM #all_lines_2 al
+OUTER APPLY (
+	SELECT TOP 1 item_json_characteristics_json_value AS TechnologyKey
+	FROM [sourceNuudlNetCrackerView].[ibsitemshistory_History]
+	WHERE id = al.SubscriptionChildKey AND active_from_CET = al.active_from_CET AND item_json_characteristics_json_name = 'Technology'
+) tec
+WHERE IsHardware = 0 AND IsTLO = 1
+
 
 -- Get Account from top level offer
 UPDATE t
 SET BillingAccountKey = ca.BillingAccountKey
-FROM #all_lines_with_hardware t
+FROM #all_lines_2 t
 CROSS APPLY (
 	SELECT MAX(BillingAccountKey) BillingAccountKey
 	FROM #all_lines_2
@@ -230,7 +246,7 @@ WHERE IsTLO = 0
 DROP TABLE IF EXISTS #all_lines_filtered
 SELECT *
 INTO #all_lines_filtered
-FROM #all_lines_with_hardware al
+FROM #all_lines_2 al
 WHERE 1=1
 	AND (
 		al.CurrentState <> al.PreviousState 
