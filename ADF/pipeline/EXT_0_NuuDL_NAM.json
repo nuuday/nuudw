@@ -1,37 +1,47 @@
 {
-  "name": "EXT_0_NuuDL_NAM",
-  "properties": {
-    "parameters": {
-      "JobIsIncremental": {
-        "type": "Bool",
-        "defaultValue": "true",
-        "identity": "JobIsIncremental"
-      },
-      "WriteBatchSize": {
-        "type": "Int",
-        "defaultValue": 10000,
-        "identity": "WriteBatchSize"
-      }
-    },
-    "folder": {
-      "name": "0.1_Extracts"
-    },
-    "activities": [
-      {
-        "name": "nam",
-        "type": "ExecutePipeline",
-        "typeProperties": {
-          "pipeline": {
-            "referenceName": "EXT_1_NuuDL_NAM_nam",
-            "type": "PipelineReference"
-          },
-          "waitOnCompletion": true,
-          "parameters": {
-            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
-            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
-          }
-        }
-      }
-    ]
-  }
+	"name": "EXT_0_NuuDL_NAM",
+	"properties": {
+		"activities": [
+			{
+				"name": "nam",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_NAM_nam",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"JobIsIncremental": {
+				"type": "Bool",
+				"defaultValue": false
+			},
+			"WriteBatchSize": {
+				"type": "Int",
+				"defaultValue": 10000
+			}
+		},
+		"folder": {
+			"name": "0.1_Extracts"
+		},
+		"annotations": []
+	}
 }
