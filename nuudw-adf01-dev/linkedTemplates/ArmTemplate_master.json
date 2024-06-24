@@ -23,6 +23,10 @@
 			"type": "string",
 			"defaultValue": "ConnectionString-nuudatasqldb01"
 		},
+		"NuuData_Columbus_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "ConnectionString-nuudatasqldb01"
+		},
 		"datalake01ingestion_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://datalakest01ingestiondev.dfs.core.windows.net"
@@ -89,20 +93,14 @@
 					"NuuData_Chipper_properties_typeProperties_connectionString_secretName": {
 						"value": "[parameters('NuuData_Chipper_properties_typeProperties_connectionString_secretName')]"
 					},
+					"NuuData_Columbus_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('NuuData_Columbus_properties_typeProperties_connectionString_secretName')]"
+					},
 					"datalake01ingestion_properties_typeProperties_url": {
 						"value": "[parameters('datalake01ingestion_properties_typeProperties_url')]"
 					},
 					"datalake01ingestionNetcracker_interim_properties_typeProperties_url": {
 						"value": "[parameters('datalake01ingestionNetcracker_interim_properties_typeProperties_url')]"
-					},
-					"datalakest01exploration_properties_typeProperties_url": {
-						"value": "[parameters('datalakest01exploration_properties_typeProperties_url')]"
-					},
-					"ingestsqldb01_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('ingestsqldb01_properties_typeProperties_connectionString_secretName')]"
-					},
-					"nuudwsqldb01_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('nuudwsqldb01_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},
@@ -121,6 +119,15 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"datalakest01exploration_properties_typeProperties_url": {
+						"value": "[parameters('datalakest01exploration_properties_typeProperties_url')]"
+					},
+					"ingestsqldb01_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('ingestsqldb01_properties_typeProperties_connectionString_secretName')]"
+					},
+					"nuudwsqldb01_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('nuudwsqldb01_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},
@@ -246,6 +253,106 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'nuudw-adf01-dev_ArmTemplate_6')]"
+			]
+		},
+		{
+			"name": "nuudw-adf01-dev_ArmTemplate_8",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_8.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'nuudw-adf01-dev_ArmTemplate_7')]"
+			]
+		},
+		{
+			"name": "nuudw-adf01-dev_ArmTemplate_9",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_9.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'nuudw-adf01-dev_ArmTemplate_8')]"
+			]
+		},
+		{
+			"name": "nuudw-adf01-dev_ArmTemplate_10",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_10.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'nuudw-adf01-dev_ArmTemplate_9')]"
+			]
+		},
+		{
+			"name": "nuudw-adf01-dev_ArmTemplate_11",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_11.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'nuudw-adf01-dev_ArmTemplate_10')]"
+			]
+		},
+		{
+			"name": "nuudw-adf01-dev_ArmTemplate_12",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_12.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'nuudw-adf01-dev_ArmTemplate_11')]"
 			]
 		}
 	]

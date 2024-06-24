@@ -17,6 +17,9 @@
 		"NuuData_Chipper_properties_typeProperties_connectionString_secretName": {
 			"value": "ConnectionString-nuudatasqldb01"
 		},
+		"NuuData_Columbus_properties_typeProperties_connectionString_secretName": {
+			"value": "ConnectionString-nuudatasqldb01"
+		},
 		"datalake01ingestion_properties_typeProperties_url": {
 			"value": "https://datalakest01ingestiondev.dfs.core.windows.net"
 		},

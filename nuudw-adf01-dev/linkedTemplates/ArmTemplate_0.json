@@ -27,6 +27,10 @@
 			"type": "string",
 			"defaultValue": "ConnectionString-nuudatasqldb01"
 		},
+		"NuuData_Columbus_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "ConnectionString-nuudatasqldb01"
+		},
 		"datalake01ingestion_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://datalakest01ingestiondev.dfs.core.windows.net"
@@ -34,18 +38,6 @@
 		"datalake01ingestionNetcracker_interim_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://datalakest01ingestiondev.dfs.core.windows.net"
-		},
-		"datalakest01exploration_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://datalakest01exploration.dfs.core.windows.net/"
-		},
-		"ingestsqldb01_properties_typeProperties_connectionString_secretName": {
-			"type": "string",
-			"defaultValue": "ConnectionString-nuudlsql01ingestprod-ingestsqldb01"
-		},
-		"nuudwsqldb01_properties_typeProperties_connectionString_secretName": {
-			"type": "string",
-			"defaultValue": "ConnectionString-nuudwsqldb01"
 		}
 	},
 	"variables": {
@@ -78,12 +70,12 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"method": "POST",
+							"headers": {},
 							"url": {
 								"value": "@concat('https://westeurope.asazure.windows.net/servers/',activity('Get SSASServerName secret').output.value,'/models/',pipeline().parameters.ModelName,'/refreshes')",
 								"type": "Expression"
 							},
-							"method": "POST",
-							"headers": {},
 							"body": {
 								"value": "@pipeline().parameters.RefreshCommand",
 								"type": "Expression"
@@ -114,12 +106,12 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"method": "GET",
+							"headers": {},
 							"url": {
 								"value": "@concat('https://westeurope.asazure.windows.net/servers/',activity('Get SSASServerName secret').output.value,'/models/',pipeline().parameters.ModelName,'/refreshes')",
 								"type": "Expression"
 							},
-							"method": "GET",
-							"headers": {},
 							"body": {
 								"value": "@pipeline().parameters.RefreshCommand",
 								"type": "Expression"
@@ -200,12 +192,12 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
+										"method": "GET",
+										"headers": {},
 										"url": {
 											"value": "@concat('https://westeurope.asazure.windows.net/servers/',activity('Get SSASServerName secret').output.value,'/models/',pipeline().parameters.ModelName,'/refreshes/',first(activity('Get Latest Refresh').output.Value).refreshId)",
 											"type": "Expression"
 										},
-										"method": "GET",
-										"headers": {},
 										"authentication": {
 											"type": "MSI",
 											"resource": "https://*.asazure.windows.net"
@@ -247,12 +239,12 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
+										"method": "POST",
+										"headers": {},
 										"url": {
 											"value": "localhost",
 											"type": "Expression"
 										},
-										"method": "POST",
-										"headers": {},
 										"body": {
 											"value": "@activity('Get Refresh Status').output",
 											"type": "Expression"
@@ -275,12 +267,12 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"method": "GET",
+							"headers": {},
 							"url": {
 								"value": "@concat('https://',replace(pipeline().DataFactory,'adf','kv'),'.vault.azure.net/secrets/SSASServerName?api-version=7.0')",
 								"type": "Expression"
 							},
-							"method": "GET",
-							"headers": {},
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
@@ -289,8 +281,7 @@
 					}
 				],
 				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
+					"elapsedTimeMetric": {}
 				},
 				"parameters": {
 					"ModelName": {
@@ -303,7 +294,8 @@
 				"folder": {
 					"name": "Toolbox/Azure Analysis Services"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2023-08-02T16:25:48Z"
 			},
 			"dependsOn": []
 		},
@@ -326,12 +318,12 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"method": "GET",
+							"headers": {},
 							"url": {
 								"value": "@concat('https://',replace(pipeline().DataFactory,'adf','kv'),'.vault.azure.net/secrets/SSASServerName?api-version=7.0')",
 								"type": "Expression"
 							},
-							"method": "GET",
-							"headers": {},
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
@@ -351,12 +343,12 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"method": "GET",
+							"headers": {},
 							"url": {
 								"value": "@concat('https://',replace(pipeline().DataFactory,'adf','kv'),'.vault.azure.net/secrets/ADFResourceGroupName?api-version=7.0')",
 								"type": "Expression"
 							},
-							"method": "GET",
-							"headers": {},
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
@@ -376,12 +368,12 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"method": "GET",
+							"headers": {},
 							"url": {
 								"value": "@concat('https://',replace(pipeline().DataFactory,'adf','kv'),'.vault.azure.net/secrets/ADFSubscriptionID?api-version=7.0')",
 								"type": "Expression"
 							},
-							"method": "GET",
-							"headers": {},
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
@@ -420,12 +412,12 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"method": "GET",
+							"headers": {},
 							"url": {
 								"value": "@concat('https://management.azure.com/subscriptions/',activity('SubscriptionID').output.value,'/resourceGroups/',activity('ResourceGroupName').output.value,'/providers/Microsoft.AnalysisServices/servers/',activity('SSASServerName').output.value,'?api-version=2017-08-01')",
 								"type": "Expression"
 							},
-							"method": "GET",
-							"headers": {},
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://management.azure.com"
@@ -444,8 +436,6 @@
 							}
 						],
 						"policy": {
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
 							"secureInput": false
 						},
@@ -489,12 +479,12 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
+										"method": "POST",
+										"headers": {},
 										"url": {
 											"value": "@concat('https://management.azure.com/subscriptions/',activity('SubscriptionID').output.value,'/resourceGroups/',activity('ResourceGroupName').output.value,'/providers/Microsoft.AnalysisServices/servers/',activity('SSASServerName').output.value,'/resume?api-version=2017-08-01')",
 											"type": "Expression"
 										},
-										"method": "POST",
-										"headers": {},
 										"body": {
 											"dummy": "dummy"
 										},
@@ -509,8 +499,7 @@
 					}
 				],
 				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
+					"elapsedTimeMetric": {}
 				},
 				"variables": {
 					"AASStatus": {
@@ -543,12 +532,12 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"method": "GET",
+							"headers": {},
 							"url": {
 								"value": "@concat('https://',replace(pipeline().DataFactory,'adf','kv'),'.vault.azure.net/secrets/SSASServerName?api-version=7.0')",
 								"type": "Expression"
 							},
-							"method": "GET",
-							"headers": {},
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
@@ -568,12 +557,12 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"method": "GET",
+							"headers": {},
 							"url": {
 								"value": "@concat('https://',replace(pipeline().DataFactory,'adf','kv'),'.vault.azure.net/secrets/ADFResourceGroupName?api-version=7.0')",
 								"type": "Expression"
 							},
-							"method": "GET",
-							"headers": {},
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
@@ -593,12 +582,12 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"method": "GET",
+							"headers": {},
 							"url": {
 								"value": "@concat('https://',replace(pipeline().DataFactory,'adf','kv'),'.vault.azure.net/secrets/ADFSubscriptionID?api-version=7.0')",
 								"type": "Expression"
 							},
-							"method": "GET",
-							"headers": {},
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
@@ -637,12 +626,12 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"method": "GET",
+							"headers": {},
 							"url": {
 								"value": "@concat('https://management.azure.com/subscriptions/',activity('SubscriptionID').output.value,'/resourceGroups/',activity('ResourceGroupName').output.value,'/providers/Microsoft.AnalysisServices/servers/',activity('SSASServerName').output.value,'?api-version=2017-08-01')",
 								"type": "Expression"
 							},
-							"method": "GET",
-							"headers": {},
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://management.azure.com"
@@ -661,8 +650,6 @@
 							}
 						],
 						"policy": {
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
 							"secureInput": false
 						},
@@ -706,12 +693,12 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
+										"method": "POST",
+										"headers": {},
 										"url": {
 											"value": "@concat('https://management.azure.com/subscriptions/',activity('SubscriptionID').output.value,'/resourceGroups/',activity('ResourceGroupName').output.value,'/providers/Microsoft.AnalysisServices/servers/',activity('SSASServerName').output.value,'/suspend?api-version=2017-08-01')",
 											"type": "Expression"
 										},
-										"method": "POST",
-										"headers": {},
 										"body": {
 											"dummy": "dummy"
 										},
@@ -726,8 +713,7 @@
 					}
 				],
 				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
+					"elapsedTimeMetric": {}
 				},
 				"variables": {
 					"AASStatus": {
@@ -750,21 +736,6 @@
 				"type": "AzureKeyVault",
 				"typeProperties": {
 					"baseUrl": "[parameters('KeyVault_properties_typeProperties_baseUrl')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Nuudl_BIZ')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureDatabricksDeltaLake",
-				"typeProperties": {
-					"domain": "https://adb-5766851830059509.9.azuredatabricks.net",
-					"clusterId": "0111-130909-iqv8kbwp",
-					"workspaceResourceId": "/subscriptions/f1dd3e21-b687-4062-9de2-b55be2eed76f/resourceGroups/datalake-rg01-exploration-product/providers/Microsoft.Databricks/workspaces/datalake-dbw01-explor-product"
 				}
 			},
 			"dependsOn": []
@@ -815,38 +786,42 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/NuuDL_BIZ_DynamicDataset')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/FAM_3_AS')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Nuudl_BIZ",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"TableName": {
-						"type": "string"
+				"activities": [
+					{
+						"name": "FaultManagement",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "SSAS_Process",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"ModelName": "FaultManagement",
+								"RefreshCommand": "{\"Type\":\"Full\",\"CommitMode\":\"transactional\",\"MaxParallelism\":10,\"RetryCount\":2}"
+							}
+						}
 					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
 				},
 				"folder": {
-					"name": "DynamicDatasets"
+					"name": "0.0 Solutions/FAM_FaultManagement"
 				},
-				"annotations": [],
-				"type": "AzureDatabricksDeltaLakeDataset",
-				"typeProperties": {
-					"table": {
-						"value": "@replace(replace(split(dataset().TableName,'.')[1],'[',''),']','')",
-						"type": "Expression"
-					},
-					"schema": {
-						"value": "@replace(replace(split(dataset().TableName,'.')[0],'[',''),']','')",
-						"type": "Expression"
-					}
-				},
-				"schema": []
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Nuudl_BIZ')]"
+				"[concat(variables('factoryId'), '/pipelines/SSAS_Process')]"
 			]
 		},
 		{
@@ -976,6 +951,54 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/NuuDL_NAM')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricksDeltaLake",
+				"typeProperties": {
+					"domain": "https://adb-2929753254893719.19.azuredatabricks.net",
+					"clusterId": "0905-134532-2jn7av69",
+					"accessToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "KeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "databrickstoken"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/KeyVault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NuuDL_UnityCatalog')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricksDeltaLake",
+				"typeProperties": {
+					"domain": "https://adb-2929753254893719.19.azuredatabricks.net",
+					"clusterId": "0905-134532-2jn7av69",
+					"accessToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "KeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "databrickstoken"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/KeyVault')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/NuuData_Chipper')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -990,6 +1013,76 @@
 							"type": "LinkedServiceReference"
 						},
 						"secretName": "[parameters('NuuData_Chipper_properties_typeProperties_connectionString_secretName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/KeyVault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NuuData_Columbus')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "KeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('NuuData_Columbus_properties_typeProperties_connectionString_secretName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/KeyVault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Nuudl_BIZ')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricksDeltaLake",
+				"typeProperties": {
+					"domain": "https://adb-2929753254893719.19.azuredatabricks.net",
+					"clusterId": "0905-134532-2jn7av69",
+					"accessToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "KeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "databrickstoken"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/KeyVault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Nuudl_NetCracker')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricksDeltaLake",
+				"typeProperties": {
+					"domain": "https://adb-2929753254893719.19.azuredatabricks.net",
+					"clusterId": "0905-134532-2jn7av69",
+					"accessToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "KeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "databrickstoken"
 					}
 				}
 			},
@@ -1041,157 +1134,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/KeyVault')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/datalakest01exploration')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "To stage data from Delta Lake",
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('datalakest01exploration_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "KeyVault",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "Variable-AccountKey-datalakest01exploration"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/KeyVault')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ingestsqldb01')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Metadata for nuudl datalake",
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "KeyVault",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "[parameters('ingestsqldb01_properties_typeProperties_connectionString_secretName')]"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/KeyVault')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/nuudwsqldb01')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "KeyVault",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "[parameters('nuudwsqldb01_properties_typeProperties_connectionString_secretName')]"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/KeyVault')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/BRIDGE_1_UserAccess_Load')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Load_UserAccess",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[nuuMeta].[LoadFact]",
-							"storedProcedureParameters": {
-								"StageTable": {
-									"value": "Bridge_UserAccess",
-									"type": "String"
-								},
-								"DWTable": {
-									"value": "UserAccess",
-									"type": "String"
-								},
-								"DWSchema": {
-									"value": "bridge",
-									"type": "String"
-								},
-								"LoadPattern": {
-									"value": "FactFull",
-									"type": "String"
-								},
-								"IncrementalFlag": {
-									"value": {
-										"value": "@pipeline().parameters.JobIsIncremental",
-										"type": "Expression"
-									},
-									"type": "Boolean"
-								},
-								"CleanUpPartitionsFlag": {
-									"value": {
-										"value": "@pipeline().parameters.CleanUpPartitions",
-										"type": "Expression"
-									},
-									"type": "Boolean"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "nuudwsqldb01",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "Bool",
-						"defaultValue": true
-					},
-					"CleanUpPartitions": {
-						"type": "Bool",
-						"defaultValue": false
-					}
-				},
-				"folder": {
-					"name": "0.5_Bridge"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/nuudwsqldb01')]"
 			]
 		}
 	]
