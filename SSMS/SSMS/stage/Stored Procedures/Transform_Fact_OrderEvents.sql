@@ -147,7 +147,9 @@ SELECT
 		WHEN LAG( cpd.start_dat_CET ) OVER (PARTITION BY al.SubscriptionKey, al.ProductKey ORDER BY al.active_from_CET) IS NULL THEN cpd.end_dat_CET
 	END AS RGU_EndDate,
 	qem.EmployeeKey,
-	qem.EmployeeCancelledKey
+	qem.EmployeeCancelledKey,
+	CAST(null as nvarchar(36)) AS ProductHardwareKey,
+	CAST(null as nvarchar(50)) AS TechnologyKey
 INTO #all_lines_2
 FROM #all_lines al
 OUTER APPLY (
@@ -183,13 +185,10 @@ WHERE 1=1
 --ORDER BY active_from_CET, IsTLO DESC
 
 
--- Adding & updating ProductHardwareKey
-ALTER TABLE #all_lines_2
-ADD ProductHardwareKey nvarchar(36)
-
+-- Updating ProductHardwareKey
 UPDATE al
 SET ProductHardwareKey = CASE WHEN IsTLO = 1 THEN COALESCE(ph.ProductHardwareKey, ph2.ProductHardwareKey) ELSE NULL END
--- SELECT *
+-- SELECT ph.ProductHardwareKey, ph2.ProductHardwareKey, al.*
 FROM #all_lines_2 al
 OUTER APPLY (
 	SELECT TOP 1 ProductKey AS ProductHardwareKey
@@ -203,19 +202,19 @@ OUTER APPLY (
 	SELECT TOP 1 ProductKey AS ProductHardwareKey
 	FROM #all_lines
 	WHERE active_from_CET >= al.active_from_CET
+		AND CalendarKey <= al.CalendarKey
 		AND ProductParentKey = al.ProductKey
 		AND SubscriptionKey = al.SubscriptionKey
 		AND IsHardware = 1
-	ORDER BY active_from_CET ASC
+	ORDER BY active_from_CET DESC
 ) ph2
---WHERE SubscriptionKey = 'c16998b7-84e7-428b-b498-9984c9d09346'
+WHERE IsTLO = 1
+-- AND SubscriptionKey = '7a391a92-6f6e-4a10-ac4f-ab64fd659c6b'
+--	AND IsTLO = 1
 --ORDER BY active_from_CET, IsTLO DESC
 
 
--- Adding TechnologyKey
-ALTER TABLE #all_lines_2
-ADD TechnologyKey nvarchar(50)
-
+-- Updating TechnologyKey
 UPDATE al
 SET TechnologyKey = tec.TechnologyKey
 --SELECT *
@@ -362,6 +361,7 @@ FROM (
 		al.CustomerKey,
 		al.SubscriptionGroup,
 		al.SubscriptionKey,
+		al.SubscriptionChildKey,
 		al.QuoteKey,
 		al.ProductType,
 		al.ProductName,
@@ -378,7 +378,9 @@ FROM (
 		AND al.CurrentState IN ( 'COMPLETED')
 		AND al.IsTLO = 1
 ) al
-INNER JOIN #hardware_return t ON t.SubscriptionKey = al.SubscriptionKey AND t.status_change_date BETWEEN al.ValidFrom AND al.ValidTo
+INNER JOIN #hardware_return t 
+	ON (t.SubscriptionKey = al.SubscriptionKey OR t.SubscriptionKey = al.SubscriptionChildKey)
+		AND t.status_change_date BETWEEN al.ValidFrom AND al.ValidTo
 CROSS APPLY (
 	SELECT *
 	FROM dim.OrderEvent 
@@ -577,7 +579,7 @@ SELECT
 	END AS TimeKey,
 	tlo.ProductKey, 
 	tlo.ProductParentKey,
-	tlo.ProductHardwareKey,
+	hardware.ProductHardwareKey,
 	al.CustomerKey,
 	al.SubscriptionGroup,
 	al.SubscriptionKey,
@@ -606,7 +608,7 @@ CROSS APPLY (
 		OR al.CurrentState = 'DISCONNECTED' AND OrderEventName = 'Offer Commitment Broken'
 ) e
 CROSS APPLY (
-	SELECT TOP 1 ProductKey, ProductParentKey, ProductHardwareKey, ProductName, ProductType, TechnologyKey, IsTLO
+	SELECT TOP 1 ProductKey, ProductParentKey, ProductName, ProductType, TechnologyKey, IsTLO
 	FROM #all_lines_filtered
 	WHERE SubscriptionKey = al.SubscriptionKey 
 		AND active_from_CET <= al.active_from_CET
@@ -614,9 +616,19 @@ CROSS APPLY (
 		AND IsTLO = 1 
 	ORDER BY active_from_CET DESC
 ) tlo
+CROSS APPLY (
+	SELECT TOP 1 ProductKey AS ProductHardwareKey
+	FROM #all_lines_filtered
+	WHERE SubscriptionKey = al.SubscriptionKey 
+		AND CalendarKey <= al.CalendarKey
+		AND CurrentState = 'ACTIVE'
+		AND IsHardware = 1 
+	ORDER BY active_from_CET DESC
+) hardware
 WHERE 1=1
 	AND al.ProductName = 'Commitment'
-	--AND al.SubscriptionKey = '4151dd2b-5599-473e-860f-33d5c24b4a6c'
+--	AND al.SubscriptionKey = '7a391a92-6f6e-4a10-ac4f-ab64fd659c6b'
+--ORDER BY CalendarKey, TimeKey
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Add events do to change in product type and product
