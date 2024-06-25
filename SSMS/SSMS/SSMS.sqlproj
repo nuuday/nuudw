@@ -110,6 +110,7 @@
     <Folder Include="SourceNuudlNAM\Tables\" />
     <Folder Include="SourceNuudlNAMView\" />
     <Folder Include="SourceNuudlNAMView\Views\" />
+    <Folder Include="sourceNuudlNetCracker\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -592,6 +593,8 @@
     <Build Include="sourceNuudlNetCracker\Tables\cpmnrmltroubleticket_History_Error.sql" />
     <Build Include="martView_PRX\Views\DimTicket.sql" />
     <Build Include="cubeView_PRX\Views\DimTicket.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\ibsitemshistory_History_Filter.sql" />
+    <Build Include="sourceNuudlNetCracker\Stored Procedures\Initiate_Filter_ibsitemshistory_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
