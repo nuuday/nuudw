@@ -34,6 +34,21 @@ LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] b
 WHERE 
 	a.active_from < '2024-02-06'
 	AND extended_parameters_json_deviceType IS NULL
+	AND b.name NOT IN (
+		'Sign-up Fee',
+		'Bags',
+		'Broadband Modems',
+		'Handsets',
+		'Insurance',
+		'Insurance Upfront Fee',
+		'Landline Phone',
+		'Modems',
+		'Smart Watches',
+		'Tablets',
+		'Vouchers',
+		'Equipment Reverse Charge',
+		'Accessories'
+	)
 
 TRUNCATE TABLE [sourceNuudlNetCracker].[ibsitemshistory_History_Filter]
 INSERT INTO [sourceNuudlNetCracker].[ibsitemshistory_History_Filter] (id)
