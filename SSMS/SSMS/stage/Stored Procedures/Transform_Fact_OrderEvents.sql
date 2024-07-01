@@ -53,19 +53,21 @@ LEFT JOIN [sourceNuudlNetCrackerView].[qssnrmlquote_History] quote
 LEFT JOIN [sourceNuudlNetCrackerView].[nrmaccountkeyname_History] acc
 	ON acc.name = i.item_json_accountRef_json_refId 
 -- reference to PhoneDetailkey, SLO will have TLO phone number
-LEFT JOIN [sourceNuudlNetCrackerView].[ibsnrmlcharacteristic_History] chr
-	ON chr.product_instance_id = COALESCE(i.item_json_parentId, i.id)
-		AND chr.name = 'International Phone Number'
+OUTER APPLY (
+	SELECT TOP 1 value_json__corrupt_record
+	FROM [sourceNuudlNetCrackerView].[ibsnrmlcharacteristic_History] chr
+	WHERE product_instance_id = COALESCE(i.item_json_parentId, i.id)
+		AND name = 'International Phone Number'
+	ORDER BY NUUDL_ID DESC
+) chr
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] po
 	ON po.id = i.item_json_offeringId
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductfamily_History] pf
 	ON pf.id = po.product_family_id
 
 WHERE 1=1
-	
-	/* 2024-05-07 Removed this part due to unintended removal of completed hardware states.   */
-	-- Compensate for duplicate rows
-	--AND CASE WHEN i.state = 'COMPLETED' THEN item_json_accountRef_json_refId ELSE '' END IS NULL 
+	-- filter out lines where we have no product offering
+	AND i.item_json_offeringId IS NOT NULL
 	
 	--we are excluding those subscriptions because of data issues due to testing activities in production
 	AND i.id NOT IN ('b5beb355-0379-41f2-aaad-47297c9548cb', '39476242-7ab7-467e-b88a-b3968a8cb7e9') 
@@ -138,7 +140,7 @@ SELECT
 	COALESCE(pp.ProductParentKey, pp2.ProductParentKey) AS ProductParentKey,
 	bcd.AddressBillingKey,
 	bcd.Householdkey,
-	ISNULL(LAG( al.ProductKey ) OVER (PARTITION BY al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET),'') AS  PreviousProductKey,
+	ISNULL(LAG( al.ProductKey ) OVER (PARTITION BY al.SubscriptionKey, IsTLO ORDER BY al.active_from_CET),'') AS  PreviousProductKey,
 	ISNULL(LAG( al.CurrentState ) OVER (PARTITION BY al.SubscriptionKey, al.ProductKey ORDER BY al.active_from_CET),'') AS  PreviousState,
 	CASE 
 		WHEN LAG( cpd.start_dat_CET ) OVER (PARTITION BY al.SubscriptionKey, al.ProductKey ORDER BY al.active_from_CET) IS NULL THEN cpd.start_dat_CET
