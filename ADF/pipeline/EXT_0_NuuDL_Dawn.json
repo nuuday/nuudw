@@ -63,6 +63,21 @@
         }
       },
       {
+        "name": "cimindividual",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_NuuDL_Dawn_cimindividual",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
         "name": "cimpartyrole",
         "type": "ExecutePipeline",
         "typeProperties": {
@@ -113,21 +128,6 @@
         "typeProperties": {
           "pipeline": {
             "referenceName": "EXT_1_NuuDL_Dawn_cpmnrmltroubleticketrelatedentityref",
-            "type": "PipelineReference"
-          },
-          "waitOnCompletion": true,
-          "parameters": {
-            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
-            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
-          }
-        }
-      },
-      {
-        "name": "ibsitemshistory",
-        "type": "ExecutePipeline",
-        "typeProperties": {
-          "pipeline": {
-            "referenceName": "EXT_1_NuuDL_Dawn_ibsitemshistory",
             "type": "PipelineReference"
           },
           "waitOnCompletion": true,

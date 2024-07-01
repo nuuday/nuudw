@@ -26,7 +26,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "netcrackeruat",
+              "value": "netcracker12",
               "type": "String"
             },
             "SourceObjectName": {
@@ -90,7 +90,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "netcrackeruat",
+                "value": "netcracker12",
                 "type": "String"
               },
               "SourceTableName": {
@@ -150,7 +150,7 @@
                 "type": "String"
               },
               "SourceSchemaName": {
-                "value": "netcrackeruat",
+                "value": "netcracker12",
                 "type": "String"
               },
               "SourceTableName": {
@@ -188,7 +188,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "",
+              "value": "\r\nSELECT \r\nCAST(`attributes` AS STRING) `attributes` \r\n,CAST(`changedby` AS STRING) `changedby` \r\n,`date` \r\n,`description` \r\n,`id` \r\n,`name` \r\n,`op` \r\n,`ref_id` \r\n,`ref_type` \r\n,`source` \r\n,`source_state` \r\n,`target_state` \r\n,`ts_ms` \r\n,`NUUDL_RescuedData` \r\n,`NUUDL_BaseSourceFilename` \r\n,`NUUDL_BaseBatchID` \r\n,`NUUDL_BaseProcessedTimestamp` \r\n,`Snapshot` \r\n,`Partition_Snapshot` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n,`NUUDL_CuratedSourceFilename` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_ID` \r\n \r\nFROM dai.@{activity('Lookup_Source_Schema_Name').output.firstRow.SourceSchemaName}.`worklogitems`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -214,7 +214,7 @@
             "referenceName": "NuuDL_Dawn_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "dai.netcrackeruat.worklogitems"
+              "TableName": "dai.netcracker12.worklogitems"
             }
           }
         ],
@@ -286,7 +286,7 @@
               "type": "String"
             },
             "SourceSchemaName": {
-              "value": "netcrackeruat",
+              "value": "netcracker12",
               "type": "String"
             },
             "SourceTableName": {
