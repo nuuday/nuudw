@@ -35,7 +35,15 @@
 );
 
 
+
+
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_worklogitems_History]
     ON [sourceNuudlNetCracker].[worklogitems_History];
+
+
+GO
+CREATE NONCLUSTERED INDEX [NCIX_worklogitems_History__ref_id_source_state_target_state_DWIsCurrent]
+    ON [sourceNuudlNetCracker].[worklogitems_History]([ref_id] ASC, [source_state] ASC, [target_state] ASC, [DWIsCurrent] ASC)
+    INCLUDE([changedby_json_userId]);
 

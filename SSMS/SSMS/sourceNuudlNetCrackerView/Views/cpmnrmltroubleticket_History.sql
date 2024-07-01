@@ -1,4 +1,5 @@
 ﻿
+
 CREATE VIEW [sourceNuudlNetCrackerView].[cpmnrmltroubleticket_History]
 AS
 SELECT 
@@ -56,7 +57,7 @@ SELECT
 	[extended_attributes_json__corrupt_record] ,
 	[extended_attributes_json_accountNumber] ,
 	[extended_attributes_json_billId] ,
-	[extended_attributes_json_changeDate] ,
+	CASE [extended_attributes_json_changeDate] WHEN 'Invalid date' THEN null ELSE [extended_attributes_json_changeDate] END [extended_attributes_json_changeDate] ,
 	[extended_attributes_json_change_id] ,
 	[extended_attributes_json_commitmentFee] ,
 	[extended_attributes_json_cpmChannel] ,
