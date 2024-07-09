@@ -599,6 +599,7 @@
     <Build Include="sourceNuudlNetCracker\Stored Procedures\Initiate_Filter_ibsitemshistory_History.sql" />
     <Build Include="youseeassistedchannelsView\Views\CustomerSubscriptions.sql" />
     <Build Include="Security\youseeassistedchannelsView.sql" />
+    <Build Include="Security\nuudw-acl01-sql-schema-youseeassistedchannels-reader.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
