@@ -111,6 +111,8 @@
     <Folder Include="SourceNuudlNAMView\" />
     <Folder Include="SourceNuudlNAMView\Views\" />
     <Folder Include="sourceNuudlNetCracker\Stored Procedures\" />
+    <Folder Include="youseeassistedchannelsView\" />
+    <Folder Include="youseeassistedchannelsView\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -595,6 +597,9 @@
     <Build Include="cubeView_PRX\Views\DimTicket.sql" />
     <Build Include="sourceNuudlNetCracker\Tables\ibsitemshistory_History_Filter.sql" />
     <Build Include="sourceNuudlNetCracker\Stored Procedures\Initiate_Filter_ibsitemshistory_History.sql" />
+    <Build Include="youseeassistedchannelsView\Views\CustomerSubscriptions.sql" />
+    <Build Include="Security\youseeassistedchannelsView.sql" />
+    <Build Include="Security\nuudw-acl01-sql-schema-youseeassistedchannels-reader.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
