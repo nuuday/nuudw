@@ -1,5 +1,5 @@
 {
-  "name": "EXT_1_NuuDL_Dawn_worklogitems",
+  "name": "EXT_1_NuuDL_Dawn_pimnrmlprodofferingpricespecification",
   "properties": {
     "activities": [
       {
@@ -30,7 +30,7 @@
               "type": "String"
             },
             "SourceObjectName": {
-              "value": "worklogitems",
+              "value": "pimnrmlprodofferingpricespecification",
               "type": "String"
             },
             "DestinationSchemaName": {
@@ -94,7 +94,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "worklogitems",
+                "value": "pimnrmlprodofferingpricespecification",
                 "type": "String"
               },
               "JobIsIncremental": {
@@ -154,7 +154,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "worklogitems",
+                "value": "pimnrmlprodofferingpricespecification",
                 "type": "String"
               }
             }
@@ -169,7 +169,7 @@
         }
       },
       {
-        "name": "Copy_worklogitems",
+        "name": "Copy_pimnrmlprodofferingpricespecification",
         "type": "Copy",
         "dependsOn": [
           {
@@ -188,7 +188,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\nto_json(`attributes`) `attributes` \r\n,to_json(`changedby`) `changedby` \r\n,`date` \r\n,`description` \r\n,`id` \r\n,`name` \r\n,`op` \r\n,`ref_id` \r\n,`ref_type` \r\n,`source` \r\n,`source_state` \r\n,`target_state` \r\n,`ts_ms` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_ID` \r\n \r\nFROM dai.netcracker12.`worklogitems`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`external_id` \r\n,`id` \r\n,`name` \r\n,`price_type` \r\n,`extended_parameters` \r\n,`cdc_revision_id` \r\n,`localized_name_json_dan` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_StandardizedProcessedTimestamp` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n \r\nFROM dai.netcracker12.`pimnrmlprodofferingpricespecification`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -198,7 +198,7 @@
           "sink": {
             "type": "AzureSqlSink",
             "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[worklogitems]"
+            "preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[pimnrmlprodofferingpricespecification]"
           },
           "enableStaging": true,
           "stagingSettings": {
@@ -214,7 +214,7 @@
             "referenceName": "NuuDL_Dawn_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "dai.netcracker12.worklogitems"
+              "TableName": "dai.netcracker12.pimnrmlprodofferingpricespecification"
             }
           }
         ],
@@ -223,7 +223,7 @@
             "referenceName": "nuudwsqldb01_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "[sourceNuudlDawn].[worklogitems]"
+              "TableName": "[sourceNuudlDawn].[pimnrmlprodofferingpricespecification]"
             }
           }
         ]
@@ -233,7 +233,7 @@
         "type": "SqlServerStoredProcedure",
         "dependsOn": [
           {
-            "activity": "Copy_worklogitems",
+            "activity": "Copy_pimnrmlprodofferingpricespecification",
             "dependencyConditions": [
               "Succeeded"
             ]
@@ -248,7 +248,7 @@
           "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
           "storedProcedureParameters": {
             "ExtractTable": {
-              "value": "sourceNuudlDawn.worklogitems",
+              "value": "sourceNuudlDawn.pimnrmlprodofferingpricespecification",
               "type": "String"
             }
           }
@@ -290,7 +290,7 @@
               "type": "String"
             },
             "SourceTableName": {
-              "value": "worklogitems",
+              "value": "pimnrmlprodofferingpricespecification",
               "type": "String"
             },
             "WatermarkIsDate": {
