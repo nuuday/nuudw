@@ -600,6 +600,8 @@
     <Build Include="youseeassistedchannelsView\Views\CustomerSubscriptions.sql" />
     <Build Include="Security\youseeassistedchannelsView.sql" />
     <Build Include="Security\nuudw-acl01-sql-schema-youseeassistedchannels-reader.sql" />
+    <Build Include="nuuMeta\Tables\SourceObjectExtendedAttributes_History.sql" />
+    <Build Include="nuuMeta\Tables\SourceObjectExtendedAttributes.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
