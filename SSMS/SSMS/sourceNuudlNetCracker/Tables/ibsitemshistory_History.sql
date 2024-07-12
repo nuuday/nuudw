@@ -111,7 +111,15 @@
 );
 
 
+
+
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ibsitemshistory_History]
     ON [sourceNuudlNetCracker].[ibsitemshistory_History];
+
+
+GO
+CREATE NONCLUSTERED INDEX [NCIX_ibsitemshistory_History__DWIsCurrent_id]
+    ON [sourceNuudlNetCracker].[ibsitemshistory_History]([DWIsCurrent] ASC, [id] ASC)
+    INCLUDE([item_json_parentId], [item_json_offeringId], [item_json_offeringName], [item_json_rootId], [item_json_distributionChannelId], [item_json_customerId], [item_json_expirationDate], [item_json_quoteId], [item_json_accountRef_json_refId], [item_json_characteristics_json_name], [state], [active_from]);
 

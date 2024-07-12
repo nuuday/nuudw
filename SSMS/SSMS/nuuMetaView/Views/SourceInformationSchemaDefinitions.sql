@@ -1,10 +1,5 @@
 ﻿
-
-
-
-
 CREATE VIEW [nuuMetaView].[SourceInformationSchemaDefinitions] AS
-
 
 WITH ExtractSchema AS
 	(
@@ -40,6 +35,10 @@ WITH ExtractSchema AS
 				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName = 'BOOLEAN' THEN 'bit'
 				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName = 'DATE' THEN 'date'
 				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName = 'TIMESTAMP' THEN 'datetime2'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName = 'map<string,string>' THEN 'nvarchar'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName like 'struct%' THEN 'nvarchar'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName like 'array%' THEN 'nvarchar'
+				WHEN eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.DataTypeName like 'variant%' THEN 'nvarchar'
 				WHEN eis.DataTypeName = 'VARCHAR' THEN 'NVARCHAR'
 				WHEN eis.DataTypeName = 'CHAR' THEN 'NVARCHAR'
 				WHEN eis.DataTypeName = 'NCHAR' THEN 'NVARCHAR'
@@ -62,8 +61,13 @@ WITH ExtractSchema AS
 				ELSE eis.DataTypeName
 			END AS DataTypeName,
 			CASE
-				WHEN eis.DataTypeName = 'STRING' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.ColumnName LIKE '%id'  THEN 36
-				WHEN eis.DataTypeName = 'STRING' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake'  THEN 300
+				WHEN eis.DataTypeName = 'STRING' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.ColumnName LIKE '%id'  THEN 50
+				WHEN eis.DataTypeName = 'STRING' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.ColumnName IN ('Description')  THEN -1
+				WHEN eis.DataTypeName = 'STRING' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake'  THEN 500
+				WHEN eis.DataTypeName = 'map<string,string>' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake'  THEN -1
+				WHEN eis.DataTypeName like 'struct%' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake'  THEN -1
+				WHEN eis.DataTypeName like 'array%' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake'  THEN -1
+				WHEN eis.DataTypeName like 'variant%' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake'  THEN -1
 				WHEN eis.DataTypeName = 'LONG' AND eis.SourceSystemTypeName = 'Oracle' THEN -1
 				ELSE [eis].MaximumLenghtNumber
 			END AS MaximumLenghtNumber,
@@ -170,10 +174,10 @@ SELECT
 	COALESCE( SourceData.TableName, SourceTable.TableName ) AS TableName,
 	COALESCE( SourceData.ColumnName, SourceTable.ColumnName ) AS ColumnName,
 	COALESCE( SourceData.OrdinalPositionNumber, SourceTable.OrdinalPositionNumber ) AS OrdinalPositionNumber,
-	COALESCE( SourceData.FullDataTypeName, SourceTable.FullDataTypeName ) AS FullDataTypeName,
+	CASE WHEN SourceData.ColumnName IN ('NUUDL_ValidFrom','NUUDL_ValidTo') THEN 'DATETIME2' ELSE COALESCE( SourceData.FullDataTypeName, SourceTable.FullDataTypeName ) END AS FullDataTypeName,
 	COALESCE( SourceData.NullableName, SourceTable.NullableName ) AS NullableName,
-	COALESCE( SourceData.DataTypeName, SourceTable.DataTypeName ) AS DataTypeName,
-	COALESCE( SourceData.MaximumLenghtNumber, SourceTable.MaximumLenghtNumber ) AS MaximumLenghtNumber,
+	CASE WHEN SourceData.ColumnName IN ('NUUDL_ValidFrom','NUUDL_ValidTo') THEN 'datetime2' ELSE COALESCE( SourceData.DataTypeName, SourceTable.DataTypeName ) END AS DataTypeName,
+	CASE WHEN SourceData.ColumnName IN ('NUUDL_ValidFrom','NUUDL_ValidTo') THEN null ELSE COALESCE( SourceData.MaximumLenghtNumber, SourceTable.MaximumLenghtNumber ) END AS MaximumLenghtNumber,
 	COALESCE( SourceData.NumericPrecisionNumber, SourceTable.NumericPrecisionNumber ) AS NumericPrecisionNumber,
 	COALESCE( SourceData.NumericScaleNumber, SourceTable.NumericScaleNumber ) AS NumericScaleNumber,
 	COALESCE( SourceData.KeySequenceNumber, SourceTable.KeySequenceNumber ) AS KeySequenceNumber,
@@ -185,3 +189,33 @@ FROM SourceData
 LEFT JOIN [nuuMeta].[SourceInformationSchema] SourceTable
 	ON SourceData.SourceObjectID = SourceTable.SourceObjectID
 		AND SourceData.ColumnName = SourceTable.ColumnName
+WHERE 
+	(COALESCE( SourceData.ColumnName, SourceTable.ColumnName ) IN ('NUUDL_ValidFrom','NUUDL_ValidTo','NUUDL_IsCurrent','NUUDL_CuratedBatchID','NUUDL_CuratedProcessedTimestamp','NUUDL_ID') 
+		OR COALESCE( SourceData.ColumnName, SourceTable.ColumnName ) NOT LIKE 'NUUDL%')
+	--AND COALESCE( SourceData.SourceObjectID, SourceTable.SourceObjectID )  =1566
+
+/*
+UNION ALL
+
+SELECT
+	so.SourceCatalogName AS TableCatalogName,
+	so.SourceSchemaName AS SchemaName,
+	so.SourceObjectName AS TableName,
+	x.DestinationColumn AS ColumnName,
+	NULL OrdinalPositionNumber,
+	'NVARCHAR (500)' FullDataTypeName,
+	'NULL' NullableName,
+	'nvarchar' AS DataTypeName,
+	500 MaximumLenghtNumber,
+	null [NumericPrecisionNumber],
+	null [NumericScaleNumber],
+	null [KeySequenceNumber],
+	'String' [ADFDataType],
+	so.ID [SourceObjectID],
+	sc.ID [SourceConnectionID],
+	'map_attribute' [OriginalDataTypeName]
+FROM nuuMeta.SourceObject so
+INNER JOIN nuuMeta.SourceConnection sc ON sc.SourceConnectionName = so.SourceConnectionName
+INNER JOIN nuuMeta.SourceObjectExtendedAttributes x
+	ON x.SourceObjectID = so.ID
+*/

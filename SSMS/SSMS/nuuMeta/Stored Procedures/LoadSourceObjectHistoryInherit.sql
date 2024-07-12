@@ -115,7 +115,7 @@ SET @Insert =
 -- INSERT
 -- ==================================================
 
-INSERT INTO [' + @HistorySchema + '].[' + @HistoryTable +']
+INSERT INTO [' + @HistorySchema + '].[' + @HistoryTable +']  with (TABLOCK)
 (' + @ColumnList + 
 ',[DWIsCurrent]
 ,[DWValidFromDate]

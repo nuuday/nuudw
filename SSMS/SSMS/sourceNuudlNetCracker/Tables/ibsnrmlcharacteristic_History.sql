@@ -23,7 +23,15 @@
 );
 
 
+
+
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ibsnrmlcharacteristic_History]
     ON [sourceNuudlNetCracker].[ibsnrmlcharacteristic_History];
+
+
+GO
+CREATE NONCLUSTERED INDEX [NCIX_ibsnrmlcharacteristic_History__DWIsCurrent_id]
+    ON [sourceNuudlNetCracker].[ibsnrmlcharacteristic_History]([DWIsCurrent] ASC, [name] ASC, [product_instance_id] ASC)
+    INCLUDE([value_json__corrupt_record], [NUUDL_ID]);
 

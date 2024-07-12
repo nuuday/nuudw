@@ -13,7 +13,7 @@ AS
 SET NOCOUNT ON
 
 /*
-DECLARE @SourceObjectID INT = 177
+DECLARE @SourceObjectID INT = 1566
 DECLARE @PrintSQL BIT = 1
 --*/
 
@@ -42,10 +42,31 @@ WHERE
 	SourceObjectID = @SourceObjectID
 
 SELECT 
-	@Columns = STRING_AGG('[' + ColumnName + '] ' + CASE WHEN LEFT(ColumnName,2) = 'DW' THEN 'AS [SRC_' + ColumnName + ']' ELSE '' END  + @CRLF, ',') WITHIN GROUP (ORDER BY OrdinalPositionNumber)
+	@Columns = STRING_AGG( 
+								CASE 
+									WHEN [OriginalDataTypeName] LIKE ('struct%') THEN 'to_json([' + ColumnName + ']) [' + ColumnName + '] ' 
+									WHEN [OriginalDataTypeName] LIKE ('variant%') THEN 'to_json([' + ColumnName + ']) [' + ColumnName + '] ' 
+									WHEN [OriginalDataTypeName] LIKE ('array%') THEN 'to_json([' + ColumnName + ']) [' + ColumnName + '] ' 
+									--WHEN [OriginalDataTypeName] IN ('map<string,string>') THEN 'to_json([' + ColumnName + ']) [' + ColumnName + '] ' 
+									WHEN [OriginalDataTypeName] IN ('map_attribute') THEN 'CAST(' + Extended.SourceColumn+'.' + Extended.SourceColumnAttribute + ' AS STRING) AS [' + ColumnName + '] ' 
+									ELSE '[' + ColumnName + '] ' 
+								END
+								+ 
+								CASE 
+									WHEN LEFT(ColumnName,2) = 'DW' THEN 'AS [SRC_' + ColumnName + ']' 
+									ELSE '' 
+								END  
+								+ 
+								@CRLF
+								, ','
+								) WITHIN GROUP (ORDER BY OrdinalPositionNumber)
 FROM nuuMetaView.[SourceInformationSchemaDefinitions] AS MetaData
+LEFT JOIN nuuMeta.SourceObjectExtendedAttributes AS Extended	
+	ON Extended.SourceObjectID = MetaData.SourceObjectID 
+		AND Extended.DestinationColumn = MetaData.ColumnName
 WHERE
 	MetaData.[SourceObjectID] = @SourceObjectID
+
 
 SET @SQLLastValue =
 	CASE
@@ -80,7 +101,10 @@ SET @SQLScript =
 		WHEN @DelimitedIdentifier = 'None' THEN REPLACE(REPLACE(@SQLScript,'[',''),']','')
 		ELSE @SQLScript
 	END 
-
+	
+-- Register databricks map data type with <" "> and converting them back to square brackets
+--SET @SQLScript = REPLACE(@SQLScript,'<\"','[\"')
+--SET @SQLScript = REPLACE(@SQLScript,'"\>','\"]')
 
 IF @PrintSQL = 0
 BEGIN

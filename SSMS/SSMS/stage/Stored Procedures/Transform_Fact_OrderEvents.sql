@@ -33,7 +33,6 @@ SELECT DISTINCT
 --	i.item_json_rootId root_id,
 	i.item_json_distributionChannelId AS SalesChannelKey,
 	acc.account_num AS BillingAccountKey,
-	CONVERT( NVARCHAR(20), TRIM(TRANSLATE( chr.value_json__corrupt_record, '["]', '   ' )) ) AS PhoneDetailkey,
 	CASE WHEN item_json_parentId IS NULL THEN 1 ELSE 0 END IsTLO,
 	i.item_json_customerId AS customer_id,
 	i.active_from_CET,
@@ -52,14 +51,7 @@ LEFT JOIN [sourceNuudlNetCrackerView].[qssnrmlquote_History] quote
 	ON quote.id = i.item_json_quoteId AND quote.is_current = 1
 LEFT JOIN [sourceNuudlNetCrackerView].[nrmaccountkeyname_History] acc
 	ON acc.name = i.item_json_accountRef_json_refId 
--- reference to PhoneDetailkey, SLO will have TLO phone number
-OUTER APPLY (
-	SELECT TOP 1 value_json__corrupt_record
-	FROM [sourceNuudlNetCrackerView].[ibsnrmlcharacteristic_History] chr
-	WHERE product_instance_id = COALESCE(i.item_json_parentId, i.id)
-		AND name = 'International Phone Number'
-	ORDER BY NUUDL_ID DESC
-) chr
+
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] po
 	ON po.id = i.item_json_offeringId
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductfamily_History] pf
@@ -71,7 +63,7 @@ WHERE 1=1
 	
 	--we are excluding those subscriptions because of data issues due to testing activities in production
 	AND i.id NOT IN ('b5beb355-0379-41f2-aaad-47297c9548cb', '39476242-7ab7-467e-b88a-b3968a8cb7e9') 
-	--AND COALESCE(i.item_json_parentId, i.id) = '8f166ff1-f4ab-4157-95ff-f94d7cd79e9d'
+	--AND COALESCE(i.item_json_parentId, i.id) = '6d4bc490-1e5a-4e3c-9104-32bed0cbb439'
 
 
 
@@ -151,7 +143,8 @@ SELECT
 	qem.EmployeeKey,
 	qem.EmployeeCancelledKey,
 	CAST(null as nvarchar(36)) AS ProductHardwareKey,
-	CAST(null as nvarchar(50)) AS TechnologyKey
+	CAST(null as nvarchar(50)) AS TechnologyKey,
+	CAST(null as nvarchar(20)) AS PhoneDetailkey
 INTO #all_lines_2
 FROM #all_lines al
 OUTER APPLY (
@@ -228,6 +221,21 @@ OUTER APPLY (
 ) tec
 WHERE IsHardware = 0 AND IsTLO = 1
 
+
+-- Updating PhoneDetailkey
+UPDATE al
+SET PhoneDetailkey = chr.PhoneDetailkey
+--SELECT *
+FROM #all_lines_2 al
+OUTER APPLY (
+	SELECT TOP 1 CONVERT( NVARCHAR(20), TRIM(TRANSLATE( value_json__corrupt_record, '["]', '   ' )) ) AS PhoneDetailkey
+	FROM [sourceNuudlNetCrackerView].[ibsnrmlcharacteristic_History] 
+	WHERE 
+		product_instance_id = al.SubscriptionKey
+		AND name = 'International Phone Number'
+	ORDER BY NUUDL_ID DESC
+) chr
+WHERE IsHardware = 0 
 
 -- Get Account from top level offer
 UPDATE t
@@ -313,7 +321,7 @@ SELECT
 	a.ticket_category,
 	a.ticket_type,
 	b.id AS SubscriptionKey,
-	a.status_change_date,
+	a.status_change_date_CET AS status_change_date,
 	a.status,
 	b.type,
 	c.name AS EmployeeKey,
@@ -402,9 +410,9 @@ SELECT
 	b.id AS SubscriptionKey,
 	a.id TicketKey,
 	ticket_type,
-	a.created_by_date AS PlannedDate,
-	CAST(a.extended_attributes_json_changeDate as datetime2) AS ExpectedDate,
-	status_change_date,
+	a.created_by_date_CET AS PlannedDate,
+	CAST(a.extended_attributes_json_changeDate_CET as datetime2) AS ExpectedDate,
+	status_change_date_CET AS status_change_date,
 	a.status,
 	b.type,
 	c.name AS EmployeeKey,
@@ -477,7 +485,11 @@ SELECT DISTINCT
 	t.EmployeeKey,
 	t.TicketKey,
 	al.IsTLO,
-	null active_from_CET
+	CASE 
+		WHEN e.OrderEventName= 'Offer Disconnected Planned' THEN CAST(t.PlannedDate AS DATETIME)
+		WHEN e.OrderEventName= 'Offer Disconnected Expected' THEN CAST(t.ExpectedDate AS DATETIME)
+		WHEN e.OrderEventName= 'Offer Disconnected Cancelled' THEN CAST(t.status_change_date AS DATETIME)
+	END active_from_CET
 INTO #termination_lines
 FROM (
 	SELECT
@@ -623,7 +635,7 @@ CROSS APPLY (
 	FROM #all_lines_filtered
 	WHERE SubscriptionKey = al.SubscriptionKey 
 		AND CalendarKey <= al.CalendarKey
-		AND CurrentState = 'ACTIVE'
+		AND CurrentState IN ('COMPLETED', 'ACTIVE')
 		AND IsHardware = 1 
 	ORDER BY active_from_CET DESC
 ) hardware
@@ -631,6 +643,7 @@ WHERE 1=1
 	AND al.ProductName = 'Commitment'
 --	AND al.SubscriptionKey = '7a391a92-6f6e-4a10-ac4f-ab64fd659c6b'
 --ORDER BY CalendarKey, TimeKey
+
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Add events do to change in product type and product
@@ -962,6 +975,51 @@ WHERE 1=1
 	--AND ra.SubscriptionKey = '2e3e5b05-c86a-4e47-a731-eea2cab36dcf'
 
 
+-----------------------------------------------------------------------------------------------------------------------------
+-- Creating Offer Disconnect Planned lines where these aren't provided by tickets
+-----------------------------------------------------------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS #missing_planned_disconnect
+
+SELECT r.*
+INTO #missing_planned_disconnect
+FROM #result r
+OUTER APPLY (
+	SELECT MAX(active_from_CET) activated_date
+	FROM #result
+	WHERE 1=1
+			AND SubscriptionKey = r.SubscriptionKey 
+			AND IsTLO=1 
+			AND OrderEventName = 'Offer Activated'
+			AND active_from_CET < r.active_from_CET
+) a
+WHERE 1=1
+	AND OrderEventName = 'Offer Disconnected'
+	AND IsTLO = 1
+	AND Quantity = 1
+	AND NOT EXISTS (
+		SELECT *
+		FROM #result 
+		WHERE 1=1
+			AND SubscriptionKey = r.SubscriptionKey 
+			AND IsTLO=1 
+			AND OrderEventName = 'Offer Disconnected Planned'
+			AND active_from_CET >= a.activated_date
+	)
+
+UPDATE a
+SET 
+	OrderEventKey = e.OrderEventKey,
+	OrderEventName = e.OrderEventName
+FROM #missing_planned_disconnect a
+CROSS APPLY (
+	SELECT *
+	FROM dim.OrderEvent 
+	WHERE OrderEventName = 'Offer Disconnected Planned'
+) e
+
+INSERT INTO #result
+SELECT * FROM #missing_planned_disconnect
 
 /*
 SELECT *
