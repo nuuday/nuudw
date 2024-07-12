@@ -1,5 +1,6 @@
 ﻿
 
+
 CREATE VIEW [sourceNuudlNetCrackerView].[cpmnrmltroubleticket_History]
 AS
 SELECT 
@@ -7,6 +8,7 @@ SELECT
 	[closed_by_date] ,
 	[closed_by_user_id] ,
 	[closed_by_user_name] ,
+	CAST([created_by_date] AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime) [created_by_date_CET],
 	[created_by_date] ,
 	[created_by_user_id] ,
 	[created_by_user_name] ,
@@ -34,6 +36,7 @@ SELECT
 	[requested_resolution_date] ,
 	[severity] ,
 	[status] ,
+	CAST([status_change_date] AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime) [status_change_date_CET],
 	[status_change_date] ,
 	[status_change_reason] ,
 	[ticket_type] ,
@@ -57,7 +60,11 @@ SELECT
 	[extended_attributes_json__corrupt_record] ,
 	[extended_attributes_json_accountNumber] ,
 	[extended_attributes_json_billId] ,
-	CASE [extended_attributes_json_changeDate] WHEN 'Invalid date' THEN null ELSE [extended_attributes_json_changeDate] END [extended_attributes_json_changeDate] ,
+	CAST(
+		CASE[extended_attributes_json_changeDate] WHEN 'Invalid date' THEN null ELSE [extended_attributes_json_changeDate] END 
+		AS datetime
+	) AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' AS [extended_attributes_json_changeDate_CET] ,
+	[extended_attributes_json_changeDate],
 	[extended_attributes_json_change_id] ,
 	[extended_attributes_json_commitmentFee] ,
 	[extended_attributes_json_cpmChannel] ,

@@ -1,4 +1,5 @@
 ﻿
+
 CREATE VIEW [sourceNuudlNetCrackerView].[ibsnrmlproductinstance_History]
 AS
 SELECT 
@@ -10,6 +11,7 @@ SELECT
 	[disconnection_reason] ,
 	[disconnection_reason_description] ,
 	[effective_date] ,
+	CAST([effective_date] AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime) [effective_date_CET],
 	[eligibility_param_id] ,
 	[extended_attributes_json__corrupt_record] ,
 	[extended_eligibility] ,
