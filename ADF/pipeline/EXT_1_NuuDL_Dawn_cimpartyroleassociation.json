@@ -188,7 +188,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`active_from` \r\n,`association_name` \r\n,`association_role` \r\n,to_json(`changed_by`) `changed_by` \r\n,`id` \r\n,`id_from` \r\n,`id_to` \r\n,`op` \r\n,`ref_type_from` \r\n,`ref_type_to` \r\n,`ts_ms` \r\n,`Snapshot` \r\n,`Partition_Snapshot` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_ID` \r\n \r\nFROM dai.netcracker12.`cimpartyroleassociation`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`active_from` \r\n,`association_name` \r\n,`association_role` \r\n,to_json(`changed_by`) `changed_by` \r\n,`id` \r\n,`id_from` \r\n,`id_to` \r\n,`op` \r\n,`ref_type_from` \r\n,`ref_type_to` \r\n,`ts_ms` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_ID` \r\n \r\nFROM dai.netcracker12.`cimpartyroleassociation`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
