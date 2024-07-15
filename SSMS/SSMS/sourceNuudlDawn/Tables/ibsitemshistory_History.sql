@@ -1,14 +1,16 @@
-﻿CREATE TABLE [sourceNuudlDawn].[cimcontactmediumassociation_History] (
+﻿CREATE TABLE [sourceNuudlDawn].[ibsitemshistory_History] (
     [active_from]                     DATETIME2 (7)  NULL,
-    [changed_by]                      NVARCHAR (MAX) NULL,
-    [contact_medium_id]               NVARCHAR (50)  NULL,
+    [active_to]                       DATETIME2 (7)  NULL,
     [id]                              NVARCHAR (50)  NULL,
+    [idempotency_key]                 NVARCHAR (500) NULL,
+    [is_snapshot]                     BIT            NULL,
+    [item]                            NVARCHAR (MAX) NULL,
+    [last_modified_ts]                DATETIME2 (7)  NULL,
     [op]                              NVARCHAR (500) NULL,
-    [ref_id]                          NVARCHAR (50)  NULL,
-    [ref_type]                        NVARCHAR (500) NULL,
+    [schema_version]                  NVARCHAR (500) NULL,
+    [state]                           NVARCHAR (500) NULL,
     [ts_ms]                           BIGINT         NULL,
-    [Snapshot]                        NVARCHAR (500) NULL,
-    [Partition_Snapshot]              NVARCHAR (500) NULL,
+    [version]                         NVARCHAR (500) NULL,
     [NUUDL_CuratedBatchID]            INT            NULL,
     [NUUDL_CuratedProcessedTimestamp] NVARCHAR (500) NULL,
     [NUUDL_IsCurrent]                 BIT            NULL,
@@ -22,15 +24,11 @@
     [DWModifiedDate]                  DATETIME2 (7)  NULL,
     [DWIsDeletedInSource]             BIT            NULL,
     [DWDeletedInSourceDate]           DATETIME2 (7)  NULL,
-    CONSTRAINT [PK_cimcontactmediumassociation_History] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC, [DWValidFromDate] ASC)
+    CONSTRAINT [PK_ibsitemshistory_History] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC, [DWValidFromDate] ASC)
 );
 
 
-
-
 GO
-CREATE CLUSTERED COLUMNSTORE INDEX [CCI_cimcontactmediumassociation_History]
-    ON [sourceNuudlDawn].[cimcontactmediumassociation_History];
-
-
+CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ibsitemshistory_History]
+    ON [sourceNuudlDawn].[ibsitemshistory_History];
 

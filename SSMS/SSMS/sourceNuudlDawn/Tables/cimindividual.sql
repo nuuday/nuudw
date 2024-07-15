@@ -1,22 +1,20 @@
-﻿CREATE TABLE [sourceNuudlDawn].[cimpartyrole] (
+﻿CREATE TABLE [sourceNuudlDawn].[cimindividual] (
     [active_from]                     DATETIME2 (7)  NULL,
-    [billing_synchronization_status]  NVARCHAR (500) NULL,
+    [billing_data]                    NVARCHAR (MAX) NULL,
+    [birthdate]                       DATE           NULL,
     [changed_by]                      NVARCHAR (MAX) NULL,
-    [end_date_time]                   DATETIME2 (7)  NULL,
-    [engaged_party_description]       NVARCHAR (500) NULL,
-    [engaged_party_id]                NVARCHAR (50)  NULL,
-    [engaged_party_name]              NVARCHAR (500) NULL,
-    [engaged_party_ref_type]          NVARCHAR (500) NULL,
+    [country_of_birth]                NVARCHAR (500) NULL,
+    [death_date]                      DATE           NULL,
     [extended_attributes]             NVARCHAR (MAX) NULL,
+    [gender]                          NVARCHAR (500) NULL,
     [id]                              NVARCHAR (50)  NULL,
     [idempotency_key]                 NVARCHAR (500) NULL,
-    [name]                            NVARCHAR (500) NULL,
-    [ola_ref]                         NVARCHAR (MAX) NULL,
+    [location]                        NVARCHAR (500) NULL,
+    [marital_status]                  NVARCHAR (500) NULL,
+    [nationality]                     NVARCHAR (500) NULL,
     [op]                              NVARCHAR (500) NULL,
-    [party_role_type]                 NVARCHAR (500) NULL,
-    [start_date_time]                 DATETIME2 (7)  NULL,
+    [place_of_birth]                  NVARCHAR (500) NULL,
     [status]                          NVARCHAR (500) NULL,
-    [status_reason]                   NVARCHAR (500) NULL,
     [ts_ms]                           BIGINT         NULL,
     [Snapshot]                        NVARCHAR (500) NULL,
     [Partition_Snapshot]              NVARCHAR (500) NULL,
@@ -26,16 +24,12 @@
     [NUUDL_ValidFrom]                 DATETIME2 (7)  NULL,
     [NUUDL_ValidTo]                   DATETIME2 (7)  NULL,
     [NUUDL_ID]                        BIGINT         NOT NULL,
-    [DWCreatedDate]                   DATETIME2 (7)  DEFAULT (getdate()) NULL,
-    CONSTRAINT [PK_cimpartyrole] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC)
+    [DWCreatedDate]                   DATETIME2 (7)  NULL,
+    CONSTRAINT [PK_cimindividual] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC)
 );
 
 
-
-
 GO
-CREATE CLUSTERED COLUMNSTORE INDEX [CCI_cimpartyrole]
-    ON [sourceNuudlDawn].[cimpartyrole];
-
-
+CREATE CLUSTERED COLUMNSTORE INDEX [CCI_cimindividual]
+    ON [sourceNuudlDawn].[cimindividual];
 

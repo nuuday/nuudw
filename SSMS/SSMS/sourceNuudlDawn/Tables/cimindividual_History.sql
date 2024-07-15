@@ -1,22 +1,20 @@
-﻿CREATE TABLE [sourceNuudlDawn].[cimpartyrole_History] (
+﻿CREATE TABLE [sourceNuudlDawn].[cimindividual_History] (
     [active_from]                     DATETIME2 (7)  NULL,
-    [billing_synchronization_status]  NVARCHAR (500) NULL,
+    [billing_data]                    NVARCHAR (MAX) NULL,
+    [birthdate]                       DATE           NULL,
     [changed_by]                      NVARCHAR (MAX) NULL,
-    [end_date_time]                   DATETIME2 (7)  NULL,
-    [engaged_party_description]       NVARCHAR (500) NULL,
-    [engaged_party_id]                NVARCHAR (50)  NULL,
-    [engaged_party_name]              NVARCHAR (500) NULL,
-    [engaged_party_ref_type]          NVARCHAR (500) NULL,
+    [country_of_birth]                NVARCHAR (500) NULL,
+    [death_date]                      DATE           NULL,
     [extended_attributes]             NVARCHAR (MAX) NULL,
+    [gender]                          NVARCHAR (500) NULL,
     [id]                              NVARCHAR (50)  NULL,
     [idempotency_key]                 NVARCHAR (500) NULL,
-    [name]                            NVARCHAR (500) NULL,
-    [ola_ref]                         NVARCHAR (MAX) NULL,
+    [location]                        NVARCHAR (500) NULL,
+    [marital_status]                  NVARCHAR (500) NULL,
+    [nationality]                     NVARCHAR (500) NULL,
     [op]                              NVARCHAR (500) NULL,
-    [party_role_type]                 NVARCHAR (500) NULL,
-    [start_date_time]                 DATETIME2 (7)  NULL,
+    [place_of_birth]                  NVARCHAR (500) NULL,
     [status]                          NVARCHAR (500) NULL,
-    [status_reason]                   NVARCHAR (500) NULL,
     [ts_ms]                           BIGINT         NULL,
     [Snapshot]                        NVARCHAR (500) NULL,
     [Partition_Snapshot]              NVARCHAR (500) NULL,
@@ -33,15 +31,11 @@
     [DWModifiedDate]                  DATETIME2 (7)  NULL,
     [DWIsDeletedInSource]             BIT            NULL,
     [DWDeletedInSourceDate]           DATETIME2 (7)  NULL,
-    CONSTRAINT [PK_cimpartyrole_History] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC, [DWValidFromDate] ASC)
+    CONSTRAINT [PK_cimindividual_History] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC, [DWValidFromDate] ASC)
 );
 
 
-
-
 GO
-CREATE CLUSTERED COLUMNSTORE INDEX [CCI_cimpartyrole_History]
-    ON [sourceNuudlDawn].[cimpartyrole_History];
-
-
+CREATE CLUSTERED COLUMNSTORE INDEX [CCI_cimindividual_History]
+    ON [sourceNuudlDawn].[cimindividual_History];
 

@@ -112,6 +112,8 @@
     <Folder Include="SourceNuudlNAMView\Views\" />
     <Folder Include="sourceNuudlDawn\" />
     <Folder Include="sourceNuudlDawn\Tables\" />
+    <Folder Include="sourceNuudlDawnView\" />
+    <Folder Include="sourceNuudlDawnView\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -604,6 +606,58 @@
     <Build Include="sourceNuudlDawn\Tables\cimcustomer_History.sql" />
     <Build Include="Security\sourceNuudlDawnView.sql" />
     <Build Include="Security\sourceNuudlDawn.sql" />
+    <Build Include="sourceNuudlDawn\Tables\worklogitems_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\worklogitems.sql" />
+    <Build Include="sourceNuudlDawn\Tables\qssnrmlquoteitemprice_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\qssnrmlquoteitemprice.sql" />
+    <Build Include="sourceNuudlDawn\Tables\qssnrmlquoteitem_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\qssnrmlquoteitem.sql" />
+    <Build Include="sourceNuudlDawn\Tables\qssnrmlquote_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\qssnrmlquote.sql" />
+    <Build Include="sourceNuudlDawn\Tables\pimnrmlprodofferingpricespecification_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\pimnrmlprodofferingpricespecification.sql" />
+    <Build Include="sourceNuudlDawn\Tables\orgchrteammember_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\orgchrteammember.sql" />
+    <Build Include="sourceNuudlDawn\Tables\nrmcustproductdetails_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\nrmcustproductdetails.sql" />
+    <Build Include="sourceNuudlDawn\Tables\nrmcusthasproductkeyname_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\nrmcusthasproductkeyname.sql" />
+    <Build Include="sourceNuudlDawn\Tables\nrmaccountkeyname_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\nrmaccountkeyname.sql" />
+    <Build Include="sourceNuudlDawn\Tables\ibsnrmlproductinstance_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\ibsnrmlproductinstance.sql" />
+    <Build Include="sourceNuudlDawn\Tables\ibsnrmlcharacteristic_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\ibsnrmlcharacteristic.sql" />
+    <Build Include="sourceNuudlDawn\Tables\ibsitemshistory_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\ibsitemshistory.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cpmnrmltroubleticketrelatedentityref_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cpmnrmltroubleticketrelatedentityref.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cpmnrmltroubleticket_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cpmnrmltroubleticket.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimpartyroleassociation_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimpartyroleassociation.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimindividual_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimindividual.sql" />
+    <Build Include="sourceNuudlDawnView\Views\worklogitems_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\qssnrmlquoteitemprice_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\qssnrmlquoteitem_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\qssnrmlquote_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\pimnrmlprodofferingpricespecification_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\orgchrteammember_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\nrmcustproductdetails_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\nrmcusthasproductkeyname_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\nrmaccountkeyname_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\ibsnrmlproductinstance_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\ibsnrmlcharacteristic_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\ibsitemshistory_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\cpmnrmltroubleticketrelatedentityref_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\cpmnrmltroubleticket_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\cimpartyroleassociation_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\cimpartyrole_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\cimindividual_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\cimcustomer_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\cimcontactmediumassociation_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\cimcontactmedium_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

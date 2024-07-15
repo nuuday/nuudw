@@ -1,12 +1,12 @@
-﻿CREATE TABLE [sourceNuudlDawn].[cimcontactmediumassociation_History] (
-    [active_from]                     DATETIME2 (7)  NULL,
-    [changed_by]                      NVARCHAR (MAX) NULL,
-    [contact_medium_id]               NVARCHAR (50)  NULL,
-    [id]                              NVARCHAR (50)  NULL,
+﻿CREATE TABLE [sourceNuudlDawn].[ibsnrmlcharacteristic_History] (
+    [attribute_id]                    NVARCHAR (50)  NULL,
+    [name]                            NVARCHAR (500) NULL,
     [op]                              NVARCHAR (500) NULL,
-    [ref_id]                          NVARCHAR (50)  NULL,
-    [ref_type]                        NVARCHAR (500) NULL,
+    [product_instance_id]             NVARCHAR (50)  NULL,
+    [product_offering_char_id]        NVARCHAR (50)  NULL,
+    [product_spec_char_id]            NVARCHAR (50)  NULL,
     [ts_ms]                           BIGINT         NULL,
+    [value]                           NVARCHAR (MAX) NULL,
     [Snapshot]                        NVARCHAR (500) NULL,
     [Partition_Snapshot]              NVARCHAR (500) NULL,
     [NUUDL_CuratedBatchID]            INT            NULL,
@@ -22,15 +22,11 @@
     [DWModifiedDate]                  DATETIME2 (7)  NULL,
     [DWIsDeletedInSource]             BIT            NULL,
     [DWDeletedInSourceDate]           DATETIME2 (7)  NULL,
-    CONSTRAINT [PK_cimcontactmediumassociation_History] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC, [DWValidFromDate] ASC)
+    CONSTRAINT [PK_ibsnrmlcharacteristic_History] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC, [DWValidFromDate] ASC)
 );
 
 
-
-
 GO
-CREATE CLUSTERED COLUMNSTORE INDEX [CCI_cimcontactmediumassociation_History]
-    ON [sourceNuudlDawn].[cimcontactmediumassociation_History];
-
-
+CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ibsnrmlcharacteristic_History]
+    ON [sourceNuudlDawn].[ibsnrmlcharacteristic_History];
 
