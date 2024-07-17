@@ -45,10 +45,10 @@ SELECT
 	@Columns = STRING_AGG( 
 								CASE 
 									WHEN [OriginalDataTypeName] LIKE ('struct%') THEN 'to_json([' + ColumnName + ']) [' + ColumnName + '] ' 
-									WHEN [OriginalDataTypeName] LIKE ('variant%') THEN 'to_json([' + ColumnName + ']) [' + ColumnName + '] ' 
+									WHEN [OriginalDataTypeName] LIKE ('variant') THEN 'to_json([' + ColumnName + ']) [' + ColumnName + '] ' 
 									WHEN [OriginalDataTypeName] LIKE ('array%') THEN 'to_json([' + ColumnName + ']) [' + ColumnName + '] ' 
 									--WHEN [OriginalDataTypeName] IN ('map<string,string>') THEN 'to_json([' + ColumnName + ']) [' + ColumnName + '] ' 
-									WHEN [OriginalDataTypeName] IN ('map_attribute') THEN 'CAST(' + Extended.SourceColumn+'.' + Extended.SourceColumnAttribute + ' AS STRING) AS [' + ColumnName + '] ' 
+									WHEN [OriginalDataTypeName] IN ('variant_attribute') THEN 'CAST(' + Extended.SourceColumn+':' + Extended.SourceColumnAttribute + ' AS STRING) AS [' + ColumnName + '] ' 
 									ELSE '[' + ColumnName + '] ' 
 								END
 								+ 
