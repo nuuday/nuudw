@@ -672,7 +672,6 @@
     <Build Include="sourceNuudlDawnView\Views\phonenumbers_History.sql" />
     <Build Include="sourceNuudlDawnView\Views\nrmcusthasproductkeyname_History.sql" />
     <Build Include="sourceNuudlDawnView\Views\nrmaccountkeyname_History.sql" />
-    <Build Include="Security\customervolume_read.sql" />
     <Build Include="sourceNuudlDawn\Stored Procedures\Initiate_Filter_ibsitemshistory_History.sql" />
     <Build Include="Security\sourceNuudlDawnView.sql" />
     <Build Include="Security\sourceNuudlDawn.sql" />
