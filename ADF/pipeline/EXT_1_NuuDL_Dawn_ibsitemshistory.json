@@ -1,0 +1,328 @@
+{
+  "name": "EXT_1_NuuDL_Dawn_ibsitemshistory",
+  "properties": {
+    "activities": [
+      {
+        "name": "Update_Meta_Tables",
+        "type": "SqlServerStoredProcedure",
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[UpdateSourceTables]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "NuuDL_Dawn",
+              "type": "String"
+            },
+            "SourceConnectionType": {
+              "value": "AzureDatabricksDeltaLake",
+              "type": "String"
+            },
+            "SourceCatalogName": {
+              "value": "dai",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "netcracker12",
+              "type": "String"
+            },
+            "SourceObjectName": {
+              "value": "ibsitemshistory",
+              "type": "String"
+            },
+            "DestinationSchemaName": {
+              "value": "sourceNuudlDawn",
+              "type": "String"
+            },
+            "WatermarkColumnName": {
+              "value": "NUUDL_CuratedBatchID",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "False",
+              "type": "Boolean"
+            },
+            "WatermarkRollingWindowDays": {
+              "value": "0",
+              "type": "Int32"
+            },
+            "WatermarkInQuery": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Lookup_Last_Value_Loaded",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Update_Meta_Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderStoredProcedureName": "[nuuMeta].[GetLastValueLoaded]",
+            "storedProcedureParameters": {
+              "SourceConnectionName": {
+                "value": "NuuDL_Dawn",
+                "type": "String"
+              },
+              "SourceCatalogName": {
+                "value": "dai",
+                "type": "String"
+              },
+              "SourceSchemaName": {
+                "value": "netcracker12",
+                "type": "String"
+              },
+              "SourceTableName": {
+                "value": "ibsitemshistory",
+                "type": "String"
+              },
+              "JobIsIncremental": {
+                "value": "@pipeline().parameters.JobIsIncremental",
+                "type": "Boolean"
+              },
+              "ConnectionType": {
+                "value": "AzureDatabricksDeltaLake",
+                "type": "String"
+              },
+              "WatermarkIsDate": {
+                "value": "False",
+                "type": "Boolean"
+              }
+            }
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjects"
+            }
+          }
+        }
+      },
+      {
+        "name": "Lookup_Source_Schema_Name",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Last_Value_Loaded",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderStoredProcedureName": "[nuuMeta].[GetSourceSchemaName]",
+            "storedProcedureParameters": {
+              "SourceConnectionName": {
+                "value": "NuuDL_Dawn",
+                "type": "String"
+              },
+              "SourceCatalogName": {
+                "value": "dai",
+                "type": "String"
+              },
+              "SourceSchemaName": {
+                "value": "netcracker12",
+                "type": "String"
+              },
+              "SourceTableName": {
+                "value": "ibsitemshistory",
+                "type": "String"
+              }
+            }
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjects"
+            }
+          }
+        }
+      },
+      {
+        "name": "Copy_ibsitemshistory",
+        "type": "Copy",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Source_Schema_Name",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "AzureDatabricksDeltaLakeSource",
+            "query": {
+              "value": "\r\nSELECT \r\n`active_from` \r\n,`active_to` \r\n,`id` \r\n,`idempotency_key` \r\n,`is_snapshot` \r\n,to_json(`item`) `item` \r\n,`last_modified_ts` \r\n,`op` \r\n,`schema_version` \r\n,`state` \r\n,`ts_ms` \r\n,`version` \r\n,`is_deleted` \r\n,`is_current` \r\n,CAST(item:accountRef AS STRING) AS `item_accountRef` \r\n,CAST(item:customerId AS STRING) AS `item_customerId` \r\n,CAST(item:distributionChannelId AS STRING) AS `item_distributionChannelId` \r\n,CAST(item:expirationDate AS STRING) AS `item_expirationDate` \r\n,CAST(item:name AS STRING) AS `item_name` \r\n,CAST(item:offeringId AS STRING) AS `item_offeringId` \r\n,CAST(item:offeringName AS STRING) AS `item_offeringName` \r\n,CAST(item:parentId AS STRING) AS `item_parentId` \r\n,CAST(item:prices AS STRING) AS `item_prices` \r\n,CAST(item:productFamilyId AS STRING) AS `item_productFamilyId` \r\n,CAST(item:productFamilyName AS STRING) AS `item_productFamilyName` \r\n,CAST(item:productSpecificationRef AS STRING) AS `item_productSpecificationRef` \r\n,CAST(item:quantity AS STRING) AS `item_quantity` \r\n,CAST(item:quoteId AS STRING) AS `item_quoteId` \r\n,CAST(item:relatedPartyRef AS STRING) AS `item_relatedPartyRef` \r\n,CAST(item:rootId AS STRING) AS `item_rootId` \r\n,CAST(item:type AS STRING) AS `item_type` \r\n,CAST(item:version AS STRING) AS `item_version` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_ID` \r\n \r\nFROM dai.netcracker12.`ibsitemshistory`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "type": "Expression"
+            },
+            "exportSettings": {
+              "type": "AzureDatabricksDeltaLakeExportCommand"
+            }
+          },
+          "sink": {
+            "type": "AzureSqlSink",
+            "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+            "preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory]"
+          },
+          "enableStaging": true,
+          "stagingSettings": {
+            "linkedServiceName": {
+              "referenceName": "datalakest01exploration",
+              "type": "LinkedServiceReference"
+            },
+            "path": "adfstage"
+          }
+        },
+        "inputs": [
+          {
+            "referenceName": "NuuDL_Dawn_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "dai.netcracker12.ibsitemshistory"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "[sourceNuudlDawn].[ibsitemshistory]"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Merge_To_History",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Copy_ibsitemshistory",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
+          "storedProcedureParameters": {
+            "ExtractTable": {
+              "value": "sourceNuudlDawn.ibsitemshistory",
+              "type": "String"
+            },
+            "LoadIsIncremental": {
+              "value": "@pipeline().parameters.JobIsIncremental",
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Set_Last_Value_Loaded",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Merge_To_History",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[SetLastLoadedValue]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "NuuDL_Dawn",
+              "type": "String"
+            },
+            "SourceCatalogName": {
+              "value": "dai",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "netcracker12",
+              "type": "String"
+            },
+            "SourceTableName": {
+              "value": "ibsitemshistory",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "False",
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    }
+  }
+}
