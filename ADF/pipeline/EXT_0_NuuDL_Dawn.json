@@ -153,6 +153,21 @@
         }
       },
       {
+        "name": "ibsitemshistoryccharacteristics",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_NuuDL_Dawn_ibsitemshistoryccharacteristics",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
         "name": "ibsnrmlcharacteristic",
         "type": "ExecutePipeline",
         "typeProperties": {
