@@ -153,11 +153,11 @@
         }
       },
       {
-        "name": "ibsitemshistoryccharacteristics",
+        "name": "ibsitemshistorycharacteristics",
         "type": "ExecutePipeline",
         "typeProperties": {
           "pipeline": {
-            "referenceName": "EXT_1_NuuDL_Dawn_ibsitemshistoryccharacteristics",
+            "referenceName": "EXT_1_NuuDL_Dawn_ibsitemshistorycharacteristics",
             "type": "PipelineReference"
           },
           "waitOnCompletion": true,

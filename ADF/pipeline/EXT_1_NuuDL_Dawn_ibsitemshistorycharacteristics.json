@@ -1,5 +1,5 @@
 {
-  "name": "EXT_1_NuuDL_Dawn_ibsitemshistoryccharacteristics",
+  "name": "EXT_1_NuuDL_Dawn_ibsitemshistorycharacteristics",
   "properties": {
     "activities": [
       {
@@ -30,7 +30,7 @@
               "type": "String"
             },
             "SourceObjectName": {
-              "value": "ibsitemshistoryccharacteristics",
+              "value": "ibsitemshistorycharacteristics",
               "type": "String"
             },
             "DestinationSchemaName": {
@@ -94,7 +94,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "ibsitemshistoryccharacteristics",
+                "value": "ibsitemshistorycharacteristics",
                 "type": "String"
               },
               "JobIsIncremental": {
@@ -154,7 +154,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "ibsitemshistoryccharacteristics",
+                "value": "ibsitemshistorycharacteristics",
                 "type": "String"
               }
             }
@@ -169,7 +169,7 @@
         }
       },
       {
-        "name": "Copy_ibsitemshistoryccharacteristics",
+        "name": "Copy_ibsitemshistorycharacteristics",
         "type": "Copy",
         "dependsOn": [
           {
@@ -198,7 +198,7 @@
           "sink": {
             "type": "AzureSqlSink",
             "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistoryccharacteristics]"
+            "preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistorycharacteristics]"
           },
           "enableStaging": true,
           "stagingSettings": {
@@ -214,7 +214,7 @@
             "referenceName": "NuuDL_Dawn_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "dai.netcracker12.ibsitemshistoryccharacteristics"
+              "TableName": "dai.netcracker12.ibsitemshistorycharacteristics"
             }
           }
         ],
@@ -223,7 +223,7 @@
             "referenceName": "nuudwsqldb01_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "[sourceNuudlDawn].[ibsitemshistoryccharacteristics]"
+              "TableName": "[sourceNuudlDawn].[ibsitemshistorycharacteristics]"
             }
           }
         ]
@@ -233,7 +233,7 @@
         "type": "SqlServerStoredProcedure",
         "dependsOn": [
           {
-            "activity": "Copy_ibsitemshistoryccharacteristics",
+            "activity": "Copy_ibsitemshistorycharacteristics",
             "dependencyConditions": [
               "Succeeded"
             ]
@@ -248,7 +248,7 @@
           "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
           "storedProcedureParameters": {
             "ExtractTable": {
-              "value": "sourceNuudlDawn.ibsitemshistoryccharacteristics",
+              "value": "sourceNuudlDawn.ibsitemshistorycharacteristics",
               "type": "String"
             },
             "LoadIsIncremental": {
@@ -294,7 +294,7 @@
               "type": "String"
             },
             "SourceTableName": {
-              "value": "ibsitemshistoryccharacteristics",
+              "value": "ibsitemshistorycharacteristics",
               "type": "String"
             },
             "WatermarkIsDate": {
