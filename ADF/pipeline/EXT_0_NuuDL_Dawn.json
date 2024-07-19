@@ -258,21 +258,6 @@
         }
       },
       {
-        "name": "pimnrmlprodofferingpricespecification",
-        "type": "ExecutePipeline",
-        "typeProperties": {
-          "pipeline": {
-            "referenceName": "EXT_1_NuuDL_Dawn_pimnrmlprodofferingpricespecification",
-            "type": "PipelineReference"
-          },
-          "waitOnCompletion": true,
-          "parameters": {
-            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
-            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
-          }
-        }
-      },
-      {
         "name": "qssnrmlquote",
         "type": "ExecutePipeline",
         "typeProperties": {
