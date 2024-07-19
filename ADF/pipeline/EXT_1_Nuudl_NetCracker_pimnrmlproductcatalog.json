@@ -250,6 +250,10 @@
             "ExtractTable": {
               "value": "sourceNuudlNetCracker.pimnrmlproductcatalog",
               "type": "String"
+            },
+            "LoadIsIncremental": {
+              "value": "@pipeline().parameters.JobIsIncremental",
+              "type": "Boolean"
             }
           }
         },

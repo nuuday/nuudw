@@ -1,5 +1,5 @@
 {
-  "name": "EXT_1_Nuudl_NetCracker_pimnrmldistributionchannel",
+  "name": "EXT_1_Nuudl_NetCracker_pimnrmlprodofferingpricespecification",
   "properties": {
     "activities": [
       {
@@ -30,7 +30,7 @@
               "type": "String"
             },
             "SourceObjectName": {
-              "value": "pimnrmldistributionchannel",
+              "value": "pimnrmlprodofferingpricespecification",
               "type": "String"
             },
             "DestinationSchemaName": {
@@ -94,7 +94,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "pimnrmldistributionchannel",
+                "value": "pimnrmlprodofferingpricespecification",
                 "type": "String"
               },
               "JobIsIncremental": {
@@ -154,7 +154,7 @@
                 "type": "String"
               },
               "SourceTableName": {
-                "value": "pimnrmldistributionchannel",
+                "value": "pimnrmlprodofferingpricespecification",
                 "type": "String"
               }
             }
@@ -169,7 +169,7 @@
         }
       },
       {
-        "name": "Copy_pimnrmldistributionchannel",
+        "name": "Copy_pimnrmlprodofferingpricespecification",
         "type": "Copy",
         "dependsOn": [
           {
@@ -188,7 +188,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`localized_name_json_dan` \r\n,`id` \r\n,`name` \r\n,`extended_parameters_json_insurancePolicyPrefix` \r\n,`extended_parameters_json_storeAddress` \r\n,`external_id` \r\n,`extended_parameters_json_storeName` \r\n,`extended_parameters_json__corrupt_record` \r\n,`extended_parameters_json_channelType` \r\n,`extended_parameters_json_storeID` \r\n,`cdc_revision_id` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n \r\nFROM dai.netcracker.`pimnrmldistributionchannel`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`external_id` \r\n,`id` \r\n,`name` \r\n,`price_type` \r\n,`extended_parameters` \r\n,`cdc_revision_id` \r\n,`localized_name_json_dan` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n \r\nFROM dai.netcracker.`pimnrmlprodofferingpricespecification`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
@@ -198,7 +198,7 @@
           "sink": {
             "type": "AzureSqlSink",
             "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
-            "preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[pimnrmldistributionchannel]"
+            "preCopyScript": "TRUNCATE TABLE [sourceNuudlNetCracker].[pimnrmlprodofferingpricespecification]"
           },
           "enableStaging": true,
           "stagingSettings": {
@@ -214,7 +214,7 @@
             "referenceName": "Nuudl_NetCracker_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "dai.netcracker.pimnrmldistributionchannel"
+              "TableName": "dai.netcracker.pimnrmlprodofferingpricespecification"
             }
           }
         ],
@@ -223,7 +223,7 @@
             "referenceName": "nuudwsqldb01_DynamicDataset",
             "type": "DatasetReference",
             "parameters": {
-              "TableName": "[sourceNuudlNetCracker].[pimnrmldistributionchannel]"
+              "TableName": "[sourceNuudlNetCracker].[pimnrmlprodofferingpricespecification]"
             }
           }
         ]
@@ -233,7 +233,7 @@
         "type": "SqlServerStoredProcedure",
         "dependsOn": [
           {
-            "activity": "Copy_pimnrmldistributionchannel",
+            "activity": "Copy_pimnrmlprodofferingpricespecification",
             "dependencyConditions": [
               "Succeeded"
             ]
@@ -248,7 +248,7 @@
           "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
           "storedProcedureParameters": {
             "ExtractTable": {
-              "value": "sourceNuudlNetCracker.pimnrmldistributionchannel",
+              "value": "sourceNuudlNetCracker.pimnrmlprodofferingpricespecification",
               "type": "String"
             },
             "LoadIsIncremental": {
@@ -294,7 +294,7 @@
               "type": "String"
             },
             "SourceTableName": {
-              "value": "pimnrmldistributionchannel",
+              "value": "pimnrmlprodofferingpricespecification",
               "type": "String"
             },
             "WatermarkIsDate": {
