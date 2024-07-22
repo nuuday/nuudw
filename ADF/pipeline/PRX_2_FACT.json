@@ -3,22 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "PRX_ProductTransactions",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "FACT_0_ProductTransactions",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
-				}
-			},
-			{
 				"name": "FACT_0_OrderEvents",
 				"type": "ExecutePipeline",
 				"dependsOn": [],

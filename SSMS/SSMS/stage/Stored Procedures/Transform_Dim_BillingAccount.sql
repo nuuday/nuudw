@@ -5,13 +5,13 @@ AS
 
 TRUNCATE TABLE [stage].[Dim_BillingAccount]
 
-INSERT INTO [stage].[Dim_BillingAccount] WITH (TABLOCK) (BillingAccountKey,DWCreatedDate)
-
-select distinct CONVERT( NVARCHAR(10),account_num ) AS BillingAccountKey,
-GETDATE() AS DWCreatedDate
-from [sourceNuudlNetCrackerView].[nrmaccountkeyname_History] accountk
-INNER JOIN 
-(
-
-select distinct item_json_accountRef_json_refId account_ref_id from [sourceNuudlNetCrackerView].[ibsitemshistory_History]
-) a on a.account_ref_id=accountk.name
+INSERT INTO [stage].[Dim_BillingAccount] WITH (TABLOCK) (BillingAccountKey)
+SELECT DISTINCT
+	CONVERT( NVARCHAR(10), account_num ) AS BillingAccountKey
+FROM [sourceNuudlDawnView].[nrmaccountkeyname_History] accountk
+WHERE 
+	accountk.NUUDL_IsCurrent = 1
+	AND accountk.name IN (
+			SELECT JSON_VALUE(item_accountRef,'$[0].refId') refId
+			FROM [sourceNuudlDawnView].[ibsitemshistory_History]
+		)

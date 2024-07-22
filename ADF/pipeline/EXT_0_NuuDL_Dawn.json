@@ -1,0 +1,567 @@
+{
+	"name": "EXT_0_NuuDL_Dawn",
+	"properties": {
+		"activities": [
+			{
+				"name": "cimcontactmedium",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_cimcontactmedium",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "cimcontactmediumassociation",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_cimcontactmediumassociation",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "cimcustomer",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_cimcustomer",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "cimindividual",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_cimindividual",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "cimpartyrole",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_cimpartyrole",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "cimpartyroleassociation",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_cimpartyroleassociation",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "cpmnrmltroubleticket",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_cpmnrmltroubleticket",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "cpmnrmltroubleticketrelatedentityref",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_cpmnrmltroubleticketrelatedentityref",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "ibsitemshistory",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_ibsitemshistory",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "ibsitemshistorycharacteristics",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_ibsitemshistorycharacteristics",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "ibsnrmlcharacteristic",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_ibsnrmlcharacteristic",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "ibsnrmlproductinstance",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_ibsnrmlproductinstance",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "nrmaccountkeyname",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_nrmaccountkeyname",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "nrmcusthasproductkeyname",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_nrmcusthasproductkeyname",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "nrmcustproductdetails",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_nrmcustproductdetails",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "orgchrteammember",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_orgchrteammember",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "phonenumbers",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_phonenumbers",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "qssnrmlquote",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_qssnrmlquote",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "qssnrmlquoteitem",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_qssnrmlquoteitem",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "qssnrmlquoteitemprice",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_qssnrmlquoteitemprice",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "worklogitems",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_NuuDL_Dawn_worklogitems",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"JobIsIncremental": {
+				"type": "Bool",
+				"defaultValue": false
+			},
+			"WriteBatchSize": {
+				"type": "Int",
+				"defaultValue": 10000
+			}
+		},
+		"folder": {
+			"name": "0.1_Extracts"
+		},
+		"annotations": []
+	}
+}

@@ -7,7 +7,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "EXT_0_Nuudl_NetCracker",
+						"activity": "EXT_0_NuuDL_Dawn",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -30,13 +30,13 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "EXT_0_Nuudl_NetCracker",
+						"activity": "EXT_0_NuuDL_NAM",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					},
 					{
-						"activity": "EXT_0_NuuDL_NAM",
+						"activity": "EXT_0_NuuDL_Dawn",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -63,6 +63,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "EXT_0_NuuDL_Dawn",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -82,7 +88,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "EXT_0_Nuudl_NetCracker",
+						"activity": "EXT_0_NuuDL_Dawn",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -105,7 +111,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "EXT_0_Nuudl_NetCracker",
+						"activity": "EXT_0_NuuDL_Dawn",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -126,14 +132,7 @@
 			{
 				"name": "DIM_0_OrderEvent",
 				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "EXT_0_Nuudl_NetCracker",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureInput": false
 				},
@@ -174,7 +173,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "EXT_0_Nuudl_NetCracker",
+						"activity": "EXT_0_NuuDL_Dawn",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -220,7 +219,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "EXT_0_Nuudl_NetCracker",
+						"activity": "EXT_0_NuuDL_Dawn",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -336,7 +335,14 @@
 			{
 				"name": "EXT_0_Nuudl_NetCracker",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "EXT_0_NuuDL_NAM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -354,7 +360,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "EXT_0_Nuudl_NetCracker",
+						"activity": "EXT_0_NuuDL_Dawn",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -377,7 +383,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "EXT_0_Nuudl_NetCracker",
+						"activity": "EXT_0_NuuDL_BIZ",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -400,7 +406,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "EXT_0_Nuudl_NetCracker",
+						"activity": "EXT_0_NuuDL_Dawn",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -421,7 +427,14 @@
 			{
 				"name": "EXT_0_NuuDL_NAM",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "EXT_0_NuuDL_BIZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -429,6 +442,45 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "EXT_0_NuuDL_NAM",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EXT_0_NuuDL_Dawn",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EXT_0_Nuudl_NetCracker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_0_NuuDL_Dawn",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EXT_0_NuuDL_BIZ",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_0_NuuDL_BIZ",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true

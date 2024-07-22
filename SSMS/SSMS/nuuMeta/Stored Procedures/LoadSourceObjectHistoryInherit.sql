@@ -3,6 +3,7 @@
 
 CREATE PROCEDURE [nuuMeta].[LoadSourceObjectHistoryInherit] 
 	@ExtractTable  NVARCHAR(200),--Input is the extract table with schema
+	@LoadIsIncremental BIT = 1,
 	@PrintSQL BIT = 0
 
 AS
@@ -11,7 +12,8 @@ SET NOCOUNT ON
 
 /*
 DECLARE 
-	@ExtractTable NVARCHAR(200) = 'sourceNuudlNetcracker.cimcustomer',
+	@ExtractTable NVARCHAR(200) = 'sourceNuudlDawn.cimcontactmedium',	
+	@LoadIsIncremental BIT = 1,
 	@PrintSQL BIT = 1
 --*/
 
@@ -60,6 +62,7 @@ WHERE
 
 DECLARE @Parameters NVARCHAR(MAX) --Holds the parameter part of the Merge Join Script
 DECLARE @Delete NVARCHAR(MAX) = '' --Holds the DELETE Part of the Script
+DECLARE @Truncate NVARCHAR(MAX) = '' --Holds the TRUNCATE Part of the Script
 DECLARE @Insert NVARCHAR(MAX) --Holds the INSERT Part of the Script
 DECLARE @FullScript NVARCHAR(MAX) --Combining @Parameters,@Delete,@Insert
 DECLARE @ColumnList NVARCHAR(MAX) = (SELECT STRING_AGG('['+ColumnName+']',',') FROM @InformationSchema)
@@ -93,7 +96,22 @@ SELECT
 	@DateToDateTime = getdate()
 '
 
-IF @PKColumnJoin IS NOT NULL
+IF @LoadIsIncremental = 0 
+BEGIN
+	
+	SET @Truncate = '
+-- ==================================================
+-- TRUNCATE
+-- ==================================================
+
+TRUNCATE TABLE [' + @HistorySchema + '].[' + @HistoryTable +']
+
+'
+	
+END
+
+
+IF @PKColumnJoin IS NOT NULL AND @LoadIsIncremental = 1
 BEGIN
 
 	SET @Delete = '
@@ -137,7 +155,7 @@ SELECT
 FROM [' + @TableSchema + '].[' + @Table + ']'
 
 
-SET @FullScript = CONCAT(@Parameters, @Delete, @Insert)	
+SET @FullScript = CONCAT(@Parameters, @Truncate, @Delete, @Insert)	
 
 /**********************************************************************************************************************************************************************
 5. Execute dynamic SQL script variables

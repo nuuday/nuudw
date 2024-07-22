@@ -12,31 +12,32 @@ TRUNCATE TABLE [stage].[Dim_PhoneDetail]
 	FROM (
 
 		SELECT
-			CONVERT( NVARCHAR(20), ISNULL( NULLIF( phone_number, '' ), '?' ) ) AS PhoneDetailkey,
+			CONVERT( NVARCHAR(20), ISNULL( NULLIF( cast(phone_number as varchar), '' ), '?' ) ) AS PhoneDetailkey,
 			CONVERT( NVARCHAR(20), ISNULL( NULLIF( status, '' ), '?' ) ) AS PhoneStatus,
 			CONVERT( NVARCHAR(20), ISNULL( NULLIF( category, '' ), '?' ) ) AS PhoneCategory,
 			ported_in AS PortedIn,
 			ported_out AS PortedOut,
-			GETDATE() AS DWCreatedDate,
 			1 Ranking
-		FROM [sourceNuudlNetCrackerView].[riphonenumber_History]
+		FROM [sourceNuudlDawnView].[phonenumbers_History]
+		WHERE NUUDL_IsCurrent = 1
 
 		UNION ALL
 
 		SELECT DISTINCT
-			CONVERT( NVARCHAR(20), TRIM(TRANSLATE( value_json__corrupt_record, '["]', '   ' )) ) PhoneDetailkey,
+			CAST(international_phone_number as nvarchar(20)) PhoneDetailkey,
 			'?' PhoneStatus,
 			'?' PhoneCategory,
 			0 PortedIn,
 			0 PortedOut,
-			GETDATE() AS DWCreatedDate,
 			2 Ranking
-		FROM [sourceNuudlNetCrackerView].[ibsnrmlcharacteristic_History] chr
-		WHERE chr.name = 'International Phone Number'
+		FROM [sourceNuudlDawnView].[ibsitemshistorycharacteristics_History] chr
+		WHERE international_phone_number IS NOT NULL
+			AND NUUDL_IsCurrent = 1
+
 		) q
 )
 
-INSERT INTO stage.[Dim_PhoneDetail] WITH (TABLOCK) (PhoneDetailkey, PhoneStatus,PhoneCategory,PortedIn,PortedOut,DWCreatedDate)
-SELECT PhoneDetailkey,PhoneStatus,PhoneCategory,PortedIn,PortedOut,DWCreatedDate
+INSERT INTO stage.[Dim_PhoneDetail] WITH (TABLOCK) (PhoneDetailkey, PhoneStatus,PhoneCategory,PortedIn,PortedOut)
+SELECT PhoneDetailkey,PhoneStatus,PhoneCategory,PortedIn,PortedOut
 FROM PhoneDetail
 WHERE rn = 1

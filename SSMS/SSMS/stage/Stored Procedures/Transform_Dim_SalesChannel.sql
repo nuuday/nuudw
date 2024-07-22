@@ -5,7 +5,7 @@ AS
 
 TRUNCATE TABLE [stage].[Dim_SalesChannel]
 
-INSERT INTO stage.[Dim_SalesChannel] WITH (TABLOCK) ( [SalesChannelKey], [SalesChannelName], [SalesChannelLongName], [SalesChannelType],[InsurancePolicy], [StoreAddress], [StoreNumber], [storeName], [DWCreatedDate])
+INSERT INTO stage.[Dim_SalesChannel] WITH (TABLOCK) ( [SalesChannelKey], [SalesChannelName], [SalesChannelLongName], [SalesChannelType],[InsurancePolicy], [StoreAddress], [StoreNumber], [storeName])
 SELECT
     CONVERT( NVARCHAR(36), pndc.id ) AS SalesChannelKey,
     CONVERT( NVARCHAR(50), ISNULL( NULLIF( pndc.[name], '' ), '?' ) ) AS SalesChannelName,
@@ -14,6 +14,5 @@ SELECT
     CONVERT( NVARCHAR(50), ISNULL( NULLIF( pndc.[extended_parameters_json_insurancePolicyPrefix], '' ), '?' ) ) AS InsurancePolicy,
     CONVERT( NVARCHAR(250), ISNULL( NULLIF( pndc.[extended_parameters_json_storeAddress], '' ), '?' ) ) AS StoreAddress,
     CONVERT( NVARCHAR(20), ISNULL( NULLIF( pndc.[extended_parameters_json_storeID], '' ), '?' ) ) AS StoreNumber,
-    CONVERT( NVARCHAR(50), ISNULL( NULLIF( pndc.[extended_parameters_json_storeName], '' ), '?' ) ) AS StoreName,
-    GETDATE() AS DWCreatedDate
+    CONVERT( NVARCHAR(50), ISNULL( NULLIF( pndc.[extended_parameters_json_storeName], '' ), '?' ) ) AS StoreName
 FROM sourceNuudlNetCrackerView.pimnrmldistributionchannel_History pndc

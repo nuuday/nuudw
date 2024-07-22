@@ -4,6 +4,8 @@
     [PhoneCategory]  NVARCHAR (50) NULL,
     [PortedIn]       NVARCHAR (1)  NULL,
     [PortedOut]      NVARCHAR (20) NULL,
-    [DWCreatedDate]  DATETIME      NOT NULL
+    [DWCreatedDate]  DATETIME2 (0) DEFAULT (sysdatetime()) NOT NULL
 );
+
+
 

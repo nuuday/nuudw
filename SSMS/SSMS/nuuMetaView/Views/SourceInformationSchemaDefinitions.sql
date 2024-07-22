@@ -1,4 +1,6 @@
 ﻿
+
+
 CREATE VIEW [nuuMetaView].[SourceInformationSchemaDefinitions] AS
 
 WITH ExtractSchema AS
@@ -10,7 +12,7 @@ WITH ExtractSchema AS
 			eis.SchemaName,
 			eis.TableName,
 			eis.ColumnName,
-			eis.OrdinalPositionNumber,
+			CASE WHEN eis.ColumnName LIKE 'NUUDL%' THEN eis.OrdinalPositionNumber + 10000 ELSE eis.OrdinalPositionNumber END OrdinalPositionNumber,
 			CASE 
 				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'STRING' THEN 'nvarchar'
 				WHEN con.IsFileObject = 1 AND eis.DataTypeName = 'SINGLE' THEN 'decimal'
@@ -63,7 +65,7 @@ WITH ExtractSchema AS
 			CASE
 				WHEN eis.DataTypeName = 'STRING' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.ColumnName LIKE '%id'  THEN 50
 				WHEN eis.DataTypeName = 'STRING' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake' AND eis.ColumnName IN ('Description')  THEN -1
-				WHEN eis.DataTypeName = 'STRING' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake'  THEN 500
+				WHEN eis.DataTypeName = 'STRING' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake'  THEN 4000
 				WHEN eis.DataTypeName = 'map<string,string>' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake'  THEN -1
 				WHEN eis.DataTypeName like 'struct%' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake'  THEN -1
 				WHEN eis.DataTypeName like 'array%' AND eis.SourceSystemTypeName = 'AzureDatabricksDeltaLake'  THEN -1
@@ -194,7 +196,7 @@ WHERE
 		OR COALESCE( SourceData.ColumnName, SourceTable.ColumnName ) NOT LIKE 'NUUDL%')
 	--AND COALESCE( SourceData.SourceObjectID, SourceTable.SourceObjectID )  =1566
 
-/*
+
 UNION ALL
 
 SELECT
@@ -202,20 +204,19 @@ SELECT
 	so.SourceSchemaName AS SchemaName,
 	so.SourceObjectName AS TableName,
 	x.DestinationColumn AS ColumnName,
-	NULL OrdinalPositionNumber,
-	'NVARCHAR (500)' FullDataTypeName,
+	ROW_NUMBER() OVER (PARTITION BY SourceObjectId ORDER BY DestinationColumn) + 1000 AS OrdinalPositionNumber,
+	'NVARCHAR (4000)' FullDataTypeName,
 	'NULL' NullableName,
 	'nvarchar' AS DataTypeName,
-	500 MaximumLenghtNumber,
+	4000 MaximumLenghtNumber,
 	null [NumericPrecisionNumber],
 	null [NumericScaleNumber],
 	null [KeySequenceNumber],
 	'String' [ADFDataType],
 	so.ID [SourceObjectID],
 	sc.ID [SourceConnectionID],
-	'map_attribute' [OriginalDataTypeName]
+	'variant_attribute' [OriginalDataTypeName]
 FROM nuuMeta.SourceObject so
 INNER JOIN nuuMeta.SourceConnection sc ON sc.SourceConnectionName = so.SourceConnectionName
 INNER JOIN nuuMeta.SourceObjectExtendedAttributes x
 	ON x.SourceObjectID = so.ID
-*/
