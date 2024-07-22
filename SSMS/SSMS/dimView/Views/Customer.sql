@@ -6,7 +6,6 @@ SELECT
 	,[CustomerName] AS [CustomerName]
 	,[CustomerSegment] AS [CustomerSegment]
 	,[CustomerStatus] AS [CustomerStatus]
-	,[PartyRoleType] AS [PartyRoleType]
 	,[DWIsCurrent]
 	,[DWValidFromDate]
 	,[DWValidToDate]
