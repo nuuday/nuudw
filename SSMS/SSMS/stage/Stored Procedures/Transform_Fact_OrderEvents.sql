@@ -38,9 +38,12 @@ SELECT DISTINCT
 	i.item_quoteId,
 	CASE WHEN po.extended_parameters_json_deviceType IS NULL THEN 0 ELSE 1 END IsHardware,
 	cha.technology AS TechnologyKey,
-	cha.international_phone_number AS PhoneDetailKey
+	cha.international_phone_number AS PhoneDetailKey,
+	JSON_VALUE(pin.extended_attributes_json, '$.migration_date') AS migration_date
 INTO #all_lines
 FROM [sourceNuudlDawnView].[ibsitemshistory_History] i
+LEFT JOIN sourceNuudlDawnView.ibsnrmlproductinstance_History pin 
+	ON pin.id = i.id AND pin.NUUDL_IsCurrent=1
 LEFT JOIN sourceNuudlDawnView.[ibsitemshistorycharacteristics_History] cha ON cha.NUUDL_ID = i.NUUDL_ID
 LEFT JOIN dim.OrderEvent ev 
 	ON ev.SourceEventName = i.[state]
@@ -65,7 +68,6 @@ WHERE 1=1
 	--AND i.id='84aa28d1-8cd6-4570-8e15-7c724f2d1e81'
 	
 	--AND COALESCE(i.item_parentId, i.id) = '92763142-a5b7-4158-8666-4d95077886f1'
-
 
 
 CREATE CLUSTERED INDEX CLIX ON #all_lines (SubscriptionKey, QuoteKey, IsTLO, active_from_CET)	
@@ -336,7 +338,6 @@ CREATE CLUSTERED INDEX CLIX ON #all_lines_filtered_2 (SubscriptionKey, CurrentSt
 -- 2. Adding artificial events that aren't based on the product instance states
 -----------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------
-
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Hardware refunds
@@ -702,6 +703,47 @@ FROM #all_lines_filtered_2 al
 WHERE al.CurrentState = 'ACTIVE'
 
 
+-- Create Migration Legacy lines
+DROP TABLE IF EXISTS #migration_legacy_lines
+SELECT 
+	s.CalendarKey,
+	s.TimeKey,
+	s.ProductKey, 
+	s.ProductParentKey,
+	s.ProductHardwareKey,
+	s.CustomerKey,
+	s.SubscriptionGroup,
+	s.SubscriptionKey,
+	s.QuoteKey,
+	e.OrderEventKey,
+	e.OrderEventName,
+	s.ProductType,
+	s.ProductName,
+	s.SalesChannelKey,
+	s.BillingAccountKey,
+	s.PhoneDetailKey,
+	s.AddressBillingKey,
+	s.HouseHoldKey,
+	s.TechnologyKey,
+	s.EmployeeKey,
+	s.IsTLO,
+	s.active_from_CET
+INTO #migration_legacy_lines
+FROM #active_lines s
+CROSS APPLY (
+	SELECT *
+	FROM dim.OrderEvent 
+	WHERE OrderEventName = 'Migration Legacy'
+) e
+CROSS APPLY (
+	SELECT MIN(active_from_cet) FirstActivatedDate
+	FROM #active_lines
+	WHERE SubscriptionKey = s.SubscriptionKey
+		AND migration_date IS NOT NULL
+) f
+WHERE s.active_from_cet = f.FirstActivatedDate
+
+
 -- Create Migration From lines
 DROP TABLE IF EXISTS #migration_lines
 SELECT 
@@ -923,6 +965,13 @@ FROM (
 	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, null TicketKey, IsTLO, 1 Quantity 
 		,active_from_CET
+	FROM #migration_legacy_lines
+	
+	UNION ALL
+
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, OrderEventKey, OrderEventName, 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, null TicketKey, IsTLO, 1 Quantity 
+		,active_from_CET
 	FROM #migration_lines
 	
 	UNION ALL
@@ -1012,6 +1061,21 @@ WHERE 1=1
 	)
 	--AND ra.SubscriptionKey = '2e3e5b05-c86a-4e47-a731-eea2cab36dcf'
 
+
+-- Migrated from legacy to NetCracker / Dawn
+UPDATE ra
+SET Quantity = 0
+--SELECT ra.*
+FROM #result ra
+WHERE 1=1
+	AND ra.OrderEventName IN ('RGU Activated', 'Offer Activated')
+	AND EXISTS (
+			SELECT * 
+			FROM #result 
+			WHERE SubscriptionKey = ra.SubscriptionKey 
+				AND OrderEventName = 'Migration Legacy'
+				AND active_from_CET = ra.active_from_CET
+	)
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Creating Offer Disconnect Planned lines where these aren't provided by tickets

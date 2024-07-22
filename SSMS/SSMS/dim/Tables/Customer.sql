@@ -4,7 +4,6 @@
     [CustomerName]    NVARCHAR (250) NULL,
     [CustomerSegment] NVARCHAR (50)  NULL,
     [CustomerStatus]  NVARCHAR (20)  NULL,
-    [PartyRoleType]   NVARCHAR (20)  NULL,
     [DWIsCurrent]     BIT            NOT NULL,
     [DWValidFromDate] DATETIME2 (0)  NOT NULL,
     [DWValidToDate]   DATETIME2 (0)  NOT NULL,

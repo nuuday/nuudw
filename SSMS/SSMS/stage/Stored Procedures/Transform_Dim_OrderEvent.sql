@@ -11,6 +11,7 @@ VALUES
 	('021','Migration From Upgrade', 'N/A'),
 	('022','Migration From Downgrade', 'N/A'),
 	('023','Migration To', 'N/A'),
+	('024','Migration Legacy', 'N/A'),
 	('050','Offer Planned', 'PLANNED'),
 	('055','Offer Cancelled', 'CANCELLED'),
 	('060','Offer Completed', 'COMPLETED'),
