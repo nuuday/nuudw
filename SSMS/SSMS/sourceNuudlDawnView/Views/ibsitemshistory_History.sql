@@ -3,6 +3,7 @@
 
 
 
+
 CREATE VIEW [sourceNuudlDawnView].[ibsitemshistory_History]
 AS
 SELECT 
@@ -26,7 +27,7 @@ SELECT
 	a.[item_customerId] ,
 	a.[item_distributionChannelId] ,
 	a.[item_expirationDate] ,
-	CAST(CAST(a.[item_expirationDate] as datetime2(0)) AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime) [item_expirationDate_CET],
+	CAST(CAST(a.[item_expirationDate] as datetime2(0)) AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime2(0)) [item_expirationDate_CET],
 	a.[item_name] ,
 	a.[item_offeringId] ,
 	a.[item_offeringName] ,

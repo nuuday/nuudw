@@ -1,4 +1,5 @@
 ﻿
+
 CREATE VIEW [sourceNuudlDawnView].[cpmnrmltroubleticket_History]
 AS
 SELECT 
@@ -9,12 +10,17 @@ SELECT
 	[closed_by_user_name] ,
 	[closure_code] ,
 	[created_by_date] ,
+	CAST([created_by_date] AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime) [created_by_date_CET],
 	[created_by_user_id] ,
 	[created_by_user_name] ,
 	[description] ,
 	[dispute_item] ,
 	[expected_resolution_date] ,
 	[extended_attributes] ,
+	CAST(
+		CASE JSON_VALUE(extended_attributes, '$.changeDate') WHEN 'Invalid date' THEN null ELSE JSON_VALUE(extended_attributes, '$.changeDate') END 
+		AS datetime
+	) AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' AS [extended_attributes_changeDate_CET] ,
 	[external_id] ,
 	[first_resolution_date] ,
 	[group_assignee_id] ,
@@ -46,6 +52,7 @@ SELECT
 	[solution] ,
 	[status] ,
 	[status_change_date] ,
+	CAST([status_change_date] AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime) [status_change_date_CET],
 	[status_change_reason] ,
 	[tags] ,
 	[ticket_category] ,

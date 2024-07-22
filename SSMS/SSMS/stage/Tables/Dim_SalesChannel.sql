@@ -7,6 +7,8 @@
     [StoreAddress]         NVARCHAR (250) NULL,
     [StoreNumber]          NVARCHAR (20)  NULL,
     [StoreName]            NVARCHAR (50)  NULL,
-    [DWCreatedDate]        DATETIME       NOT NULL
+    [DWCreatedDate]        DATETIME2 (0)  DEFAULT (sysdatetime()) NOT NULL
 );
+
+
 

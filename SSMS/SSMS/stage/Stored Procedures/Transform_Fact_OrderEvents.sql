@@ -12,59 +12,103 @@ AS
 -- Fetch first part of data connected to items history 
 DROP TABLE IF EXISTS #all_lines
 SELECT DISTINCT
-	COALESCE(i.item_json_parentId, i.id) AS SubscriptionKey,
+	COALESCE(i.item_parentId, i.id) AS SubscriptionKey,
 	i.id AS SubscriptionChildKey,
 	CAST(i.active_from_CET AS Date) AS CalendarKey,
 	LEFT( CONVERT( VARCHAR, i.active_from_CET, 108 ), 8 ) AS TimeKey,
-	--i.active_to AS CalendarToKey,
-	i.item_json_offeringId AS ProductKey,
+	i.item_offeringId AS ProductKey,		
 	CASE
 		WHEN pf.name = 'Mobile Voice Offline' THEN 'Mobile Voice'
 		WHEN pf.name = 'Mobile Broadband Offline' THEN 'Mobile Broadband'
 		ELSE pf.name
 	END AS ProductType,
-	i.item_json_offeringName AS ProductName,
+	i.item_offeringName AS ProductName,
 	po.weight AS ProductWeight,
 	cim.customer_number AS CustomerKey,
 	ev.OrderEventKey,
 	ev.OrderEventName,
 	i.state CurrentState,
 	quote.number AS QuoteKey,
---	i.item_json_rootId root_id,
-	i.item_json_distributionChannelId AS SalesChannelKey,
+	i.item_distributionChannelId AS SalesChannelKey,
 	acc.account_num AS BillingAccountKey,
-	CASE WHEN item_json_parentId IS NULL THEN 1 ELSE 0 END IsTLO,
-	i.item_json_customerId AS customer_id,
+	CASE WHEN item_parentId IS NULL THEN 1 ELSE 0 END IsTLO,
+	i.item_customerId AS customer_id,
 	i.active_from_CET,
-	CAST(i.item_json_expirationDate as datetime2(0)) AS expiration_date,
-	i.item_json_quoteId,
-	CASE WHEN po.extended_parameters_json_deviceType IS NULL THEN 0 ELSE 1 END IsHardware
+	i.item_expirationDate_CET AS expiration_date,
+	i.item_quoteId,
+	CASE WHEN po.extended_parameters_json_deviceType IS NULL THEN 0 ELSE 1 END IsHardware,
+	cha.technology AS TechnologyKey,
+	cha.international_phone_number AS PhoneDetailKey
 INTO #all_lines
-FROM [sourceNuudlNetCrackerView].[ibsitemshistory_History] i
+FROM [sourceNuudlDawnView].[ibsitemshistory_History] i
+LEFT JOIN sourceNuudlDawnView.[ibsitemshistorycharacteristics_History] cha ON cha.NUUDL_ID = i.NUUDL_ID
 LEFT JOIN dim.OrderEvent ev 
 	ON ev.SourceEventName = i.[state]
 -- reference to CustomerKey
-LEFT JOIN [sourceNuudlNetCrackerView].[cimcustomer_History] cim
-	ON cim.id = i.item_json_customerId AND cim.is_current = 1
+LEFT JOIN [sourceNuudlDawnView].[cimcustomer_History] cim
+	ON cim.id = i.item_customerId 
+		AND cim.NUUDL_IsCurrent = 1
 -- reference to Quotekey,
-LEFT JOIN [sourceNuudlNetCrackerView].[qssnrmlquote_History] quote
-	ON quote.id = i.item_json_quoteId AND quote.is_current = 1
-LEFT JOIN [sourceNuudlNetCrackerView].[nrmaccountkeyname_History] acc
-	ON acc.name = i.item_json_accountRef_json_refId 
-
+LEFT JOIN [sourceNuudlDawnView].[qssnrmlquote_History] quote
+	ON quote.id = i.item_quoteId 
+		AND quote.NUUDL_IsCurrent = 1
+LEFT JOIN [sourceNuudlDawnView].[nrmaccountkeyname_History] acc
+	ON acc.name = JSON_VALUE(i.item_accountRef,'$[0].refId') 
+		AND acc.NUUDL_IsCurrent = 1
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] po
-	ON po.id = i.item_json_offeringId
+	ON po.id = i.item_offeringId
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductfamily_History] pf
 	ON pf.id = po.product_family_id
-
 WHERE 1=1
 	-- filter out lines where we have no product offering
-	AND i.item_json_offeringId IS NOT NULL
+	--AND i.item_offeringId IS NOT NULL
+	--AND i.id='84aa28d1-8cd6-4570-8e15-7c724f2d1e81'
 	
-	--we are excluding those subscriptions because of data issues due to testing activities in production
-	AND i.id NOT IN ('b5beb355-0379-41f2-aaad-47297c9548cb', '39476242-7ab7-467e-b88a-b3968a8cb7e9') 
-	--AND COALESCE(i.item_json_parentId, i.id) = '6d4bc490-1e5a-4e3c-9104-32bed0cbb439'
+	--AND COALESCE(i.item_parentId, i.id) = '92763142-a5b7-4158-8666-4d95077886f1'
 
+
+
+CREATE CLUSTERED INDEX CLIX ON #all_lines (SubscriptionKey, QuoteKey, IsTLO, active_from_CET)	
+CREATE NONCLUSTERED INDEX NLIX ON #all_lines (CurrentState, SubscriptionChildKey, ProductKey) INCLUDE (IsTLO,SubscriptionKey, active_from_cet, ProductType, ProductName, ProductWeight, CustomerKey, customer_id, QuoteKey, SalesChannelKey, BillingAccountKey, item_quoteid, TechnologyKey, PhoneDetailKey)
+
+
+/* 
+	We have seen examples on CANCELLED items which have no information in item column. 
+	In these cases we fetch data from the previous PLANNED row.
+*/
+UPDATE al
+SET 
+	al.ProductKey = COALESCE(al.ProductKey, p.ProductKey)
+	, al.SubscriptionKey = p.SubscriptionKey
+	, al.IsTLO = p.IsTLO
+	, al.ProductType = COALESCE(al.ProductType, p.ProductType)
+	, al.ProductName = COALESCE(al.ProductName, p.ProductName)
+	, al.ProductWeight = COALESCE(al.ProductWeight, p.ProductWeight)
+	, al.CustomerKey = COALESCE(al.CustomerKey, p.CustomerKey)
+	, al.customer_id = COALESCE(al.customer_id, p.customer_id)
+	, al.QuoteKey = COALESCE(al.QuoteKey, p.QuoteKey)
+	, al.SalesChannelKey = COALESCE(al.SalesChannelKey, p.SalesChannelKey)
+	, al.BillingAccountKey = COALESCE(al.BillingAccountKey, p.BillingAccountKey)	
+	, al.item_quoteid = COALESCE(al.item_quoteid, p.item_quoteid)	
+	, al.TechnologyKey = COALESCE(al.TechnologyKey, p.TechnologyKey)	
+	, al.PhoneDetailKey = COALESCE(al.PhoneDetailKey, p.PhoneDetailKey)
+--SELECT p.*
+FROM #all_lines al
+CROSS APPLY (
+	SELECT TOP 1 *
+	FROM #all_lines
+	WHERE CurrentState = 'PLANNED'
+		AND SubscriptionChildKey = al.SubscriptionChildKey
+		AND active_from_cet <= al.active_from_cet
+	ORDER BY active_from_cet DESC
+) p
+WHERE al.CurrentState='Cancelled' AND al.ProductKey IS NULL
+
+-- Removing all lines where OrderEventKey or ProductKey is null
+DELETE FROM #all_lines 
+WHERE 
+	ProductKey IS NULL
+	OR OrderEventKey IS NULL
 
 
 -- Get employees who either added or cancelled the quote
@@ -77,27 +121,32 @@ INTO #quote_employees
 FROM #all_lines al
 OUTER APPLY (
 	SELECT TOP 1 ucreated.name AS EmployeeKey
-	FROM sourceNuudlNetCrackerView.worklogitems_History qcreated
-	INNER JOIN sourceNuudlNetCrackerView.orgchartteammember_History ucreated
-		ON ucreated.idm_user_id = qcreated.changedby_json_userId
-	WHERE qcreated.ref_id = al.item_json_quoteId
+	FROM [sourceNuudlDawnView].worklogitems_History qcreated
+	INNER JOIN [sourceNuudlDawnView].orgchrteammember_History ucreated
+		ON ucreated.idm_user_id = JSON_VALUE(qcreated.changedBy, '$.userId')
+			AND ucreated.NUUDL_IsCurrent = 1
+	WHERE qcreated.ref_id = al.item_quoteId
 		AND qcreated.source_state IS NULL
 		AND qcreated.target_state = 'IN_PROGRESS'
 		AND al.CurrentState = 'PLANNED'
 		AND ucreated.name IS NOT NULL
+		AND qcreated.NUUDL_IsCurrent = 1
 ) created
 OUTER APPLY (
 	SELECT TOP 1 ucancelled.name AS EmployeeCancelledKey
-	FROM sourceNuudlNetCrackerView.worklogitems_History qcancelled
-	INNER JOIN sourceNuudlNetCrackerView.orgchartteammember_History ucancelled
-		ON ucancelled.idm_user_id = qcancelled.changedby_json_userId
-	WHERE qcancelled.ref_id = al.item_json_quoteId
+	FROM [sourceNuudlDawnView].worklogitems_History qcancelled
+	INNER JOIN [sourceNuudlDawnView].orgchrteammember_History ucancelled
+		ON ucancelled.idm_user_id = JSON_VALUE(qcancelled.changedBy, '$.userId')
+			AND ucancelled.NUUDL_IsCurrent = 1
+	WHERE qcancelled.ref_id = al.item_quoteId
 		AND qcancelled.target_state = 'CANCELLED'
 		AND al.CurrentState = 'CANCELLED'
 		AND ucancelled.name IS NOT NULL
+		AND qcancelled.NUUDL_IsCurrent = 1
 ) cancelled
 WHERE al.CurrentState IN ('PLANNED', 'CANCELLED')
 GROUP BY al.QuoteKey
+
 
 -- Prepare billing contact data for next query
 DROP TABLE IF EXISTS #billing_contact_details
@@ -107,19 +156,20 @@ SELECT DISTINCT
 	CONCAT( 
 		ISNULL( cm.Street1, '' ), 
 		';', ISNULL( cm.Street2, '' ), 
-		';', ISNULL( cm.[extended_attributes_json_floor], '' ), 
-		';', ISNULL( cm.[extended_attributes_json_suite], '' ) , 
+		';', ISNULL( cm.[extended_attributes_floor], '' ), 
+		';', ISNULL( cm.[extended_attributes_suite], '' ) , 
 		';', ISNULL( cm.Postcode, '' ), 
 		';', ISNULL( cm.City, '' )
 	) AddressBillingKey
 INTO #billing_contact_details
-FROM [sourceNuudlNetCrackerView].[cimcontactmediumassociation_History] cma
-INNER JOIN [sourceNuudlNetCrackerView].[cimcontactmedium_History] cm
+FROM [sourceNuudlDawnView].[cimcontactmediumassociation_History] cma
+INNER JOIN [sourceNuudlDawnView].[cimcontactmedium_History] cm
 	ON cm.id = cma.contact_medium_id
-		AND cm.is_current = 1
+		AND cm.NUUDL_IsCurrent = 1
 		AND type_of_contact_method = 'Billing contact details'
 WHERE
-	cma.is_current = 1
+	cma.NUUDL_IsCurrent = 1
+	--AND cma.ref_id='2ca8abb7-2e80-429e-be0a-65c594667a05'
 
 CREATE UNIQUE CLUSTERED INDEX CLIX ON #billing_contact_details (customer_id)
 
@@ -142,9 +192,7 @@ SELECT
 	END AS RGU_EndDate,
 	qem.EmployeeKey,
 	qem.EmployeeCancelledKey,
-	CAST(null as nvarchar(36)) AS ProductHardwareKey,
-	CAST(null as nvarchar(50)) AS TechnologyKey,
-	CAST(null as nvarchar(20)) AS PhoneDetailkey
+	CAST(null as nvarchar(36)) AS ProductHardwareKey
 INTO #all_lines_2
 FROM #all_lines al
 OUTER APPLY (
@@ -165,19 +213,23 @@ OUTER APPLY (
 ) pp2
 LEFT JOIN #billing_contact_details bcd
 	ON bcd.customer_id = al.customer_id
-LEFT JOIN [sourceNuudlNetCrackerView].[nrmcusthasproductkeyname_History] kn
+LEFT JOIN [sourceNuudlDawnView].[nrmcusthasproductkeyname_History] kn
 	ON kn.name = al.SubscriptionKey
-LEFT JOIN [sourceNuudlNetCrackerView].[nrmcustproductdetails_History] cpd
+		AND kn.NUUDL_IsCurrent = 1
+LEFT JOIN [sourceNuudlDawnView].[nrmcustproductdetails_History] cpd
 	ON cpd.product_seq = kn.product_seq
 		AND cpd.customer_ref = kn.customer_ref
+		AND cpd.NUUDL_IsCurrent = 1
 		AND (cpd.product_label = al.ProductName OR cpd.override_product_name = al.ProductName)
 		AND al.active_from_CET BETWEEN cpd.start_dat AND ISNULL(cpd.end_dat,'9999-12-31')
 LEFT JOIN #quote_employees qem ON qem.QuoteKey = al.QuoteKey
 WHERE 1=1
-	AND OrderEventKey IS NOT NULL
-	--AND SubscriptionKey = 'accc0262-efa2-4bd9-b8b4-e7ff32c0759e'
+	--AND SubscriptionKey = 'bec4e1a1-dfd7-4764-bc03-1a88631fca05'
 	--AND IsTLO = 1
 --ORDER BY active_from_CET, IsTLO DESC
+
+
+CREATE CLUSTERED INDEX CLIX ON #all_lines_2 (SubscriptionKey, QuoteKey, IsTLO, active_from_CET)	
 
 
 -- Updating ProductHardwareKey
@@ -191,51 +243,23 @@ OUTER APPLY (
 	WHERE QuoteKey = al.QuoteKey
 		AND SubscriptionKey = al.SubscriptionKey
 		AND IsHardware = 1
-	ORDER BY active_from_CET ASC
+	ORDER BY active_from_CET ASC, IsTLO
 ) ph
 OUTER APPLY (
 	SELECT TOP 1 ProductKey AS ProductHardwareKey
-	FROM #all_lines
+	FROM #all_lines_2
 	WHERE active_from_CET >= al.active_from_CET
 		AND CalendarKey <= al.CalendarKey
 		AND ProductParentKey = al.ProductKey
 		AND SubscriptionKey = al.SubscriptionKey
 		AND IsHardware = 1
-	ORDER BY active_from_CET DESC
+	ORDER BY active_from_CET DESC, IsTLO
 ) ph2
 WHERE IsTLO = 1
 -- AND SubscriptionKey = '7a391a92-6f6e-4a10-ac4f-ab64fd659c6b'
 --	AND IsTLO = 1
 --ORDER BY active_from_CET, IsTLO DESC
 
-
--- Updating TechnologyKey
-UPDATE al
-SET TechnologyKey = tec.TechnologyKey
---SELECT *
-FROM #all_lines_2 al
-OUTER APPLY (
-	SELECT TOP 1 item_json_characteristics_json_value AS TechnologyKey
-	FROM [sourceNuudlNetCrackerView].[ibsitemshistory_History]
-	WHERE id = al.SubscriptionChildKey AND active_from_CET = al.active_from_CET AND item_json_characteristics_json_name = 'Technology'
-) tec
-WHERE IsHardware = 0 AND IsTLO = 1
-
-
--- Updating PhoneDetailkey
-UPDATE al
-SET PhoneDetailkey = chr.PhoneDetailkey
---SELECT *
-FROM #all_lines_2 al
-OUTER APPLY (
-	SELECT TOP 1 CONVERT( NVARCHAR(20), TRIM(TRANSLATE( value_json__corrupt_record, '["]', '   ' )) ) AS PhoneDetailkey
-	FROM [sourceNuudlNetCrackerView].[ibsnrmlcharacteristic_History] 
-	WHERE 
-		product_instance_id = al.SubscriptionKey
-		AND name = 'International Phone Number'
-	ORDER BY NUUDL_ID DESC
-) chr
-WHERE IsHardware = 0 
 
 -- Get Account from top level offer
 UPDATE t
@@ -247,6 +271,7 @@ CROSS APPLY (
 	WHERE SubscriptionKey = t.SubscriptionKey
 	) ca
 WHERE IsTLO = 0
+
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Filter out duplicate events. 
@@ -304,6 +329,8 @@ FROM (
 --ORDER BY active_from_CET, IsTLO DESC
 
 
+CREATE CLUSTERED INDEX CLIX ON #all_lines_filtered_2 (SubscriptionKey, CurrentState, active_from_CET)
+
 -----------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------
 -- 2. Adding artificial events that aren't based on the product instance states
@@ -325,13 +352,17 @@ SELECT
 	a.status,
 	b.type,
 	c.name AS EmployeeKey,
-	a.extended_attributes_json_distributionChannel AS SalesChannelKey
+	JSON_VALUE(a.extended_attributes,'$.distributionChannel') AS SalesChannelKey
 INTO #hardware_return
-FROM [sourceNuudlNetCrackerView].[cpmnrmltroubleticket_History] a
-INNER JOIN [sourceNuudlNetCrackerView].[cpmnrmltroubleticketrelatedentityref_History] b
+FROM [sourceNuudlDawnView].[cpmnrmltroubleticket_History] a
+INNER JOIN [sourceNuudlDawnView].[cpmnrmltroubleticketrelatedentityref_History] b
 	ON a.id = b.trouble_ticket_id
-LEFT JOIN [sourceNuudlNetCrackerView].orgchartteammember_History c ON c.idm_user_id = a.created_by_user_id
+		AND b.NUUDL_IsCurrent = 1
+LEFT JOIN [sourceNuudlDawnView].orgchrteammember_History c 
+	ON c.idm_user_id = a.created_by_user_id
+		AND c.NUUDL_IsCurrent = 1
 WHERE 1=1
+	AND a.NUUDL_IsCurrent =1
 	AND a.ticket_type = 'OWNED_EQUIPMENT_RETURN'
 	AND a.status IN ('CLOSED', 'REFUND_COMPLETED')
 	AND b.type = 'Product'
@@ -411,21 +442,26 @@ SELECT
 	a.id TicketKey,
 	ticket_type,
 	a.created_by_date_CET AS PlannedDate,
-	CAST(a.extended_attributes_json_changeDate_CET as datetime2) AS ExpectedDate,
+	CAST(extended_attributes_changeDate_CET as datetime2(0)) AS ExpectedDate,
 	status_change_date_CET AS status_change_date,
 	a.status,
 	b.type,
 	c.name AS EmployeeKey,
-	extended_attributes_json_distributionChannel AS SalesChannelKey
+	JSON_VALUE(extended_attributes, '$.distributionChannel') AS SalesChannelKey
 INTO #terminations
-FROM [sourceNuudlNetCrackerView].[cpmnrmltroubleticket_History] a
-INNER JOIN [sourceNuudlNetCrackerView].[cpmnrmltroubleticketrelatedentityref_History] b
+FROM [sourceNuudlDawnView].[cpmnrmltroubleticket_History] a
+INNER JOIN [sourceNuudlDawnView].[cpmnrmltroubleticketrelatedentityref_History] b
 	ON a.id = b.trouble_ticket_id
-LEFT JOIN [sourceNuudlNetCrackerView].orgchartteammember_History c ON c.idm_user_id = a.created_by_user_id
-WHERE 
-	a.ticket_type IN ('TERMINATION_REQUEST','PORT_OUT_REQUEST')
+		AND b.NUUDL_IsCurrent = 1
+LEFT JOIN [sourceNuudlDawnView].orgchrteammember_History c 
+	ON c.idm_user_id = a.created_by_user_id
+		AND c.NUUDL_IsCurrent = 1
+WHERE 1=1
+	AND a.NUUDL_IsCurrent =1
+	AND a.ticket_type IN ('TERMINATION_REQUEST','PORT_OUT_REQUEST')
 	AND b.type = 'Product'
 	AND a.status not in ('ERROR')
+
 
 -- If there are multiple non-cancelled tickets on the same SubscriptionKey, we only keep the first.
 DELETE a
@@ -471,7 +507,7 @@ SELECT DISTINCT
 	al.CustomerKey,
 	al.SubscriptionGroup,
 	al.SubscriptionKey,
-	'' AS QuoteKey,
+	-1 AS QuoteKey,
 	e.OrderEventKey,
 	e.OrderEventName,
 	al.ProductType,
@@ -623,7 +659,7 @@ CROSS APPLY (
 ) e
 CROSS APPLY (
 	SELECT TOP 1 ProductKey, ProductParentKey, ProductName, ProductType, TechnologyKey, IsTLO
-	FROM #all_lines_filtered
+	FROM #all_lines_filtered_2
 	WHERE SubscriptionKey = al.SubscriptionKey 
 		AND active_from_CET <= al.active_from_CET
 		AND CurrentState = 'ACTIVE'
@@ -632,7 +668,7 @@ CROSS APPLY (
 ) tlo
 CROSS APPLY (
 	SELECT TOP 1 ProductKey AS ProductHardwareKey
-	FROM #all_lines_filtered
+	FROM #all_lines_filtered_2
 	WHERE SubscriptionKey = al.SubscriptionKey 
 		AND CalendarKey <= al.CalendarKey
 		AND CurrentState IN ('COMPLETED', 'ACTIVE')
@@ -934,6 +970,8 @@ FROM (
 ) q
 
 
+CREATE CLUSTERED INDEX CLIX ON #result (SubscriptionKey,IsTLO,OrderEventName,active_from_CET)
+
 -----------------------------------------------------------------------------------------------------------------------------
 -- Set Quantity to zero to accommodate Gross Adds and Churn calculations
 -----------------------------------------------------------------------------------------------------------------------------
@@ -979,6 +1017,7 @@ WHERE 1=1
 -- Creating Offer Disconnect Planned lines where these aren't provided by tickets
 -----------------------------------------------------------------------------------------------------------------------------
 
+
 DROP TABLE IF EXISTS #missing_planned_disconnect
 
 SELECT r.*
@@ -1021,51 +1060,6 @@ CROSS APPLY (
 INSERT INTO #result
 SELECT * FROM #missing_planned_disconnect
 
-/*
-SELECT *
-FROM #all_lines_filtered
-WHERE SubscriptionKey = '2a1e670d-fe4e-404d-aa05-1db884cb6371'
-	AND (IsTLO=1 OR ProductType IN ('Handsets','Premium Accessories'))
-ORDER By 3, 4, IsTlo DESC
-
-SELECT *
-FROM sourceNuudlNetCracker.ibsitemshistory_History
-WHERE item_json_quoteId = 'be2301a1-1f89-42dd-8cd9-f7f94ba822fd'
-ORDER By 3, 4, IsTlo DESC
-
-
-SELECT SubscriptionKey
-FROM #all_lines
-WHERE 1=1
-	AND ProductType IN ('Handsets','Premium Accessories')
-GROUP BY SubscriptionKey
-HAVING MIN(ProductKey) <> MAX(ProductKey)
-
-
-SELECT *
-FROM #all_lines_filtered
-WHERE 1=1
-	--AND SubscriptionKey = '7743fb6b-8775-4349-910b-a3ec64275a64'
---	AND IsTLO=1
-	AND PhoneDetailKey='4551717273'
-ORDER By 2, 3, IsTlo DESC
-
-SELECT  *
-FROM #result
-WHERE SubscriptionKey = '2a1e670d-fe4e-404d-aa05-1db884cb6371'
-	AND IsTLO=1
---	AND OrderEventName IN ('Offer Disconnected')
-ORDER By SubscriptionGroup, 1, 2, IsTlo DESC, OrderEventKey
-
-
-
-SELECT  *
-FROM #result
-WHERE phonedetailkey = '4551152144'
-	AND IsTLO=1
---	AND OrderEventName IN ('Offer Disconnected')
-ORDER By SubscriptionGroup, 1, 2, IsTlo DESC, OrderEventKey
---*/
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Truncate and insert into stage table
@@ -1073,7 +1067,7 @@ ORDER By SubscriptionGroup, 1, 2, IsTlo DESC, OrderEventKey
 
 TRUNCATE TABLE [stage].[Fact_OrderEvents]
 
-INSERT INTO [stage].[Fact_OrderEvents] ([CalendarKey], [TimeKey], [ProductKey], [ProductParentKey], [ProductHardwareKey], [CustomerKey], [SubscriptionKey], [QuoteKey], [OrderEventKey], [SalesChannelKey], [BillingAccountKey], 
+INSERT INTO [stage].[Fact_OrderEvents] WITH (TABLOCK) ([CalendarKey], [TimeKey], [ProductKey], [ProductParentKey], [ProductHardwareKey], [CustomerKey], [SubscriptionKey], [QuoteKey], [OrderEventKey], [SalesChannelKey], [BillingAccountKey], 
 	[PhoneDetailKey], [AddressBillingKey], [HouseHoldKey], TechnologyKey, EmployeeKey, TicketKey, [IsTLO], [Quantity])
 SELECT
 	CalendarKey,

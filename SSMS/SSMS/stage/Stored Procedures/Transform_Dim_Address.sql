@@ -15,8 +15,8 @@ SELECT DISTINCT
 	CONCAT( 
 		ISNULL( cm.Street1, '' ), 
 		';', ISNULL( cm.Street2, '' ), 
-		';', ISNULL( cm.[extended_attributes_json_floor], '' ), 
-		';', ISNULL( cm.[extended_attributes_json_suite], '' ) , 
+		';', ISNULL( cm.[extended_attributes_floor], '' ), 
+		';', ISNULL( cm.[extended_attributes_suite], '' ) , 
 		';', ISNULL( cm.Postcode, '' ), 
 		';', ISNULL( cm.City, '' )
 	) AddressKey,
@@ -24,31 +24,31 @@ SELECT DISTINCT
 	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.Street2, '' ), '?' ) ) AS Street2,
 	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.Postcode, '' ), '?' ) ) AS Postcode,
 	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.City, '' ), '?' ) ) AS City,
-	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.[extended_attributes_json_floor], '' ), '?' ) ) AS [Floor],
-	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.[extended_attributes_json_suite], '' ), '?' ) ) AS Suite,
+	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.[extended_attributes_floor], '' ), '?' ) ) AS [Floor],
+	CONVERT( NVARCHAR(50), ISNULL( NULLIF( cm.[extended_attributes_suite], '' ), '?' ) ) AS Suite,
 	CONVERT( NVARCHAR(10), ISNULL( CAST(nam.sub_address_id as nvarchar), '?' ) )  AS NAMID,
 	CONVERT( NVARCHAR(32), ISNULL( CAST(nam.sub_address_dar_id as nvarchar), '?' ) )  AS SubAddressDarID,
 	CONVERT( NVARCHAR(32), ISNULL( CAST(nam.sub_address_mad_id as nvarchar), '?' ) )  AS SubAddressMadID,
 	CONVERT( NVARCHAR(20), ISNULL( CAST(nam.sub_address_kvhx_id as nvarchar), '?' ) )  AS KvhxID
 INTO #gross_list
-FROM [sourceNuudlNetCrackerView].[cimcontactmedium_History] cm
+FROM [sourceNuudlDawnView].[cimcontactmedium_History] cm
 LEFT JOIN SourceNuudlNAMView.nam_History nam 
 	ON nam.address_city = cm.city
 		AND nam.address_postcode = cm.postcode
 		AND nam.address_street_name = cm.street1
 		AND CONCAT(nam.address_street_no, coalesce(nam.address_street_no_suffix,'')) = cm.street2
-		AND coalesce(nam.sub_address_floor,'') = coalesce(cm.extended_attributes_json_floor,'')
-		AND coalesce(nam.sub_address_suite,'') = coalesce(cm.extended_attributes_json_suite,'')
+		AND coalesce(nam.sub_address_floor,'') = coalesce(cm.extended_attributes_floor,'')
+		AND coalesce(nam.sub_address_suite,'') = coalesce(cm.extended_attributes_suite,'')
 		AND nam.sub_address_deleted = 0
 WHERE
-	cm.is_current = 1
+	cm.NUUDL_IsCurrent = 1
 	AND cm.type_of_contact_method = 'Billing contact details'
 	AND 
 	CONCAT( 
 		ISNULL( cm.Street1, '' ), 
 		ISNULL( cm.Street2, '' ), 
-		ISNULL( cm.[extended_attributes_json_floor], '' ), 
-		ISNULL( cm.[extended_attributes_json_suite], '' ) , 
+		ISNULL( cm.[extended_attributes_floor], '' ), 
+		ISNULL( cm.[extended_attributes_suite], '' ) , 
 		ISNULL( cm.Postcode, '' ), 
 		ISNULL( cm.City, '' )
 	) <> ''
@@ -56,7 +56,7 @@ WHERE
 -------------------------------------------------------------------------------
 -- Identify errors 
 -------------------------------------------------------------------------------
-
+/*
 DROP TABLE IF EXISTS #error_list
 CREATE TABLE #error_list (
 	cimcontactmedium_id nvarchar(36),
@@ -76,7 +76,7 @@ SELECT el.ErrorMessage, [id], [city], [country], [email_address], [phone_ext_num
 FROM [sourceNuudlNetCracker].[cimcontactmedium_History] cm
 INNER JOIN #error_list el ON el.cimcontactmedium_id = cm.id
 WHERE cm.NUUDL_IsCurrent = 1
-
+*/
 
 -------------------------------------------------------------------------------
 -- Update stage table 

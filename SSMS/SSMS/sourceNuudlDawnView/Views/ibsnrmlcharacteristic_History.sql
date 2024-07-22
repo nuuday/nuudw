@@ -1,4 +1,5 @@
 ﻿
+
 CREATE VIEW [sourceNuudlDawnView].[ibsnrmlcharacteristic_History]
 AS
 SELECT 
@@ -9,7 +10,7 @@ SELECT
 	[product_offering_char_id] ,
 	[product_spec_char_id] ,
 	[ts_ms] ,
-	[value] ,
+	CONVERT( NVARCHAR(20), TRIM(TRANSLATE( value, '["]', '   ' )) ) value,
 	[NUUDL_CuratedBatchID] ,
 	[NUUDL_CuratedProcessedTimestamp] ,
 	[NUUDL_IsCurrent] ,

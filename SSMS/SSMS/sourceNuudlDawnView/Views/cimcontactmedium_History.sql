@@ -1,4 +1,5 @@
 ﻿
+
 CREATE VIEW [sourceNuudlDawnView].[cimcontactmedium_History]
 AS
 SELECT 
@@ -31,8 +32,8 @@ SELECT
 	[ts_ms] ,
 	[type_of_contact] ,
 	[type_of_contact_method] ,
-	[extended_attributes_floor] ,
-	[extended_attributes_suite] ,
+	TRIM(TRANSLATE([extended_attributes_floor],'["]','   ')) [extended_attributes_floor],
+	TRIM(TRANSLATE([extended_attributes_suite],'["]','   ')) [extended_attributes_suite],
 	[NUUDL_CuratedBatchID] ,
 	[NUUDL_CuratedProcessedTimestamp] ,
 	[NUUDL_IsCurrent] ,

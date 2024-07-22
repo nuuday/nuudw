@@ -1,5 +1,5 @@
 ﻿
-CREATE VIEW [sourceNuudlDawnView].[pimnrmlprodofferingpricespecification_History]
+CREATE VIEW [sourceNuudlNetCrackerView].[pimnrmlprodofferingpricespecification_History]
 AS
 SELECT 
 	[external_id] ,
@@ -22,5 +22,5 @@ SELECT
 	,[DWModifiedDate]
 	,[DWIsDeletedInSource]
 	,[DWDeletedInSourceDate]
-FROM [sourceNuudlDawn].[pimnrmlprodofferingpricespecification_History]
+FROM [sourceNuudlNetCracker].[pimnrmlprodofferingpricespecification_History]
 WHERE DWIsCurrent = 1

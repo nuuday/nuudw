@@ -5,11 +5,7 @@ AS
 
 TRUNCATE TABLE [stage].[Dim_Quote]
 
-
-
-INSERT INTO [stage].[Dim_Quote] WITH (TABLOCK) (QuoteKey,DWCreatedDate)
-
-
-select distinct CONVERT( NVARCHAR(10),number) AS QuoteKey,
-GETDATE() AS DWCreatedDate
-from [sourceNuudlNetCrackerView].[qssnrmlquote_History]
+INSERT INTO [stage].[Dim_Quote] WITH (TABLOCK) (QuoteKey)
+SELECT DISTINCT
+	CONVERT( NVARCHAR(10), number ) AS QuoteKey
+FROM [sourceNuudlDawnView].[qssnrmlquote_History]

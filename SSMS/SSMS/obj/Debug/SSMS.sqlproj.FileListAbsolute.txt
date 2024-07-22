@@ -41,3 +41,7 @@ C:\Users\mjalali\Source\Repos\nuuday\nuudw\SSMS\SSMS\bin\Debug\SSMS.dll
 C:\Users\mjalali\Source\Repos\nuuday\nuudw\SSMS\SSMS\bin\Debug\SSMS.pdb
 C:\Users\mjalali\Source\Repos\nuuday\nuudw\SSMS\SSMS\bin\Debug\master.dacpac
 C:\Users\mjalali\Source\Repos\nuuday\nuudw\SSMS\SSMS\obj\Debug\SSMS.sqlproj.CopyComplete
+C:\Repos\nuudw\SSMS\SSMS\obj\Debug\Model.xml
+C:\Repos\nuudw\SSMS\SSMS\obj\Debug\refactor.xml
+C:\Repos\nuudw\SSMS\SSMS\obj\Debug\postdeploy.sql
+C:\Repos\nuudw\SSMS\SSMS\obj\Debug\predeploy.sql

@@ -3,8 +3,10 @@
     [ProductName]   NVARCHAR (250) NULL,
     [ProductType]   NVARCHAR (50)  NULL,
     [ProductWeight] NVARCHAR (3)   NULL,
-    [DWCreatedDate] DATETIME       NOT NULL
+    [DWCreatedDate] DATETIME2 (0)  DEFAULT (sysdatetime()) NOT NULL
 );
+
+
 
 
 

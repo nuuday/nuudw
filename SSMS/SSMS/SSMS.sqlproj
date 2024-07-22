@@ -633,9 +633,7 @@
     <Build Include="sourceNuudlDawn\Tables\ibsitemshistory.sql" />
     <Build Include="sourceNuudlDawn\Tables\cimcontactmediumassociation_History.sql" />
     <Build Include="sourceNuudlDawn\Tables\cimcontactmediumassociation.sql" />
-    <Build Include="sourceNuudlDawn\Tables\pimnrmlprodofferingpricespecification_History.sql" />
     <Build Include="sourceNuudlDawn\Tables\orgchrteammember_History.sql" />
-    <Build Include="sourceNuudlDawn\Tables\pimnrmlprodofferingpricespecification.sql" />
     <Build Include="sourceNuudlDawn\Tables\orgchrteammember.sql" />
     <Build Include="sourceNuudlDawn\Tables\worklogitems_History.sql" />
     <Build Include="sourceNuudlDawn\Tables\worklogitems.sql" />
@@ -664,7 +662,6 @@
     <Build Include="sourceNuudlDawnView\Views\cimcontactmedium_History.sql" />
     <Build Include="sourceNuudlDawnView\Views\cimindividual_History.sql" />
     <Build Include="sourceNuudlDawnView\Views\cimcontactmediumassociation_History.sql" />
-    <Build Include="sourceNuudlDawnView\Views\pimnrmlprodofferingpricespecification_History.sql" />
     <Build Include="sourceNuudlDawnView\Views\orgchrteammember_History.sql" />
     <Build Include="sourceNuudlDawnView\Views\worklogitems_History.sql" />
     <Build Include="sourceNuudlDawnView\Views\qssnrmlquoteitemprice_History.sql" />
@@ -675,6 +672,12 @@
     <Build Include="sourceNuudlDawn\Stored Procedures\Initiate_Filter_ibsitemshistory_History.sql" />
     <Build Include="Security\sourceNuudlDawnView.sql" />
     <Build Include="Security\sourceNuudlDawn.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlprodofferingpricespecification_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlprodofferingpricespecification.sql" />
+    <Build Include="sourceNuudlDawn\Tables\ibsitemshistorycharacteristics_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\ibsitemshistorycharacteristics.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlprodofferingpricespecification_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\ibsitemshistorycharacteristics_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

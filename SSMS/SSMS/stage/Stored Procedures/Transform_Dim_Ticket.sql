@@ -10,13 +10,14 @@ SELECT
 	, ISNULL( NULLIF( ticket_type, '' ) , '?') AS TicketType
 	, ISNULL( NULLIF( [status], '' ) , '?') AS TicketStatus
 INTO #gross_list
-FROM [sourceNuudlNetCrackerView].[cpmnrmltroubleticket_History]
+FROM [sourceNuudlDawnView].[cpmnrmltroubleticket_History]
+WHERE NUUDL_IsCurrent = 1
 
 
 -------------------------------------------------------------------------------
 -- Identify errors 
 -------------------------------------------------------------------------------
-
+/*
 DROP TABLE IF EXISTS #error_list
 CREATE TABLE #error_list (
 	error_id nvarchar(36),
@@ -37,6 +38,7 @@ SELECT el.ErrorMessage, [approval_reason], [closed_by_date], [closed_by_user_id]
 FROM [sourceNuudlNetCracker].[cpmnrmltroubleticket_History] a
 INNER JOIN #error_list el ON el.error_id = a.id
 
+*/
 -------------------------------------------------------------------------------
 -- Update stage table 
 -------------------------------------------------------------------------------
@@ -50,4 +52,4 @@ SELECT
 	, TicketType
 	, TicketStatus
 FROM #gross_list
-WHERE TicketKey NOT IN (SELECT error_id FROM #error_list)
+--WHERE TicketKey NOT IN (SELECT error_id FROM #error_list)
