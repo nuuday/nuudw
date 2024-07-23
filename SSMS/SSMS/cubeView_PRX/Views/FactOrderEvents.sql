@@ -1,4 +1,5 @@
 ﻿
+
 CREATE VIEW [cubeView_PRX].[FactOrderEvents]
 AS
 SELECT 
@@ -19,6 +20,7 @@ SELECT
 	TechnologyID,
 	EmployeeID,
 	TicketID,
+	ThirdPartyStoreID,
 	[IsTLO],
 	[Quantity],
 	[NetAmount],

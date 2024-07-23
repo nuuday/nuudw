@@ -16,6 +16,7 @@
     [TechnologyKey]      NVARCHAR (50)   NULL,
     [EmployeeKey]        NVARCHAR (30)   NULL,
     [TicketKey]          NVARCHAR (36)   NULL,
+    [ThirdPartyStoreKey] INT             NULL,
     [IsTLO]              INT             NULL,
     [Quantity]           INT             NULL,
     [NetAmount]          DECIMAL (19, 4) NULL,
@@ -23,6 +24,8 @@
     [DiscountAmount]     DECIMAL (19, 4) NULL,
     [DiscountPct]        DECIMAL (7, 4)  NULL
 );
+
+
 
 
 
