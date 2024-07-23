@@ -45,3 +45,4 @@ C:\Repos\nuudw\SSMS\SSMS\obj\Debug\Model.xml
 C:\Repos\nuudw\SSMS\SSMS\obj\Debug\refactor.xml
 C:\Repos\nuudw\SSMS\SSMS\obj\Debug\postdeploy.sql
 C:\Repos\nuudw\SSMS\SSMS\obj\Debug\predeploy.sql
+C:\Repos\nuudw\SSMS\SSMS\obj\Debug\SSMS.sqlproj.AssemblyReference.cache

@@ -678,6 +678,10 @@
     <Build Include="sourceNuudlDawn\Tables\ibsitemshistorycharacteristics.sql" />
     <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlprodofferingpricespecification_History.sql" />
     <Build Include="sourceNuudlDawnView\Views\ibsitemshistorycharacteristics_History.sql" />
+    <Build Include="stage\Tables\Dim_Dummy.sql" />
+    <Build Include="dim\Tables\Dummy.sql" />
+    <Build Include="dimView\Views\Dummy.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_Dummy.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
