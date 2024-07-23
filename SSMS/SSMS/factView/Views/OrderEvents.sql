@@ -17,7 +17,8 @@ SELECT
 	,[HouseHoldID]
 	,[TechnologyID]
 	,[EmployeeID]
-	,TicketID
+	,[TicketID]
+	,[ThirdPartyStoreID]
 	,[IsTLO]
 	,[Quantity]
 	,[NetAmount]

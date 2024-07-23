@@ -118,6 +118,8 @@
     <Folder Include="sourceNuudlDawnView\" />
     <Folder Include="sourceNuudlDawnView\Views\" />
     <Folder Include="sourceNuudlDawn\Stored Procedures\" />
+    <Folder Include="masterdata\" />
+    <Folder Include="masterdata\Tables\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -678,6 +680,16 @@
     <Build Include="sourceNuudlDawn\Tables\ibsitemshistorycharacteristics.sql" />
     <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlprodofferingpricespecification_History.sql" />
     <Build Include="sourceNuudlDawnView\Views\ibsitemshistorycharacteristics_History.sql" />
+    <Build Include="stage\Tables\Dim_ThirdPartyStore.sql" />
+    <Build Include="dim\Tables\ThirdPartyStore.sql" />
+    <Build Include="masterdata\Tables\ThirdPartyStores_History.sql" />
+    <Build Include="masterdata\Tables\ThirdPartyStores.sql" />
+    <Build Include="martView_PRX\Views\DimThirdPartyStore.sql" />
+    <Build Include="dimView\Views\ThirdPartyStore.sql" />
+    <Build Include="cubeView_PRX\Views\DimThirdPartyStore.sql" />
+    <Build Include="Security\nuudw-acl01-sql-schema-masterdata-contributor.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_ThirdPartyStore.sql" />
+    <Build Include="Security\masterdata.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
