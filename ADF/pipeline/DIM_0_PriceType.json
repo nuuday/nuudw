@@ -1,0 +1,70 @@
+{
+  "name": "DIM_0_PriceType",
+  "properties": {
+    "activities": [
+      {
+        "name": "Transform",
+        "type": "ExecutePipeline",
+        "dependsOn": [],
+        "userProperties": [],
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "DIM_1_PriceType_Transform",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": {
+              "value": "@pipeline().parameters.JobIsIncremental",
+              "type": "Expression"
+            }
+          }
+        }
+      },
+      {
+        "name": "Load",
+        "type": "ExecutePipeline",
+        "dependsOn": [
+          {
+            "activity": "Transform",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "userProperties": [],
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "DIM_1_PriceType_Load",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": {
+              "value": "@pipeline().parameters.JobIsIncremental",
+              "type": "Expression"
+            },
+            "CleanUpPartitions": {
+              "value": "@pipeline().parameters.CleanUpPartitions",
+              "type": "Expression"
+            }
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "bool",
+        "defaultValue": true
+      },
+      "CleanUpPartitions": {
+        "type": "bool",
+        "defaultValue": false
+      }
+    },
+    "folder": {
+      "name": "0.3_Dimensions"
+    },
+    "annotations": []
+  }
+}
