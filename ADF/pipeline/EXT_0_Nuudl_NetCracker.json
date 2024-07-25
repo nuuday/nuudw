@@ -1,203 +1,172 @@
 {
-	"name": "EXT_0_Nuudl_NetCracker",
-	"properties": {
-		"activities": [
-			{
-				"name": "pimnrmlcustomercategory",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlcustomercategory",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimnrmldistributionchannel",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmldistributionchannel",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimnrmlprodcatprodoffering",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlprodcatprodoffering",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimnrmlprodofferingpricespecification",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlprodofferingpricespecification",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimnrmlproductcatalog",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductcatalog",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimnrmlproductfamily",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductfamily",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "pimnrmlproductoffering",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductoffering",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"JobIsIncremental": {
-							"value": "@pipeline().parameters.JobIsIncremental",
-							"type": "Expression"
-						},
-						"WriteBatchSize": {
-							"value": "@pipeline().parameters.WriteBatchSize",
-							"type": "Expression"
-						}
-					}
-				}
-			}
-		],
-		"parameters": {
-			"JobIsIncremental": {
-				"type": "Bool",
-				"defaultValue": false
-			},
-			"WriteBatchSize": {
-				"type": "Int",
-				"defaultValue": 10000
-			}
-		},
-		"folder": {
-			"name": "0.1_Extracts"
-		},
-		"annotations": []
-	}
+  "name": "EXT_0_Nuudl_NetCracker",
+  "properties": {
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    },
+    "activities": [
+      {
+        "name": "pimnrmlcustomercategory",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlcustomercategory",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmldistributionchannel",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmldistributionchannel",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmlprodcatprodoffering",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlprodcatprodoffering",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmlprodofferingpricespecification",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlprodofferingpricespecification",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmlproductcatalog",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductcatalog",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmlproductfamily",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductfamily",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmlproductoffering",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductoffering",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmlproductofferingpricechargeitem",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductofferingpricechargeitem",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmlproductofferingpricechargekey",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductofferingpricechargekey",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      },
+      {
+        "name": "pimnrmlpromotionprodofferingpricealteration",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlpromotionprodofferingpricealteration",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "JobIsIncremental": "@pipeline().parameters.JobIsIncremental",
+            "WriteBatchSize": "@pipeline().parameters.WriteBatchSize"
+          }
+        }
+      }
+    ]
+  }
 }
