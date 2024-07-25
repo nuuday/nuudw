@@ -188,7 +188,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "",
+              "value": "\r\nSELECT \r\n`amount` \r\n,`amount_percentage` \r\n,`currency_id` \r\n,`id` \r\n,`name` \r\n,`prod_offering_price_specification_id` \r\n,`extended_parameters` \r\n,`cdc_revision_id` \r\n,`localized_name_json_dan` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ID` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n \r\nFROM dai.@{activity('Lookup_Source_Schema_Name').output.firstRow.SourceSchemaName}.`pimnrmlpromotionprodofferingpricealteration`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {
