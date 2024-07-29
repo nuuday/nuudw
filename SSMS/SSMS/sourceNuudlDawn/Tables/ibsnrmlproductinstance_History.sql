@@ -53,7 +53,15 @@
 );
 
 
+
+
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ibsnrmlproductinstance_History]
     ON [sourceNuudlDawn].[ibsnrmlproductinstance_History];
+
+
+GO
+CREATE NONCLUSTERED INDEX [NCIX_ibsnrmlproductinstance_History__quote_id_NUUDL_IsCurrent_DWIsCurrent]
+    ON [sourceNuudlDawn].[ibsnrmlproductinstance_History]([quote_id] ASC, [NUUDL_IsCurrent] ASC, [DWIsCurrent] ASC)
+    INCLUDE([id], [parent_id]);
 

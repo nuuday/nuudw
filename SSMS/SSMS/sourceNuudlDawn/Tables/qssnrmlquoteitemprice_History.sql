@@ -42,7 +42,14 @@
 );
 
 
+
+
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_qssnrmlquoteitemprice_History]
     ON [sourceNuudlDawn].[qssnrmlquoteitemprice_History];
+
+
+GO
+CREATE NONCLUSTERED INDEX [NCIX_qssnrmlquoteitemprice_History__DWIsCurrent_quoute_item_id_quote_version_quote_id]
+    ON [sourceNuudlDawn].[qssnrmlquoteitemprice_History]([DWIsCurrent] ASC, [NUUDL_IsCurrent] ASC, [quote_item_id] ASC, [quote_version] ASC, [quote_id] ASC);
 

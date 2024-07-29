@@ -51,5 +51,6 @@ $KeyVaultPrefix = Get-AzKeyVaultSecret -VaultName "nuudw-kv01-dev" -Name "KeyVau
 # =====================
 
 Invoke-Sqlcmd -ConnectionString $ConnectionString -Query "EXEC nuuMeta.MaintainDWCreateCubeViews @Solution ='$($SolutionAbbreviation)'"
+Invoke-Sqlcmd -ConnectionString $ConnectionString -Query "EXEC nuuMeta.MaintainDWCreateMartViews @Solution ='$($SolutionAbbreviation)'"
 
 Write-Host "Views for $($SolutionAbbreviation) were created" -ForegroundColor Green  -NoNewline

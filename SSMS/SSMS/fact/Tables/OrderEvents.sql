@@ -7,6 +7,7 @@
     [CustomerID]        INT             DEFAULT ((-1)) NOT NULL,
     [SubscriptionID]    INT             DEFAULT ((-1)) NOT NULL,
     [QuoteID]           INT             DEFAULT ((-1)) NOT NULL,
+    [QuoteItemID]       INT             DEFAULT ((-1)) NOT NULL,
     [OrderEventID]      INT             DEFAULT ((-1)) NOT NULL,
     [SalesChannelID]    INT             DEFAULT ((-1)) NOT NULL,
     [BillingAccountID]  INT             DEFAULT ((-1)) NOT NULL,
@@ -36,9 +37,13 @@
 
 
 
+
+
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_OrderEvents]
     ON [fact].[OrderEvents];
+
+
 
 
 

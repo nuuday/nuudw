@@ -1,5 +1,5 @@
 ﻿
 CREATE VIEW [martView_PRX].[DimCustomer]
 AS
-SELECT 	[CustomerID],	[CustomerKey],	[CustomerName],	[CustomerSegment],	[CustomerStatus]
+SELECT 	[CustomerID],	[CustomerKey],	[CustomerNumber],	[CustomerName],	[CustomerSegment],	[CustomerStatus],	[CustomerMigrationSource],	[CustomerMigrationDate]
 FROM [dimView].[Customer]

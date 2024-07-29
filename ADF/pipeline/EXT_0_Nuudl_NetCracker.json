@@ -183,6 +183,84 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "pimnrmlproductofferingpricechargeitem",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductofferingpricechargeitem",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "pimnrmlproductofferingpricechargekey",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductofferingpricechargekey",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "pimnrmlpromotionprodofferingpricealteration",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlpromotionprodofferingpricealteration",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"JobIsIncremental": {
+							"value": "@pipeline().parameters.JobIsIncremental",
+							"type": "Expression"
+						},
+						"WriteBatchSize": {
+							"value": "@pipeline().parameters.WriteBatchSize",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
