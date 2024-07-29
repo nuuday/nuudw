@@ -1,16 +1,5 @@
 ﻿
-CREATE VIEW [martView_PRX].[DimTicket] 
+CREATE VIEW [martView_PRX].[DimTicket]
 AS
-SELECT
-	[TicketID]
-	,[TicketKey] AS [TicketKey]
-	,[TicketCategory] AS [TicketCategory]
-	,[TicketType] AS [TicketType]
-	,[TicketStatus] AS [TicketStatus]
-	,[DWIsCurrent]
-	,[DWValidFromDate]
-	,[DWValidToDate]
-	,[DWCreatedDate]
-	,[DWModifiedDate]
-	,[DWIsDeleted]	
+SELECT 	[TicketID],	[TicketKey],	[TicketCategory],	[TicketType],	[TicketStatus]
 FROM [dimView].[Ticket]

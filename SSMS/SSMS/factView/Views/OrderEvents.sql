@@ -9,6 +9,7 @@ SELECT
 	,[CustomerID]
 	,[SubscriptionID]
 	,[QuoteID]
+	,[QuoteItemID]
 	,[OrderEventID]
 	,[SalesChannelID]
 	,[BillingAccountID]

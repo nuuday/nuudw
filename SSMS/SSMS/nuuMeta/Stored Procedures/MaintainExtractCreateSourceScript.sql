@@ -74,11 +74,8 @@ SET @SQLLastValue =
 		ELSE '''@{activity(''Lookup_Last_Value_Loaded'').output.firstRow.LastValueLoaded}'''	
 	END 
 
-SET @SQLSchema = 
-	CASE
-		WHEN ISNULL(@Environment,'') <> '' THEN '@{activity(''Lookup_Source_Schema_Name'').output.firstRow.SourceSchemaName}'
-		ELSE @Schema
-	END
+SET @SQLSchema = '@{activity(''Lookup_Source_Schema_Name'').output.firstRow.SourceSchemaName}'
+
 
 SELECT
 	@SQLScript = '

@@ -690,6 +690,24 @@
     <Build Include="Security\nuudw-acl01-sql-schema-masterdata-contributor.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_ThirdPartyStore.sql" />
     <Build Include="Security\masterdata.sql" />
+    <Build Include="stage\Tables\Dim_QuoteItem.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlpromotionprodofferingpricealteration_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlpromotionprodofferingpricealteration.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlproductofferingpricechargekey_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlproductofferingpricechargekey.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlproductofferingpricechargeitem_History.sql" />
+    <Build Include="sourceNuudlNetCracker\Tables\pimnrmlproductofferingpricechargeitem.sql" />
+    <Build Include="sourceNuudlDawn\Tables\qssnrmlquoteitempricealteration_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\qssnrmlquoteitempricealteration.sql" />
+    <Build Include="dim\Tables\QuoteItem.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlpromotionprodofferingpricealteration_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlproductofferingpricechargekey_History.sql" />
+    <Build Include="sourceNuudlNetCrackerView\Views\pimnrmlproductofferingpricechargeitem_History.sql" />
+    <Build Include="sourceNuudlDawnView\Views\qssnrmlquoteitempricealteration_History.sql" />
+    <Build Include="martView_PRX\Views\DimQuoteItem.sql" />
+    <Build Include="dimView\Views\QuoteItem.sql" />
+    <Build Include="cubeView_PRX\Views\DimQuoteItem.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_QuoteItem.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

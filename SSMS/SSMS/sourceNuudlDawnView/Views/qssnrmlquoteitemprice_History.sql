@@ -1,4 +1,5 @@
 ﻿
+
 CREATE VIEW [sourceNuudlDawnView].[qssnrmlquoteitemprice_History]
 AS
 SELECT 
@@ -22,12 +23,12 @@ SELECT
 	[quote_version] ,
 	[tax_rate] ,
 	[ts_ms] ,
-	[value_base_price_excluding_tax] ,
-	[value_base_price_including_tax] ,
-	[value_excluding_tax] ,
-	[value_including_tax] ,
-	[value_sub_total_price_excluding_tax] ,
-	[value_sub_total_price_including_tax] ,
+	CAST([value_base_price_excluding_tax] as decimal(19,4)) [value_base_price_excluding_tax],
+	CAST([value_base_price_including_tax] as decimal(19,4)) [value_base_price_including_tax],
+	CAST([value_excluding_tax] as decimal(19,4)) [value_excluding_tax],
+	CAST([value_including_tax] as decimal(19,4)) [value_including_tax],
+	CAST([value_sub_total_price_excluding_tax] as decimal(19,4)) [value_sub_total_price_excluding_tax],
+	CAST([value_sub_total_price_including_tax] as decimal(19,4)) [value_sub_total_price_including_tax],
 	[NUUDL_CuratedBatchID] ,
 	[NUUDL_CuratedProcessedTimestamp] ,
 	[NUUDL_IsCurrent] ,

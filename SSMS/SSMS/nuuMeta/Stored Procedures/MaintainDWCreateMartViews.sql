@@ -12,7 +12,7 @@ DECLARE
 	, @DWView sysname
 	, @SolutionSchema sysname
 	, @SolutionView sysname
-	, @SQL nvarchar(max)
+	, @SQL nvarchar(max) = ''
 	, @ColumnList nvarchar(max)
 
 
@@ -59,21 +59,29 @@ BEGIN
 	WHERE TABLE_SCHEMA = @DWSchema AND TABLE_NAME = @DWView
 		AND COLUMN_NAME NOT LIKE 'DW%'
 
-	IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = @SolutionSchema AND TABLE_NAME = @SolutionView)
+	IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = @SolutionSchema AND TABLE_NAME = @SolutionView)
 	BEGIN
 
-		SET @SQL = '
+		SET @SQL = 'DROP VIEW ['+@SolutionSchema+'].['+@SolutionView+']'
+		
+		PRINT @SQL
+		EXEC (@SQL)
+
+	END 
+
+
+	SET @SQL = '
 CREATE VIEW ['+@SolutionSchema+'].['+@SolutionView+']
 AS
 SELECT '+@ColumnList+'
 FROM ['+@DWSchema+'].['+@DWView+']
-	'
-		--PRINT @SQL
-		EXEC (@SQL)
+'
+	--PRINT @SQL
+	EXEC (@SQL)
 
-		PRINT 'Created '+'['+@SolutionSchema+'].['+@SolutionView+']'
+	PRINT 'Created '+'['+@SolutionSchema+'].['+@SolutionView+']'
 
-	END
+
 
 	FETCH NEXT FROM dbcursor INTO @DWSchema, @DWView, @SolutionSchema, @SolutionView
 

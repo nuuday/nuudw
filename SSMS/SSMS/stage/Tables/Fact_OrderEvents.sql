@@ -4,9 +4,10 @@
     [ProductKey]         NVARCHAR (36)   NULL,
     [ProductParentKey]   NVARCHAR (36)   NULL,
     [ProductHardwareKey] NVARCHAR (36)   NULL,
-    [CustomerKey]        NVARCHAR (12)   NULL,
+    [CustomerKey]        NVARCHAR (36)   NULL,
     [SubscriptionKey]    NVARCHAR (36)   NULL,
-    [QuoteKey]           NVARCHAR (10)   NULL,
+    [QuoteKey]           NVARCHAR (36)   NULL,
+    [QuoteItemKey]       NVARCHAR (36)   NULL,
     [OrderEventKey]      NVARCHAR (3)    NULL,
     [SalesChannelKey]    NVARCHAR (36)   NULL,
     [BillingAccountKey]  NVARCHAR (10)   NULL,
@@ -24,6 +25,8 @@
     [DiscountAmount]     DECIMAL (19, 4) NULL,
     [DiscountPct]        DECIMAL (7, 4)  NULL
 );
+
+
 
 
 

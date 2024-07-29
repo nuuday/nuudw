@@ -3,6 +3,7 @@ AS
 SELECT
 	[QuoteID]
 	,[QuoteKey] AS [QuoteKey]
+	,[QuoteNumber] AS [QuoteNumber]
 	,[DWIsCurrent]
 	,[DWValidFromDate]
 	,[DWValidToDate]

@@ -7,6 +7,7 @@
     [CustomerID]        INT             DEFAULT ((-1)) NOT NULL,
     [SubscriptionID]    INT             DEFAULT ((-1)) NOT NULL,
     [QuoteID]           INT             DEFAULT ((-1)) NOT NULL,
+    [QuoteItemID]       INT             DEFAULT ((-1)) NOT NULL,
     [OrderEventID]      INT             DEFAULT ((-1)) NOT NULL,
     [SalesChannelID]    INT             DEFAULT ((-1)) NOT NULL,
     [BillingAccountID]  INT             DEFAULT ((-1)) NOT NULL,
@@ -26,6 +27,8 @@
     [DWCreatedDate]     DATETIME2 (0)   NOT NULL,
     [DWModifiedDate]    DATETIME2 (0)   NOT NULL
 );
+
+
 
 
 
