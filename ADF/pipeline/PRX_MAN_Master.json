@@ -318,6 +318,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "DIM_0_QuoteItem",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -481,6 +487,29 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "EXT_0_NuuDL_BIZ",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "DIM_0_QuoteItem",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EXT_0_NuuDL_Dawn",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DIM_0_QuoteItem",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
