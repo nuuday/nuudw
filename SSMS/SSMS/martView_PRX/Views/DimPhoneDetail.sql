@@ -1,6 +1,7 @@
 ﻿
 
 
+
 CREATE VIEW [martView_PRX].[DimPhoneDetail]
 AS
 SELECT 
@@ -9,6 +10,8 @@ SELECT
 	[PhoneStatus],
 	[PhoneCategory],
 	[PortedIn],
-	[PortedOut]
+	[PortedOut],
+	[PortedInFrom],
+	[PortedOutTo]
 FROM [dimView].[PhoneDetail]
 WHERE PhoneDetailID IN (SELECT PhoneDetailID FROM martView_PRX.FactOrderEvents)
