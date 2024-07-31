@@ -1,9 +1,12 @@
 ﻿
+
 CREATE VIEW [sourceNuudlNetCrackerView].[pimnrmlproductofferingpricechargekey_History]
 AS
 SELECT 
 	[available_from] ,
 	[available_to] ,
+	CAST([available_from] AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime) [available_from_CET],
+	CAST([available_to] AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime) [available_to_CET],
 	[currency_id] ,
 	[localized_name] ,
 	[id] ,
