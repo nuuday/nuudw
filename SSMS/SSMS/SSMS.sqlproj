@@ -713,6 +713,7 @@
     <Build Include="fact\Tables\ProductPrices.sql" />
     <Build Include="factView\Views\ProductPrices.sql" />
     <Build Include="stage\Stored Procedures\Transform_Fact_ProductPrices.sql" />
+    <Build Include="martView_PRX\Views\FactProductPrices.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
