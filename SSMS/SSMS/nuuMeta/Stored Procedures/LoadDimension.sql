@@ -14,8 +14,8 @@ SET NOCOUNT ON
 
 /*
 DECLARE 
-	@StageTable  NVARCHAR(100) = 'Dim_HouseHold', --Input is the dimensions name without schema
-	@DWTable  NVARCHAR(100) = 'HouseHold', --Input is the dimensions name without schema
+	@StageTable  NVARCHAR(100) = 'Dim_Subscription', --Input is the dimensions name without schema
+	@DWTable  NVARCHAR(100) = 'Subscription', --Input is the dimensions name without schema
 	@PrintSQL BIT = 1
 --*/
 
@@ -178,7 +178,7 @@ LEFT JOIN #Type2Columns AS Type ON
 		Type.Type2Columns = InformationSchema.ColumnName
 WHERE 
 	DatabaseName = 'Stage'
-	AND Type.Type2Columns IS NULL
+	AND (Type.Type2Columns IS NULL OR @Type2HistoryFromSourceKey IS NOT NULL)
 	AND ColumnName NOT LIKE '%' + @BusinessKeySuffix
 
 
@@ -345,6 +345,7 @@ SET
 [target].[DWIsDeleted] = @BooleanTrue
 ;'
 
+
 --Type 2
 SET @Type2Script =
 '
@@ -437,7 +438,8 @@ SET @TypeFullScript =
 			ELSE NULL 
 		END,
 		CASE 
-			WHEN NULLIF(@MatchType2,'') IS NULL THEN NULL 
+			WHEN NULLIF(@MatchType2,'') IS NULL
+			OR NULLIF( @Type2HistoryFromSourceKey,'') IS NOT NULL THEN NULL 
 			ELSE @Type2Script 
 		END
 	)

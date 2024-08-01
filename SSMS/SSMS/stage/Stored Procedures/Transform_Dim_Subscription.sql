@@ -18,16 +18,23 @@ SELECT
 				END
 		END
 		, '?') AS BundleType,
-	a.active_from_CET AS ValidFromDate,
-	a.active_to_CET AS ValidToDate,
-	CAST(LEAD(a.NUUDL_ValidFrom,1) OVER (PARTITION BY a.id ORDER BY a.NUUDL_ValidFrom) as date) LeadValidFrom
+	a.active_from_CET AS ValidFromDate
 INTO #subscriptions
 FROM [sourceNuudlDawnView].ibsitemshistory_History a
-LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] b
+INNER JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] b
 	ON b.id = a.item_offeringId 
 WHERE  1=1
+	AND a.item_offeringId IS NOT NULL
 	AND a.state IN ('ACTIVE','PLANNED')
---	AND a.id = '8879a476-a3d7-4ca5-b9e7-e1f1f4e36978'
+	--AND a.id = '9c6a2902-2ff0-4a88-a7f9-9334e598d0c9'
+
+
+DROP TABLE IF EXISTS #subscriptions_2
+SELECT 
+	*
+	,CAST(LEAD(a.ValidFromDate,1) OVER (PARTITION BY a.SubscriptionKey ORDER BY a.ValidFromDate) as date) LeadValidFrom
+INTO #subscriptions_2
+FROM #subscriptions a
 
 
 CREATE CLUSTERED INDEX CLIX ON #subscriptions (SubscriptionKey, ValidFromDate)
@@ -41,7 +48,7 @@ TRUNCATE TABLE [stage].[Dim_Subscription]
 	SELECT 
 		*
 		,LAG(ID,1) OVER (PARTITION BY SubscriptionKey ORDER BY ValidFromDate) PreviousID
-	FROM #subscriptions
+	FROM #subscriptions_2
 	WHERE ValidFromDate <> ISNULL(LeadValidFrom,'1900-01-01')
 
 )
