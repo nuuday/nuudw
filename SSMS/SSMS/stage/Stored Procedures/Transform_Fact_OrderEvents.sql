@@ -696,15 +696,16 @@ WHERE 1=1
 -- Get all active lines
 DROP TABLE IF EXISTS #active_lines
 SELECT al.* 
-	, LAG( ProductType ) OVER (PARTITION BY al.SubscriptionKey, IsTLO ORDER BY active_from_CET) PreviousProductType
-	, LEAD( ProductType ) OVER (PARTITION BY  al.SubscriptionKey, IsTLO ORDER BY active_from_CET) NextProductType
-	, LAG( ProductName ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY active_from_CET) PreviousProductName
-	, LEAD( ProductName ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY active_from_CET) NextProductName
-	, LEAD( ProductWeight ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY active_from_CET) NextProductWeight
-	, LEAD( CalendarKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY active_from_CET) NextDate
-	, LEAD( TimeKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY active_from_CET) NextTime
-	, LEAD( CalendarKey ) OVER (PARTITION BY al.SubscriptionKey, IsTLO ORDER BY active_from_CET) NextDateTLO
-	, LEAD( TimeKey ) OVER (PARTITION BY al.SubscriptionKey, IsTLO ORDER BY active_from_CET) NextTimeTLO
+	, LAG( al.ProductType ) OVER (PARTITION BY al.SubscriptionKey, al.IsTLO ORDER BY al.active_from_CET) PreviousProductType
+	, LEAD( al.ProductType ) OVER (PARTITION BY al.SubscriptionKey, al.IsTLO ORDER BY al.active_from_CET) NextProductType
+	, LAG( al.ProductName ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) PreviousProductName
+	, LEAD( al.ProductName ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) NextProductName
+	, LEAD( al.active_from_CET ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) Next_active_from_CET
+	, LEAD( al.ProductKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) NextProductKey
+	, LEAD( al.CalendarKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) NextDate
+	, LEAD( al.TimeKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) NextTime
+	, LEAD( al.CalendarKey ) OVER (PARTITION BY al.SubscriptionKey, al.IsTLO ORDER BY al.active_from_CET) NextDateTLO
+	, LEAD( al.TimeKey ) OVER (PARTITION BY al.SubscriptionKey, al.IsTLO ORDER BY al.active_from_CET) NextTimeTLO
 INTO #active_lines
 FROM #all_lines_filtered_2 al
 WHERE al.CurrentState = 'ACTIVE'
@@ -753,6 +754,50 @@ CROSS APPLY (
 WHERE s.active_from_cet = f.FirstActivatedDate
 
 
+
+DROP TABLE IF EXISTS #migration_lines_with_prices
+SELECT 
+	new.*,
+	old.*,
+	s.*
+INTO #migration_lines_with_prices
+FROM #active_lines s
+OUTER APPLY (
+	SELECT 
+		MAX(CASE WHEN ps.name = 'Monthly Fee' THEN pci.amount ELSE null END) OldMonthlyFee,
+		MAX(CASE WHEN ps.name = 'Activation Fee' THEN pci.amount ELSE null END) OldActivationFee
+	FROM sourceNuudlNetCrackerView.pimnrmlproductofferingpricechargekey_History pck
+	INNER JOIN sourceNuudlNetCrackerView.pimnrmlproductofferingpricechargeitem_History pci
+		ON pci.price_key_id = pck.id
+			AND s.Next_active_from_CET >= pci.applied_from
+			AND s.Next_active_from_CET < ISNULL( pci.applied_to, '9999-12-31' )
+	JOIN sourceNuudlNetCrackerView.pimnrmlprodofferingpricespecification_History ps
+		ON ps.id = pck.prod_offering_price_spec_id
+	WHERE pck.prod_offering_id = s.ProductKey
+		AND s.Next_active_from_CET >= pck.available_from_CET
+		AND s.Next_active_from_CET < ISNULL( pck.available_to_CET, '9999-12-31' )
+		AND ps.name IN ('Monthly Fee', 'Activation Fee')		
+) old
+OUTER APPLY (
+	SELECT 
+		MAX(CASE WHEN ps.name = 'Monthly Fee' THEN pci.amount ELSE null END) NewMonthlyFee,
+		MAX(CASE WHEN ps.name = 'Activation Fee' THEN pci.amount ELSE null END) NewActivationFee
+	FROM sourceNuudlNetCrackerView.pimnrmlproductofferingpricechargekey_History pck
+	INNER JOIN sourceNuudlNetCrackerView.pimnrmlproductofferingpricechargeitem_History pci
+		ON pci.price_key_id = pck.id
+			AND s.Next_active_from_CET >= pci.applied_from
+			AND s.Next_active_from_CET < ISNULL( pci.applied_to, '9999-12-31' )
+	JOIN sourceNuudlNetCrackerView.pimnrmlprodofferingpricespecification_History ps
+		ON ps.id = pck.prod_offering_price_spec_id
+	WHERE pck.prod_offering_id = s.NextProductKey
+		AND s.Next_active_from_CET >= pck.available_from_CET
+		AND s.Next_active_from_CET < ISNULL( pck.available_to_CET, '9999-12-31' )
+		AND ps.name IN ('Monthly Fee', 'Activation Fee')		
+) new
+WHERE s.NextProductName <> s.ProductName
+--	AND s.subscriptionkey = '0edb89b6-2ffa-4884-8fd6-d6e49d3dd837'
+
+
 -- Create Migration From lines
 DROP TABLE IF EXISTS #migration_lines
 SELECT 
@@ -781,18 +826,19 @@ SELECT
 	s.IsTLO,
 	s.active_from_CET
 INTO #migration_lines
-FROM #active_lines s
+FROM #migration_lines_with_prices s
 CROSS APPLY (
 	SELECT *
 	FROM dim.OrderEvent 
 	WHERE OrderEventName = 
 		CASE	
-			WHEN s.NextProductWeight > s.ProductWeight THEN 'Migration From Upgrade'
-			WHEN s.NextProductWeight < s.ProductWeight THEN 'Migration From Downgrade'
+			WHEN s.NewMonthlyFee > s.OldMonthlyFee THEN 'Migration From Upgrade'
+			WHEN s.NewMonthlyFee < s.OldMonthlyFee THEN 'Migration From Downgrade'
 			ELSE 'Migration From'
 		END
 ) e
-WHERE NextProductName <> ProductName
+WHERE 1=1
+--	AND IsTLO = 1
 --	AND SubscriptionKey = 'b5f00442-6c45-4c82-93fe-b5394ee207ee'
 
 -- Create Migration To lines
