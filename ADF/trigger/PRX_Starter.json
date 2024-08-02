@@ -1,0 +1,17 @@
+{
+	"name": "PRX_Starter",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-08-01T06:30:00",
+				"timeZone": "Romance Standard Time"
+			}
+		}
+	}
+}
