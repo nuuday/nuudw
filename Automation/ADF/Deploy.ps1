@@ -139,6 +139,7 @@ $TriggerReplacementsArray = ($TriggerReplacements | ConvertFrom-Json)
 # Triggers
 ################################################################################################################
 
+<#
 # Get deployed linked services and validate with branch
 WriteHeader "Disabling triggers for the time of release"
 
@@ -148,7 +149,7 @@ foreach ( $trigger in $triggers ) {
     Stop-AzDataFactoryV2Trigger -ResourceGroupName $ResourceGroupName -DataFactoryName $DataFactoryName -Name $trigger.Name -Force | Out-Null
     Write-host " Disabled" -foregroundcolor Green
 }
-
+#>
 
 
 ################################################################################################################
@@ -421,6 +422,7 @@ foreach ($branchPipeline in $branchPipelines | Sort-Object SortOrder)
 ################################################################################################################
 # Triggers
 ################################################################################################################
+<#
 WriteHeader "Validating triggers from branch"
 
 foreach ( $branchTrigger in $branchTriggers ) {
@@ -444,6 +446,7 @@ foreach ( $branchTrigger in $branchTriggers ) {
         Write-host " Redeployed" -foregroundcolor Green
     }
 }
+#>
 
 ################################################################################################################
 # Cleanup
@@ -530,6 +533,7 @@ foreach ( $linkedService in $linkedServices )
     }
 }
 
+<#
 #Reenable triggers
 WriteHeader "Reenable triggers"
 $triggers = Get-AzDataFactoryV2Trigger -ResourceGroupName $ResourceGroupName -DataFactoryName $DataFactoryName | Where-Object { $disabledPersistentTriggers.Name -notContains "$($_.Name)" }
@@ -550,3 +554,4 @@ foreach ( $trigger in $triggers ) {
         Write-Host "`t'$($trigger.Name)' has no pipeline references defined - Skiped"
     }
 }
+#>
