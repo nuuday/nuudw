@@ -98,9 +98,6 @@
 					},
 					"datalake01ingestion_properties_typeProperties_url": {
 						"value": "[parameters('datalake01ingestion_properties_typeProperties_url')]"
-					},
-					"datalake01ingestionNetcracker_interim_properties_typeProperties_url": {
-						"value": "[parameters('datalake01ingestionNetcracker_interim_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -119,6 +116,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"datalake01ingestionNetcracker_interim_properties_typeProperties_url": {
+						"value": "[parameters('datalake01ingestionNetcracker_interim_properties_typeProperties_url')]"
 					},
 					"datalakest01exploration_properties_typeProperties_url": {
 						"value": "[parameters('datalakest01exploration_properties_typeProperties_url')]"
@@ -353,6 +353,46 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'nuudw-adf01-dev_ArmTemplate_11')]"
+			]
+		},
+		{
+			"name": "nuudw-adf01-dev_ArmTemplate_13",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_13.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'nuudw-adf01-dev_ArmTemplate_12')]"
+			]
+		},
+		{
+			"name": "nuudw-adf01-dev_ArmTemplate_14",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_14.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'nuudw-adf01-dev_ArmTemplate_13')]"
 			]
 		}
 	]

@@ -13,660 +13,735 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/EXT_0_Nuudl_NetCracker')]",
+			"name": "[concat(parameters('factoryName'), '/ExtractInformationSchema_datalake01ingestionNetcracker_interim')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "cimcontactmedium",
-						"type": "ExecutePipeline",
+						"name": "SP Maintain Extract Create Schemas",
+						"type": "SqlServerStoredProcedure",
 						"dependsOn": [],
 						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
 							"secureInput": false
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_cimcontactmedium",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
+							"storedProcedureName": "[[meta].[MaintainExtractCreateSchemas]",
+							"storedProcedureParameters": {
+								"ExtractSchemaName": {
+									"value": "sourceDataLakeNetcracker_interim",
+									"type": "String"
 								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
+								"PrintSQL": {
+									"value": "false",
+									"type": "Boolean"
 								}
 							}
+						},
+						"linkedServiceName": {
+							"referenceName": "nuudwsqldb01",
+							"type": "LinkedServiceReference"
 						}
 					},
 					{
-						"name": "cimcontactmediumassociation",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
+						"name": "LKP Objects",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "SP Maintain Extract Create Schemas",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
 							"secureInput": false
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_cimcontactmediumassociation",
-								"type": "PipelineReference"
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT \n\tSourceObjectID\n        ,ConnectionType\n\t,FileExtension\n\t,FileSystem AS FileSystemName\n\t,FileName\n\t,concat(FileName,'.',FileExtension) AS FullFileName\n\t,Folder\n\t,TargetDestinationFlag\n\t,FileSpecification\n\t,RowSeparator\n\t,ColumnDelimiter\n\t,TextQualifier\n\t,IsHeaderPresent\n\t,Encoding\n\t,LoopFile\n  FROM [meta].[SourceObjectDefinitions]\n  WHERE ConnectionName = 'datalake01ingestionNetcracker_interim'",
+								"partitionOption": "None"
 							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
+							"dataset": {
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "meta.SourceObjectDefinitions"
 								}
-							}
+							},
+							"firstRowOnly": false
 						}
 					},
 					{
-						"name": "cimcustomer",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
+						"name": "ForEach Object",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "LKP Objects",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_cimcustomer",
-								"type": "PipelineReference"
+							"items": {
+								"value": "@activity('LKP Objects').output.value",
+								"type": "Expression"
 							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "If Parquet",
+									"type": "IfCondition",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(\ntoLower(item().FileExtension),'parquet'\n)",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "GetMetadata Parquet",
+												"type": "GetMetadata",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"dataset": {
+														"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+														"type": "DatasetReference",
+														"parameters": {
+															"FileSystemName": {
+																"value": "@item().FileSystemName",
+																"type": "Expression"
+															},
+															"FolderName": {
+																"value": "@item().Folder",
+																"type": "Expression"
+															},
+															"FileName": {
+																"value": "@item().FullFileName",
+																"type": "Expression"
+															}
+														}
+													},
+													"fieldList": [
+														"itemName",
+														"structure",
+														"columnCount"
+													],
+													"storeSettings": {
+														"type": "AzureBlobFSReadSettings",
+														"recursive": true
+													}
+												}
+											},
+											{
+												"name": "Maintain Extract Information Schema Parquet",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "GetMetadata Parquet",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[meta].[MaintainExtractInformationSchemaFromJsonMeta]",
+													"storedProcedureParameters": {
+														"JsonOutput": {
+															"value": {
+																"value": "@string(activity('GetMetadata Parquet').output)",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"SourceObjectID": {
+															"value": {
+																"value": "@item().SourceObjectID",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "nuudwsqldb01",
+													"type": "LinkedServiceReference"
+												}
+											},
+											{
+												"name": "SP Maintain Extract Parquet",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Maintain Extract Information Schema Parquet",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[meta].[MaintainExtract]",
+													"storedProcedureParameters": {
+														"SourceObjectID": {
+															"value": {
+																"value": "@{item().SourceObjectID}",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"DropTable": {
+															"value": "true",
+															"type": "Boolean"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "nuudwsqldb01",
+													"type": "LinkedServiceReference"
+												}
+											}
+										]
+									}
 								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
+								{
+									"name": "If Avro",
+									"type": "IfCondition",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(\ntoLower(item().FileExtension),'avro'\n)",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "GetMetadata Avro",
+												"type": "GetMetadata",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"dataset": {
+														"referenceName": "datalake01ingestionNetcracker_interim_Avro_DynamicDataset",
+														"type": "DatasetReference",
+														"parameters": {
+															"FileSystemName": {
+																"value": "@item().FileSystemName",
+																"type": "Expression"
+															},
+															"FolderName": {
+																"value": "@item().Folder",
+																"type": "Expression"
+															},
+															"FileName": {
+																"value": "@item().FullFileName",
+																"type": "Expression"
+															}
+														}
+													},
+													"fieldList": [
+														"itemName",
+														"structure",
+														"columnCount"
+													],
+													"storeSettings": {
+														"type": "AzureBlobFSReadSettings",
+														"recursive": true
+													}
+												}
+											},
+											{
+												"name": "Maintain Extract Information Schema Avro",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "GetMetadata Avro",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[meta].[MaintainExtractInformationSchemaFromJsonMeta]",
+													"storedProcedureParameters": {
+														"JsonOutput": {
+															"value": {
+																"value": "@string(activity('GetMetadata Avro').output)",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"SourceObjectID": {
+															"value": {
+																"value": "@item().SourceObjectID",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "nuudwsqldb01",
+													"type": "LinkedServiceReference"
+												}
+											},
+											{
+												"name": "SP Maintain Extract Avro",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Maintain Extract Information Schema Avro",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[meta].[MaintainExtract]",
+													"storedProcedureParameters": {
+														"SourceObjectID": {
+															"value": {
+																"value": "@{item().SourceObjectID}",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"DropTable": {
+															"value": "true",
+															"type": "Boolean"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "nuudwsqldb01",
+													"type": "LinkedServiceReference"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "If Orc",
+									"type": "IfCondition",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(\ntoLower(item().FileExtension),'orc'\n)",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "GetMetadata Orc",
+												"type": "GetMetadata",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"dataset": {
+														"referenceName": "datalake01ingestionNetcracker_interim_Orc_DynamicDataset",
+														"type": "DatasetReference",
+														"parameters": {
+															"FileSystemName": {
+																"value": "@item().FileSystemName",
+																"type": "Expression"
+															},
+															"FolderName": {
+																"value": "@item().Folder",
+																"type": "Expression"
+															},
+															"FileName": {
+																"value": "@item().FullFileName",
+																"type": "Expression"
+															}
+														}
+													},
+													"fieldList": [
+														"itemName",
+														"structure",
+														"columnCount"
+													],
+													"storeSettings": {
+														"type": "AzureBlobFSReadSettings",
+														"recursive": true
+													}
+												}
+											},
+											{
+												"name": "Maintain Extract Information Schema Orc",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "GetMetadata Orc",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[meta].[MaintainExtractInformationSchemaFromJsonMeta]",
+													"storedProcedureParameters": {
+														"JsonOutput": {
+															"value": {
+																"value": "@string(activity('GetMetadata Orc').output)",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"SourceObjectID": {
+															"value": {
+																"value": "@item().SourceObjectID",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "nuudwsqldb01",
+													"type": "LinkedServiceReference"
+												}
+											},
+											{
+												"name": "SP Maintain Extract Orc",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Maintain Extract Information Schema Orc",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[meta].[MaintainExtract]",
+													"storedProcedureParameters": {
+														"SourceObjectID": {
+															"value": {
+																"value": "@{item().SourceObjectID}",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"DropTable": {
+															"value": "true",
+															"type": "Boolean"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "nuudwsqldb01",
+													"type": "LinkedServiceReference"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "If Delimited Text",
+									"type": "IfCondition",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(\ntoLower(item().FileExtension),'csv'\n)",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "GetMetadata DelimitedText",
+												"type": "GetMetadata",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"dataset": {
+														"referenceName": "datalake01ingestionNetcracker_interim_DelimitedText_DynamicDataset",
+														"type": "DatasetReference",
+														"parameters": {
+															"FileSystemName": {
+																"value": "@item().FileSystemName",
+																"type": "Expression"
+															},
+															"FolderName": {
+																"value": "@item().Folder",
+																"type": "Expression"
+															},
+															"FileName": {
+																"value": "@item().FullFileName",
+																"type": "Expression"
+															},
+															"ColumnDelimiter": {
+																"value": "@item().ColumnDelimiter",
+																"type": "Expression"
+															},
+															"TextQualifier": {
+																"value": "@item().TextQualifier",
+																"type": "Expression"
+															},
+															"IsHeaderPresent": {
+																"value": "@item().IsHeaderPresent",
+																"type": "Expression"
+															},
+															"Encoding": {
+																"value": "@item().Encoding",
+																"type": "Expression"
+															}
+														}
+													},
+													"fieldList": [
+														"itemName",
+														"structure",
+														"columnCount"
+													],
+													"storeSettings": {
+														"type": "AzureBlobFSReadSettings",
+														"recursive": true
+													}
+												}
+											},
+											{
+												"name": "Maintain Extract Information Schema DelimitedText",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "GetMetadata DelimitedText",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[meta].[MaintainExtractInformationSchemaFromJsonMeta]",
+													"storedProcedureParameters": {
+														"JsonOutput": {
+															"value": {
+																"value": "@string(activity('GetMetadata DelimitedText').output)",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"SourceObjectID": {
+															"value": {
+																"value": "@item().SourceObjectID",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "nuudwsqldb01",
+													"type": "LinkedServiceReference"
+												}
+											},
+											{
+												"name": "SP Maintain Extract DelimitedText",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Maintain Extract Information Schema DelimitedText",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[meta].[MaintainExtract]",
+													"storedProcedureParameters": {
+														"SourceObjectID": {
+															"value": {
+																"value": "@{item().SourceObjectID}",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"DropTable": {
+															"value": "true",
+															"type": "Boolean"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "nuudwsqldb01",
+													"type": "LinkedServiceReference"
+												}
+											}
+										]
+									}
 								}
-							}
+							]
 						}
-					},
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "6.Meta"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_acchasonetimecharge')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
 					{
-						"name": "cimpartyrole",
-						"type": "ExecutePipeline",
+						"name": "Copy_acchasonetimecharge",
+						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
-							"secureInput": false
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_cimpartyrole",
-								"type": "PipelineReference"
+							"source": {
+								"type": "ParquetSource"
 							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
 									"value": "@pipeline().parameters.WriteBatchSize",
 									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "cimpartyroleassociation",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[acchasonetimecharge]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
 						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_cimpartyroleassociation",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/interim-nrm-acchasonetimecharge/",
+									"FileName": "interim-nrm-acchasonetimecharge-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
 								}
 							}
-						}
-					},
-					{
-						"name": "cpmnrmltroubleticket",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_cpmnrmltroubleticket",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.acchasonetimecharge"
 								}
 							}
-						}
-					},
-					{
-						"name": "cpmnrmltroubleticketrelatedentityref",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_cpmnrmltroubleticketrelatedentityref",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ibseligibilityparameters",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_ibseligibilityparameters",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ibsitemshistory",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_ibsitemshistory",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ibsnrmlcharacteristic",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_ibsnrmlcharacteristic",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ibsnrmlproductinstance",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_ibsnrmlproductinstance",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "nrmaccountkeyname",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_nrmaccountkeyname",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "nrmcusthasproductkeyname",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_nrmcusthasproductkeyname",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "nrmcustproductdetails",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_nrmcustproductdetails",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "orgchartteammember",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_orgchartteammember",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "pimnrmlcustomercategory",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlcustomercategory",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "pimnrmldistributionchannel",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmldistributionchannel",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "pimnrmlprodcatprodoffering",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlprodcatprodoffering",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "pimnrmlproductcatalog",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductcatalog",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "pimnrmlproductfamily",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductfamily",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "pimnrmlproductoffering",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductoffering",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "qssnrmlquote",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_qssnrmlquote",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "qssnrmlquoteitem",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_qssnrmlquoteitem",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "riphonenumber",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_riphonenumber",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "worklogitems",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Nuudl_NetCracker_worklogitems",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
+						]
 					}
 				],
 				"policy": {
@@ -683,1102 +758,1379 @@
 					}
 				},
 				"folder": {
-					"name": "0.1_Extracts"
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
 				},
 				"annotations": []
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/FAM_1_DIM')]",
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_adjustment')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "FAM_ChipperIncident",
-						"type": "ExecutePipeline",
+						"name": "Copy_adjustment",
+						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
-							"secureInput": false
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_FAM_ChipperIncident",
-								"type": "PipelineReference"
+							"source": {
+								"type": "ParquetSource"
 							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "FAM_ChipperStaus",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[adjustment]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
 						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_FAM_ChipperStatus",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "FAM_Infrastructure",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_FAM_Infrastructure",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "FAM_OpenIncidentsGroup",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_FAM_OpenIncidentsGroup",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "FAM_SalesChannel",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_FAM_SalesChannel",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "FAM_Technology",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_FAM_Technology",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/interim-nrm-adjustment/",
+									"FileName": "interim-nrm-adjustment-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.adjustment"
+								}
+							}
+						]
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
 				"folder": {
-					"name": "0.0 Solutions/FAM_FaultManagement"
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
 				},
 				"annotations": []
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/FAM_2_FACT')]",
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_billproductcharge')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "ChipperIncidents",
-						"type": "ExecutePipeline",
+						"name": "Copy_billproductcharge",
+						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
-							"secureInput": false
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_0_ChipperIncidents",
-								"type": "PipelineReference"
+							"source": {
+								"type": "ParquetSource"
 							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ChipperIncidentEvents",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[billproductcharge]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
 						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_0_ChipperIncidentEvents",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "BRIDGE_0_UserAccess",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "BRIDGE_0_UserAccess",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "FACT_0_ActiveCustomers",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_0_ActiveCustomers",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/interim-nrm-billproductcharge/",
+									"FileName": "interim-nrm-billproductcharge-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.billproductcharge"
+								}
+							}
+						]
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
 				"folder": {
-					"name": "0.0 Solutions/FAM_FaultManagement"
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
 				},
 				"annotations": []
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/PRX_2_FACT')]",
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_contact_medium')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "PRX_ProductTransactions",
-						"type": "ExecutePipeline",
+						"name": "Copy_contact_medium",
+						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
-							"secureInput": false
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_0_ProductTransactions",
-								"type": "PipelineReference"
+							"source": {
+								"type": "ParquetSource"
 							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "FACT_0_OrderEvents",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[contact_medium]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
 						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_0_OrderEvents",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/interim-cim-contact_medium/",
+									"FileName": "interim-cim-contact_medium-20230330T124711Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.contact_medium"
+								}
+							}
+						]
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
 				"folder": {
-					"name": "0.0 Solutions/PRX_Product_Explorer"
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
 				},
 				"annotations": []
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/FAM_0_Master')]",
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_contact_medium_association')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "FAM_1_DIM",
-						"type": "ExecutePipeline",
+						"name": "Copy_contact_medium_association",
+						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
-							"secureInput": false
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FAM_1_DIM",
-								"type": "PipelineReference"
+							"source": {
+								"type": "ParquetSource"
 							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "FAM_2_FACT",
-						"type": "ExecutePipeline",
-						"dependsOn": [
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[contact_medium_association]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
 							{
-								"activity": "FAM_1_DIM",
-								"dependencyConditions": [
-									"Succeeded"
-								]
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/interim-cim-contact_medium_association/",
+									"FileName": "interim-cim-contact_medium_association-20230330T124711Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
 							}
 						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FAM_2_FACT",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "FAM_3_AS",
-						"type": "ExecutePipeline",
-						"dependsOn": [
+						"outputs": [
 							{
-								"activity": "FAM_2_FACT",
-								"dependencyConditions": [
-									"Succeeded"
-								]
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.contact_medium_association"
+								}
 							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FAM_3_AS",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
+						]
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
 				"folder": {
-					"name": "0.0 Solutions/FAM_FaultManagement"
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/FAM_1_DIM')]",
-				"[concat(variables('factoryId'), '/pipelines/FAM_2_FACT')]"
-			]
+			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/PRX_0_Master')]",
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_custhasproduct')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "PRX_2_FACT",
-						"type": "ExecutePipeline",
+						"name": "Copy_custhasproduct",
+						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
-							"secureInput": false
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "PRX_2_FACT",
-								"type": "PipelineReference"
+							"source": {
+								"type": "ParquetSource"
 							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[custhasproduct]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/interim-nrm-custhasproduct/",
+									"FileName": "interim-nrm-custhasproduct-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.custhasproduct"
+								}
+							}
+						]
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
 				"folder": {
-					"name": "0.0 Solutions/PRX_Product_Explorer"
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/PRX_2_FACT')]"
-			]
+			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/FAM_MAN_Master')]",
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_custhasproduct_key_name')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "FAM_0_Master",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "DIM_0_Legacy_Customer",
-								"dependencyConditions": [
-									"Succeeded"
-								]
+						"name": "Copy_custhasproduct_key_name",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource"
 							},
-							{
-								"activity": "DIM_0_Legacy_Employee",
-								"dependencyConditions": [
-									"Succeeded"
-								]
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[custhasproduct_key_name]"
 							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
 							{
-								"activity": "DIM_0_Legacy_Product",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "EXT_0_Cubus31_PCTI",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "EXT_0_NuuData_Chipper",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "EXT_0_NuuDL_Columbus",
-								"dependencyConditions": [
-									"Succeeded"
-								]
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/interim-nrm-custhasproduct_key_name/",
+									"FileName": "interim-nrm-custhasproduct_key_name-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
 							}
 						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FAM_0_Master",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_Legacy_Customer",
-						"type": "ExecutePipeline",
-						"dependsOn": [
+						"outputs": [
 							{
-								"activity": "EXT_0_NuuDL_Linkit",
-								"dependencyConditions": [
-									"Succeeded"
-								]
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.custhasproduct_key_name"
+								}
 							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_Legacy_Customer",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_Legacy_Employee",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "EXT_0_Cubus_MasterData",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_Legacy_Employee",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_Legacy_Product",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "EXT_0_NuuDL_BIZ",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_Legacy_Product",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "EXT_0_Cubus31_PCTI",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_0_Cubus31_PCTI",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "EXT_0_Cubus_MasterData",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_0_Cubus_MasterData",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "EXT_0_NuuData_Chipper",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_0_NuuData_Chipper",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "EXT_0_NuuDL_BIZ",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_0_NuuDL_BIZ",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "EXT_0_NuuDL_Columbus",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_0_NuuDL_Columbus",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "EXT_0_NuuDL_Linkit",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_0_NuuDL_Linkit",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
+						]
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
 				"folder": {
-					"name": "0.0 Solutions/FAM_FaultManagement"
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/FAM_0_Master')]"
-			]
+			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/PRX_MAN_Master')]",
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_customer')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "DIM_0_BillingAccount",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "EXT_0_Nuudl_NetCracker",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_BillingAccount",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_Address",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "EXT_0_Nuudl_NetCracker",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "EXT_0_NuuDL_NAM",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_Address",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_Customer",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "EXT_0_Nuudl_NetCracker",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_Customer",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_HouseHold",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "EXT_0_Nuudl_NetCracker",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_HouseHold",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_PhoneDetail",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "EXT_0_Nuudl_NetCracker",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_PhoneDetail",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_OrderEvent",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "EXT_0_Nuudl_NetCracker",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_OrderEvent",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_Product",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "EXT_0_Nuudl_NetCracker",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_Product",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_Quote",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "EXT_0_Nuudl_NetCracker",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_Quote",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_SalesChannel",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "EXT_0_Nuudl_NetCracker",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_SalesChannel",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_Subscription",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "EXT_0_Nuudl_NetCracker",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_Subscription",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "PRX_0_Master",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "DIM_0_BillingAccount",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "DIM_0_Address",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "DIM_0_Customer",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "DIM_0_HouseHold",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "DIM_0_PhoneDetail",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "DIM_0_OrderEvent",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "DIM_0_Product",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "DIM_0_Quote",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "DIM_0_SalesChannel",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "DIM_0_Subscription",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "DIM_0_Technology",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "DIM_0_Employee",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "DIM_0_Ticket",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "PRX_0_Master",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "EXT_0_Nuudl_NetCracker",
-						"type": "ExecutePipeline",
+						"name": "Copy_customer",
+						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
-							"secureInput": false
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_0_Nuudl_NetCracker",
-								"type": "PipelineReference"
+							"source": {
+								"type": "ParquetSource"
 							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_Technology",
-						"type": "ExecutePipeline",
-						"dependsOn": [
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[customer]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
 							{
-								"activity": "EXT_0_Nuudl_NetCracker",
-								"dependencyConditions": [
-									"Succeeded"
-								]
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/interim-cim-customer/",
+									"FileName": "interim-cim-customer-20230330T124711Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
 							}
 						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_Technology",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_Employee",
-						"type": "ExecutePipeline",
-						"dependsOn": [
+						"outputs": [
 							{
-								"activity": "EXT_0_Nuudl_NetCracker",
-								"dependencyConditions": [
-									"Succeeded"
-								]
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.customer"
+								}
 							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_Employee",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "DIM_0_Ticket",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "EXT_0_Nuudl_NetCracker",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_0_Ticket",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "EXT_0_NuuDL_NAM",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_0_NuuDL_NAM",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
+						]
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
 				"folder": {
-					"name": "0.0 Solutions/PRX_Product_Explorer"
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/PRX_0_Master')]",
-				"[concat(variables('factoryId'), '/pipelines/EXT_0_Nuudl_NetCracker')]"
-			]
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_customer_category')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_customer_category",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource"
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[customer_category]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/poc-customer_category/",
+									"FileName": "poc-customer_category-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.customer_category"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_custproductdetails')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_custproductdetails",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource"
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[custproductdetails]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/interim-nrm-custproductdetails/",
+									"FileName": "interim-nrm-custproductdetails-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.custproductdetails"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_distribution_channel')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_distribution_channel",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource"
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[distribution_channel]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/poc-distribution_channel/",
+									"FileName": "poc-distribution_channel-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.distribution_channel"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_party_role')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_party_role",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource"
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[party_role]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/interim-cim-party_role/",
+									"FileName": "interim-cim-party_role-20230330T124711Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.party_role"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_phone_numbers')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_phone_numbers",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource"
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[phone_numbers]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/interim-ri-phone_numbers/",
+									"FileName": "interim-ri-phone_numbers-20230330T124712Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.phone_numbers"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_prod_cat_to_prod_offering')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_prod_cat_to_prod_offering",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource"
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[prod_cat_to_prod_offering]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/poc-prod_cat_to_prod_offering/",
+									"FileName": "poc-prod_cat_to_prod_offering-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.prod_cat_to_prod_offering"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_prod_catalog_bundled_offer')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_prod_catalog_bundled_offer",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource"
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[prod_catalog_bundled_offer]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/poc-prod_catalog_bundled_offer/",
+									"FileName": "poc-prod_catalog_bundled_offer-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.prod_catalog_bundled_offer"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_product_catalog')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_product_catalog",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource"
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[product_catalog]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/poc-product_catalog/",
+									"FileName": "poc-product_catalog-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.product_catalog"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_product_family')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_product_family",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource"
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[product_family]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/poc-product_family/",
+									"FileName": "poc-product_family-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.product_family"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_product_instance')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_product_instance",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource"
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[product_instance]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/interim-ibs-product_instance/",
+									"FileName": "interim-ibs-product_instance-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.product_instance"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_product_offering-template')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_product_offering-template",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource"
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								},
+								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[product_offering-template]"
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileSystemName": "raw",
+									"FolderName": "netcracker_interim/poc-product_offering-template/",
+									"FileName": "poc-product_offering-template-20230330T124710Z.parquet",
+									"ColumnDelimiter": "\t",
+									"TextQualifier": "\"",
+									"IsHeaderPresent": "False"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "nuudwsqldb01_DynamicDataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "sourceDataLakeNetcracker_interim.product_offering-template"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
 		}
 	]
 }

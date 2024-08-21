@@ -34,10 +34,6 @@
 		"datalake01ingestion_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://datalakest01ingestiondev.dfs.core.windows.net"
-		},
-		"datalake01ingestionNetcracker_interim_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://datalakest01ingestiondev.dfs.core.windows.net"
 		}
 	},
 	"variables": {
@@ -1067,6 +1063,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Nuudl_Dawn')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricksDeltaLake",
+				"typeProperties": {
+					"domain": "https://adb-2929753254893719.19.azuredatabricks.net",
+					"clusterId": "0905-134532-2jn7av69",
+					"accessToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "KeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "databrickstoken"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/KeyVault')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Nuudl_NetCracker')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -1099,29 +1119,6 @@
 				"type": "AzureBlobFS",
 				"typeProperties": {
 					"url": "[parameters('datalake01ingestion_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "KeyVault",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "Variable-AccountKey-DataLake01Ingestion"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/KeyVault')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/datalake01ingestionNetcracker_interim')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('datalake01ingestionNetcracker_interim_properties_typeProperties_url')]",
 					"accountKey": {
 						"type": "AzureKeyVaultSecret",
 						"store": {

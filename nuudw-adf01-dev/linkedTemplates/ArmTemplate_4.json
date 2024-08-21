@@ -13,6 +13,347 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/FACT_1_ActiveCustomers_Load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load_ActiveCustomers",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[nuuMeta].[LoadFact]",
+							"storedProcedureParameters": {
+								"StageTable": {
+									"value": "Fact_ActiveCustomers",
+									"type": "String"
+								},
+								"DWTable": {
+									"value": "ActiveCustomers",
+									"type": "String"
+								},
+								"DWSchema": {
+									"value": "fact",
+									"type": "String"
+								},
+								"LoadPattern": {
+									"value": "FactAdd",
+									"type": "String"
+								},
+								"IncrementalFlag": {
+									"value": {
+										"value": "@pipeline().parameters.JobIsIncremental",
+										"type": "Expression"
+									},
+									"type": "Boolean"
+								},
+								"CleanUpPartitionsFlag": {
+									"value": {
+										"value": "@pipeline().parameters.CleanUpPartitions",
+										"type": "Expression"
+									},
+									"type": "Boolean"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "nuudwsqldb01",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": true
+					},
+					"CleanUpPartitions": {
+						"type": "Bool",
+						"defaultValue": false
+					}
+				},
+				"folder": {
+					"name": "0.4_Facts"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FACT_1_ActiveCustomers_Transform')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "TRF_Fact_ActiveCustomers",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "stage.Transform_Fact_ActiveCustomers",
+							"storedProcedureParameters": {
+								"JobIsIncremental": {
+									"value": {
+										"value": "@pipeline().parameters.JobIsIncremental",
+										"type": "Expression"
+									},
+									"type": "Boolean"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "nuudwsqldb01",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": true
+					}
+				},
+				"folder": {
+					"name": "0.4_Facts"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FACT_1_ChipperIncidentEvents_Load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load_ChipperIncidentEvents",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[nuuMeta].[LoadFact]",
+							"storedProcedureParameters": {
+								"StageTable": {
+									"value": "Fact_ChipperIncidentEvents",
+									"type": "String"
+								},
+								"DWTable": {
+									"value": "ChipperIncidentEvents",
+									"type": "String"
+								},
+								"DWSchema": {
+									"value": "fact",
+									"type": "String"
+								},
+								"LoadPattern": {
+									"value": "FactFull",
+									"type": "String"
+								},
+								"IncrementalFlag": {
+									"value": {
+										"value": "@pipeline().parameters.JobIsIncremental",
+										"type": "Expression"
+									},
+									"type": "Boolean"
+								},
+								"CleanUpPartitionsFlag": {
+									"value": {
+										"value": "@pipeline().parameters.CleanUpPartitions",
+										"type": "Expression"
+									},
+									"type": "Boolean"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "nuudwsqldb01",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": true
+					},
+					"CleanUpPartitions": {
+						"type": "Bool",
+						"defaultValue": false
+					}
+				},
+				"folder": {
+					"name": "0.4_Facts"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FACT_1_ChipperIncidentEvents_Transform')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "TRF_Fact_ChipperIncidentEvents",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "stage.Transform_Fact_ChipperIncidentEvents",
+							"storedProcedureParameters": {
+								"JobIsIncremental": {
+									"value": {
+										"value": "@pipeline().parameters.JobIsIncremental",
+										"type": "Expression"
+									},
+									"type": "Boolean"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "nuudwsqldb01",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": true
+					}
+				},
+				"folder": {
+					"name": "0.4_Facts"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FACT_1_ChipperIncidents_Load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load_ChipperIncidents",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[nuuMeta].[LoadFact]",
+							"storedProcedureParameters": {
+								"StageTable": {
+									"value": "Fact_ChipperIncidents",
+									"type": "String"
+								},
+								"DWTable": {
+									"value": "ChipperIncidents",
+									"type": "String"
+								},
+								"DWSchema": {
+									"value": "fact",
+									"type": "String"
+								},
+								"LoadPattern": {
+									"value": "FactFull",
+									"type": "String"
+								},
+								"IncrementalFlag": {
+									"value": {
+										"value": "@pipeline().parameters.JobIsIncremental",
+										"type": "Expression"
+									},
+									"type": "Boolean"
+								},
+								"CleanUpPartitionsFlag": {
+									"value": {
+										"value": "@pipeline().parameters.CleanUpPartitions",
+										"type": "Expression"
+									},
+									"type": "Boolean"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "nuudwsqldb01",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": true
+					},
+					"CleanUpPartitions": {
+						"type": "Bool",
+						"defaultValue": false
+					}
+				},
+				"folder": {
+					"name": "0.4_Facts"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/FACT_1_ChipperIncidents_Transform')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -163,6 +504,137 @@
 						"userProperties": [],
 						"typeProperties": {
 							"storedProcedureName": "stage.Transform_Fact_OrderEvents",
+							"storedProcedureParameters": {
+								"JobIsIncremental": {
+									"value": {
+										"value": "@pipeline().parameters.JobIsIncremental",
+										"type": "Expression"
+									},
+									"type": "Boolean"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "nuudwsqldb01",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": true
+					}
+				},
+				"folder": {
+					"name": "0.4_Facts"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FACT_1_ProductPrices_Load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load_ProductPrices",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[nuuMeta].[LoadFact]",
+							"storedProcedureParameters": {
+								"StageTable": {
+									"value": "Fact_ProductPrices",
+									"type": "String"
+								},
+								"DWTable": {
+									"value": "ProductPrices",
+									"type": "String"
+								},
+								"DWSchema": {
+									"value": "fact",
+									"type": "String"
+								},
+								"LoadPattern": {
+									"value": "FactFull",
+									"type": "String"
+								},
+								"IncrementalFlag": {
+									"value": {
+										"value": "@pipeline().parameters.JobIsIncremental",
+										"type": "Expression"
+									},
+									"type": "Boolean"
+								},
+								"CleanUpPartitionsFlag": {
+									"value": {
+										"value": "@pipeline().parameters.CleanUpPartitions",
+										"type": "Expression"
+									},
+									"type": "Boolean"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "nuudwsqldb01",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": true
+					},
+					"CleanUpPartitions": {
+						"type": "Bool",
+						"defaultValue": false
+					}
+				},
+				"folder": {
+					"name": "0.4_Facts"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FACT_1_ProductPrices_Transform')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "TRF_Fact_ProductPrices",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "stage.Transform_Fact_ProductPrices",
 							"storedProcedureParameters": {
 								"JobIsIncremental": {
 									"value": {
@@ -710,363 +1182,6 @@
 								},
 								"DestinationTable": {
 									"value": "FAM_DatePeriods",
-									"type": "String"
-								},
-								"PrintSQL": {
-									"value": "false",
-									"type": "Boolean"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "nuudwsqldb01",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "0.9_Meta"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MaintainDW_dim_FAM_Infrastructure')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "MaintainDW_dim_FAM_Infrastructure",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[nuuMeta].[MaintainDW]",
-							"storedProcedureParameters": {
-								"DestinationSchema": {
-									"value": "dim",
-									"type": "String"
-								},
-								"DestinationTable": {
-									"value": "FAM_Infrastructure",
-									"type": "String"
-								},
-								"PrintSQL": {
-									"value": "false",
-									"type": "Boolean"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "nuudwsqldb01",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "0.9_Meta"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MaintainDW_dim_FAM_OpenIncidentsGroup')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "MaintainDW_dim_FAM_OpenIncidentsGroup",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[nuuMeta].[MaintainDW]",
-							"storedProcedureParameters": {
-								"DestinationSchema": {
-									"value": "dim",
-									"type": "String"
-								},
-								"DestinationTable": {
-									"value": "FAM_OpenIncidentsGroup",
-									"type": "String"
-								},
-								"PrintSQL": {
-									"value": "false",
-									"type": "Boolean"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "nuudwsqldb01",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "0.9_Meta"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MaintainDW_dim_FAM_SalesChannel')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "MaintainDW_dim_FAM_SalesChannel",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[nuuMeta].[MaintainDW]",
-							"storedProcedureParameters": {
-								"DestinationSchema": {
-									"value": "dim",
-									"type": "String"
-								},
-								"DestinationTable": {
-									"value": "FAM_SalesChannel",
-									"type": "String"
-								},
-								"PrintSQL": {
-									"value": "false",
-									"type": "Boolean"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "nuudwsqldb01",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "0.9_Meta"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MaintainDW_dim_FAM_Technology')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "MaintainDW_dim_FAM_Technology",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[nuuMeta].[MaintainDW]",
-							"storedProcedureParameters": {
-								"DestinationSchema": {
-									"value": "dim",
-									"type": "String"
-								},
-								"DestinationTable": {
-									"value": "FAM_Technology",
-									"type": "String"
-								},
-								"PrintSQL": {
-									"value": "false",
-									"type": "Boolean"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "nuudwsqldb01",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "0.9_Meta"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MaintainDW_dim_HouseHold')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "MaintainDW_dim_HouseHold",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[nuuMeta].[MaintainDW]",
-							"storedProcedureParameters": {
-								"DestinationSchema": {
-									"value": "dim",
-									"type": "String"
-								},
-								"DestinationTable": {
-									"value": "HouseHold",
-									"type": "String"
-								},
-								"PrintSQL": {
-									"value": "false",
-									"type": "Boolean"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "nuudwsqldb01",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "0.9_Meta"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MaintainDW_dim_Legacy_Customer')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "MaintainDW_dim_Legacy_Customer",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[nuuMeta].[MaintainDW]",
-							"storedProcedureParameters": {
-								"DestinationSchema": {
-									"value": "dim",
-									"type": "String"
-								},
-								"DestinationTable": {
-									"value": "Legacy_Customer",
-									"type": "String"
-								},
-								"PrintSQL": {
-									"value": "false",
-									"type": "Boolean"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "nuudwsqldb01",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "0.9_Meta"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MaintainDW_dim_Legacy_Employee')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "MaintainDW_dim_Legacy_Employee",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[nuuMeta].[MaintainDW]",
-							"storedProcedureParameters": {
-								"DestinationSchema": {
-									"value": "dim",
-									"type": "String"
-								},
-								"DestinationTable": {
-									"value": "Legacy_Employee",
 									"type": "String"
 								},
 								"PrintSQL": {
