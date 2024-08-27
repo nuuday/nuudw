@@ -1,9 +1,9 @@
 {
-  "name": "FACT_1_ProdutSubscriptions_Load",
+  "name": "FACT_1_ProductSubscriptions_Load",
   "properties": {
     "activities": [
       {
-        "name": "Load_ProdutSubscriptions",
+        "name": "Load_ProductSubscriptions",
         "type": "SqlServerStoredProcedure",
         "policy": {
           "timeout": "0.12:00:00",
@@ -16,11 +16,11 @@
           "storedProcedureName": "[nuuMeta].[LoadFact]",
           "storedProcedureParameters": {
             "StageTable": {
-              "value": "Fact_ProdutSubscriptions",
+              "value": "Fact_ProductSubscriptions",
               "type": "String"
             },
             "DWTable": {
-              "value": "ProdutSubscriptions",
+              "value": "ProductSubscriptions",
               "type": "String"
             },
             "DWSchema": {

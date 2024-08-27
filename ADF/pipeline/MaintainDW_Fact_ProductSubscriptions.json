@@ -1,9 +1,9 @@
 {
-  "name": "MaintainDW_fact_ProdutSubscriptions",
+  "name": "MaintainDW_fact_ProductSubscriptions",
   "properties": {
     "activities": [
       {
-        "name": "MaintainDW_fact_ProdutSubscriptions",
+        "name": "MaintainDW_fact_ProductSubscriptions",
         "type": "SqlServerStoredProcedure",
         "dependsOn": [],
         "policy": {
@@ -22,7 +22,7 @@
               "type": "String"
             },
             "DestinationTable": {
-              "value": "ProdutSubscriptions",
+              "value": "ProductSubscriptions",
               "type": "String"
             },
             "PrintSQL": {
