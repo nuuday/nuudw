@@ -19,13 +19,13 @@ CREATE PROCEDURE [nuuMeta].[LoadFact]
 AS
 /*
 DECLARE 
-	@StageTable  NVARCHAR(100) = 'Fact_ChipperIncidents', --Input is the dimensions name without schema
+	@StageTable  NVARCHAR(100) = 'Fact_OrderEvents', --Input is the dimensions name without schema
 	@DWSchema NVARCHAR(10) = 'fact',
-	@DWTable  NVARCHAR(100) = 'ChipperIncidents', --Input is the dimensions name without schema
-	@LoadPattern NVARCHAR(50) = 'FactAdd',
+	@DWTable  NVARCHAR(100) = 'OrderEvents', --Input is the dimensions name without schema
+	@LoadPattern NVARCHAR(50) = 'FactFull',
 	@IncrementalFlag BIT = 1,
 	@CleanUpPartitionsFlag BIT = 1,
-	@PrintSQL BIT = 1
+	@PrintSQL BIT = 0
 --*/
 
 SET NOCOUNT ON
@@ -166,7 +166,7 @@ DECLARE @HasTimeKey INT
 
 SELECT
 	   @HasCalendarKey = CASE WHEN (SELECT COUNT(*) FROM #InformationSchema WHERE ColumnName = 'Calendar' + @BusinessKeySuffix) > 0 THEN 1 ELSE 0 END --Check if CalendarKey is present
-	  ,@HasTimeKey = CASE WHEN (SELECT COUNT(*) FROM #InformationSchema WHERE ColumnName = 'TimeHour' + @BusinessKeySuffix) > 0 THEN 1 ELSE 0 END --Check if TimeKey is present
+	  ,@HasTimeKey = CASE WHEN (SELECT COUNT(*) FROM #InformationSchema WHERE ColumnName = 'Time' + @BusinessKeySuffix) > 0 THEN 1 ELSE 0 END --Check if TimeKey is present
 
 
 /**********************************************************************************************************************************************************************
@@ -239,7 +239,8 @@ DECLARE @DatetimeValue NVARCHAR(MAX)
 /* DatetimeValue is set dependent on if there is a timehour key or not. If there is we convert calendarkey and time keys into a datetime. The replicate function makes sure to add a leading 0 if we are at single digit number */
 SET @DatetimeValue =
 	CASE 
-		WHEN @HasTimeKey=1 THEN 'Convert(datetime, STUFF(STUFF(CONCAT(REPLACE([' + @StageTable + '].[CalendarKey], ''-'', ''''),REPLICATE(''0'',2 -LEN(RTRIM([' + @StageTable + '].[TimeHourKey]))) + RTRIM([' + @StageTable + '].[TimeHourKey]),REPLICATE(''0'',2 -LEN(RTRIM([' + @StageTable + '].[TimeMinuteKey]))) + RTRIM([' + @StageTable + '].[TimeMinuteKey])),11,0,'':''),9,0,'' ''))'
+		--WHEN @HasTimeKey=1 THEN 'Convert(datetime, STUFF(STUFF(CONCAT(REPLACE([' + @StageTable + '].[CalendarKey], ''-'', ''''),REPLICATE(''0'',2 -LEN(RTRIM([' + @StageTable + '].[TimeHourKey]))) + RTRIM([' + @StageTable + '].[TimeHourKey]),REPLICATE(''0'',2 -LEN(RTRIM([' + @StageTable + '].[TimeMinuteKey]))) + RTRIM([' + @StageTable + '].[TimeMinuteKey])),11,0,'':''),9,0,'' ''))'
+		WHEN @HasTimeKey=1 THEN 'Convert(datetime2(0), CONCAT([' + @StageTable + '].[CalendarKey], '' '',[TimeKey]))'
 		ELSE 'Convert(date, CONCAT([' + @StageTable + '].[CalendarKey], '' '',''00:00:00''))'
 	END
 	
@@ -435,8 +436,6 @@ SET
 
 ;'
 
-PRINT @ColumnNameIDFact
-PRINT @IDMerge
 
 SET @SQLFullLoad = 'TRUNCATE TABLE [' + @DatabaseNameDW + '].[' + @DWSchema + '].['+ @DWTable + '] 
 

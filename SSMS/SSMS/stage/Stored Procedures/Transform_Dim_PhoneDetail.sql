@@ -3,8 +3,6 @@ CREATE PROCEDURE [stage].[Transform_Dim_PhoneDetail]
 	@JobIsIncremental BIT			
 AS 
 
-TRUNCATE TABLE stage.[Dim_PhoneDetail]
-
 DROP TABLE IF EXISTS #phone_numbers
 SELECT DISTINCT
 	ROW_NUMBER() OVER (ORDER BY NUUDL_ValidFrom) ID,
@@ -19,12 +17,19 @@ SELECT DISTINCT
 	CAST(CAST(NUUDL_ValidTo as date) as datetime2(0)) AS ValidToDate,
 	CAST(LEAD(NUUDL_ValidFrom,1) OVER (PARTITION BY phone_number ORDER BY NUUDL_ValidFrom) as date) LeadValidFrom
 	,NUUDL_ValidFrom
+	,ROW_NUMBER() OVER (PARTITION BY phone_number ORDER BY CAST(NUUDL_ValidFrom as datetime2(0))) rn
 INTO #phone_numbers
 FROM [sourceNuudlDawnView].[phonenumbers_History]
---WHERE phone_number = '4520100000'
+--WHERE phone_number IN (4520609617)
 
+UPDATE #phone_numbers
+SET ValidFromDate = '2000-01-01'
+WHERE rn=1
 
 CREATE CLUSTERED INDEX CLIX ON #phone_numbers (PhoneDetailkey, ValidFromDate)
+
+
+TRUNCATE TABLE stage.[Dim_PhoneDetail]
 
 ;WITH phone_numbers_daily AS (
 

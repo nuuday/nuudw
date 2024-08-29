@@ -15,7 +15,7 @@ SELECT DISTINCT
 	COALESCE(i.item_parentId, i.id) AS SubscriptionKey,
 	i.id AS SubscriptionChildKey,
 	CAST(i.active_from_CET AS Date) AS CalendarKey,
-	LEFT( CONVERT( VARCHAR, i.active_from_CET, 108 ), 8 ) AS TimeKey,
+	LEFT( CONVERT( VARCHAR, CAST(i.active_from_CET AS datetime2(0)), 108 ), 8 ) AS TimeKey,
 	i.item_offeringId AS ProductKey,		
 	CASE
 		WHEN pf.name = 'Mobile Voice Offline' THEN 'Mobile Voice'
@@ -60,7 +60,7 @@ LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] po
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductfamily_History] pf
 	ON pf.id = po.product_family_id
 WHERE 1=1	
-	--AND COALESCE(i.item_parentId, i.id) = '00134bef-1deb-4b67-af32-144d4d3845c8'
+	--AND COALESCE(i.item_parentId, i.id) = '60e05fb6-1194-4531-9f86-7e70ac3d4594'
 
 
 CREATE CLUSTERED INDEX CLIX ON #all_lines (SubscriptionKey, QuoteKey, IsTLO, active_from_CET)	
@@ -326,6 +326,7 @@ FROM (
 
 
 CREATE CLUSTERED INDEX CLIX ON #all_lines_filtered_2 (SubscriptionKey, CurrentState, active_from_CET)
+
 
 -----------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------
@@ -877,11 +878,13 @@ CROSS APPLY (
 ) e
 WHERE s.PreviousProductName <> s.ProductName 
 
+
+
 -- Creating Offer Disconnected lines if the offer is migrated
 DROP TABLE IF EXISTS #disconnect_lines_from_migrations
 SELECT 
 	s.CalendarKey,
-	s.TimeKey,
+	DATEADD(ss, -1, s.TimeKey) TimeKey,
 	s.ProductKey, 
 	s.ProductParentKey,
 	s.ProductHardwareKey,
@@ -920,7 +923,7 @@ WHERE 1=1
 DROP TABLE IF EXISTS #disconnect_lines_from_product_type_change
 SELECT 
 	s.NextDateTLO AS CalendarKey,
-	s.NextTimeTLO AS TimeKey,
+	DATEADD(ss, -1, s.NextTimeTLO) TimeKey,
 	s.ProductKey, 
 	s.ProductParentKey,
 	s.ProductHardwareKey,
