@@ -3,6 +3,8 @@ CREATE PROCEDURE [stage].[Transform_Fact_ProductSubscriptions]
 	@JobIsIncremental BIT			
 AS 
 
+/* Taking a copy of order events that are non-hardware sales */
+
 DROP TABLE IF EXISTS #order_events
 SELECT
 	CONCAT(CONVERT(CHAR(10),f.CalendarKey,120), ' ', f.TimeKey) ActualDate,
@@ -35,6 +37,9 @@ WHERE f.IsTLO = 1
 	AND f.ProductKey <> ISNULL(f.ProductHardwareKey,'')
 --	AND f.SubscriptionKey = '7ef4c36b-62a2-4aab-bd51-59bc0caa485c'
 
+
+/* Setting RGU activated to same time as Offer activated so it wont overlap if its a part of a migration - it wont change the reported RGU activated date  */
+
 UPDATE rgu
 SET ActualDate = o.ActualDate
 --SELECT o.ActualDate, rgu.*
@@ -50,6 +55,9 @@ CROSS APPLY (
 	) o
 WHERE OrderEventKey = '100' /* RGU Activated */ 
 
+
+
+/* Grouping the subscription into group in the event that the product type has changed. We can identify this based on Offer Planned */
 
 DROP TABLE IF EXISTS #order_events_2
 
@@ -72,6 +80,9 @@ LEFT JOIN (
 		AND sg.ProductType = oe.ProductType
 		AND oe.ActualDate BETWEEN sg.ActualDateFrom AND sg.ActualDateTo
 --ORDER BY 1
+
+
+/* Get all relevant dates to an subscription */
 
 DROP TABLE IF EXISTS #subscription_dates
 
@@ -102,6 +113,9 @@ WHERE 1=1
 		END = 1
 	--AND f.SubscriptionKey = '60e05fb6-1194-4531-9f86-7e70ac3d4594'
 
+
+/* Setting the whole date interval */ 
+
 DROP TABLE IF EXISTS #subscription_dates_type2
 SELECT 
 	CalendarKey AS CalendarFromKey,
@@ -112,6 +126,7 @@ INTO #subscription_dates_type2
 FROM #subscription_dates
 
 
+/* For each date interval we fetch relevant dates and keys, and insert the result into the stage table. */
 
 TRUNCATE TABLE [stage].[Fact_ProductSubscriptions]
 
@@ -186,7 +201,7 @@ OUTER APPLY (
 	ORDER BY CalendarKey DESC, TimeKey DESC
 ) keys
 /* 
-Keys we expect to be in at least the latest in event.
+Keys we expect to be in at the latest in event.
 */ 
 OUTER APPLY (
 	SELECT TOP 1 ProductKey, PhoneDetailKey
