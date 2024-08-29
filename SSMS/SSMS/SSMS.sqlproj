@@ -432,7 +432,6 @@
     <Build Include="dimView\Views\PhoneDetail.sql" />
     <Build Include="dimView\Views\HouseHold.sql" />
     <Build Include="dimView\Views\Address.sql" />
-    <Build Include="martView_PRX\Views\FactProductTransactions.sql" />
     <Build Include="martView_PRX\Views\DimTransactionState.sql" />
     <Build Include="martView_PRX\Views\DimTime.sql" />
     <Build Include="martView_PRX\Views\DimSalesChannel.sql" />
@@ -714,6 +713,13 @@
     <Build Include="factView\Views\ProductPrices.sql" />
     <Build Include="stage\Stored Procedures\Transform_Fact_ProductPrices.sql" />
     <Build Include="martView_PRX\Views\FactProductPrices.sql" />
+    <Build Include="stage\Tables\Fact_ProductSubscriptions.sql" />
+    <Build Include="fact\Tables\ProductSubscriptions_Temp.sql" />
+    <Build Include="fact\Tables\ProductSubscriptions.sql" />
+    <Build Include="factView\Views\ProductSubscriptions.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Fact_ProductSubscriptions.sql" />
+    <Build Include="martView_PRX\Views\UpdateStatus.sql" />
+    <Build Include="martView_PRX\Views\FactProductSubscriptions.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

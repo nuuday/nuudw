@@ -36,3 +36,11 @@
 
 
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [Fact_OrderEvents__ProductKey_SubscriptionKey_IsTLO_Quantity_CalendarKey]
+    ON [stage].[Fact_OrderEvents]([ProductKey] ASC, [SubscriptionKey] ASC, [IsTLO] ASC, [Quantity] ASC, [CalendarKey] ASC)
+    INCLUDE([OrderEventKey]);
+
