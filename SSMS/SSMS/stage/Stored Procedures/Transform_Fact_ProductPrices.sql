@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS #product_dates
 	INNER JOIN sourceNuudlNetCrackerView.pimnrmlproductofferingpricechargekey_History pck ON pck.prod_offering_id = po.id
 	INNER JOIN sourceNuudlNetCrackerView.pimnrmlproductofferingpricechargeitem_History pci ON pci.price_key_id = pck.id
 	--WHERE po.id IN ('002d6552-2d9b-4636-9001-d1368e0c73d2','27ae1764-83d8-4f47-9b34-ca2abf66d202')
-
+	
 ), products_dates AS (
 	
 	SELECT DISTINCT product_id, product_name, CAST(available_from as date) AS ValidFromDate FROM product_price_dates
@@ -106,7 +106,7 @@ FROM products_dates
 INSERT INTO stage.[Fact_ProductPrices] WITH (TABLOCK) ([CalendarFromKey], [CalendarToKey], [ProductKey], [ActivationBasePriceInclTax], [DeactivationBasePriceInclTax], [MonthlyBasePriceInclTax])
 SELECT 
 	CalendarFromKey
-	, ISNULL(LEAD(CalendarFromKey,1) OVER (PARTITION BY ProductKey ORDER BY CalendarFromKey),'9999-12-31') CalendarToID
+	, ISNULL(DATEADD(dd,-1,LEAD(CalendarFromKey,1) OVER (PARTITION BY ProductKey ORDER BY CalendarFromKey)),'9999-12-31') CalendarToID
 	, ProductKey
 	, [ActivationBasePriceInclTax]
 	, [DeactivationBasePriceInclTax]

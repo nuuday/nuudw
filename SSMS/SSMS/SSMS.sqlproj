@@ -120,6 +120,8 @@
     <Folder Include="sourceNuudlDawn\Stored Procedures\" />
     <Folder Include="masterdata\" />
     <Folder Include="masterdata\Tables\" />
+    <Folder Include="troubleshooting\" />
+    <Folder Include="troubleshooting\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -708,6 +710,9 @@
     <Build Include="stage\Stored Procedures\Transform_Fact_ProductSubscriptions.sql" />
     <Build Include="martView_PRX\Views\UpdateStatus.sql" />
     <Build Include="martView_PRX\Views\FactProductSubscriptions.sql" />
+    <Build Include="troubleshooting\Views\stage_Fact_OrderEvents.sql" />
+    <Build Include="Security\troubleshooting.sql" />
+    <Build Include="martView_PRX\Views\FactProductMigrations.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
