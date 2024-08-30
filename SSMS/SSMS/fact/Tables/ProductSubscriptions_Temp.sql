@@ -14,6 +14,7 @@
     [QuoteItemID]                     INT           DEFAULT ((-1)) NOT NULL,
     [CalendarPlannedID]               INT           DEFAULT ((-1)) NOT NULL,
     [CalendarActivatedID]             INT           DEFAULT ((-1)) NOT NULL,
+    [CalendarCancelledID]             INT           DEFAULT ((-1)) NOT NULL,
     [CalendarDisconnectedPlannedID]   INT           DEFAULT ((-1)) NOT NULL,
     [CalendarDisconnectedExpectedID]  INT           DEFAULT ((-1)) NOT NULL,
     [CalendarDisconnectedCancelledID] INT           DEFAULT ((-1)) NOT NULL,
@@ -24,4 +25,6 @@
     [DWCreatedDate]                   DATETIME2 (0) NOT NULL,
     [DWModifiedDate]                  DATETIME2 (0) NOT NULL
 );
+
+
 

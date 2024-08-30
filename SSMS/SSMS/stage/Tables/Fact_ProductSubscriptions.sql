@@ -14,6 +14,7 @@
     [QuoteItemKey]                     NVARCHAR (36)  NULL,
     [CalendarPlannedKey]               DATE           NULL,
     [CalendarActivatedKey]             DATE           NULL,
+    [CalendarCancelledKey]             DATE           NULL,
     [CalendarDisconnectedPlannedKey]   DATE           NULL,
     [CalendarDisconnectedExpectedKey]  DATE           NULL,
     [CalendarDisconnectedCancelledKey] DATE           NULL,
@@ -23,4 +24,6 @@
     [CalendarMigrationLegacyKey]       DATE           NULL,
     [DWCreatedDate]                    DATETIME2 (0)  DEFAULT (sysdatetime()) NULL
 );
+
+
 

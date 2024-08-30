@@ -130,7 +130,7 @@ FROM #subscription_dates
 
 TRUNCATE TABLE [stage].[Fact_ProductSubscriptions]
 
-INSERT INTO stage.[Fact_ProductSubscriptions] WITH (TABLOCK) ([CalendarFromKey], [CalendarToKey], [SubscriptionKey], [ProductKey], [CustomerKey], [SalesChannelKey], [AddressBillingKey], [BillingAccountKey], [PhoneDetailKey], [TechnologyKey], [EmployeeKey], [QuoteKey], [QuoteItemKey], [CalendarPlannedKey], [CalendarActivatedKey], [CalendarDisconnectedPlannedKey], [CalendarDisconnectedExpectedKey], [CalendarDisconnectedCancelledKey], [CalendarDisconnectedKey], [CalendarRGUFromKey], [CalendarRGUToKey], [CalendarMigrationLegacyKey])
+INSERT INTO stage.[Fact_ProductSubscriptions] WITH (TABLOCK) ([CalendarFromKey], [CalendarToKey], [SubscriptionKey], [ProductKey], [CustomerKey], [SalesChannelKey], [AddressBillingKey], [BillingAccountKey], [PhoneDetailKey], [TechnologyKey], [EmployeeKey], [QuoteKey], [QuoteItemKey], [CalendarPlannedKey], [CalendarActivatedKey], [CalendarCancelledKey], [CalendarDisconnectedPlannedKey], [CalendarDisconnectedExpectedKey], [CalendarDisconnectedCancelledKey], [CalendarDisconnectedKey], [CalendarRGUFromKey], [CalendarRGUToKey], [CalendarMigrationLegacyKey])
 SELECT
 	sdt.CalendarFromKey,
 	COALESCE( sdt.CalendarToKey, '9999-12-31' ) AS CalendarToKey,
@@ -147,6 +147,7 @@ SELECT
 	keys.[QuoteItemKey],
 	dates.[CalendarPlannedKey],
 	dates.[CalendarActivatedKey],
+	dates.[CalendarCancelledKey],
 	dates.[CalendarDisconnectedPlannedKey],
 	dates.[CalendarDisconnectedExpectedKey],
 	dates.[CalendarDisconnectedCancelledKey],
@@ -163,6 +164,7 @@ INNER JOIN dim.Subscription s
 OUTER APPLY (
 	SELECT 
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Planned' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarPlannedKey,
+		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Cancelled' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarCancelledKey,
 		ISNULL(MAX(CASE WHEN OrderEventName IN ('Offer Activated', 'Migration Legacy') THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarActivatedKey,
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Disconnected Planned' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarDisconnectedPlannedKey,
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Disconnected Expected' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarDisconnectedExpectedKey,
