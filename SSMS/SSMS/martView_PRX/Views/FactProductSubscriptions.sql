@@ -1,5 +1,6 @@
 ﻿
 
+
 CREATE VIEW [martView_PRX].[FactProductSubscriptions] 
 AS
 SELECT
@@ -18,6 +19,7 @@ SELECT
 	,[QuoteItemID]
 	,[CalendarPlannedID]
 	,[CalendarActivatedID]
+	,[CalendarCancelledID]
 	,[CalendarDisconnectedPlannedID]
 	,[CalendarDisconnectedExpectedID]
 	,[CalendarDisconnectedCancelledID]

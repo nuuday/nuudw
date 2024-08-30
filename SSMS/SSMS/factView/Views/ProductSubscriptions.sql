@@ -1,4 +1,5 @@
-﻿CREATE VIEW [factView].[ProductSubscriptions] 
+﻿
+CREATE VIEW [factView].[ProductSubscriptions] 
 AS
 SELECT
 	[CalendarFromID]
@@ -16,6 +17,7 @@ SELECT
 	,[QuoteItemID]
 	,[CalendarPlannedID]
 	,[CalendarActivatedID]
+	,[CalendarCancelledID]
 	,[CalendarDisconnectedPlannedID]
 	,[CalendarDisconnectedExpectedID]
 	,[CalendarDisconnectedCancelledID]

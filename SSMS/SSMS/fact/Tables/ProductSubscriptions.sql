@@ -14,6 +14,7 @@
     [QuoteItemID]                     INT           DEFAULT ((-1)) NOT NULL,
     [CalendarPlannedID]               INT           DEFAULT ((-1)) NOT NULL,
     [CalendarActivatedID]             INT           DEFAULT ((-1)) NOT NULL,
+    [CalendarCancelledID]             INT           DEFAULT ((-1)) NOT NULL,
     [CalendarDisconnectedPlannedID]   INT           DEFAULT ((-1)) NOT NULL,
     [CalendarDisconnectedExpectedID]  INT           DEFAULT ((-1)) NOT NULL,
     [CalendarDisconnectedCancelledID] INT           DEFAULT ((-1)) NOT NULL,
@@ -26,7 +27,11 @@
 );
 
 
+
+
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ProductSubscriptions]
     ON [fact].[ProductSubscriptions];
+
+
 
