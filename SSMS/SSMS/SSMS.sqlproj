@@ -424,7 +424,6 @@
     <Build Include="dimView\Views\PhoneDetail.sql" />
     <Build Include="dimView\Views\HouseHold.sql" />
     <Build Include="dimView\Views\Address.sql" />
-    <Build Include="martView_PRX\Views\DimTransactionState.sql" />
     <Build Include="martView_PRX\Views\DimTime.sql" />
     <Build Include="martView_PRX\Views\DimSalesChannel.sql" />
     <Build Include="martView_PRX\Views\DimProduct.sql" />
