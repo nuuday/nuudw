@@ -37,7 +37,14 @@
 			{
 				"name": "FACT_0_ProductSubscriptions",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "FACT_0_OrderEvents",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
