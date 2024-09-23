@@ -713,6 +713,7 @@
     <Build Include="troubleshooting\Views\stage_Fact_OrderEvents.sql" />
     <Build Include="Security\troubleshooting.sql" />
     <Build Include="martView_PRX\Views\FactProductMigrations.sql" />
+    <Build Include="factView\Views\FactProductMigrations.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">

@@ -15,6 +15,7 @@ VALUES
 	('050','Offer Planned', 'PLANNED'),
 	('055','Offer Cancelled', 'CANCELLED'),
 	('060','Offer Completed', 'COMPLETED'),
+	('064','Offer Changed Owner', 'N/A'),
 	('065','Offer Activated', 'ACTIVE'),
 	('070','Offer Commitment Start', 'N/A'),
 	('075','Offer Commitment End', 'N/A'),

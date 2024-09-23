@@ -258,6 +258,7 @@ SELECT
 						WHEN @HasCalendarKey = 0 AND Type2FromSource.DimensionTable IS NOT NULL THEN '[' + RolePlayingDimension + '].[' + Type2FromSource.DimensionTable + 'IsCurrent] = 1 '
 						ELSE '[' + RolePlayingDimension + '].[DWIsCurrent] = 1 '
 					END + @CRLF + 'AND [' + RolePlayingDimension + '].[' + ColumnMapping + '] = [' + @StageTable + '].[' + ColumnName + ']'
+						+ @CRLF + 'AND [' + RolePlayingDimension + '].[DWIsDeleted] = 0'
 			ELSE 'AND [' + RolePlayingDimension + '].[' + ColumnMapping + '] = [' + @StageTable + '].[' + ColumnName + ']'
 		END AS NVARCHAR(MAX)), @CRLF)
 FROM #Type2CombinedKeys AS Type2CombinedKeys

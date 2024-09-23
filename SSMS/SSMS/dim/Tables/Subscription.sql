@@ -1,6 +1,7 @@
 ﻿CREATE TABLE [dim].[Subscription] (
     [SubscriptionID]            INT            IDENTITY (1, 1) NOT NULL,
     [SubscriptionKey]           NVARCHAR (36)  NULL,
+    [SubscriptionOriginalKey]   NVARCHAR (36)  NULL,
     [FamilyBundle]              NVARCHAR (100) NULL,
     [BundleType]                NVARCHAR (100) NULL,
     [SubscriptionValidFromDate] DATETIME2 (7)  NULL,
@@ -13,8 +14,10 @@
     [DWModifiedDate]            DATETIME2 (0)  NOT NULL,
     [DWIsDeleted]               BIT            NOT NULL,
     PRIMARY KEY CLUSTERED ([SubscriptionID] ASC),
-    CONSTRAINT [NCI_Subscription] UNIQUE NONCLUSTERED ([SubscriptionKey] ASC, [SubscriptionValidFromDate] ASC)
+    CONSTRAINT [NCI_Subscription] UNIQUE NONCLUSTERED ([SubscriptionKey] ASC, [SubscriptionOriginalKey] ASC, [SubscriptionValidFromDate] ASC)
 );
+
+
 
 
 
@@ -43,4 +46,8 @@ EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level
 
 GO
 EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Subscription', @level2type = N'COLUMN', @level2name = N'BundleType';
+
+
+GO
+EXECUTE sp_addextendedproperty @name = N'HistoryType', @value = N'Type2', @level0type = N'SCHEMA', @level0name = N'dim', @level1type = N'TABLE', @level1name = N'Subscription', @level2type = N'COLUMN', @level2name = N'SubscriptionOriginalKey';
 
