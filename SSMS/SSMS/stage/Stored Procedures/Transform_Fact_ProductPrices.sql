@@ -23,6 +23,7 @@ DROP TABLE IF EXISTS #product_dates
 	INNER JOIN sourceNuudlNetCrackerView.pimnrmlproductofferingpricechargekey_History pck ON pck.prod_offering_id = po.id
 	INNER JOIN sourceNuudlNetCrackerView.pimnrmlproductofferingpricechargeitem_History pci ON pci.price_key_id = pck.id
 	--WHERE po.id IN ('002d6552-2d9b-4636-9001-d1368e0c73d2','27ae1764-83d8-4f47-9b34-ca2abf66d202')
+	--where po.name='3 Timer + 3 GB'
 	
 ), products_dates AS (
 	
@@ -55,12 +56,12 @@ FROM products_dates
 	FROM #product_dates po
 	INNER JOIN sourceNuudlNetCrackerView.pimnrmlproductofferingpricechargekey_History pck
 		ON pck.prod_offering_id = po.product_id
-			AND po.ValidFromDate >= pck.available_from_CET
-			AND po.ValidFromDate < ISNULL( pck.available_to_CET, '9999-12-31' )
+			AND po.ValidFromDate >= CAST(pck.available_from_CET as date)
+			AND po.ValidFromDate < ISNULL( CAST(pck.available_to_CET as date), '9999-12-31' )
 	INNER JOIN sourceNuudlNetCrackerView.pimnrmlproductofferingpricechargeitem_History pci
 		ON pci.price_key_id = pck.id
-			AND po.ValidFromDate >= pci.applied_from
-			AND po.ValidFromDate < ISNULL( pci.applied_to, '9999-12-31' )
+			AND po.ValidFromDate >= CAST(pci.applied_from as date)
+			AND po.ValidFromDate < ISNULL( CAST(pci.applied_to as date), '9999-12-31' )
 	JOIN sourceNuudlNetCrackerView.pimnrmlprodofferingpricespecification_History ps
 		ON ps.id = pck.prod_offering_price_spec_id
 

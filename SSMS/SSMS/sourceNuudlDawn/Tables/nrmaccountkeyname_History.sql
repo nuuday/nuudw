@@ -20,7 +20,15 @@
 );
 
 
+
+
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_nrmaccountkeyname_History]
     ON [sourceNuudlDawn].[nrmaccountkeyname_History];
+
+
+GO
+CREATE NONCLUSTERED INDEX [NCIX_nrmaccountkeyname_History__name_NUUDL_IsCurrent_DWIsCurrent]
+    ON [sourceNuudlDawn].[nrmaccountkeyname_History]([name] ASC, [NUUDL_IsCurrent] ASC, [DWIsCurrent] ASC)
+    INCLUDE([account_num]);
 

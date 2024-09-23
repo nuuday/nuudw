@@ -5,5 +5,9 @@ SELECT
 	[ThirdPartyStoreID],
 	[ThirdPartyStoreKey],
 	[StoreID],
-	[StoreName]
+	[StoreName],
+	DWValidFromDate,
+	DWValidToDate,
+	DWIsCurrent,
+	DWIsDeleted
 FROM [dimView].[ThirdPartyStore]

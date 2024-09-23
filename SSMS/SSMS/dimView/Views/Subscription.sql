@@ -3,6 +3,7 @@ AS
 SELECT
 	[SubscriptionID]
 	,[SubscriptionKey] AS [SubscriptionKey]
+	,[SubscriptionOriginalKey] AS [SubscriptionOriginalKey]
 	,[FamilyBundle] AS [FamilyBundle]
 	,[BundleType] AS [BundleType]
 	,[SubscriptionValidFromDate] AS [SubscriptionValidFromDate]

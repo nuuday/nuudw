@@ -13,7 +13,11 @@ SELECT
 	[PortedIn],
 	[PortedOut],
 	[PortedInFrom],
-	[PortedOutTo]
+	[PortedOutTo],
+	DWValidFromDate,
+	DWValidToDate,
+	DWIsCurrent,
+	DWIsDeleted
 FROM [dimView].[PhoneDetail]
 WHERE PhoneDetailID IN (
 	SELECT PhoneDetailID FROM martView_PRX.FactOrderEvents

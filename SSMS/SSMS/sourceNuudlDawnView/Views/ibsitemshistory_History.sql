@@ -4,6 +4,9 @@
 
 
 
+
+
+
 CREATE VIEW [sourceNuudlDawnView].[ibsitemshistory_History]
 AS
 SELECT 
@@ -24,10 +27,12 @@ SELECT
 	a.[is_deleted] ,
 	a.[is_current] ,
 	a.[item_accountRef] ,
+	a.[item_businessGroup_id] ,
 	a.[item_customerId] ,
 	a.[item_distributionChannelId] ,
 	a.[item_expirationDate] ,
 	CAST(CAST(a.[item_expirationDate] as datetime2(0)) AT TIME ZONE 'UTC' AT TIME ZONE 'Central European Standard Time' as datetime2(0)) [item_expirationDate_CET],
+	a.item_extendedAttributes,
 	a.[item_name] ,
 	a.[item_offeringId] ,
 	a.[item_offeringName] ,
@@ -36,6 +41,8 @@ SELECT
 	a.[item_productFamilyId] ,
 	a.[item_productFamilyName] ,
 	a.[item_productSpecificationRef] ,
+	a.item_productRelationship_productId,
+	a.item_productRelationship_relationshipType,
 	a.[item_quantity] ,
 	a.[item_quoteId] ,
 	a.[item_relatedPartyRef] ,

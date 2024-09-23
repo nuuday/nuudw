@@ -91,6 +91,9 @@ FROM ' + @Catalog + IIF( @Catalog = '', '', '.' ) + @SQLSchema + IIF( @SQLSchema
 FROM nuuMetaView.SourceObjectDefinitions
 WHERE
 	SourceObjectID = @SourceObjectID
+	
+SET @SQLScript = REPLACE(@SQLScript, '\[','\<')
+SET @SQLScript = REPLACE(@SQLScript, '\]','\>')
 
 SET @SQLScript =
 	CASE 
@@ -99,6 +102,9 @@ SET @SQLScript =
 		ELSE @SQLScript
 	END 
 	
+SET @SQLScript = REPLACE(@SQLScript, '\<','[')
+SET @SQLScript = REPLACE(@SQLScript, '\>',']')
+
 -- Register databricks map data type with <" "> and converting them back to square brackets
 --SET @SQLScript = REPLACE(@SQLScript,'<\"','[\"')
 --SET @SQLScript = REPLACE(@SQLScript,'"\>','\"]')

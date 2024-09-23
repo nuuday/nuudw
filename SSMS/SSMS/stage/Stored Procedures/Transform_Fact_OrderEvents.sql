@@ -3,27 +3,82 @@ CREATE PROCEDURE [stage].[Transform_Fact_OrderEvents]
 	@JobIsIncremental BIT			
 AS 
 
+
+DROP TABLE IF EXISTS #Subscriptions
+CREATE TABLE #Subscriptions (
+	SubscriptionKey NVARCHAR(36) NOT NULL,
+	SubscriptionOriginalKey NVARCHAR(36) NULL,
+	IsMigratedFromLegacy bit NULL DEFAULT 0
+)
+
+CREATE UNIQUE CLUSTERED INDEX CLIX ON #Subscriptions (SubscriptionKey)
+
+INSERT INTO #Subscriptions (SubscriptionKey, SubscriptionOriginalKey)
+SELECT DISTINCT SubscriptionKey, SubscriptionOriginalKey
+FROM dimView.Subscription
+WHERE SubscriptionKey <> '?'
+--	AND SubscriptionKey IN ('1186d39d-d328-4146-8d07-f22adb378dd1')
+
+UPDATE s
+SET IsMigratedFromLegacy = 1
+FROM #Subscriptions s
+WHERE EXISTS (
+	SELECT * FROM [sourceNuudlDawnView].[ibsitemshistory_History] i
+	WHERE s.SubscriptionKey = i.id AND item_extendedAttributes LIKE '%migration_phase%'
+	)
+
 -----------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------
 -- 1. Collecting core events based items history (product instance) states together with dimensional data
 -----------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------
 
--- Fetch first part of data connected to items history 
 DROP TABLE IF EXISTS #all_lines
-SELECT DISTINCT
-	COALESCE(i.item_parentId, i.id) AS SubscriptionKey,
-	i.id AS SubscriptionChildKey,
+CREATE TABLE #all_lines (
+	ProductInstanceID nvarchar(50),
+	SubscriptionKey nvarchar(50),
+	SubscriptionOriginalKey nvarchar(50),
+	IsMigratedFromLegacy bit,
+	CalendarKey date,
+	TimeKey time(0),
+	ProductKey nvarchar(50),
+	ProductType nvarchar(50),
+	ProductName nvarchar(250),
+	CustomerKey nvarchar(50),
+	OrderEventKey nvarchar(3),
+	OrderEventName nvarchar(50),
+	CurrentState nvarchar(100),
+	QuoteKey nvarchar(50),
+	QuoteItemKey nvarchar(50),
+	SalesChannelKey nvarchar(50),
+	BillingAccountKey nvarchar(50),
+	IsTLO bit,
+	active_from_CET datetime2(0),
+	expiration_date datetime2(0),
+	IsHardware bit,
+	TechnologyKey nvarchar(50),
+	PhoneDetailKey nvarchar(50),
+	[ThirdPartyStoreKey] nvarchar(50) 
+)
+
+
+-- Fetch first part of data connected to items history 
+INSERT INTO #all_lines ([ProductInstanceID], [SubscriptionKey], [SubscriptionOriginalKey], [IsMigratedFromLegacy], [CalendarKey], [TimeKey], [ProductKey], [ProductType], [ProductName], [CustomerKey], [OrderEventKey], [OrderEventName], 
+	[CurrentState], [QuoteKey], [QuoteItemKey], [SalesChannelKey], [BillingAccountKey], [IsTLO], [active_from_CET], [expiration_date], [IsHardware], [TechnologyKey], [PhoneDetailKey], [ThirdPartyStoreKey])
+SELECT 
+	i.id ProductInstanceID,
+	sub.SubscriptionKey,
+	sub.SubscriptionOriginalKey,
+	sub.IsMigratedFromLegacy,
 	CAST(i.active_from_CET AS Date) AS CalendarKey,
 	LEFT( CONVERT( VARCHAR, CAST(i.active_from_CET AS datetime2(0)), 108 ), 8 ) AS TimeKey,
 	i.item_offeringId AS ProductKey,		
 	CASE
-		WHEN pf.name = 'Mobile Voice Offline' THEN 'Mobile Voice'
-		WHEN pf.name = 'Mobile Broadband Offline' THEN 'Mobile Broadband'
-		ELSE pf.name
+		WHEN i.item_productFamilyName = 'Mobile Voice Offline' THEN 'Mobile Voice'
+		WHEN i.item_productFamilyName = 'Mobile Broadband Offline' THEN 'Mobile Broadband'
+		ELSE i.item_productFamilyName
 	END AS ProductType,
 	i.item_offeringName AS ProductName,
-	po.weight AS ProductWeight,
 	i.item_customerId AS CustomerKey,
 	ev.OrderEventKey,
 	ev.OrderEventName,
@@ -32,23 +87,19 @@ SELECT DISTINCT
 	i.id AS QuoteItemKey,
 	i.item_distributionChannelId AS SalesChannelKey,
 	acc.account_num AS BillingAccountKey,
-	CASE WHEN item_parentId IS NULL THEN 1 ELSE 0 END IsTLO,
-	i.item_customerId AS customer_id,
+	CASE WHEN i.item_parentId IS NULL THEN 1 ELSE 0 END IsTLO,
 	i.active_from_CET,
 	i.item_expirationDate_CET AS expiration_date,
 	CASE WHEN po.extended_parameters_json_deviceType IS NULL THEN 0 ELSE 1 END IsHardware,
 	cha.technology AS TechnologyKey,
 	cha.international_phone_number AS PhoneDetailKey,
-	JSON_VALUE(pin.extended_attributes_json, '$.migration_date') AS migration_date,
 	JSON_VALUE(quote.extended_parameters, '$."3rdPartyStoreId"[0]') ThirdPartyStoreKey
-INTO #all_lines
 FROM [sourceNuudlDawnView].[ibsitemshistory_History] i
-LEFT JOIN sourceNuudlDawnView.ibsnrmlproductinstance_History pin 
-	ON pin.id = i.id AND pin.NUUDL_IsCurrent=1
+INNER JOIN #Subscriptions sub 
+	ON sub.SubscriptionKey = COALESCE(i.item_parentId, i.id)
 LEFT JOIN sourceNuudlDawnView.[ibsitemshistorycharacteristics_History] cha ON cha.NUUDL_ID = i.NUUDL_ID
-LEFT JOIN dim.OrderEvent ev 
+INNER JOIN dim.OrderEvent ev 
 	ON ev.SourceEventName = i.[state]
--- reference to Quotekey,
 LEFT JOIN [sourceNuudlDawnView].[qssnrmlquote_History] quote
 	ON quote.id = i.item_quoteId 
 		AND quote.NUUDL_IsCurrent = 1
@@ -57,14 +108,12 @@ LEFT JOIN [sourceNuudlDawnView].[nrmaccountkeyname_History] acc
 		AND acc.NUUDL_IsCurrent = 1
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] po
 	ON po.id = i.item_offeringId
-LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductfamily_History] pf
-	ON pf.id = po.product_family_id
-WHERE 1=1	
-	--AND COALESCE(i.item_parentId, i.id) = '60e05fb6-1194-4531-9f86-7e70ac3d4594'
+WHERE 1=1
+--	AND COALESCE(i.item_parentId, i.id) = '22654a4a-7078-45a2-a356-9064d7db6e76'
 
 
-CREATE CLUSTERED INDEX CLIX ON #all_lines (SubscriptionKey, QuoteKey, IsTLO, active_from_CET)	
-CREATE NONCLUSTERED INDEX NLIX ON #all_lines (CurrentState, SubscriptionChildKey, ProductKey) INCLUDE (IsTLO,SubscriptionKey, active_from_cet, ProductType, ProductName, ProductWeight, CustomerKey, customer_id, QuoteKey, QuoteItemKey, SalesChannelKey, BillingAccountKey, TechnologyKey, PhoneDetailKey)
+CREATE CLUSTERED INDEX CLIX ON #all_lines (SubscriptionOriginalKey, QuoteKey, IsTLO, active_from_CET)	
+CREATE NONCLUSTERED INDEX NLIX ON #all_lines (CurrentState, ProductInstanceID, ProductKey) INCLUDE (IsTLO, SubscriptionOriginalKey, active_from_cet, ProductType, ProductName, CustomerKey, QuoteKey, QuoteItemKey, SalesChannelKey, BillingAccountKey, TechnologyKey, PhoneDetailKey)
 
 
 /* 
@@ -75,12 +124,11 @@ UPDATE al
 SET 
 	al.ProductKey = COALESCE(al.ProductKey, p.ProductKey)
 	, al.SubscriptionKey = p.SubscriptionKey
+	, al.SubscriptionOriginalKey = p.SubscriptionOriginalKey
 	, al.IsTLO = p.IsTLO
 	, al.ProductType = COALESCE(al.ProductType, p.ProductType)
 	, al.ProductName = COALESCE(al.ProductName, p.ProductName)
-	, al.ProductWeight = COALESCE(al.ProductWeight, p.ProductWeight)
 	, al.CustomerKey = COALESCE(al.CustomerKey, p.CustomerKey)
-	, al.customer_id = COALESCE(al.customer_id, p.customer_id)
 	, al.QuoteKey = COALESCE(al.QuoteKey, p.QuoteKey)
 	, al.QuoteItemKey = COALESCE(al.QuoteItemKey, p.QuoteItemKey)
 	, al.SalesChannelKey = COALESCE(al.SalesChannelKey, p.SalesChannelKey)
@@ -94,18 +142,19 @@ CROSS APPLY (
 	SELECT TOP 1 *
 	FROM #all_lines
 	WHERE CurrentState = 'PLANNED'
-		AND SubscriptionChildKey = al.SubscriptionChildKey
+		AND ProductInstanceID = al.ProductInstanceID
 		AND active_from_cet <= al.active_from_cet
 	ORDER BY active_from_cet DESC
 ) p
 WHERE al.CurrentState='Cancelled' AND al.ProductKey IS NULL
 
+
 -- Removing all lines where OrderEventKey or ProductKey is null
 DELETE FROM #all_lines 
 WHERE 
 	ProductKey IS NULL
-	OR OrderEventKey IS NULL
 
+	
 
 -- Get employees who either added or cancelled the quote
 DROP TABLE IF EXISTS #quote_employees
@@ -148,7 +197,7 @@ GROUP BY al.QuoteKey
 DROP TABLE IF EXISTS #billing_contact_details
 SELECT DISTINCT
 	cm.id Householdkey,
-	cma.ref_id AS customer_id,
+	cma.ref_id AS CustomerKey,
 	CONCAT( 
 		ISNULL( cm.Street1, '' ), 
 		';', ISNULL( cm.Street2, '' ), 
@@ -167,7 +216,7 @@ WHERE
 	cma.NUUDL_IsCurrent = 1
 	--AND cma.ref_id='2ca8abb7-2e80-429e-be0a-65c594667a05'
 
-CREATE UNIQUE CLUSTERED INDEX CLIX ON #billing_contact_details (customer_id)
+CREATE UNIQUE CLUSTERED INDEX CLIX ON #billing_contact_details (CustomerKey)
 
 
 -- Fetch second part of data connected to items history 
@@ -178,13 +227,13 @@ SELECT
 	COALESCE(pp.ProductParentKey, pp2.ProductParentKey) AS ProductParentKey,
 	bcd.AddressBillingKey,
 	bcd.Householdkey,
-	ISNULL(LAG( al.ProductKey ) OVER (PARTITION BY al.SubscriptionKey, IsTLO ORDER BY al.active_from_CET),'') AS  PreviousProductKey,
-	ISNULL(LAG( al.CurrentState ) OVER (PARTITION BY al.SubscriptionKey, al.ProductKey ORDER BY al.active_from_CET),'') AS  PreviousState,
+	ISNULL(LAG( al.ProductKey ) OVER (PARTITION BY al.SubscriptionOriginalKey, IsTLO ORDER BY al.active_from_CET),'') AS  PreviousProductKey,
+	ISNULL(LAG( al.CurrentState ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.ProductKey ORDER BY al.active_from_CET),'') AS  PreviousState,
 	CASE 
-		WHEN LAG( cpd.start_dat_CET ) OVER (PARTITION BY al.SubscriptionKey, al.ProductKey ORDER BY al.active_from_CET) IS NULL THEN cpd.start_dat_CET
+		WHEN LAG( cpd.start_dat_CET ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.ProductKey ORDER BY al.active_from_CET) IS NULL THEN cpd.start_dat_CET
 	END AS RGU_StartDate,
 	CASE 
-		WHEN LAG( cpd.start_dat_CET ) OVER (PARTITION BY al.SubscriptionKey, al.ProductKey ORDER BY al.active_from_CET) IS NULL THEN cpd.end_dat_CET
+		WHEN LAG( cpd.start_dat_CET ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.ProductKey ORDER BY al.active_from_CET) IS NULL THEN cpd.end_dat_CET
 	END AS RGU_EndDate,
 	qem.EmployeeKey,
 	qem.EmployeeCancelledKey,
@@ -195,7 +244,7 @@ OUTER APPLY (
 	SELECT TOP 1 ProductKey AS ProductParentKey
 	FROM #all_lines
 	WHERE QuoteKey = al.QuoteKey
-		AND SubscriptionKey = al.SubscriptionKey
+		AND SubscriptionOriginalKey = al.SubscriptionOriginalKey
 		AND IsTLO = 1
 	ORDER BY active_from_CET DESC
 ) pp
@@ -203,12 +252,12 @@ OUTER APPLY (
 	SELECT TOP 1 ProductKey AS ProductParentKey
 	FROM #all_lines
 	WHERE active_from_CET <= al.active_from_CET
-		AND SubscriptionKey = al.SubscriptionKey
+		AND SubscriptionOriginalKey = al.SubscriptionOriginalKey
 		AND IsTLO = 1
 	ORDER BY active_from_CET DESC
 ) pp2
 LEFT JOIN #billing_contact_details bcd
-	ON bcd.customer_id = al.customer_id
+	ON bcd.CustomerKey = al.CustomerKey
 LEFT JOIN [sourceNuudlDawnView].[nrmcusthasproductkeyname_History] kn
 	ON kn.name = al.SubscriptionKey
 		AND kn.NUUDL_IsCurrent = 1
@@ -296,7 +345,7 @@ DELETE a
 FROM #all_lines_filtered a
 WHERE 1=1
 	AND OrderEventName IN ('Offer Activated', 'Offer Completed', 'Offer Disconnected')
-	AND EXISTS (SELECT * FROM #all_lines_filtered WHERE SubscriptionChildKey = a.SubscriptionChildKey AND OrderEventName = 'Offer Cancelled')
+	AND EXISTS (SELECT * FROM #all_lines_filtered WHERE ProductInstanceID = a.ProductInstanceID AND OrderEventName = 'Offer Cancelled')
 	--AND SubscriptionKey = '2dbee727-5c41-4df2-a12d-aac20eebe5ce'
 
 
@@ -306,13 +355,13 @@ WHERE 1=1
 -----------------------------------------------------------------------------------------------------------------------------
 DROP TABLE IF EXISTS #all_lines_filtered_2
 SELECT 
-	SUM(ProductTypeChangeFlag) OVER (PARTITION BY SubscriptionKey ORDER BY active_from_CET) AS SubscriptionGroup,
+	SUM(ProductTypeChangeFlag) OVER (PARTITION BY SubscriptionOriginalKey ORDER BY active_from_CET) AS SubscriptionGroup,
 	*
 INTO #all_lines_filtered_2
 FROM (
 	SELECT 
 		CASE 
-			WHEN IsTLO = 1 AND ProductType <> LAG( ProductType ) OVER (PARTITION BY al.SubscriptionKey, IsTLO ORDER BY active_from_CET) THEN 1
+			WHEN IsTLO = 1 AND ProductType <> LAG( ProductType ) OVER (PARTITION BY al.SubscriptionOriginalKey, IsTLO ORDER BY active_from_CET) THEN 1
 			--WHEN IsTLO = 1 THEN 0
 			ELSE 0
 		END AS ProductTypeChangeFlag,
@@ -320,7 +369,7 @@ FROM (
 	FROM #all_lines_filtered al
 	WHERE 1=1
 		--AND IsTLO = 1
-		--AND SubscriptionKey ='b5f00442-6c45-4c82-93fe-b5394ee207ee'
+		--AND SubscriptionOriginalKey ='b5f00442-6c45-4c82-93fe-b5394ee207ee'
 ) q
 --ORDER BY active_from_CET, IsTLO DESC
 
@@ -374,6 +423,7 @@ SELECT DISTINCT
 	al.CustomerKey,
 	al.SubscriptionGroup,
 	al.SubscriptionKey,
+	al.SubscriptionOriginalKey,
 	al.QuoteKey,
 	al.QuoteItemKey,
 	e.OrderEventKey,
@@ -390,7 +440,7 @@ SELECT DISTINCT
 	t.TicketKey,
 	al.ThirdPartyStoreKey,
 	al.IsTLO,
-	null active_from_CET
+	CAST(t.status_change_date as datetime2(0)) active_from_CET
 INTO #hardware_return_lines
 FROM (
 	SELECT
@@ -400,7 +450,8 @@ FROM (
 		al.CustomerKey,
 		al.SubscriptionGroup,
 		al.SubscriptionKey,
-		al.SubscriptionChildKey,
+		al.SubscriptionOriginalKey,
+		al.ProductInstanceID,
 		al.QuoteKey,
 		al.QuoteItemKey,
 		al.ProductType,
@@ -413,14 +464,14 @@ FROM (
 		al.ThirdPartyStoreKey,
 		al.IsTLO,
 		al.active_from_CET AS ValidFrom,
-		ISNULL( LEAD(al.active_from_CET,1) OVER (PARTITION BY SubscriptionKey ORDER BY al.active_from_CET) , '9999-12-31') ValidTo
+		ISNULL( LEAD(al.active_from_CET,1) OVER (PARTITION BY SubscriptionOriginalKey ORDER BY al.active_from_CET) , '9999-12-31') ValidTo
 	FROM #all_lines_filtered_2 al
 	WHERE 1=1
 		AND al.CurrentState IN ( 'COMPLETED')
 		AND al.IsTLO = 1
 ) al
 INNER JOIN #hardware_return t 
-	ON (t.SubscriptionKey = al.SubscriptionKey OR t.SubscriptionKey = al.SubscriptionChildKey)
+	ON (t.SubscriptionKey = al.SubscriptionKey OR t.SubscriptionKey = al.ProductInstanceID)
 		AND t.status_change_date BETWEEN al.ValidFrom AND al.ValidTo
 CROSS APPLY (
 	SELECT *
@@ -429,6 +480,7 @@ CROSS APPLY (
 		OrderEventName = 'Hardware Return'
 ) e
 WHERE 1=1
+
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Add planned disconnected events (aka terminations)
@@ -507,6 +559,7 @@ SELECT DISTINCT
 	al.CustomerKey,
 	al.SubscriptionGroup,
 	al.SubscriptionKey,
+	al.SubscriptionOriginalKey,
 	al.QuoteKey,
 	al.QuoteItemKey,
 	e.OrderEventKey,
@@ -536,7 +589,8 @@ FROM (
 		al.ProductHardwareKey,
 		al.CustomerKey,
 		al.SubscriptionGroup,
-		al.SubscriptionKey,		
+		al.SubscriptionKey,	
+		al.SubscriptionOriginalKey,
 		al.QuoteKey,
 		al.QuoteItemKey,
 		al.ProductType,
@@ -549,7 +603,7 @@ FROM (
 		al.ThirdPartyStoreKey,
 		al.IsTLO,
 		al.active_from_CET AS ValidFrom,
-		ISNULL( LEAD(al.active_from_CET,1) OVER (PARTITION BY SubscriptionKey ORDER BY al.active_from_CET) , '9999-12-31') ValidTo
+		ISNULL( LEAD(al.active_from_CET,1) OVER (PARTITION BY SubscriptionOriginalKey ORDER BY al.active_from_CET) , '9999-12-31') ValidTo
 	FROM #all_lines_filtered_2 al
 	WHERE 1=1
 		--AND SubscriptionKey = '2a1e670d-fe4e-404d-aa05-1db884cb6371'
@@ -588,6 +642,7 @@ SELECT DISTINCT
 	al.CustomerKey,
 	al.SubscriptionGroup,
 	al.SubscriptionKey,
+	al.SubscriptionOriginalKey,
 	al.QuoteKey,
 	al.QuoteItemKey,
 	e.OrderEventKey,
@@ -603,7 +658,10 @@ SELECT DISTINCT
 	al.EmployeeKey,
 	al.ThirdPartyStoreKey,
 	al.IsTLO,
-	al.active_from_CET
+	CASE e.OrderEventName
+		WHEN 'RGU Activated' THEN RGU_StartDate
+		WHEN 'RGU Disconnected' THEN RGU_EndDate
+	END active_from_CET
 INTO #rgu_lines
 FROM #all_lines_filtered_2 al
 CROSS APPLY (
@@ -618,6 +676,7 @@ WHERE 1=1
 
 DELETE FROM #rgu_lines
 WHERE CalendarKey IS NULL
+
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Add Commitment events
@@ -640,6 +699,7 @@ SELECT
 	al.CustomerKey,
 	al.SubscriptionGroup,
 	al.SubscriptionKey,
+	al.SubscriptionOriginalKey,
 	al.QuoteKey,
 	al.QuoteItemKey,
 	e.OrderEventKey,
@@ -697,16 +757,16 @@ WHERE 1=1
 -- Get all active lines
 DROP TABLE IF EXISTS #active_lines
 SELECT al.* 
-	, LAG( al.ProductType ) OVER (PARTITION BY al.SubscriptionKey, al.IsTLO ORDER BY al.active_from_CET) PreviousProductType
-	, LEAD( al.ProductType ) OVER (PARTITION BY al.SubscriptionKey, al.IsTLO ORDER BY al.active_from_CET) NextProductType
-	, LAG( al.ProductName ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) PreviousProductName
-	, LEAD( al.ProductName ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) NextProductName
-	, LEAD( al.active_from_CET ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) Next_active_from_CET
-	, LEAD( al.ProductKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) NextProductKey
-	, LEAD( al.CalendarKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) NextDate
-	, LEAD( al.TimeKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) NextTime
-	, LEAD( al.CalendarKey ) OVER (PARTITION BY al.SubscriptionKey, al.IsTLO ORDER BY al.active_from_CET) NextDateTLO
-	, LEAD( al.TimeKey ) OVER (PARTITION BY al.SubscriptionKey, al.IsTLO ORDER BY al.active_from_CET) NextTimeTLO
+	, LAG( al.ProductType ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.IsTLO ORDER BY al.active_from_CET) PreviousProductType
+	, LEAD( al.ProductType ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.IsTLO ORDER BY al.active_from_CET) NextProductType
+	, LAG( al.ProductName ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionOriginalKey, al.ProductType ORDER BY al.active_from_CET) PreviousProductName
+	, LEAD( al.ProductName ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionOriginalKey, al.ProductType ORDER BY al.active_from_CET) NextProductName
+	, LEAD( al.active_from_CET ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionOriginalKey, al.ProductType ORDER BY al.active_from_CET) Next_active_from_CET
+	, LEAD( al.ProductKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionOriginalKey, al.ProductType ORDER BY al.active_from_CET) NextProductKey
+	, LEAD( al.CalendarKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionOriginalKey, al.ProductType ORDER BY al.active_from_CET) NextDate
+	, LEAD( al.TimeKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionOriginalKey, al.ProductType ORDER BY al.active_from_CET) NextTime
+	, LEAD( al.CalendarKey ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.IsTLO ORDER BY al.active_from_CET) NextDateTLO
+	, LEAD( al.TimeKey ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.IsTLO ORDER BY al.active_from_CET) NextTimeTLO
 INTO #active_lines
 FROM #all_lines_filtered_2 al
 WHERE al.CurrentState = 'ACTIVE'
@@ -723,6 +783,7 @@ SELECT
 	s.CustomerKey,
 	s.SubscriptionGroup,
 	s.SubscriptionKey,
+	s.SubscriptionOriginalKey,
 	s.QuoteKey,
 	s.QuoteItemKey,
 	e.OrderEventKey,
@@ -749,11 +810,10 @@ CROSS APPLY (
 CROSS APPLY (
 	SELECT MIN(active_from_cet) FirstActivatedDate
 	FROM #active_lines
-	WHERE SubscriptionKey = s.SubscriptionKey
-		AND migration_date IS NOT NULL
+	WHERE SubscriptionOriginalKey = s.SubscriptionOriginalKey
+		AND IsMigratedFromLegacy = 1
 ) f
 WHERE s.active_from_cet = f.FirstActivatedDate
-
 
 
 DROP TABLE IF EXISTS #migration_lines_with_prices
@@ -810,6 +870,7 @@ SELECT
 	s.CustomerKey,
 	s.SubscriptionGroup,
 	s.SubscriptionKey,
+	s.SubscriptionOriginalKey,
 	s.QuoteKey,
 	s.QuoteItemKey,
 	e.OrderEventKey,
@@ -853,6 +914,7 @@ SELECT
 	s.CustomerKey,
 	s.SubscriptionGroup,
 	s.SubscriptionKey,
+	s.SubscriptionOriginalKey,
 	s.QuoteKey,
 	s.QuoteItemKey,
 	e.OrderEventKey,
@@ -891,6 +953,7 @@ SELECT
 	s.CustomerKey,
 	s.SubscriptionGroup,
 	s.SubscriptionKey,
+	s.SubscriptionOriginalKey,
 	s.QuoteKey,
 	s.QuoteItemKey,
 	e.OrderEventKey,
@@ -930,6 +993,7 @@ SELECT
 	s.CustomerKey,
 	s.SubscriptionGroup,
 	s.SubscriptionKey,
+	s.SubscriptionOriginalKey,
 	s.QuoteKey,
 	s.QuoteItemKey,
 	e.OrderEventKey,
@@ -971,6 +1035,7 @@ SELECT
 	s.CustomerKey,
 	s.SubscriptionGroup,
 	s.SubscriptionKey,
+	s.SubscriptionOriginalKey,
 	s.QuoteKey,
 	s.QuoteItemKey,
 	e.OrderEventKey,
@@ -999,6 +1064,89 @@ WHERE 1=1
 	AND s.ProductType <> s.PreviousProductType
 
 
+-- Create Offer Planned if the subscription has been migrated from legacy
+DROP TABLE IF EXISTS #planned_lines_from_migration_legacy
+SELECT 
+	s.CalendarKey,
+	s.TimeKey,
+	s.ProductKey, 
+	s.ProductParentKey,
+	s.ProductHardwareKey,
+	s.CustomerKey,
+	s.SubscriptionGroup,
+	s.SubscriptionKey,
+	s.SubscriptionOriginalKey,
+	s.QuoteKey,
+	s.QuoteItemKey,
+	e.OrderEventKey,
+	e.OrderEventName,
+	s.ProductType,
+	s.ProductName,
+	s.SalesChannelKey,
+	s.BillingAccountKey,
+	s.PhoneDetailKey,
+	s.AddressBillingKey,
+	s.HouseHoldKey,
+	s.TechnologyKey,
+	s.EmployeeKey,
+	s.ThirdPartyStoreKey,
+	s.IsTLO,
+	s.active_from_CET
+INTO #planned_lines_from_migration_legacy
+FROM #migration_legacy_lines s
+CROSS APPLY (
+	SELECT *
+	FROM dim.OrderEvent 
+	WHERE OrderEventName = 'Offer Planned'
+) e
+WHERE 1=1
+
+-- Create lines if owner of the subscription has changed
+DROP TABLE IF EXISTS #changed_owner
+SELECT 
+	s.CalendarKey,
+	s.TimeKey,
+	s.ProductKey, 
+	s.ProductParentKey,
+	s.ProductHardwareKey,
+	s.CustomerKey,
+	s.SubscriptionGroup,
+	s.SubscriptionKey,
+	s.SubscriptionOriginalKey,
+	s.QuoteKey,
+	s.QuoteItemKey,
+	e.OrderEventKey,
+	e.OrderEventName,
+	s.ProductType,
+	s.ProductName,
+	s.SalesChannelKey,
+	s.BillingAccountKey,
+	s.PhoneDetailKey,
+	s.AddressBillingKey,
+	s.HouseHoldKey,
+	s.TechnologyKey,
+	s.EmployeeKey,
+	s.ThirdPartyStoreKey,
+	s.IsTLO,
+	s.active_from_CET
+INTO #changed_owner
+FROM #active_lines s
+CROSS APPLY (
+	SELECT *
+	FROM dim.OrderEvent 
+	WHERE OrderEventName = 'Offer Changed Owner'
+) e
+WHERE 1=1 
+	AND s.IsTLO = 1
+	AND s.SubscriptionKey <> s.SubscriptionOriginalKey 
+	AND EXISTS (
+		SELECT * 
+		FROM #all_lines 
+		WHERE SubscriptionOriginalKey = s.SubscriptionOriginalKey 
+			AND QuoteKey = s.QuoteKey
+			AND CurrentState = 'DISCONNECTED'
+		)
+
 -----------------------------------------------------------------------------------------------------------------------------
 -- Insert everyting into result set
 -----------------------------------------------------------------------------------------------------------------------------
@@ -1008,7 +1156,7 @@ SELECT *
 INTO #result
 FROM (
 
-	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, null TicketKey, IsTLO, 1 Quantity
 		,active_from_CET
 	FROM #all_lines_filtered_2
@@ -1016,78 +1164,93 @@ FROM (
 	
 	UNION ALL
 
-	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, TicketKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #hardware_return_lines
 	
 	UNION ALL
 
-	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, TicketKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #termination_lines
 	
 	UNION ALL
 
-	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, null TicketKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #migration_legacy_lines
 	
 	UNION ALL
 
-	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, null TicketKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #migration_lines
 	
 	UNION ALL
 
-	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, null TicketKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #disconnect_lines_from_migrations
 
 	UNION ALL
 
-	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, null TicketKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #disconnect_lines_from_product_type_change
 
 	UNION ALL
 
-	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, null TicketKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #planned_lines_from_product_type_change
+
+	UNION ALL
+
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, null TicketKey, IsTLO, 0 Quantity 
+		,active_from_CET
+	FROM #planned_lines_from_migration_legacy	
 	
 	UNION ALL
 
-	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, null TicketKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #change_lines
 	
 	UNION ALL
 
-	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, null TicketKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #commitment_lines
 	
 	UNION ALL
 
-	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, null TicketKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #rgu_lines
+
+	UNION ALL
+
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, null TicketKey, IsTLO, 1 Quantity 
+		,active_from_CET
+	FROM #changed_owner
 
 ) q
 
 
 CREATE CLUSTERED INDEX CLIX ON #result (SubscriptionKey,IsTLO,OrderEventName,active_from_CET)
+
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Set Quantity to zero to accommodate Gross Adds and Churn calculations
@@ -1103,7 +1266,7 @@ WHERE 1=1
 	AND EXISTS (
 			SELECT * 
 			FROM #result 
-			WHERE SubscriptionKey = ra.SubscriptionKey 
+			WHERE SubscriptionOriginalKey = ra.SubscriptionOriginalKey 
 				AND SubscriptionGroup = ra.SubscriptionGroup
 				AND OrderEventName = ra.OrderEventName
 				AND IsTLO = ra.IsTLO
@@ -1121,7 +1284,7 @@ WHERE 1=1
 	AND EXISTS (
 		SELECT * 
 		FROM #result 
-		WHERE SubscriptionKey = ra.SubscriptionKey 
+		WHERE SubscriptionOriginalKey = ra.SubscriptionOriginalKey 
 			AND SubscriptionGroup = ra.SubscriptionGroup
 			AND ( OrderEventName = REPLACE(ra.OrderEventName,'Disconnected','Activated') )
 			AND IsTLO = ra.IsTLO
@@ -1136,13 +1299,31 @@ SET Quantity = 0
 --SELECT ra.*
 FROM #result ra
 WHERE 1=1
-	AND ra.OrderEventName IN ('RGU Activated', 'Offer Activated')
+	AND ra.OrderEventName IN ('RGU Activated', 'Offer Activated', 'Offer Planned')
 	AND EXISTS (
 			SELECT * 
 			FROM #result 
-			WHERE SubscriptionKey = ra.SubscriptionKey 
+			WHERE SubscriptionOriginalKey = ra.SubscriptionOriginalKey 
 				AND OrderEventName = 'Migration Legacy'
-				AND active_from_CET = ra.active_from_CET
+				AND active_from_CET >= ra.active_from_CET
+	)
+
+	
+-- If a Offer Planned already has been registered on the subcription
+UPDATE ra
+SET Quantity = 0
+--SELECT ra.*
+FROM #result ra
+WHERE 1=1
+	AND ra.IsTLO = 1
+	AND ra.OrderEventName IN ( 'Offer Planned')
+	AND EXISTS (
+			SELECT * 
+			FROM #result 
+			WHERE SubscriptionOriginalKey = ra.SubscriptionOriginalKey 
+				AND OrderEventName = 'Offer Planned'
+				AND ProductType = ra.ProductType
+				AND active_from_CET < ra.active_from_CET
 	)
 
 -----------------------------------------------------------------------------------------------------------------------------
@@ -1189,8 +1370,11 @@ CROSS APPLY (
 	WHERE OrderEventName = 'Offer Disconnected Planned'
 ) e
 
-INSERT INTO #result
-SELECT * FROM #missing_planned_disconnect
+INSERT INTO #result ([CalendarKey], [TimeKey], [ProductKey], [ProductParentKey], [ProductHardwareKey], [CustomerKey], [SubscriptionKey], [QuoteKey], QuoteItemKey, [OrderEventKey], [SalesChannelKey], [BillingAccountKey], 
+	[PhoneDetailKey], [AddressBillingKey], [HouseHoldKey], TechnologyKey, EmployeeKey, TicketKey, ThirdPartyStoreKey, [IsTLO], [Quantity])
+SELECT [CalendarKey], [TimeKey], [ProductKey], [ProductParentKey], [ProductHardwareKey], [CustomerKey], [SubscriptionKey], [QuoteKey], QuoteItemKey, [OrderEventKey], [SalesChannelKey], [BillingAccountKey], 
+	[PhoneDetailKey], [AddressBillingKey], [HouseHoldKey], TechnologyKey, EmployeeKey, TicketKey, ThirdPartyStoreKey, [IsTLO], [Quantity]
+FROM #missing_planned_disconnect
 
 
 -----------------------------------------------------------------------------------------------------------------------------

@@ -15,6 +15,10 @@ SELECT
 	Suite,
 	NAMID,
 	[SubAddressDarId],
-	[SubAddressMadId]
-	--KvhxId
+	[SubAddressMadId],
+	--KvhxId,
+	DWValidFromDate,
+	DWValidToDate,
+	DWIsCurrent,
+	DWIsDeleted
 FROM [dimView].[Address]
