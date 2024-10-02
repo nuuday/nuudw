@@ -17,7 +17,8 @@ INSERT INTO #Subscriptions (SubscriptionKey, SubscriptionOriginalKey)
 SELECT DISTINCT SubscriptionKey, SubscriptionOriginalKey
 FROM dimView.Subscription
 WHERE SubscriptionKey <> '?'
---	AND SubscriptionKey IN ('1186d39d-d328-4146-8d07-f22adb378dd1')
+	AND DWIsDeleted <> 1
+--	AND SubscriptionKey IN ('0711a0e9-d98a-6502-b7d9-2d91cadb0923')
 
 UPDATE s
 SET IsMigratedFromLegacy = 1
@@ -735,7 +736,7 @@ CROSS APPLY (
 		AND IsTLO = 1 
 	ORDER BY active_from_CET DESC
 ) tlo
-CROSS APPLY (
+OUTER APPLY (
 	SELECT TOP 1 ProductKey AS ProductHardwareKey
 	FROM #all_lines_filtered_2
 	WHERE SubscriptionKey = al.SubscriptionKey 
@@ -746,6 +747,7 @@ CROSS APPLY (
 ) hardware
 WHERE 1=1
 	AND al.ProductName = 'Commitment'
+--	AND hardware.ProductHardwareKey IS NULL
 --	AND al.SubscriptionKey = '7a391a92-6f6e-4a10-ac4f-ab64fd659c6b'
 --ORDER BY CalendarKey, TimeKey
 

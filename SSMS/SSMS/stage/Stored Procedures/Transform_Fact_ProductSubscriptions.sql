@@ -36,6 +36,7 @@ INNER JOIN dimView.Subscription s
 	ON CONVERT( DATETIME2(0), CONCAT( f.[CalendarKey], ' ', [TimeKey] ) ) >= s.[SubscriptionValidFromDate]
 		AND CONVERT( DATETIME2(0), CONCAT( f.[CalendarKey], ' ', [TimeKey] ) ) < s.[SubscriptionValidToDate]
 		AND s.[SubscriptionKey] = f.[SubscriptionKey]
+		AND s.DWIsDeleted <> 1
 INNER JOIN dimView.OrderEvent e
 	ON e.OrderEventKey = f.OrderEventKey
 INNER JOIN dimView.Product p
@@ -44,7 +45,7 @@ WHERE
 	f.IsTLO = 1
 	AND f.ProductKey <> ISNULL( f.ProductHardwareKey, '' )
 	AND e.OrderEventName NOT LIKE 'Offer Commitment%'
---	AND f.SubscriptionKey = '41f2094c-456c-4b94-8fa5-0a635db9759c'
+--	AND f.SubscriptionKey = '60e05fb6-1194-4531-9f86-7e70ac3d4594'
 
 
 
@@ -187,7 +188,8 @@ FROM #subscription_dates_type2 sdt
 INNER JOIN dim.Subscription s 
 	ON s.SubscriptionKey = sdt.SubscriptionKey
 		AND s.SubscriptionValidFromDate <= DATEADD(ss,60*60*24-1,CAST(sdt.CalendarFromKey as datetime2(0))) -- end of day
-		AND s.SubscriptionValidToDate > DATEADD(ss,60*60*24-1,CAST(sdt.CalendarFromKey as datetime2(0))) -- end of day
+		AND s.SubscriptionValidToDate > DATEADD(ss,60*60*24-1,CAST(sdt.CalendarFromKey as datetime2(0))) -- end of day		
+		AND s.DWIsDeleted <> 1
 OUTER APPLY (
 	SELECT 
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Planned' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarPlannedKey,
