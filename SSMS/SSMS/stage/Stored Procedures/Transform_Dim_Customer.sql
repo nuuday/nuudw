@@ -18,7 +18,7 @@ FROM [sourceNuudlDawnView].[cimcustomer_History] customer
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlcustomercategory_History] customer_category
 	ON customer_category.id = customer.customer_category_id
 WHERE
-	customer.NUUDL_IsCurrent = 1
+	customer.NUUDL_IsLatest =1
 	--AND customer.customer_number='70004697884'
 
 

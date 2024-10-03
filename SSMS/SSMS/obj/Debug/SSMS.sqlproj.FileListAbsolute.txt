@@ -46,3 +46,15 @@ C:\Repos\nuudw\SSMS\SSMS\obj\Debug\Model.xml
 C:\Repos\nuudw\SSMS\SSMS\obj\Debug\refactor.xml
 C:\Repos\nuudw\SSMS\SSMS\obj\Debug\postdeploy.sql
 C:\Repos\nuudw\SSMS\SSMS\obj\Debug\predeploy.sql
+C:\Users\pawel.chudzinski\source\repos\nuuday\nuudw\SSMS\SSMS\bin\Debug\SSMS.dacpac
+C:\Users\pawel.chudzinski\source\repos\nuuday\nuudw\SSMS\SSMS\bin\Debug\SSMS.dll
+C:\Users\pawel.chudzinski\source\repos\nuuday\nuudw\SSMS\SSMS\bin\Debug\SSMS.pdb
+C:\Users\pawel.chudzinski\source\repos\nuuday\nuudw\SSMS\SSMS\bin\Debug\master.dacpac
+C:\Users\pawel.chudzinski\source\repos\nuuday\nuudw\SSMS\SSMS\obj\Debug\SSMS.sqlproj.AssemblyReference.cache
+C:\Users\pawel.chudzinski\source\repos\nuuday\nuudw\SSMS\SSMS\obj\Debug\Model.xml
+C:\Users\pawel.chudzinski\source\repos\nuuday\nuudw\SSMS\SSMS\obj\Debug\refactor.xml
+C:\Users\pawel.chudzinski\source\repos\nuuday\nuudw\SSMS\SSMS\obj\Debug\postdeploy.sql
+C:\Users\pawel.chudzinski\source\repos\nuuday\nuudw\SSMS\SSMS\obj\Debug\predeploy.sql
+C:\Users\pawel.chudzinski\source\repos\nuuday\nuudw\SSMS\SSMS\obj\Debug\SSMS.sqlproj.Up2Date
+C:\Users\pawel.chudzinski\source\repos\nuuday\nuudw\SSMS\SSMS\obj\Debug\SSMS.dll
+C:\Users\pawel.chudzinski\source\repos\nuuday\nuudw\SSMS\SSMS\obj\Debug\SSMS.pdb

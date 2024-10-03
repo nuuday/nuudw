@@ -34,8 +34,13 @@
     [DWModifiedDate]                  DATETIME2 (7)   NULL,
     [DWIsDeletedInSource]             BIT             NULL,
     [DWDeletedInSourceDate]           DATETIME2 (7)   NULL,
+    [NUUDL_IsDeleted]                 BIT             NULL,
+    [NUUDL_DeleteType]                NVARCHAR (4000) NULL,
+    [NUUDL_IsLatest]                  BIT             NULL,
     CONSTRAINT [PK_qssnrmlquoteitempricealteration_History] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC, [DWValidFromDate] ASC)
 );
+
+
 
 
 GO
@@ -46,4 +51,6 @@ CREATE NONCLUSTERED INDEX [NCIX_qssnrmlquoteitempricealteration_History__quote_i
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_qssnrmlquoteitempricealteration_History]
     ON [sourceNuudlDawn].[qssnrmlquoteitempricealteration_History];
+
+
 

@@ -40,11 +40,18 @@
     [NUUDL_ValidTo]                   DATETIME2 (7)   NULL,
     [NUUDL_ID]                        BIGINT          NOT NULL,
     [DWCreatedDate]                   DATETIME2 (7)   DEFAULT (getdate()) NULL,
+    [NUUDL_IsDeleted]                 BIT             NULL,
+    [NUUDL_DeleteType]                NVARCHAR (4000) NULL,
+    [NUUDL_IsLatest]                  BIT             NULL,
     CONSTRAINT [PK_qssnrmlquoteitem] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC)
 );
+
+
 
 
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_qssnrmlquoteitem]
     ON [sourceNuudlDawn].[qssnrmlquoteitem];
+
+
 

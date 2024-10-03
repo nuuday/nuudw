@@ -10,7 +10,7 @@ SELECT DISTINCT
 	CONVERT( NVARCHAR(10), account_num ) AS BillingAccountKey
 FROM [sourceNuudlDawnView].[nrmaccountkeyname_History] accountk
 WHERE 
-	accountk.NUUDL_IsCurrent = 1
+	accountk.NUUDL_IsLatest =1
 	AND accountk.name IN (
 			SELECT JSON_VALUE(item_accountRef,'$[0].refId') refId
 			FROM [sourceNuudlDawnView].[ibsitemshistory_History]

@@ -32,5 +32,9 @@ SELECT
 	,[DWModifiedDate]
 	,[DWIsDeletedInSource]
 	,[DWDeletedInSourceDate]
+	,[NUUDL_IsDeleted]
+	,[NUUDL_DeleteType]
+	,[NUUDL_IsLatest]
 FROM [sourceNuudlDawn].[orgchrteammember_History]
 WHERE DWIsCurrent = 1
+and NUUDL_DeleteType not like '%technical_delete%'

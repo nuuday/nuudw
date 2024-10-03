@@ -62,7 +62,11 @@ SELECT
 	,a.[DWModifiedDate]
 	,a.[DWIsDeletedInSource]
 	,a.[DWDeletedInSourceDate]
+	,a.[NUUDL_IsDeleted]
+	,a.[NUUDL_DeleteType]
+	,a.[NUUDL_IsLatest]
 FROM [sourceNuudlDawn].[ibsitemshistory_History] a
 LEFT JOIN [sourceNuudlDawn].[ibsitemshistory_History_Filter] b ON b.id = a.id
 WHERE a.DWIsCurrent = 1
 	AND b.id IS NULL
+	and a.NUUDL_DeleteType not like '%technical_delete%'

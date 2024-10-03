@@ -11,7 +11,7 @@ SELECT
 	, ISNULL( NULLIF( [status], '' ) , '?') AS TicketStatus
 INTO #gross_list
 FROM [sourceNuudlDawnView].[cpmnrmltroubleticket_History]
-WHERE NUUDL_IsCurrent = 1
+WHERE NUUDL_IsLatest =1
 
 
 -------------------------------------------------------------------------------

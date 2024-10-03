@@ -727,7 +727,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Schema Compare production with development.scmp" />
-    <None Include="Schema Compare development with local.scmp" />
+    <None Include="Schema Compare development with local_actual.scmp" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment.sql" />

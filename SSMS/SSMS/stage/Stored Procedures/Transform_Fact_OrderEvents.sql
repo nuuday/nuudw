@@ -103,10 +103,10 @@ INNER JOIN dim.OrderEvent ev
 	ON ev.SourceEventName = i.[state]
 LEFT JOIN [sourceNuudlDawnView].[qssnrmlquote_History] quote
 	ON quote.id = i.item_quoteId 
-		AND quote.NUUDL_IsCurrent = 1
+		AND quote.NUUDL_IsLatest =1
 LEFT JOIN [sourceNuudlDawnView].[nrmaccountkeyname_History] acc
 	ON acc.name = JSON_VALUE(i.item_accountRef,'$[0].refId') 
-		AND acc.NUUDL_IsCurrent = 1
+		AND acc.NUUDL_IsLatest =1
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] po
 	ON po.id = i.item_offeringId
 WHERE 1=1
@@ -170,25 +170,25 @@ OUTER APPLY (
 	FROM [sourceNuudlDawnView].worklogitems_History qcreated
 	INNER JOIN [sourceNuudlDawnView].orgchrteammember_History ucreated
 		ON ucreated.idm_user_id = JSON_VALUE(qcreated.changedBy, '$.userId')
-			AND ucreated.NUUDL_IsCurrent = 1
+			AND ucreated.NUUDL_IsLatest =1
 	WHERE qcreated.ref_id = al.QuoteKey
 		AND qcreated.source_state IS NULL
 		AND qcreated.target_state = 'IN_PROGRESS'
 		AND al.CurrentState = 'PLANNED'
 		AND ucreated.name IS NOT NULL
-		AND qcreated.NUUDL_IsCurrent = 1
+		AND qcreated.NUUDL_IsLatest =1
 ) created
 OUTER APPLY (
 	SELECT TOP 1 ucancelled.name AS EmployeeCancelledKey
 	FROM [sourceNuudlDawnView].worklogitems_History qcancelled
 	INNER JOIN [sourceNuudlDawnView].orgchrteammember_History ucancelled
 		ON ucancelled.idm_user_id = JSON_VALUE(qcancelled.changedBy, '$.userId')
-			AND ucancelled.NUUDL_IsCurrent = 1
+			AND ucancelled.NUUDL_IsLatest =1
 	WHERE qcancelled.ref_id = al.QuoteKey
 		AND qcancelled.target_state = 'CANCELLED'
 		AND al.CurrentState = 'CANCELLED'
 		AND ucancelled.name IS NOT NULL
-		AND qcancelled.NUUDL_IsCurrent = 1
+		AND qcancelled.NUUDL_IsLatest =1
 ) cancelled
 WHERE al.CurrentState IN ('PLANNED', 'CANCELLED')
 GROUP BY al.QuoteKey
@@ -211,10 +211,10 @@ INTO #billing_contact_details
 FROM [sourceNuudlDawnView].[cimcontactmediumassociation_History] cma
 INNER JOIN [sourceNuudlDawnView].[cimcontactmedium_History] cm
 	ON cm.id = cma.contact_medium_id
-		AND cm.NUUDL_IsCurrent = 1
+		AND cm.NUUDL_IsLatest =1
 		AND type_of_contact_method = 'Billing contact details'
 WHERE
-	cma.NUUDL_IsCurrent = 1
+	cma.NUUDL_IsLatest =1
 	--AND cma.ref_id='2ca8abb7-2e80-429e-be0a-65c594667a05'
 
 CREATE UNIQUE CLUSTERED INDEX CLIX ON #billing_contact_details (CustomerKey)
@@ -261,11 +261,11 @@ LEFT JOIN #billing_contact_details bcd
 	ON bcd.CustomerKey = al.CustomerKey
 LEFT JOIN [sourceNuudlDawnView].[nrmcusthasproductkeyname_History] kn
 	ON kn.name = al.SubscriptionKey
-		AND kn.NUUDL_IsCurrent = 1
+		AND kn.NUUDL_IsLatest =1
 LEFT JOIN [sourceNuudlDawnView].[nrmcustproductdetails_History] cpd
 	ON cpd.product_seq = kn.product_seq
 		AND cpd.customer_ref = kn.customer_ref
-		AND cpd.NUUDL_IsCurrent = 1
+		AND cpd.NUUDL_IsLatest =1
 		AND (cpd.product_label = al.ProductName OR cpd.override_product_name = al.ProductName)
 		AND al.active_from_CET BETWEEN cpd.start_dat AND ISNULL(cpd.end_dat,'9999-12-31')
 LEFT JOIN #quote_employees qem ON qem.QuoteKey = al.QuoteKey
@@ -403,10 +403,10 @@ INTO #hardware_return
 FROM [sourceNuudlDawnView].[cpmnrmltroubleticket_History] a
 INNER JOIN [sourceNuudlDawnView].[cpmnrmltroubleticketrelatedentityref_History] b
 	ON a.id = b.trouble_ticket_id
-		AND b.NUUDL_IsCurrent = 1
+		AND b.NUUDL_IsLatest =1
 LEFT JOIN [sourceNuudlDawnView].orgchrteammember_History c 
 	ON c.idm_user_id = a.created_by_user_id
-		AND c.NUUDL_IsCurrent = 1
+		AND c.NUUDL_IsLatest =1
 WHERE 1=1
 	AND a.NUUDL_IsCurrent =1
 	AND a.ticket_type = 'OWNED_EQUIPMENT_RETURN'
@@ -505,10 +505,10 @@ INTO #terminations
 FROM [sourceNuudlDawnView].[cpmnrmltroubleticket_History] a
 INNER JOIN [sourceNuudlDawnView].[cpmnrmltroubleticketrelatedentityref_History] b
 	ON a.id = b.trouble_ticket_id
-		AND b.NUUDL_IsCurrent = 1
+		AND b.NUUDL_IsLatest =1
 LEFT JOIN [sourceNuudlDawnView].orgchrteammember_History c 
 	ON c.idm_user_id = a.created_by_user_id
-		AND c.NUUDL_IsCurrent = 1
+		AND c.NUUDL_IsLatest =1
 WHERE 1=1
 	AND a.NUUDL_IsCurrent =1
 	AND a.ticket_type IN ('TERMINATION_REQUEST','PORT_OUT_REQUEST')
