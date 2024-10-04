@@ -1,5 +1,5 @@
 ﻿
-CREATE VIEW [sourceNuudlDawnView].[cimpartyroleassociation_History]
+CREATE VIEW[sourceNuudlDawnView].[cimpartyroleassociation_History]
 AS
 SELECT 
 	[active_from] ,
@@ -29,6 +29,7 @@ SELECT
 	,[NUUDL_IsDeleted]
 	,[NUUDL_DeleteType]
 	,[NUUDL_IsLatest]
+	,lsn
 FROM [sourceNuudlDawn].[cimpartyroleassociation_History]
 WHERE DWIsCurrent = 1
-and NUUDL_DeleteType not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'

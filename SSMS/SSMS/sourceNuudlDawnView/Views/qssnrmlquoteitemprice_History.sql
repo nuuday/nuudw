@@ -1,6 +1,6 @@
 ﻿
 
-CREATE VIEW [sourceNuudlDawnView].[qssnrmlquoteitemprice_History]
+CREATE VIEW[sourceNuudlDawnView].[qssnrmlquoteitemprice_History]
 AS
 SELECT 
 	[approx_installment_payment_amount_excluding_tax] ,
@@ -47,4 +47,4 @@ SELECT
 	,[NUUDL_IsLatest]
 FROM [sourceNuudlDawn].[qssnrmlquoteitemprice_History]
 WHERE DWIsCurrent = 1
-and NUUDL_DeleteType not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'

@@ -4,7 +4,7 @@
 
 
 
-CREATE VIEW [sourceNuudlDawnView].[ibsitemshistorycharacteristics_History]
+CREATE VIEW[sourceNuudlDawnView].[ibsitemshistorycharacteristics_History]
 AS
 SELECT
 	a.[id],
@@ -28,4 +28,4 @@ SELECT
 FROM [sourceNuudlDawn].[ibsitemshistorycharacteristics_History] a
 WHERE
 	a.DWIsCurrent = 1
-	and NUUDL_DeleteType not like '%technical_delete%'
+	and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'

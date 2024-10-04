@@ -1,5 +1,5 @@
 ﻿
-CREATE VIEW [sourceNuudlDawnView].[cimindividual_History]
+CREATE VIEW[sourceNuudlDawnView].[cimindividual_History]
 AS
 SELECT 
 	[active_from] ,
@@ -35,6 +35,7 @@ SELECT
 	,[NUUDL_IsDeleted]
 	,[NUUDL_DeleteType]
 	,[NUUDL_IsLatest]
+	,lsn
 FROM [sourceNuudlDawn].[cimindividual_History]
 WHERE DWIsCurrent = 1
-and NUUDL_DeleteType not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'
