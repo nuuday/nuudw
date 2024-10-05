@@ -207,6 +207,7 @@ SELECT DISTINCT
 		';', ISNULL( cm.Postcode, '' ), 
 		';', ISNULL( cm.City, '' )
 	) AddressBillingKey
+	,ROW_NUMBER() OVER( PARTITION BY cma.ref_id order by cm.type_of_contact) as rownumber
 INTO #billing_contact_details
 FROM [sourceNuudlDawnView].[cimcontactmediumassociation_History] cma
 INNER JOIN [sourceNuudlDawnView].[cimcontactmedium_History] cm
@@ -216,6 +217,8 @@ INNER JOIN [sourceNuudlDawnView].[cimcontactmedium_History] cm
 WHERE
 	cma.NUUDL_IsLatest =1
 	--AND cma.ref_id='2ca8abb7-2e80-429e-be0a-65c594667a05'
+--delete multiple address detail for customer
+delete from #billing_contact_details where rownumber>1
 
 CREATE UNIQUE CLUSTERED INDEX CLIX ON #billing_contact_details (CustomerKey)
 
