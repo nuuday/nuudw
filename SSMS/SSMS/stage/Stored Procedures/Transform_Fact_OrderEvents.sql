@@ -15,9 +15,9 @@ CREATE UNIQUE CLUSTERED INDEX CLIX ON #Subscriptions (SubscriptionKey)
 
 INSERT INTO #Subscriptions (SubscriptionKey, SubscriptionOriginalKey)
 SELECT DISTINCT SubscriptionKey, SubscriptionOriginalKey
-FROM dimView.Subscription
+FROM stage.dim_subscription
 WHERE SubscriptionKey <> '?'
-	AND DWIsDeleted <> 1
+	AND [SubscriptionIsCurrent] = 1
 --	AND SubscriptionKey IN ('0711a0e9-d98a-6502-b7d9-2d91cadb0923')
 
 UPDATE s
