@@ -20,13 +20,14 @@
     [name]                                 NVARCHAR (4000) NULL,
     [net_promoter_score]                   NVARCHAR (4000) NULL,
     [ola_ref]                              NVARCHAR (MAX)  NULL,
-    [op]                                   NVARCHAR (4000) NULL,
     [org_chart_ref]                        NVARCHAR (MAX)  NULL,
     [portfolio]                            NVARCHAR (4000) NULL,
     [start_date_time]                      DATETIME2 (7)   NULL,
     [status]                               NVARCHAR (4000) NULL,
     [status_reason]                        NVARCHAR (4000) NULL,
     [ts_ms]                                BIGINT          NULL,
+    [lsn]                                  BIGINT          NULL,
+    [op]                                   NVARCHAR (4000) NULL,
     [extended_attributes_brandName]        NVARCHAR (4000) NULL,
     [extended_attributes_employeeBrand]    NVARCHAR (4000) NULL,
     [extended_attributes_employeeId]       NVARCHAR (4000) NULL,
@@ -34,18 +35,20 @@
     [extended_attributes_migration_phase]  NVARCHAR (4000) NULL,
     [extended_attributes_migration_source] NVARCHAR (4000) NULL,
     [extended_attributes_migrationFlag]    NVARCHAR (4000) NULL,
-    [NUUDL_CuratedBatchID]                 INT             NULL,
-    [NUUDL_CuratedProcessedTimestamp]      NVARCHAR (4000) NULL,
     [NUUDL_IsCurrent]                      BIT             NULL,
     [NUUDL_ValidFrom]                      DATETIME2 (7)   NULL,
     [NUUDL_ValidTo]                        DATETIME2 (7)   NULL,
-    [NUUDL_ID]                             BIGINT          NOT NULL,
-    [DWCreatedDate]                        DATETIME2 (7)   DEFAULT (getdate()) NULL,
+    [NUUDL_CuratedBatchID]                 INT             NULL,
+    [NUUDL_CuratedProcessedTimestamp]      NVARCHAR (4000) NULL,
     [NUUDL_IsDeleted]                      BIT             NULL,
     [NUUDL_DeleteType]                     NVARCHAR (4000) NULL,
+    [NUUDL_ID]                             BIGINT          NOT NULL,
     [NUUDL_IsLatest]                       BIT             NULL,
+    [DWCreatedDate]                        DATETIME2 (7)   DEFAULT (getdate()) NULL,
     CONSTRAINT [PK_cimcustomer] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC)
 );
+
+
 
 
 
@@ -53,6 +56,8 @@
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_cimcustomer]
     ON [sourceNuudlDawn].[cimcustomer];
+
+
 
 
 

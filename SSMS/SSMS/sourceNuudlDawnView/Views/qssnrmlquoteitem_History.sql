@@ -1,5 +1,5 @@
 ﻿
-CREATE VIEW [sourceNuudlDawnView].[qssnrmlquoteitem_History]
+CREATE VIEW[sourceNuudlDawnView].[qssnrmlquoteitem_History]
 AS
 SELECT 
 	[account_id] ,
@@ -54,4 +54,4 @@ SELECT
 	,[NUUDL_IsLatest]
 FROM [sourceNuudlDawn].[qssnrmlquoteitem_History]
 WHERE DWIsCurrent = 1
-and NUUDL_DeleteType not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'

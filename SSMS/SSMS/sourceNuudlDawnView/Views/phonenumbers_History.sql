@@ -1,5 +1,6 @@
 ﻿
-CREATE VIEW [sourceNuudlDawnView].[phonenumbers_History]
+
+CREATE VIEW[sourceNuudlDawnView].[phonenumbers_History]
 AS
 SELECT 
 	[aging_period_end_date] ,
@@ -14,9 +15,15 @@ SELECT
 	[op] ,
 	[perform_auto_categorization] ,
 	[phone_number] ,
-	[ported_in] ,
+	CASE 
+		WHEN [ported_in] LIKE '%false%' OR [ported_in] = '0' THEN '0' 
+		WHEN [ported_in] LIKE '%true%' OR [ported_in] = '1' THEN '1'	
+	END [ported_in],
 	[ported_in_from] ,
-	[ported_out] ,
+	CASE 
+		WHEN [ported_out] LIKE '%false%' OR [ported_out] = '0' THEN '0' 
+		WHEN [ported_out] LIKE '%true%' OR [ported_out] = '1' THEN '1'	
+	END [ported_out],
 	[ported_out_to] ,
 	[serving_switch_id] ,
 	[status] ,
@@ -40,6 +47,7 @@ SELECT
 	,[NUUDL_IsDeleted]
 	,[NUUDL_DeleteType]
 	,[NUUDL_IsLatest]
+	,lsn
 FROM [sourceNuudlDawn].[phonenumbers_History]
 WHERE DWIsCurrent = 1
-and NUUDL_DeleteType not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'
