@@ -1,6 +1,6 @@
 ﻿
 
-CREATE VIEW[sourceNuudlDawnView].[ibsnrmlproductinstance_History]
+CREATE VIEW [sourceNuudlDawnView].[ibsnrmlproductinstance_History]
 AS
 SELECT 
 	[account_ref_id] ,
@@ -63,4 +63,4 @@ SELECT
 	,lsn
 FROM [sourceNuudlDawn].[ibsnrmlproductinstance_History]
 WHERE DWIsCurrent = 1
-and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') <> 'technical_delete'

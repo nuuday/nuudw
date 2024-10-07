@@ -1,6 +1,6 @@
 ﻿
 
-CREATE VIEW[sourceNuudlDawnView].[phonenumbers_History]
+CREATE VIEW [sourceNuudlDawnView].[phonenumbers_History]
 AS
 SELECT 
 	[aging_period_end_date] ,
@@ -50,4 +50,4 @@ SELECT
 	,lsn
 FROM [sourceNuudlDawn].[phonenumbers_History]
 WHERE DWIsCurrent = 1
-and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') <> 'technical_delete'

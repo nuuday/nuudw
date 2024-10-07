@@ -1,5 +1,5 @@
 ﻿
-CREATE VIEW[sourceNuudlDawnView].[qssnrmlquote_History]
+CREATE VIEW [sourceNuudlDawnView].[qssnrmlquote_History]
 AS
 SELECT 
 	[approval_level] ,
@@ -51,4 +51,4 @@ SELECT
 	,[NUUDL_IsLatest]
 FROM [sourceNuudlDawn].[qssnrmlquote_History]
 WHERE DWIsCurrent = 1
-and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') <> 'technical_delete'

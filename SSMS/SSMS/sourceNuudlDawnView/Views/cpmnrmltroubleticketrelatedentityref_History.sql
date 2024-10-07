@@ -1,5 +1,5 @@
 ﻿
-CREATE VIEW[sourceNuudlDawnView].[cpmnrmltroubleticketrelatedentityref_History]
+CREATE VIEW [sourceNuudlDawnView].[cpmnrmltroubleticketrelatedentityref_History]
 AS
 SELECT 
 	[id] ,
@@ -28,4 +28,4 @@ SELECT
 	,lsn
 FROM [sourceNuudlDawn].[cpmnrmltroubleticketrelatedentityref_History]
 WHERE DWIsCurrent = 1
-and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') <> 'technical_delete'

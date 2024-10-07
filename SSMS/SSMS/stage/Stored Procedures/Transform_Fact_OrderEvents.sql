@@ -15,9 +15,9 @@ CREATE UNIQUE CLUSTERED INDEX CLIX ON #Subscriptions (SubscriptionKey)
 
 INSERT INTO #Subscriptions (SubscriptionKey, SubscriptionOriginalKey)
 SELECT DISTINCT SubscriptionKey, SubscriptionOriginalKey
-FROM stage.dim_subscription
+FROM dimView.Subscription
 WHERE SubscriptionKey <> '?'
-	AND [SubscriptionIsCurrent] = 1
+	AND DWIsDeleted <> 1
 --	AND SubscriptionKey IN ('0711a0e9-d98a-6502-b7d9-2d91cadb0923')
 
 UPDATE s
@@ -110,6 +110,7 @@ LEFT JOIN [sourceNuudlDawnView].[nrmaccountkeyname_History] acc
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] po
 	ON po.id = i.item_offeringId
 WHERE 1=1
+	AND i.NUUDL_IsLatest = 1
 --	AND COALESCE(i.item_parentId, i.id) = '22654a4a-7078-45a2-a356-9064d7db6e76'
 
 
@@ -155,7 +156,24 @@ DELETE FROM #all_lines
 WHERE 
 	ProductKey IS NULL
 
-	
+
+-- Fetch worklog items for next step
+DROP TABLE IF EXISTS #worklog_quotes
+SELECT 
+	u.name AS EmployeeKey
+	, w.ref_id AS QuoteKey
+	, w.source_state
+	, w.target_state	
+INTO #worklog_quotes
+FROM [sourceNuudlDawnView].worklogitems_History w
+INNER JOIN [sourceNuudlDawnView].orgchrteammember_History u
+	ON u.idm_user_id = w.changedBy_userId
+		AND u.name IS NOT NULL
+		AND u.NUUDL_IsLatest = 1
+WHERE w.NUUDL_IsLatest = 1
+	AND w.ref_type = 'Quote'
+
+CREATE CLUSTERED INDEX CLIX ON #worklog_quotes (QuoteKey)	
 
 -- Get employees who either added or cancelled the quote
 DROP TABLE IF EXISTS #quote_employees
@@ -166,29 +184,19 @@ SELECT
 INTO #quote_employees
 FROM #all_lines al
 OUTER APPLY (
-	SELECT TOP 1 ucreated.name AS EmployeeKey
-	FROM [sourceNuudlDawnView].worklogitems_History qcreated
-	INNER JOIN [sourceNuudlDawnView].orgchrteammember_History ucreated
-		ON ucreated.idm_user_id = JSON_VALUE(qcreated.changedBy, '$.userId')
-			AND ucreated.NUUDL_IsLatest =1
-	WHERE qcreated.ref_id = al.QuoteKey
-		AND qcreated.source_state IS NULL
-		AND qcreated.target_state = 'IN_PROGRESS'
+	SELECT TOP 1 wq.EmployeeKey
+	FROM #worklog_quotes wq
+	WHERE wq.QuoteKey = al.QuoteKey
+		AND wq.source_state IS NULL
+		AND wq.target_state = 'IN_PROGRESS'
 		AND al.CurrentState = 'PLANNED'
-		AND ucreated.name IS NOT NULL
-		AND qcreated.NUUDL_IsLatest =1
 ) created
 OUTER APPLY (
-	SELECT TOP 1 ucancelled.name AS EmployeeCancelledKey
-	FROM [sourceNuudlDawnView].worklogitems_History qcancelled
-	INNER JOIN [sourceNuudlDawnView].orgchrteammember_History ucancelled
-		ON ucancelled.idm_user_id = JSON_VALUE(qcancelled.changedBy, '$.userId')
-			AND ucancelled.NUUDL_IsLatest =1
-	WHERE qcancelled.ref_id = al.QuoteKey
-		AND qcancelled.target_state = 'CANCELLED'
+	SELECT TOP 1 wq.EmployeeKey AS EmployeeCancelledKey
+	FROM #worklog_quotes wq
+	WHERE wq.QuoteKey = al.QuoteKey
+		AND wq.target_state = 'CANCELLED'
 		AND al.CurrentState = 'CANCELLED'
-		AND ucancelled.name IS NOT NULL
-		AND qcancelled.NUUDL_IsLatest =1
 ) cancelled
 WHERE al.CurrentState IN ('PLANNED', 'CANCELLED')
 GROUP BY al.QuoteKey

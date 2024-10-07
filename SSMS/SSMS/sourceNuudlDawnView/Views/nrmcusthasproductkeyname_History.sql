@@ -1,5 +1,5 @@
 ﻿
-CREATE VIEW[sourceNuudlDawnView].[nrmcusthasproductkeyname_History]
+CREATE VIEW [sourceNuudlDawnView].[nrmcusthasproductkeyname_History]
 AS
 SELECT 
 	[customer_ref] ,
@@ -26,4 +26,4 @@ SELECT
 	,lsn
 FROM [sourceNuudlDawn].[nrmcusthasproductkeyname_History]
 WHERE DWIsCurrent = 1
-and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') <> 'technical_delete'

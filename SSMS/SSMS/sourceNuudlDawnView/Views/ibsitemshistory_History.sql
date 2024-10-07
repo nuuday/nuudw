@@ -7,7 +7,7 @@
 
 
 
-CREATE VIEW[sourceNuudlDawnView].[ibsitemshistory_History]
+CREATE VIEW [sourceNuudlDawnView].[ibsitemshistory_History]
 AS
 SELECT 
 	a.[active_from] ,
@@ -70,4 +70,4 @@ FROM [sourceNuudlDawn].[ibsitemshistory_History] a
 LEFT JOIN [sourceNuudlDawn].[ibsitemshistory_History_Filter] b ON b.id = a.id
 WHERE a.DWIsCurrent = 1
 	AND b.id IS NULL
-	and ISNULL(a.NUUDL_DeleteType,'') not like '%technical_delete%'
+	and ISNULL(a.NUUDL_DeleteType,'') <> 'technical_delete'

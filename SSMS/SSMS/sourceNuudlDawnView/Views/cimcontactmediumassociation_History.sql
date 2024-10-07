@@ -1,5 +1,5 @@
 ﻿
-CREATE VIEW[sourceNuudlDawnView].[cimcontactmediumassociation_History]
+CREATE VIEW [sourceNuudlDawnView].[cimcontactmediumassociation_History]
 AS
 SELECT 
 	[active_from] ,
@@ -29,4 +29,4 @@ SELECT
 	,lsn
 FROM [sourceNuudlDawn].[cimcontactmediumassociation_History]
 WHERE DWIsCurrent = 1
-and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') <> 'technical_delete'

@@ -1,5 +1,5 @@
 ﻿
-CREATE VIEW[sourceNuudlDawnView].[nrmaccountkeyname_History]
+CREATE VIEW [sourceNuudlDawnView].[nrmaccountkeyname_History]
 AS
 SELECT 
 	[account_num] ,
@@ -25,4 +25,4 @@ SELECT
 	,lsn
 FROM [sourceNuudlDawn].[nrmaccountkeyname_History]
 WHERE DWIsCurrent = 1
-and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') <> 'technical_delete'

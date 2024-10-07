@@ -13,6 +13,7 @@
     [ts_ms]                           BIGINT          NULL,
     [lsn]                             BIGINT          NULL,
     [op]                              NVARCHAR (4000) NULL,
+    [changedby_userId]                NVARCHAR (4000) NULL,
     [NUUDL_IsCurrent]                 BIT             NULL,
     [NUUDL_ValidFrom]                 DATETIME2 (7)   NULL,
     [NUUDL_ValidTo]                   DATETIME2 (7)   NULL,
@@ -37,6 +38,8 @@
 
 
 
+
+
 GO
 
 
@@ -44,6 +47,8 @@ GO
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_worklogitems_History]
     ON [sourceNuudlDawn].[worklogitems_History];
+
+
 
 
 

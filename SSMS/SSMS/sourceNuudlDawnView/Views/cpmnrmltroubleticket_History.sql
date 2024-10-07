@@ -1,6 +1,6 @@
 ﻿
 
-CREATE VIEW[sourceNuudlDawnView].[cpmnrmltroubleticket_History]
+CREATE VIEW [sourceNuudlDawnView].[cpmnrmltroubleticket_History]
 AS
 SELECT 
 	[approval_reason] ,
@@ -83,4 +83,4 @@ SELECT
 	,lsn
 FROM [sourceNuudlDawn].[cpmnrmltroubleticket_History]
 WHERE DWIsCurrent = 1
-and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') <> 'technical_delete'

@@ -325,12 +325,12 @@ VALUES
 ,@BooleanFalse
 )
 '
-+ CASE WHEN NULLIF(@MatchType1,'') IS NULL THEN '' ELSE 'WHEN MATCHED AND (' + @MatchType1 +')
++ CASE WHEN NULLIF(@MatchType1,'') IS NULL THEN '' ELSE 'WHEN MATCHED AND (' + @MatchType1 +' OR [target].DWIsDeleted = @BooleanTrue)
 
 THEN UPDATE
 
 SET 
-'+  @UpdateType1 + ', [target].[DWModifiedDate] = @CurrentDateTime
+'+  @UpdateType1 + ', [target].[DWModifiedDate] = @CurrentDateTime, [target].[DWIsDeleted] = @BooleanFalse
 ' END
 + '
 WHEN NOT MATCHED BY SOURCE AND 
@@ -343,6 +343,7 @@ THEN UPDATE
 
 SET
 [target].[DWIsDeleted] = @BooleanTrue
+, [target].[DWModifiedDate] = @CurrentDateTime
 ;'
 
 

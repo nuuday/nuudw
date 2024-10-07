@@ -1,6 +1,6 @@
 ﻿
 
-CREATE VIEW[sourceNuudlDawnView].[ibsnrmlcharacteristic_History]
+CREATE VIEW [sourceNuudlDawnView].[ibsnrmlcharacteristic_History]
 AS
 SELECT 
 	[attribute_id] ,
@@ -30,4 +30,4 @@ SELECT
 	,lsn
 FROM [sourceNuudlDawn].[ibsnrmlcharacteristic_History]
 WHERE DWIsCurrent = 1
-and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') <> 'technical_delete'

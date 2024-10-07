@@ -1,5 +1,5 @@
 ﻿
-CREATE VIEW[sourceNuudlDawnView].[orgchrteammember_History]
+CREATE VIEW [sourceNuudlDawnView].[orgchrteammember_History]
 AS
 SELECT 
 	[contact_medium] ,
@@ -38,4 +38,4 @@ SELECT
 	,lsn
 FROM [sourceNuudlDawn].[orgchrteammember_History]
 WHERE DWIsCurrent = 1
-and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') <> 'technical_delete'

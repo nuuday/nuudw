@@ -14,4 +14,5 @@ WHERE
 	AND accountk.name IN (
 			SELECT JSON_VALUE(item_accountRef,'$[0].refId') refId
 			FROM [sourceNuudlDawnView].[ibsitemshistory_History]
+			WHERE NUUDL_IsLatest = 1
 		)

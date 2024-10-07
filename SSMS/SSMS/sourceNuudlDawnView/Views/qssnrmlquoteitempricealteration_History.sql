@@ -1,6 +1,6 @@
 ﻿
 
-CREATE VIEW[sourceNuudlDawnView].[qssnrmlquoteitempricealteration_History]
+CREATE VIEW [sourceNuudlDawnView].[qssnrmlquoteitempricealteration_History]
 AS
 SELECT 
 	[action] ,
@@ -44,4 +44,4 @@ SELECT
 	,lsn
 FROM [sourceNuudlDawn].[qssnrmlquoteitempricealteration_History]
 WHERE DWIsCurrent = 1
-and ISNULL(NUUDL_DeleteType,'') not like '%technical_delete%'
+and ISNULL(NUUDL_DeleteType,'') <> 'technical_delete'

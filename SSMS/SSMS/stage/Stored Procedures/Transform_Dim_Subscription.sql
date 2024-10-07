@@ -27,6 +27,7 @@ SELECT
 	) SubscriptionParentKey
 FROM [sourceNuudlDawnView].[ibsitemshistory_History] i
 WHERE 1=1
+	AND i.NUUDL_IsLatest = 1
 --	AND (i.item_parentId IN ('f8abd6d9-a845-4af4-aa2e-e3a438466a01') OR i.id IN ('f8abd6d9-a845-4af4-aa2e-e3a438466a01'))
 GROUP BY COALESCE(i.item_parentId, i.id)
 
