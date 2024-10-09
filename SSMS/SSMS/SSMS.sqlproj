@@ -714,6 +714,7 @@
     <Build Include="Security\troubleshooting.sql" />
     <Build Include="martView_PRX\Views\FactProductMigrations.sql" />
     <Build Include="factView\Views\FactProductMigrations.sql" />
+    <Build Include="SourceNuudlNAM\Tables\Nam_History_Error.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
