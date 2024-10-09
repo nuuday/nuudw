@@ -9,4 +9,4 @@ INSERT INTO stage.[Dim_HouseHold] WITH (TABLOCK) (HouseHoldKey)
 SELECT  
 	CONVERT( NVARCHAR(36), id ) AS HouseHoldKey
 FROM [sourceNuudlDawnView].[cimcontactmedium_History] 
-WHERE NUUDL_IsCurrent = 1
+WHERE NUUDL_IsLatest =1

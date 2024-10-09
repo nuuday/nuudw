@@ -38,5 +38,10 @@ SELECT
 	,[DWModifiedDate]
 	,[DWIsDeletedInSource]
 	,[DWDeletedInSourceDate]
+	,[NUUDL_IsDeleted]
+	,[NUUDL_DeleteType]
+	,[NUUDL_IsLatest]
+	,lsn
 FROM [sourceNuudlDawn].[qssnrmlquoteitempricealteration_History]
 WHERE DWIsCurrent = 1
+and ISNULL(NUUDL_DeleteType,'') <> 'technical_delete'

@@ -46,7 +46,7 @@ OUTER APPLY (
 		SUM( value_excluding_tax ) AS value_excluding_tax
 	FROM sourceNuudlDawnView.qssnrmlquoteitempricealteration_History a
 	WHERE
-		a.NUUDL_IsCurrent = 1
+		a.NUUDL_IsLatest =1
 		AND quote_item.action = 'ADD'
 		AND quote_item_id = quote_item.id
 		AND quote_id = quote_item.quote_id
@@ -55,7 +55,7 @@ OUTER APPLY (
 	GROUP BY price_alteration_type, price_type
 ) discount
 JOIN sourceNuudlDawnView.ibsnrmlproductinstance_History p
-	ON p.id = quote_item.id AND p.NUUDL_IsCurrent = 1
+	ON p.id = quote_item.id AND p.NUUDL_IsLatest =1
 WHERE 1=1
 	AND quote_item.action <> 'DASH'
 	AND quote_item.state = 'COMPLETED'

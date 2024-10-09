@@ -714,6 +714,7 @@
     <Build Include="Security\troubleshooting.sql" />
     <Build Include="martView_PRX\Views\FactProductMigrations.sql" />
     <Build Include="factView\Views\FactProductMigrations.sql" />
+    <Build Include="SourceNuudlNAM\Tables\Nam_History_Error.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
@@ -727,6 +728,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Schema Compare production with development.scmp" />
+    <None Include="Schema Compare development with local_actual.scmp" />
     <None Include="Schema Compare development with local.scmp" />
   </ItemGroup>
   <ItemGroup>

@@ -11,7 +11,6 @@
     [fax_number]                      NVARCHAR (4000) NULL,
     [id]                              NVARCHAR (50)   NULL,
     [is_active]                       BIT             NULL,
-    [op]                              NVARCHAR (4000) NULL,
     [phone_ext_number]                NVARCHAR (4000) NULL,
     [phone_number]                    NVARCHAR (4000) NULL,
     [postcode]                        NVARCHAR (4000) NULL,
@@ -25,23 +24,36 @@
     [state_or_province]               NVARCHAR (4000) NULL,
     [street1]                         NVARCHAR (4000) NULL,
     [street2]                         NVARCHAR (4000) NULL,
-    [ts_ms]                           BIGINT          NULL,
     [type_of_contact]                 NVARCHAR (4000) NULL,
     [type_of_contact_method]          NVARCHAR (4000) NULL,
+    [ts_ms]                           BIGINT          NULL,
+    [lsn]                             BIGINT          NULL,
+    [op]                              NVARCHAR (4000) NULL,
     [extended_attributes_floor]       NVARCHAR (4000) NULL,
     [extended_attributes_suite]       NVARCHAR (4000) NULL,
-    [NUUDL_CuratedBatchID]            INT             NULL,
-    [NUUDL_CuratedProcessedTimestamp] NVARCHAR (4000) NULL,
     [NUUDL_IsCurrent]                 BIT             NULL,
     [NUUDL_ValidFrom]                 DATETIME2 (7)   NULL,
     [NUUDL_ValidTo]                   DATETIME2 (7)   NULL,
+    [NUUDL_CuratedBatchID]            INT             NULL,
+    [NUUDL_CuratedProcessedTimestamp] NVARCHAR (4000) NULL,
+    [NUUDL_IsDeleted]                 BIT             NULL,
+    [NUUDL_DeleteType]                NVARCHAR (4000) NULL,
+    [NUUDL_IsLatest]                  BIT             NULL,
     [NUUDL_ID]                        BIGINT          NOT NULL,
     [DWCreatedDate]                   DATETIME2 (7)   DEFAULT (getdate()) NULL,
     CONSTRAINT [PK_cimcontactmedium] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC)
 );
 
 
+
+
+
+
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_cimcontactmedium]
     ON [sourceNuudlDawn].[cimcontactmedium];
+
+
+
+
 

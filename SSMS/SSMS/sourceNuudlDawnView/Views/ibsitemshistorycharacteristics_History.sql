@@ -3,6 +3,7 @@
 
 
 
+
 CREATE VIEW [sourceNuudlDawnView].[ibsitemshistorycharacteristics_History]
 AS
 SELECT
@@ -21,6 +22,10 @@ SELECT
 	a.[DWModifiedDate],
 	a.[DWIsDeletedInSource],
 	a.[DWDeletedInSourceDate]
+	,a.[NUUDL_IsDeleted]
+	,a.[NUUDL_DeleteType]
+	,a.[NUUDL_IsLatest]
 FROM [sourceNuudlDawn].[ibsitemshistorycharacteristics_History] a
 WHERE
 	a.DWIsCurrent = 1
+	and ISNULL(NUUDL_DeleteType,'') <> 'technical_delete'

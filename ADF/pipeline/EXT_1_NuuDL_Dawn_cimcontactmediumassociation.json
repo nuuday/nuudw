@@ -188,7 +188,7 @@
           "source": {
             "type": "AzureDatabricksDeltaLakeSource",
             "query": {
-              "value": "\r\nSELECT \r\n`active_from` \r\n,to_json(`changed_by`) `changed_by` \r\n,`contact_medium_id` \r\n,`id` \r\n,`op` \r\n,`ref_id` \r\n,`ref_type` \r\n,`ts_ms` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_ID` \r\n \r\nFROM dai.@{activity('Lookup_Source_Schema_Name').output.firstRow.SourceSchemaName}.`cimcontactmediumassociation`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
+              "value": "\r\nSELECT \r\n`active_from` \r\n,to_json(`changed_by`) `changed_by` \r\n,`contact_medium_id` \r\n,`id` \r\n,`ref_id` \r\n,`ref_type` \r\n,`ts_ms` \r\n,`lsn` \r\n,`op` \r\n,`NUUDL_IsCurrent` \r\n,`NUUDL_ValidFrom` \r\n,`NUUDL_ValidTo` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n,`NUUDL_IsDeleted` \r\n,`NUUDL_DeleteType` \r\n,`NUUDL_ID` \r\n,`NUUDL_IsLatest` \r\n \r\nFROM dai.@{activity('Lookup_Source_Schema_Name').output.firstRow.SourceSchemaName}.`cimcontactmediumassociation`\r\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
               "type": "Expression"
             },
             "exportSettings": {

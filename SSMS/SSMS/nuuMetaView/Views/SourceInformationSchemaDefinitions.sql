@@ -1,6 +1,7 @@
 ﻿
 
 
+
 CREATE VIEW [nuuMetaView].[SourceInformationSchemaDefinitions] AS
 
 WITH ExtractSchema AS
@@ -192,7 +193,7 @@ LEFT JOIN [nuuMeta].[SourceInformationSchema] SourceTable
 	ON SourceData.SourceObjectID = SourceTable.SourceObjectID
 		AND SourceData.ColumnName = SourceTable.ColumnName
 WHERE 
-	(COALESCE( SourceData.ColumnName, SourceTable.ColumnName ) IN ('NUUDL_ValidFrom','NUUDL_ValidTo','NUUDL_IsCurrent','NUUDL_CuratedBatchID','NUUDL_CuratedProcessedTimestamp','NUUDL_ID') 
+	(COALESCE( SourceData.ColumnName, SourceTable.ColumnName ) IN ('NUUDL_ValidFrom','NUUDL_ValidTo','NUUDL_IsCurrent','NUUDL_CuratedBatchID','NUUDL_CuratedProcessedTimestamp','NUUDL_ID', 'NUUDL_IsLatest', 'NUUDL_IsDeleted', 'NUUDL_DeleteType') 
 		OR COALESCE( SourceData.ColumnName, SourceTable.ColumnName ) NOT LIKE 'NUUDL%')
 	--AND COALESCE( SourceData.SourceObjectID, SourceTable.SourceObjectID )  =1566
 

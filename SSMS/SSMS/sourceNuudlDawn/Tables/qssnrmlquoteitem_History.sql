@@ -11,7 +11,6 @@
     [business_group_name]             NVARCHAR (4000) NULL,
     [contracted_date]                 DATETIME2 (7)   NULL,
     [creation_time]                   DATETIME2 (7)   NULL,
-    [delivery_item_id]                NVARCHAR (50)   NULL,
     [disconnection_reason]            NVARCHAR (4000) NULL,
     [distribution_channel_id]         NVARCHAR (50)   NULL,
     [extended_parameters]             NVARCHAR (MAX)  NULL,
@@ -20,7 +19,6 @@
     [market_id]                       NVARCHAR (50)   NULL,
     [marketing_bundle_id]             NVARCHAR (50)   NULL,
     [number_of_installments]          DECIMAL (10)    NULL,
-    [op]                              NVARCHAR (4000) NULL,
     [parent_quote_item_id]            NVARCHAR (50)   NULL,
     [planned_disconnection_date]      DATETIME2 (7)   NULL,
     [product_instance_id]             NVARCHAR (50)   NULL,
@@ -32,12 +30,18 @@
     [quote_version]                   NVARCHAR (4000) NULL,
     [root_quote_item_id]              NVARCHAR (50)   NULL,
     [state]                           NVARCHAR (4000) NULL,
+    [delivery_item_id]                NVARCHAR (50)   NULL,
     [ts_ms]                           BIGINT          NULL,
-    [NUUDL_CuratedBatchID]            INT             NULL,
-    [NUUDL_CuratedProcessedTimestamp] NVARCHAR (4000) NULL,
+    [lsn]                             BIGINT          NULL,
+    [op]                              NVARCHAR (4000) NULL,
     [NUUDL_IsCurrent]                 BIT             NULL,
     [NUUDL_ValidFrom]                 DATETIME2 (7)   NULL,
     [NUUDL_ValidTo]                   DATETIME2 (7)   NULL,
+    [NUUDL_CuratedBatchID]            INT             NULL,
+    [NUUDL_CuratedProcessedTimestamp] NVARCHAR (4000) NULL,
+    [NUUDL_IsDeleted]                 BIT             NULL,
+    [NUUDL_DeleteType]                NVARCHAR (4000) NULL,
+    [NUUDL_IsLatest]                  BIT             NULL,
     [NUUDL_ID]                        BIGINT          NOT NULL,
     [DWIsCurrent]                     BIT             NULL,
     [DWValidFromDate]                 DATETIME2 (7)   NOT NULL,
@@ -52,12 +56,19 @@
 
 
 
+
+
+
+
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_qssnrmlquoteitem_History]
     ON [sourceNuudlDawn].[qssnrmlquoteitem_History];
 
 
+
+
+
+
 GO
-CREATE NONCLUSTERED INDEX [NCIX_qssnrmlquoteitem_History__id_quote_version_quote_id]
-    ON [sourceNuudlDawn].[qssnrmlquoteitem_History]([DWIsCurrent] ASC, [NUUDL_IsCurrent] ASC, [id] ASC, [quote_version] ASC, [quote_id] ASC);
+
 
