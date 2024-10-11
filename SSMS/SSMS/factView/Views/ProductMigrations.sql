@@ -1,6 +1,7 @@
 ﻿
 
-CREATE VIEW factView.[FactProductMigrations]
+
+CREATE VIEW [factView].[ProductMigrations]
 AS
 	SELECT 
 		f.CalendarID, 
