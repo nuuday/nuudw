@@ -3,6 +3,7 @@
 
 
 
+
 CREATE VIEW [martView_PRX].[DimPhoneDetail]
 AS
 SELECT 
@@ -14,6 +15,9 @@ SELECT
 	[PortedOut],
 	[PortedInFrom],
 	[PortedOutTo],
+	PhoneDetailValidFromDate,
+	PhoneDetailValidToDate,
+	PhoneDetailIsCurrent,
 	DWValidFromDate,
 	DWValidToDate,
 	DWIsCurrent,
