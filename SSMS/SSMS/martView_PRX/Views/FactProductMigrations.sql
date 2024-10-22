@@ -1,5 +1,6 @@
 ﻿
 
+
 CREATE VIEW [martView_PRX].[FactProductMigrations]
 AS
 	SELECT 
@@ -11,4 +12,4 @@ AS
 		ProductToID, 
 		IsUpgrade,
 		IsDowngrade
-	FROM factView.[FactProductMigrations]
+	FROM factView.[ProductMigrations]
