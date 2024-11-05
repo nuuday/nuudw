@@ -1,11 +1,14 @@
 ﻿
 
 
+
 CREATE VIEW [martView_PRX].[FactProductSubscriptions] 
 AS
 SELECT
 	[CalendarFromID]
+	,TimeFromID
 	,[CalendarToID]
+	,TimeToID
 	,[SubscriptionID]
 	,[ProductID]
 	,[CustomerID]

@@ -1,6 +1,8 @@
 ﻿CREATE TABLE [fact].[ProductSubscriptions] (
     [CalendarFromID]                  INT           DEFAULT ((-1)) NOT NULL,
+    [TimeFromID]                      INT           DEFAULT ((-1)) NOT NULL,
     [CalendarToID]                    INT           DEFAULT ((-1)) NOT NULL,
+    [TimeToID]                        INT           DEFAULT ((-1)) NOT NULL,
     [SubscriptionID]                  INT           DEFAULT ((-1)) NOT NULL,
     [ProductID]                       INT           DEFAULT ((-1)) NOT NULL,
     [CustomerID]                      INT           DEFAULT ((-1)) NOT NULL,
@@ -29,9 +31,13 @@
 
 
 
+
+
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ProductSubscriptions]
     ON [fact].[ProductSubscriptions];
+
+
 
 
 
