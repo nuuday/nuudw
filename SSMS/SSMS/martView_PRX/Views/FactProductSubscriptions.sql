@@ -1,7 +1,5 @@
 ﻿
 
-
-
 CREATE VIEW [martView_PRX].[FactProductSubscriptions] 
 AS
 SELECT
@@ -29,5 +27,15 @@ SELECT
 	,[CalendarDisconnectedID]
 	,[CalendarRGUFromID]
 	,[CalendarRGUToID]
-	,[CalendarMigrationLegacyID]	
+	,[CalendarMigrationLegacyID]
+	,[TimePlannedID]
+      ,[TimeActivatedID]
+      ,[TimeCancelledID]
+      ,[TimeDisconnectedPlannedID]
+      ,[TimeDisconnectedExpectedID]
+      ,[TimeDisconnectedCancelledID]
+      ,[TimeDisconnectedID]
+      ,[TimeRGUFromID]
+      ,[TimeRGUToID]
+      ,[TimeMigrationLegacyID]
 FROM [factView].[ProductSubscriptions]

@@ -24,8 +24,20 @@
     [CalendarRGUFromKey]               DATE           NULL,
     [CalendarRGUToKey]                 DATE           NULL,
     [CalendarMigrationLegacyKey]       DATE           NULL,
-    [DWCreatedDate]                    DATETIME2 (0)  DEFAULT (sysdatetime()) NULL
+    [DWCreatedDate]                    DATETIME2 (0)  DEFAULT (sysdatetime()) NULL,
+    [TimePlannedKey]                   TIME (0)       NULL,
+    [TimeActivatedKey]                 TIME (0)       NULL,
+    [TimeCancelledKey]                 TIME (0)       NULL,
+    [TimeDisconnectedPlannedKey]       TIME (0)       NULL,
+    [TimeDisconnectedExpectedKey]      TIME (0)       NULL,
+    [TimeDisconnectedCancelledKey]     TIME (0)       NULL,
+    [TimeDisconnectedKey]              TIME (0)       NULL,
+    [TimeRGUFromKey]                   TIME (0)       NULL,
+    [TimeRGUTokey]                     TIME (0)       NULL,
+    [TimeMigrationLegacyKey]           TIME (0)       NULL
 );
+
+
 
 
 

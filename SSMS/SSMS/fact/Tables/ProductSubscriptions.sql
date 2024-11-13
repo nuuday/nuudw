@@ -24,6 +24,16 @@
     [CalendarRGUFromID]               INT           DEFAULT ((-1)) NOT NULL,
     [CalendarRGUToID]                 INT           DEFAULT ((-1)) NOT NULL,
     [CalendarMigrationLegacyID]       INT           DEFAULT ((-1)) NOT NULL,
+    [TimePlannedID]                   INT           DEFAULT ((-1)) NOT NULL,
+    [TimeActivatedID]                 INT           DEFAULT ((-1)) NOT NULL,
+    [TimeCancelledID]                 INT           DEFAULT ((-1)) NOT NULL,
+    [TimeDisconnectedPlannedID]       INT           DEFAULT ((-1)) NOT NULL,
+    [TimeDisconnectedExpectedID]      INT           DEFAULT ((-1)) NOT NULL,
+    [TimeDisconnectedCancelledID]     INT           DEFAULT ((-1)) NOT NULL,
+    [TimeDisconnectedID]              INT           DEFAULT ((-1)) NOT NULL,
+    [TimeRGUFromID]                   INT           DEFAULT ((-1)) NOT NULL,
+    [TimeRGUToID]                     INT           DEFAULT ((-1)) NOT NULL,
+    [TimeMigrationLegacyID]           INT           DEFAULT ((-1)) NOT NULL,
     [DWCreatedDate]                   DATETIME2 (0) NOT NULL,
     [DWModifiedDate]                  DATETIME2 (0) NOT NULL
 );
@@ -33,9 +43,13 @@
 
 
 
+
+
 GO
 CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ProductSubscriptions]
     ON [fact].[ProductSubscriptions];
+
+
 
 
 
