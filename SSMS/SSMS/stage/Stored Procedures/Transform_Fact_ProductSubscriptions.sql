@@ -45,7 +45,7 @@ WHERE
 	f.IsTLO = 1
 	AND f.ProductKey <> ISNULL( f.ProductHardwareKey, '' )
 	AND e.OrderEventName NOT LIKE 'Offer Commitment%'
-	--AND f.SubscriptionKey = '9e6330ed-6d1b-45fe-9b9f-9bbba5473154' --'56b0bec5-6639-4b86-a133-814562d8bb14' --
+	--AND f.SubscriptionKey = '0ce9ec16-7f2a-46dc-9da6-59f731f0fcec' --'56b0bec5-6639-4b86-a133-814562d8bb14' --
 	--order by 1
 	
 
@@ -66,7 +66,7 @@ CROSS APPLY (
 	) o
 WHERE OrderEventKey = '100' /* RGU Activated */ 
 
-
+/*
 UPDATE rgu
 SET  ActualDate = o.ActualDate
 --SELECT o.ActualDate, rgu.*
@@ -81,7 +81,7 @@ CROSS APPLY (
 	ORDER BY ActualDate DESC
 	) o
 WHERE OrderEventKey = '101' /* RGU Disconnected */ 
-
+*/
 
 /* Grouping the subscription into group in the event that the product type has changed. We can identify this based on Offer Planned */
 
@@ -105,19 +105,21 @@ LEFT JOIN (
 	ON sg.SubscriptionOriginalKey = oe.SubscriptionOriginalKey 
 		AND sg.ProductType = oe.ProductType
 		AND oe.ActualDate BETWEEN sg.ActualDateFrom AND sg.ActualDateTo
---ORDER BY 1
 
+		
 
 /* Get all relevant dates to an subscription */
 
 DROP TABLE IF EXISTS #subscription_dates
 
 SELECT DISTINCT 
-	CalendarKey, 
-	max(LEFT( CONVERT( VARCHAR, CAST(actualdate AS datetime2(0)), 108 ), 8 )) over (PARTITION BY SubscriptionOriginalKey,SubscriptionKey,SubscriptionGroup,CalendarKey ORDER BY CalendarKey)  AS TimeKey,
+	cast(actualdate as date) as CalendarKey,
+	--max(LEFT( CONVERT( VARCHAR, CAST(actualdate AS datetime2(0)), 108 ), 8 )) over (PARTITION BY SubscriptionOriginalKey,SubscriptionKey,SubscriptionGroup,CalendarKey ORDER BY CalendarKey)  AS TimeKey,
+	MIN(LEFT( CONVERT( VARCHAR, CAST(actualdate AS datetime2(0)), 108 ), 8 )) over (PARTITION BY SubscriptionOriginalKey,SubscriptionKey,SubscriptionGroup,productkey,cast(actualdate as date) ORDER BY cast(actualdate as date))  AS TimeKey,
 	SubscriptionKey,
 	SubscriptionOriginalKey,
-	SubscriptionGroup
+	SubscriptionGroup,
+	ProductKey
 INTO #subscription_dates
 FROM #order_events_2 f
 WHERE 1=1
@@ -139,19 +141,20 @@ WHERE 1=1
 			WHEN OrderEventName IN ('Offer Activated') THEN 1
 			ELSE Quantity
 		END = 1
-	--AND f.SubscriptionKey = '60e05fb6-1194-4531-9f86-7e70ac3d4594'
 
 
 /* Setting the whole date interval */ 
 
 DROP TABLE IF EXISTS #subscription_dates_type2
 SELECT 
-	CalendarKey AS CalendarFromKey, Timekey as TimeFromKey,
-	ISNULL(  LEAD(CalendarKey,1) OVER (PARTITION BY SubscriptionOriginalKey,SubscriptionGroup ORDER BY CalendarKey ) , '9999-12-31')  AS CalendarToKey,  
-	ISNULL(  LEAD(timekey,1) OVER (PARTITION BY SubscriptionOriginalKey,SubscriptionGroup ORDER BY CalendarKey, timekey) , '00:00:00')  AS TimeToKey, 
+	CalendarKey AS CalendarFromKey,
+	TimeKey as TimeFromKey,
+	ISNULL(  LEAD(CONVERT(DATE,DATEADD(ss, -1,CONCAT( CONVERT( CHAR(10), CalendarKey, 120 ), ' ', TimeKey ))),1) OVER (PARTITION BY SubscriptionOriginalKey,SubscriptionGroup ORDER BY Calendarkey,timekey ) , '9999-12-31')  AS CalendarToKey,  
+	ISNULL(  LEAD(LEFT( CONVERT( VARCHAR, CAST(DATEADD(ss, -1,CONCAT( CONVERT( CHAR(10), CalendarKey, 120 ), ' ', TimeKey )) AS datetime2(0)), 108 ), 8 ),1) OVER (PARTITION BY SubscriptionOriginalKey,SubscriptionGroup ORDER BY Calendarkey,timekey) , '00:00:00')  AS TimeToKey, 
 	SubscriptionKey,
 	SubscriptionOriginalKey,
-	SubscriptionGroup
+	SubscriptionGroup,
+	ProductKey
 INTO #subscription_dates_type2
 FROM #subscription_dates
 
@@ -160,14 +163,15 @@ FROM #subscription_dates
 
 TRUNCATE TABLE [stage].[Fact_ProductSubscriptions]
 
-INSERT INTO stage.[Fact_ProductSubscriptions] WITH (TABLOCK) ([CalendarFromKey],[TimeFromKey], [CalendarToKey],[TimeToKey], [SubscriptionKey], [ProductKey], [CustomerKey], [SalesChannelKey], [AddressBillingKey], [BillingAccountKey], [PhoneDetailKey], [TechnologyKey], [EmployeeKey], [QuoteKey], [QuoteItemKey], [CalendarPlannedKey], [CalendarActivatedKey], [CalendarCancelledKey], [CalendarDisconnectedPlannedKey], [CalendarDisconnectedExpectedKey], [CalendarDisconnectedCancelledKey], [CalendarDisconnectedKey], [CalendarRGUFromKey], [CalendarRGUToKey], [CalendarMigrationLegacyKey])
+INSERT INTO stage.[Fact_ProductSubscriptions] WITH (TABLOCK) ([CalendarFromKey],[TimeFromKey], [CalendarToKey],[TimeToKey], [SubscriptionKey], [ProductKey], [CustomerKey], [SalesChannelKey], [AddressBillingKey], [BillingAccountKey], [PhoneDetailKey], [TechnologyKey], [EmployeeKey], [QuoteKey], [QuoteItemKey], [CalendarPlannedKey], [CalendarActivatedKey], [CalendarCancelledKey], [CalendarDisconnectedPlannedKey], [CalendarDisconnectedExpectedKey], [CalendarDisconnectedCancelledKey], [CalendarDisconnectedKey], [CalendarRGUFromKey], [CalendarRGUToKey], [CalendarMigrationLegacyKey],
+[TimePlannedKey],[TimeActivatedKey],[TimeCancelledKey],[TimeDisconnectedPlannedKey],[TimeDisconnectedExpectedKey],[TimeDisconnectedCancelledKey],[TimeDisconnectedKey],[TimeRGUFromKey],[TimeRGUTokey],[TimeMigrationLegacyKey])
 SELECT
 	sdt.CalendarFromKey,
 	sdt.TimeFromKey,
 	COALESCE( sdt.CalendarToKey, '9999-12-31' ) AS CalendarToKey,
 	sdt.TimeToKey,
 	sdt.SubscriptionKey,
-	COALESCE(keys2.ProductKey,LEAD(keys2.ProductKey,1) OVER (PARTITION BY sdt.SubscriptionKey ORDER BY CalendarFromKey)) AS ProductKey,
+	sdt.Productkey,--COALESCE(keys2.ProductKey,LEAD(keys2.ProductKey,1) OVER (PARTITION BY sdt.SubscriptionKey ORDER BY CalendarFromKey)) AS ProductKey,
 	keys.[CustomerKey],
 	keys.[SalesChannelKey],
 	keys.[AddressBillingKey],
@@ -186,7 +190,17 @@ SELECT
 	dates.[CalendarDisconnectedKey],
 	dates.[CalendarRGUFromKey],
 	dates.[CalendarRGUTokey],
-	dates.[CalendarMigrationLegacyKey]
+	dates.[CalendarMigrationLegacyKey],
+	dates.[TimePlannedKey],
+	dates.[TimeActivatedKey],
+	dates.[TimeCancelledKey],
+	dates.[TimeDisconnectedPlannedKey],
+	dates.[TimeDisconnectedExpectedKey],
+	dates.[TimeDisconnectedCancelledKey],
+	dates.[TimeDisconnectedKey],
+	dates.[TimeRGUFromKey],
+	dates.[TimeRGUTokey],
+	dates.[TimeMigrationLegacyKey]
 --select *
 FROM #subscription_dates_type2 sdt
 /*INNER JOIN dim.Subscription s 
@@ -197,16 +211,27 @@ FROM #subscription_dates_type2 sdt
 OUTER APPLY (
 	SELECT 
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Planned' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarPlannedKey,
+		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Planned' THEN Timekey ELSE NULL END),'00:00:00') TimePlannedKey,
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Cancelled' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarCancelledKey,
+		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Cancelled' THEN Timekey ELSE NULL END),'00:00:00') TimeCancelledKey,
 		ISNULL(MAX(CASE WHEN OrderEventName IN ('Offer Activated', 'Migration Legacy') THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarActivatedKey,
+		ISNULL(MAX(CASE WHEN OrderEventName IN ('Offer Activated', 'Migration Legacy') THEN Timekey ELSE NULL END),'00:00:00') TimeActivatedKey,
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Disconnected Planned' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarDisconnectedPlannedKey,
+		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Disconnected Planned' THEN Timekey ELSE NULL END),'00:00:00') TimeDisconnectedPlannedKey,
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Disconnected Expected' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarDisconnectedExpectedKey,
+		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Disconnected Expected' THEN Timekey ELSE NULL END),'00:00:00') TimeDisconnectedExpectedKey,
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Disconnected Cancelled' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarDisconnectedCancelledKey,
+		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Disconnected Cancelled' THEN Timekey ELSE NULL END),'00:00:00') TimeDisconnectedCancelledKey,
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Disconnected' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarDisconnectedKey,
-		ISNULL(MAX(CASE WHEN OrderEventName = 'RGU Activated' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarRGUFromKey,
+		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Disconnected' THEN Timekey ELSE NULL END),'00:00:00') TimeDisconnectedKey,
+		ISNULL(MAX(CASE WHEN OrderEventName = 'RGU Activated' THEN cast(actualdate as date) ELSE NULL END),'1900-01-01') CalendarRGUFromKey,
+		ISNULL(MAX(CASE WHEN OrderEventName = 'RGU Activated' THEN LEFT( CONVERT( VARCHAR, CAST(actualdate AS datetime2(0)), 108 ), 8 ) ELSE NULL END),'00:00:00') TimeRGUFromKey,
 		ISNULL(MAX(CASE WHEN OrderEventName = 'RGU Disconnected' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarRGUToKey,
+		ISNULL(MAX(CASE WHEN OrderEventName = 'RGU Disconnected' THEN TimeKey ELSE NULL END),'00:00:00') TimeRGUToKey,
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Migration Legacy' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarMigrationLegacyKey,
-		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Changed Owner' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarChangedOwnerKey
+		ISNULL(MAX(CASE WHEN OrderEventName = 'Migration Legacy' THEN TimeKey ELSE NULL END),'00:00:00') TimeMigrationLegacyKey,
+		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Changed Owner' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarChangedOwnerKey,
+		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Changed Owner' THEN TimeKey ELSE NULL END),'00:00:00') TimeChangedOwnerKey
 	FROM #order_events_2
 	WHERE 1=1
 		AND SubscriptionOriginalKey = sdt.SubscriptionOriginalKey
@@ -224,7 +249,9 @@ OUTER APPLY (
 			'Migration Legacy'
 			)
 		AND Quantity = 1
-		AND CalendarKey <= sdt.CalendarFromKey
+		AND --CONCAT( CONVERT( CHAR(10), CalendarKey, 120 ), ' ', TimeKey ) 
+		actualdate <= CONCAT( CONVERT( CHAR(10), sdt.CalendarToKey, 120 ), ' ', sdt.TimeToKey )
+		--AND CalendarKey <= sdt.CalendarFromKey
 ) dates
 OUTER APPLY (
 	SELECT TOP 1 CustomerKey, SalesChannelKey, AddressBillingKey, BillingAccountKey, PhoneDetailKey, TechnologyKey, EmployeeKey, QuoteKey, QuoteItemKey
@@ -238,7 +265,7 @@ OUTER APPLY (
 ) keys
 /* 
 Keys we expect to be in at the latest in event.
-*/ 
+
 OUTER APPLY (
 	SELECT TOP 1 ProductKey
 	FROM #order_events_2
@@ -247,9 +274,12 @@ OUTER APPLY (
 		AND SubscriptionOriginalKey = sdt.SubscriptionOriginalKey
 		AND SubscriptionGroup = sdt.SubscriptionGroup
 		AND CONCAT( CONVERT( CHAR(10), CalendarKey, 120 ), ' ', TimeKey ) < CONCAT( CONVERT( CHAR(10), sdt.CalendarToKey, 120 ), ' ', sdt.TimeToKey )
-		--AND CalendarKey <= sdt.CalendarToKey
-	ORDER BY CalendarKey DESC, TimeKey DESC
+		--AND CalendarKey < sdt.CalendarToKey 
+		ORDER BY CalendarKey DESC , TimeKey DESC
 ) keys2
+
+*/ 
+
 /* 
 Keys we expect to be in at the latest in event.
 */ 
@@ -262,5 +292,10 @@ OUTER APPLY (
 		AND SubscriptionGroup = sdt.SubscriptionGroup
 		--AND CalendarKey <= sdt.CalendarFromKey
 	ORDER BY CalendarKey DESC, TimeKey DESC
-) keys3
+) keys3 
+
+--where sdt.SubscriptionKey='70c75576-0493-4327-9fa4-f1e0658bd269'
+
+--ORDER BY keys.TechnologyKey, 1,2 DESC
+
 --ORDER BY keys.TechnologyKey, 1,2 DESC
