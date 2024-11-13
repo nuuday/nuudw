@@ -20,6 +20,11 @@ LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlcustomercategory_History] customer
 WHERE
 	customer.NUUDL_IsLatest =1
 	--AND customer.customer_number='70004697884'
-
-
-SELECT CustomerKey FROM [stage].[Dim_Customer] group by CustomerKey HAVING COUNT(*)>1
+	--and customer.id= '873b84f2-6c82-4f91-a98e-40810f4f8571'
+group by  CONVERT( NVARCHAR(36), customer.id ), 
+	CONVERT( NVARCHAR(36), customer.customer_number ),
+	CONVERT( NVARCHAR(250), ISNULL( NULLIF( customer.[name], '' ), '?' ) ) ,
+	CONVERT( NVARCHAR(50), ISNULL( NULLIF( customer_category.[name], '' ), '?' ) ),
+	CONVERT( NVARCHAR(20), ISNULL( NULLIF( customer.[status], '' ), '?' ) ) ,
+	ISNULL(JSON_VALUE(customer.extended_attributes,'$.migration_date[0]'),'1900-01-01'),
+	ISNULL(JSON_VALUE(customer.extended_attributes,'$.migration_source[0]'), '?' )

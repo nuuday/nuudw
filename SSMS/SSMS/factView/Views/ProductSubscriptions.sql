@@ -1,9 +1,10 @@
-﻿
-CREATE VIEW [factView].[ProductSubscriptions] 
+﻿CREATE VIEW [factView].[ProductSubscriptions] 
 AS
 SELECT
 	[CalendarFromID]
+	,[TimeFromID]
 	,[CalendarToID]
+	,[TimeToID]
 	,[SubscriptionID]
 	,[ProductID]
 	,[CustomerID]

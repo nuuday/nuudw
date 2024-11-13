@@ -95,7 +95,7 @@ INNER JOIN #error_list el ON el.AddressKey = gl.AddressKey
 
 
 --remove duplicates	
-delete  from #gross_list where exists (
+delete  from #gross_list  where AddressKey in (
 	select  AddressKey from #gross_list 
 	group by AddressKey having count(distinct NAMID )  >1)	
 

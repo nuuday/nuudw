@@ -164,6 +164,12 @@ DECLARE @MaxColumnsFact INT --Number of columns in fact/bridge
 DECLARE @HasCalendarKey INT 
 DECLARE @HasTimeKey INT 
 DECLARE @CalendarName SYSNAME
+DECLARE @TimekeyName SYSNAME
+
+SELECT TOP 1 @TimekeyName = Columnname
+FROM #InformationSchema 
+WHERE ColumnName IN ('Time'+ @BusinessKeySuffix, 'TimeFrom'+ @BusinessKeySuffix)
+ORDER BY CASE WHEN ColumnName = 'Time'+ @BusinessKeySuffix THEN 0 ELSE 1 END
 
 SELECT TOP 1 @CalendarName = ColumnName
 FROM #InformationSchema 
@@ -172,7 +178,7 @@ ORDER BY CASE WHEN ColumnName = 'Calendar'+ @BusinessKeySuffix THEN 0 ELSE 1 END
 
 SELECT
 	   @HasCalendarKey = CASE WHEN (SELECT COUNT(*) FROM #InformationSchema WHERE ColumnName = @CalendarName) > 0 THEN 1 ELSE 0 END --Check if CalendarKey is present
-	  ,@HasTimeKey = CASE WHEN (SELECT COUNT(*) FROM #InformationSchema WHERE ColumnName = 'Time' + @BusinessKeySuffix) > 0 THEN 1 ELSE 0 END --Check if TimeKey is present
+	  ,@HasTimeKey = CASE WHEN (SELECT COUNT(*) FROM #InformationSchema WHERE ColumnName = @TimekeyName) > 0 THEN 1 ELSE 0 END --Check if TimeKey is present
 
 
 /**********************************************************************************************************************************************************************
@@ -245,7 +251,7 @@ DECLARE @DatetimeValue NVARCHAR(MAX)
 /* DatetimeValue is set dependent on if there is a timehour key or not. If there is we convert calendarkey and time keys into a datetime. The replicate function makes sure to add a leading 0 if we are at single digit number */
 SET @DatetimeValue =
 	CASE 
-		WHEN @HasTimeKey=1 THEN 'Convert(datetime2(0), CONCAT([' + @StageTable + '].[' + @CalendarName +'], '' '',[TimeKey]))'
+		WHEN @HasTimeKey=1 THEN 'Convert(datetime2(0), CONCAT([' + @StageTable + '].[' + @CalendarName +'], '' '',' + @TimekeyName +'))'
 		ELSE 'Convert(datetime2(0), CONCAT([' + @StageTable + '].[' + @CalendarName +'], '' '',''23:59:59''))' -- If the dimension have datetime values we want to catch the value end of day.
 	END
 	

@@ -527,6 +527,8 @@ WHERE 1=1
 	AND a.status not in ('ERROR')
 
 
+
+
 -- If there are multiple non-cancelled tickets on the same SubscriptionKey, we only keep the first.
 DELETE a
 --SELECT *
@@ -633,6 +635,7 @@ CROSS APPLY (
 		OR CASE WHEN t.Status = 'CANCELLED' THEN 'Offer Disconnected Cancelled' END = OrderEventName
 ) e
 WHERE 1=1
+
 
 
 -----------------------------------------------------------------------------------------------------------------------------
@@ -783,6 +786,7 @@ SELECT al.*
 INTO #active_lines
 FROM #all_lines_filtered_2 al
 WHERE al.CurrentState = 'ACTIVE'
+
 
 
 -- Create Migration Legacy lines
@@ -1037,6 +1041,7 @@ WHERE 1=1
 	AND s.ProductType <> s.NextProductType
 --	AND SubscriptionKey = 'b5f00442-6c45-4c82-93fe-b5394ee207ee'
 
+
 -- Create Offer Planned if the Product Type is changed
 DROP TABLE IF EXISTS #planned_lines_from_product_type_change
 SELECT 
@@ -1076,7 +1081,6 @@ WHERE 1=1
 	AND s.IsTLO = 1
 	AND s.ProductType <> s.PreviousProductType
 
-
 -- Create Offer Planned if the subscription has been migrated from legacy
 DROP TABLE IF EXISTS #planned_lines_from_migration_legacy
 SELECT 
@@ -1113,6 +1117,7 @@ CROSS APPLY (
 	WHERE OrderEventName = 'Offer Planned'
 ) e
 WHERE 1=1
+
 
 -- Create lines if owner of the subscription has changed
 DROP TABLE IF EXISTS #changed_owner
@@ -1265,6 +1270,7 @@ FROM (
 CREATE CLUSTERED INDEX CLIX ON #result (SubscriptionKey,IsTLO,OrderEventName,active_from_CET)
 
 
+
 -----------------------------------------------------------------------------------------------------------------------------
 -- Set Quantity to zero to accommodate Gross Adds and Churn calculations
 -----------------------------------------------------------------------------------------------------------------------------
@@ -1275,7 +1281,7 @@ SET Quantity = 0
 FROM #result ra
 WHERE 1=1
 	AND ra.IsTLO = 1
-	AND ra.OrderEventName IN ('RGU Activated', 'Offer Activated')
+	AND ra.OrderEventName IN ('RGU Activated', 'Offer Activated') 
 	AND EXISTS (
 			SELECT * 
 			FROM #result 
@@ -1294,6 +1300,7 @@ FROM #result ra
 WHERE 1=1
 	AND ra.IsTLO = 1
 	AND ra.OrderEventName IN ('Offer Disconnected','Offer Disconnected Cancelled','Offer Disconnected Expected','Offer Disconnected Planned','RGU Disconnected')
+	--and SubscriptionKey in('07a7c6f7-6d33-48ae-b294-4709c1183bc7','8405435a-5862-491b-b70e-74891f565896')
 	AND EXISTS (
 		SELECT * 
 		FROM #result 
@@ -1305,6 +1312,25 @@ WHERE 1=1
 	)
 	--AND ra.SubscriptionKey = '2e3e5b05-c86a-4e47-a731-eea2cab36dcf'
 
+-- update dissconnections happened at the same date as Activation - Ownership change
+UPDATE ra
+SET Quantity = 0
+--SELECT ra.*
+FROM #result ra
+WHERE 1=1
+	AND ra.IsTLO = 1 and quantity=1
+	AND ra.OrderEventName IN ('Offer Disconnected')
+	--and SubscriptionKey in('07a7c6f7-6d33-48ae-b294-4709c1183bc7','8405435a-5862-491b-b70e-74891f565896')
+	AND EXISTS (
+		SELECT * 
+		FROM #result 
+		WHERE SubscriptionOriginalKey = ra.SubscriptionOriginalKey 
+			AND SubscriptionKey <> ra.SubscriptionKey
+			AND SubscriptionGroup = ra.SubscriptionGroup
+			AND  OrderEventName = 'Offer Activated'
+			AND IsTLO = ra.IsTLO
+			AND active_from_CET >= ra.active_from_CET
+			)
 
 -- Migrated from legacy to NetCracker / Dawn
 UPDATE ra
@@ -1348,7 +1374,7 @@ DROP TABLE IF EXISTS #missing_planned_disconnect
 
 SELECT r.*
 INTO #missing_planned_disconnect
-FROM #result r
+FROM #result r  
 OUTER APPLY (
 	SELECT MAX(active_from_CET) activated_date
 	FROM #result
@@ -1359,7 +1385,7 @@ OUTER APPLY (
 			AND active_from_CET < r.active_from_CET
 ) a
 WHERE 1=1
-	AND OrderEventName = 'Offer Disconnected'
+	AND OrderEventName = 'Offer Disconnected' 
 	AND IsTLO = 1
 	AND Quantity = 1
 	AND NOT EXISTS (
@@ -1383,12 +1409,11 @@ CROSS APPLY (
 	WHERE OrderEventName = 'Offer Disconnected Planned'
 ) e
 
-INSERT INTO #result ([CalendarKey], [TimeKey], [ProductKey], [ProductParentKey], [ProductHardwareKey], [CustomerKey], [SubscriptionKey], [QuoteKey], QuoteItemKey, [OrderEventKey], [SalesChannelKey], [BillingAccountKey], 
-	[PhoneDetailKey], [AddressBillingKey], [HouseHoldKey], TechnologyKey, EmployeeKey, TicketKey, ThirdPartyStoreKey, [IsTLO], [Quantity])
-SELECT [CalendarKey], [TimeKey], [ProductKey], [ProductParentKey], [ProductHardwareKey], [CustomerKey], [SubscriptionKey], [QuoteKey], QuoteItemKey, [OrderEventKey], [SalesChannelKey], [BillingAccountKey], 
-	[PhoneDetailKey], [AddressBillingKey], [HouseHoldKey], TechnologyKey, EmployeeKey, TicketKey, ThirdPartyStoreKey, [IsTLO], [Quantity]
+INSERT INTO #result ([CalendarKey], [TimeKey], [ProductKey], [ProductParentKey], [ProductHardwareKey], [CustomerKey],[SubscriptionGroup], [SubscriptionKey],[SubscriptionOriginalKey], [QuoteKey], QuoteItemKey, [OrderEventKey],[OrderEventName],[ProductType], [ProductName], [SalesChannelKey], [BillingAccountKey], 
+	[PhoneDetailKey], [AddressBillingKey], [HouseHoldKey], TechnologyKey, EmployeeKey, TicketKey, ThirdPartyStoreKey, [IsTLO], [Quantity],active_from_CET)
+SELECT [CalendarKey], [TimeKey], [ProductKey], [ProductParentKey], [ProductHardwareKey], [CustomerKey],[SubscriptionGroup], [SubscriptionKey],[SubscriptionOriginalKey], [QuoteKey], QuoteItemKey, [OrderEventKey],[OrderEventName],[ProductType], [ProductName], [SalesChannelKey], [BillingAccountKey], 
+	[PhoneDetailKey], [AddressBillingKey], [HouseHoldKey], TechnologyKey, EmployeeKey, TicketKey, ThirdPartyStoreKey, [IsTLO], [Quantity],active_from_CET
 FROM #missing_planned_disconnect
-
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Truncate and insert into stage table

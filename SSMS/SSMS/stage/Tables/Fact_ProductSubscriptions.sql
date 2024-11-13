@@ -1,6 +1,8 @@
 ﻿CREATE TABLE [stage].[Fact_ProductSubscriptions] (
     [CalendarFromKey]                  DATE           NULL,
+    [TimeFromKey]                      TIME (0)       NULL,
     [CalendarToKey]                    DATE           NULL,
+    [TimeToKey]                        TIME (0)       NULL,
     [SubscriptionKey]                  NVARCHAR (36)  NULL,
     [ProductKey]                       NVARCHAR (36)  NULL,
     [CustomerKey]                      NVARCHAR (36)  NULL,
@@ -24,6 +26,8 @@
     [CalendarMigrationLegacyKey]       DATE           NULL,
     [DWCreatedDate]                    DATETIME2 (0)  DEFAULT (sysdatetime()) NULL
 );
+
+
 
 
 
