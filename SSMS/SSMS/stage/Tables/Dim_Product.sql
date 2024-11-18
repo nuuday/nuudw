@@ -2,7 +2,7 @@
     [ProductKey]    NVARCHAR (36)  NULL,
     [ProductName]   NVARCHAR (250) NULL,
     [ProductType]   NVARCHAR (50)  NULL,
-    [ProductWeight] NVARCHAR (3)   NULL,
+    [ProductWeight] INT   NULL,
     [DWCreatedDate] DATETIME2 (0)  DEFAULT (sysdatetime()) NOT NULL
 );
 
