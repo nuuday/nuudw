@@ -715,6 +715,8 @@
     <Build Include="martView_PRX\Views\FactProductMigrations.sql" />
     <Build Include="SourceNuudlNAM\Tables\Nam_History_Error.sql" />
     <Build Include="factView\Views\ProductMigrations.sql" />
+    <Build Include="nuuMeta\Tables\PEDataLoadLog.sql" />
+    <Build Include="nuuMeta\Stored Procedures\PEDataLoadLogging.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
