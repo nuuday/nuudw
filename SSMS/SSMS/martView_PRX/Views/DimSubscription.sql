@@ -3,6 +3,7 @@
 
 
 
+
 CREATE VIEW [martView_PRX].[DimSubscription]
 AS
 SELECT 
@@ -11,6 +12,7 @@ SELECT
 	[SubscriptionOriginalKey],
 	FamilyBundle,
 	BundleType,
+	[BundleTypeSimpel],
 	SubscriptionValidFromDate,
 	SubscriptionValidToDate,
 	SubscriptionIsCurrent,
