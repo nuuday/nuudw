@@ -717,6 +717,9 @@
     <Build Include="factView\Views\ProductMigrations.sql" />
     <Build Include="nuuMeta\Tables\PEDataLoadLog.sql" />
     <Build Include="nuuMeta\Stored Procedures\PEDataLoadLogging.sql" />
+    <Build Include="sourceNuudlDawn\Tables\ibsnrmlrelatedpartyref_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\ibsnrmlrelatedpartyref.sql" />
+    <Build Include="sourceNuudlDawnView\Views\ibsnrmlrelatedpartyref_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
