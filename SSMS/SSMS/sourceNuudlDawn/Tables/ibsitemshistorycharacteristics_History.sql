@@ -17,8 +17,11 @@
     [NUUDL_IsDeleted]            BIT             NULL,
     [NUUDL_DeleteType]           NVARCHAR (4000) NULL,
     [NUUDL_IsLatest]             BIT             NULL,
+    [phone_number]               NVARCHAR (4000) NULL,
     CONSTRAINT [PK_ibsitemshistorycharacteristics_History] PRIMARY KEY NONCLUSTERED ([NUUDL_ID] ASC, [DWValidFromDate] ASC)
 );
+
+
 
 
 
