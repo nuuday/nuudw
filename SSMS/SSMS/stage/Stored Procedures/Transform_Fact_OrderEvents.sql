@@ -96,7 +96,7 @@ SELECT
 	i.item_expirationDate_CET AS expiration_date,
 	CASE WHEN po.extended_parameters_json_deviceType IS NULL THEN 0 ELSE 1 END IsHardware,
 	cha.technology AS TechnologyKey,
-	cha.phone_number AS PhoneDetailKey,
+	cha.international_phone_number AS PhoneDetailKey,
 	JSON_VALUE(quote.extended_parameters, '$."3rdPartyStoreId"[0]') ThirdPartyStoreKey
 FROM [sourceNuudlDawnView].[ibsitemshistory_History] i
 INNER JOIN #Subscriptions sub 
