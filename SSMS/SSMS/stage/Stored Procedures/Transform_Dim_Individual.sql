@@ -9,7 +9,7 @@ TRUNCATE TABLE [stage].[Dim_Individual]
 INSERT INTO stage.[Dim_Individual] WITH (TABLOCK) ( [IndividualKey], [IndividualFamilyName], [IndividualGivenName], [IndividualLegalName], [IndividualCountry],
 [IndividualCity], [IndividualPostcode], [IndividualStreet1], [IndividualStreet2], [IndividualEmail], [IndividualPhonenumber]  )
 
-Select 
+Select distinct
 ind.id IndividualKey, 
 im.family_name , 
 im.given_name, 
@@ -33,4 +33,4 @@ Left Join
     LEAD(cm.email_address,1,0) IGNORE NULLS over (partition by ref_id order by active_from desc)as email_address,
     LEAD(COALESCE(cm.phone_number, cm.phone_ext_number),1,0) IGNORE NULLS over (partition by ref_id order by active_from desc) as phone_number
 from sourceNuudlDawnView.cimcontactmedium_History cm where nuudl_islatest=1) a on a.ref_id= ind.id and rn=1
-    where  ind.NUUDL_IsLatest =1
+    where  ind.NUUDL_IsLatest =1 --and ind.id ='012603c6-88c2-48a6-8f7c-f1c439caa7cf'
