@@ -1,4 +1,7 @@
 ﻿
+
+
+
 CREATE PROCEDURE [stage].[Transform_Fact_OrderEvents]
 	@JobIsIncremental BIT			
 AS 
@@ -93,7 +96,7 @@ SELECT
 	i.item_expirationDate_CET AS expiration_date,
 	CASE WHEN po.extended_parameters_json_deviceType IS NULL THEN 0 ELSE 1 END IsHardware,
 	cha.technology AS TechnologyKey,
-	cha.international_phone_number AS PhoneDetailKey,
+	cha.phone_number AS PhoneDetailKey,
 	JSON_VALUE(quote.extended_parameters, '$."3rdPartyStoreId"[0]') ThirdPartyStoreKey
 FROM [sourceNuudlDawnView].[ibsitemshistory_History] i
 INNER JOIN #Subscriptions sub 
@@ -637,6 +640,267 @@ CROSS APPLY (
 WHERE 1=1
 
 
+-----------------------------------------------------------------------------------------------------------------------------
+-- Add Future sales tickets and future Migrations
+-----------------------------------------------------------------------------------------------------------------------------
+
+
+DROP TABLE IF EXISTS #future_migrations
+SELECT 
+	IDENTITY(INT,1,1) AS ID,
+	b.id AS SubscriptionKey,
+	a.id TicketKey,
+	a.ticket_category,
+	ticket_type,
+	a.created_by_date_CET AS PlannedDate,
+	CAST(extended_attributes_changeDate_CET as datetime2(0)) AS ExpectedDate,
+	status_change_date_CET AS status_change_date,
+	a.status,
+	b.type,
+	c.name AS EmployeeKey,
+	JSON_VALUE(extended_attributes, '$.distributionChannel') AS SalesChannelKey,
+	--qa.quote_id ,qa.creation_time, 
+	po.name as ProductName, 
+	po.id as ProductKey,
+	CASE
+		WHEN pf.name = 'Mobile Voice Offline' THEN 'Mobile Voice'
+		WHEN pf.name = 'Mobile Broadband Offline' THEN 'Mobile Broadband'
+		ELSE pf.name
+	END AS ProductType
+	
+INTO #future_migrations
+FROM [sourceNuudlDawnView].[cpmnrmltroubleticket_History] a
+INNER JOIN [sourceNuudlDawnView].[cpmnrmltroubleticketrelatedentityref_History] b
+	ON a.id = b.trouble_ticket_id
+		AND b.NUUDL_IsLatest = 1
+LEFT JOIN [sourceNuudlDawnView].orgchrteammember_History c 
+	ON c.idm_user_id = a.created_by_user_id
+		AND c.NUUDL_IsLatest = 1
+LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] po 
+	ON  po.name=b.name
+LEFT JOIN  [sourceNuudlNetCracker].[pimnrmlproductfamily]  pf 
+	ON po.product_family_id = pf.id 
+WHERE 1=1
+	AND a.NUUDL_IsLatest =1
+	AND a.ticket_type IN ('FUTURE_DATE_CHANGE')
+	AND b.type = 'Product'
+	AND a.status not in ('ERROR')
+	
+	
+-- If there are multiple non-cancelled tickets on the same SubscriptionKey, we only keep the first.
+DELETE a
+--SELECT *
+FROM #future_migrations a
+INNER JOIN 
+	(
+	SELECT
+		ID,
+		ROW_NUMBER() OVER (PARTITION BY SubscriptionKey ORDER BY PlannedDate) rn,
+		a.SubscriptionKey
+	FROM #future_migrations a
+	WHERE 
+		SubscriptionKey IN (
+			SELECT SubscriptionKey
+			FROM #future_migrations
+			WHERE 1=1
+				--AND TicketKey = 'TER-20240424-07877'
+				AND status not in ('CANCELLED')
+			GROUP BY SubscriptionKey
+			HAVING COUNT(*)>1
+		)
+	) b ON b.ID = a.ID
+WHERE 
+	rn > 1
+	
+
+DROP TABLE IF EXISTS #future_migrations_lines 
+
+/****** Insert order events rows for future product ******/
+SELECT DISTINCT
+	CASE 
+		WHEN e.OrderEventName= 'Offer Planned' THEN CAST(t.PlannedDate AS date)
+		WHEN e.OrderEventName ='Offer Activated Expected' THEN CAST(t.ExpectedDate AS date)
+		WHEN e.OrderEventName = 'Migration To Planned' THEN CAST(t.PlannedDate AS date)
+		WHEN e.OrderEventName= 'Offer Cancelled' THEN CAST(t.status_change_date AS date)
+	END AS CalendarKey,
+	CASE 
+		WHEN e.OrderEventName= 'Offer Planned' THEN LEFT( CONVERT( VARCHAR, t.PlannedDate, 108 ), 8 ) 
+		WHEN e.OrderEventName ='Offer Activated Expected' THEN LEFT( CONVERT( VARCHAR, t.ExpectedDate, 108 ), 8 )
+		WHEN e.OrderEventName= 'Migration To Planned' THEN LEFT( CONVERT( VARCHAR, t.PlannedDate, 108 ), 8 ) 
+		WHEN e.OrderEventName= 'Offer Cancelled' THEN LEFT( CONVERT( VARCHAR, t.status_change_date, 108 ), 8 ) 
+	END AS TimeKey,
+	t.ProductKey, 
+	t.ProductKey as ProductParentKey,
+	al.ProductHardwareKey,
+	al.CustomerKey,
+	al.SubscriptionGroup,
+	al.SubscriptionKey,
+	al.SubscriptionOriginalKey,
+	al.QuoteKey,
+	al.QuoteItemKey,
+	e.OrderEventKey,
+	e.OrderEventName,
+	t.ProductType,
+	t.ProductName, 
+	t.SalesChannelKey,
+	al.BillingAccountKey,
+	al.PhoneDetailKey,
+	al.AddressBillingKey,
+	al.HouseHoldKey,
+	al.TechnologyKey,
+	t.EmployeeKey,
+	t.TicketKey,
+	al.ThirdPartyStoreKey,
+	al.IsTLO,
+	CASE 
+		WHEN e.OrderEventName= 'Offer Planned' THEN CAST(t.PlannedDate AS date)
+		WHEN e.OrderEventName ='Offer Activated Expected' THEN CAST(t.ExpectedDate AS date)
+		WHEN e.OrderEventName = 'Migration To Planned' THEN CAST(t.PlannedDate AS date)
+		WHEN e.OrderEventName= 'Offer Cancelled' THEN CAST(t.status_change_date AS date)
+	END active_from_CET,
+	CASE 
+		WHEN  t.ProductType= al.ProductType and e.OrderEventName= 'Migration To Planned' THEN 1
+		WHEN  t.ProductType= al.ProductType and e.OrderEventName <> 'Migration To Planned' THEN 0
+		ELSE 1 END as Quantity
+	
+INTO #future_migrations_lines
+FROM (
+	SELECT
+		al.ProductKey, 
+		al.ProductParentKey,
+		al.ProductHardwareKey,
+		al.CustomerKey,
+		al.SubscriptionGroup,
+		al.SubscriptionKey,	
+		al.SubscriptionOriginalKey,
+		al.QuoteKey,
+		al.QuoteItemKey,
+		al.ProductType,
+		al.ProductName,
+		al.BillingAccountKey,
+		al.PhoneDetailKey,
+		al.AddressBillingKey,
+		al.HouseHoldKey,
+		al.TechnologyKey,
+		al.ThirdPartyStoreKey,
+		al.IsTLO,
+		al.active_from_CET AS ValidFrom,
+		ISNULL( LEAD(al.active_from_CET,1) OVER (PARTITION BY SubscriptionOriginalKey ORDER BY al.active_from_CET) , '9999-12-31') ValidTo
+		
+	FROM #all_lines_filtered_2 al
+	WHERE 1=1
+		AND al.CurrentState IN ( 'ACTIVE')
+		AND al.IsTLO = 1
+) al
+INNER JOIN #future_migrations t ON t.SubscriptionKey = al.SubscriptionKey AND t.PlannedDate BETWEEN al.ValidFrom AND al.ValidTo
+CROSS APPLY (
+	SELECT *
+	FROM dim.OrderEvent 
+	WHERE 
+		OrderEventName = 'Offer Planned'
+		OR CASE WHEN t.Status <> 'CANCELLED' THEN 'Offer Activated Expected' END = OrderEventName
+		OR CASE WHEN t.Status <> 'CANCELLED' and t.ProductType= al.ProductType THEN 'Migration To Planned' END = OrderEventName
+		OR CASE WHEN t.Status = 'CANCELLED' THEN 'Offer Cancelled' END = OrderEventName
+) e
+WHERE 1=1  
+
+
+/***** INSERT  order events rows for current product *****/
+
+INSERT INTO #future_migrations_lines
+SELECT DISTINCT
+	CASE 
+		WHEN e.OrderEventName= 'Offer Disconnected Planned' THEN CAST(t.PlannedDate AS date)
+		WHEN e.OrderEventName= 'Offer Disconnected Expected' THEN CAST(t.ExpectedDate AS date)
+		WHEN e.OrderEventName= 'Migration From Planned' THEN CAST(t.PlannedDate AS date)
+		WHEN e.OrderEventName= 'Offer Disconnected Cancelled' THEN CAST(t.status_change_date AS date)
+	END AS CalendarKey,
+	CASE 
+		WHEN e.OrderEventName= 'Offer Disconnected Planned' THEN LEFT( CONVERT( VARCHAR, t.PlannedDate, 108 ), 8 ) 
+		WHEN e.OrderEventName= 'Offer Disconnected Expected' THEN LEFT( CONVERT( VARCHAR, t.ExpectedDate, 108 ), 8 ) 
+		WHEN e.OrderEventName= 'Migration From Planned' THEN LEFT( CONVERT( VARCHAR, t.PlannedDate, 108 ), 8 )
+		WHEN e.OrderEventName= 'Offer Disconnected Cancelled' THEN LEFT( CONVERT( VARCHAR, t.status_change_date, 108 ), 8 ) 
+	END AS TimeKey,
+	al.ProductKey, 
+	al.ProductKey as ProductParentKey,
+	al.ProductHardwareKey,
+	al.CustomerKey,
+	al.SubscriptionGroup,
+	al.SubscriptionKey,
+	al.SubscriptionOriginalKey,
+	al.QuoteKey,
+	al.QuoteItemKey,
+	e.OrderEventKey,
+	e.OrderEventName,
+	al.ProductType,
+	al.ProductName, 
+	t.SalesChannelKey,
+	al.BillingAccountKey,
+	al.PhoneDetailKey,
+	al.AddressBillingKey,
+	al.HouseHoldKey,
+	al.TechnologyKey,
+	t.EmployeeKey,
+	t.TicketKey,
+	al.ThirdPartyStoreKey,
+	al.IsTLO,
+	CASE 
+		WHEN e.OrderEventName= 'Offer Disconnected Planned' THEN CAST(t.PlannedDate AS date)
+		WHEN e.OrderEventName= 'Offer Disconnected Expected' THEN CAST(t.ExpectedDate AS date)
+		WHEN e.OrderEventName= 'Migration From Planned' THEN CAST(t.PlannedDate AS date)
+		WHEN e.OrderEventName= 'Offer Disconnected Cancelled' THEN CAST(t.status_change_date AS date)
+	END active_from_CET,
+	CASE 
+		WHEN  t.ProductType= al.ProductType and e.OrderEventName= 'Migration From Planned' THEN 1
+		WHEN  t.ProductType= al.ProductType and e.OrderEventName <> 'Migration From Planned' THEN 0
+		ELSE 1 END as Quantity
+FROM (
+	SELECT
+		al.ProductKey, 
+		al.ProductParentKey,
+		al.ProductHardwareKey,
+		al.CustomerKey,
+		al.SubscriptionGroup,
+		al.SubscriptionKey,	
+		al.SubscriptionOriginalKey,
+		al.QuoteKey,
+		al.QuoteItemKey,
+		al.ProductType,
+		al.ProductName,
+		al.BillingAccountKey,
+		al.PhoneDetailKey,
+		al.AddressBillingKey,
+		al.HouseHoldKey,
+		al.TechnologyKey,
+		al.ThirdPartyStoreKey,
+		al.IsTLO,
+		al.active_from_CET AS ValidFrom,
+		ISNULL( LEAD(al.active_from_CET,1) OVER (PARTITION BY SubscriptionOriginalKey ORDER BY al.active_from_CET) , '9999-12-31') ValidTo
+	FROM #all_lines_filtered_2 al
+	WHERE 1=1
+		AND al.CurrentState IN ( 'ACTIVE')
+		AND al.IsTLO = 1
+) al
+INNER JOIN #future_migrations t ON t.SubscriptionKey = al.SubscriptionKey AND t.PlannedDate BETWEEN al.ValidFrom AND al.ValidTo
+CROSS APPLY (
+	SELECT *
+	FROM dim.OrderEvent 
+	WHERE 
+		OrderEventName = 'Offer Disconnected Planned'
+		OR CASE WHEN t.Status <> 'CANCELLED' THEN 'Offer Disconnected Expected' END = OrderEventName
+		OR CASE WHEN t.Status <> 'CANCELLED' and t.ProductType= al.ProductType THEN 'Migration From Planned' END = OrderEventName
+		OR CASE WHEN t.Status = 'CANCELLED' THEN 'Offer Disconnected Cancelled' END = OrderEventName
+) e
+WHERE 1=1  
+/*
+select count(distinct producttype) , subscriptionkey from #future_migrations_lines 
+group by subscriptionkey
+having count(distinct producttype)>1
+
+
+select * from #future_migrations_lines  --where  subscriptionkey= '09ec9981-c868-4cbb-ad85-bd0e1df647b1'
+order by 8,1,2
+*/
 
 -----------------------------------------------------------------------------------------------------------------------------
 -- Add RGU events
@@ -1263,6 +1527,14 @@ FROM (
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, null TicketKey, IsTLO, 1 Quantity 
 		,active_from_CET
 	FROM #changed_owner
+
+
+UNION ALL
+
+	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
+		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, TicketKey, IsTLO, Quantity 
+		,active_from_CET
+	FROM #future_migrations_lines
 
 ) q
 
