@@ -13,6 +13,108 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/MaintainDW_dim_TransactionState')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "MaintainDW_dim_TransactionState",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[nuuMeta].[MaintainDW]",
+							"storedProcedureParameters": {
+								"DestinationSchema": {
+									"value": "dim",
+									"type": "String"
+								},
+								"DestinationTable": {
+									"value": "TransactionState",
+									"type": "String"
+								},
+								"PrintSQL": {
+									"value": "false",
+									"type": "Boolean"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "nuudwsqldb01",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "0.9_Meta"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MaintainDW_fact_ActiveCustomers')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "MaintainDW_fact_ActiveCustomers",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[nuuMeta].[MaintainDW]",
+							"storedProcedureParameters": {
+								"DestinationSchema": {
+									"value": "fact",
+									"type": "String"
+								},
+								"DestinationTable": {
+									"value": "ActiveCustomers",
+									"type": "String"
+								},
+								"PrintSQL": {
+									"value": "false",
+									"type": "Boolean"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "nuudwsqldb01",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "0.9_Meta"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MaintainDW_fact_ChipperIncidentEvents')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -192,6 +294,57 @@
 								},
 								"DestinationTable": {
 									"value": "ProductPrices",
+									"type": "String"
+								},
+								"PrintSQL": {
+									"value": "false",
+									"type": "Boolean"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "nuudwsqldb01",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "0.9_Meta"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MaintainDW_fact_ProductSubscriptions')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "MaintainDW_fact_ProductSubscriptions",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[nuuMeta].[MaintainDW]",
+							"storedProcedureParameters": {
+								"DestinationSchema": {
+									"value": "fact",
+									"type": "String"
+								},
+								"DestinationTable": {
+									"value": "ProductSubscriptions",
 									"type": "String"
 								},
 								"PrintSQL": {
@@ -808,149 +961,6 @@
 					}
 				},
 				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/datalake01ingestionNetcracker_interim_Parquet_DynamicDataset')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "datalake01ingestionNetcracker_interim",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"FileSystemName": {
-						"type": "string",
-						"defaultValue": "dummy"
-					},
-					"FolderName": {
-						"type": "string",
-						"defaultValue": "dummy"
-					},
-					"FileName": {
-						"type": "string",
-						"defaultValue": "dummy"
-					},
-					"ColumnDelimiter": {
-						"type": "string",
-						"defaultValue": ","
-					},
-					"TextQualifier": {
-						"type": "string",
-						"defaultValue": "\""
-					},
-					"EscapeCharacter": {
-						"type": "string",
-						"defaultValue": "\\"
-					},
-					"IsHeaderPresent": {
-						"type": "bool",
-						"defaultValue": true
-					},
-					"CompressionCodec": {
-						"type": "string",
-						"defaultValue": "none"
-					},
-					"Encoding": {
-						"type": "string",
-						"defaultValue": "UTF-8"
-					}
-				},
-				"folder": {
-					"name": "DynamicDatasets"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().FileName",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().FolderName",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@dataset().FileSystemName",
-							"type": "Expression"
-						}
-					},
-					"compressionCodec": {
-						"value": "@dataset().CompressionCodec",
-						"type": "Expression"
-					}
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ingestsqldb01_DynamicDataset')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ingestsqldb01",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"TableName": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "DynamicDatasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": {
-						"value": "@replace(replace(split(dataset().TableName,'.')[0],'[',''),']','')",
-						"type": "Expression"
-					},
-					"table": {
-						"value": "@replace(replace(split(dataset().TableName,'.')[1],'[',''),']','')",
-						"type": "Expression"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/nuudwsqldb01_DynamicDataset')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "nuudwsqldb01",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"TableName": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "DynamicDatasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": {
-						"value": "@replace(replace(split(dataset().TableName,'.')[0],'[',''),']','')",
-						"type": "Expression"
-					},
-					"table": {
-						"value": "@replace(replace(split(dataset().TableName,'.')[1],'[',''),']','')",
-						"type": "Expression"
-					}
-				}
 			},
 			"dependsOn": []
 		}

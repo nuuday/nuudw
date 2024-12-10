@@ -13,6 +13,149 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/datalake01ingestionNetcracker_interim_Parquet_DynamicDataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake01ingestionNetcracker_interim",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileSystemName": {
+						"type": "string",
+						"defaultValue": "dummy"
+					},
+					"FolderName": {
+						"type": "string",
+						"defaultValue": "dummy"
+					},
+					"FileName": {
+						"type": "string",
+						"defaultValue": "dummy"
+					},
+					"ColumnDelimiter": {
+						"type": "string",
+						"defaultValue": ","
+					},
+					"TextQualifier": {
+						"type": "string",
+						"defaultValue": "\""
+					},
+					"EscapeCharacter": {
+						"type": "string",
+						"defaultValue": "\\"
+					},
+					"IsHeaderPresent": {
+						"type": "bool",
+						"defaultValue": true
+					},
+					"CompressionCodec": {
+						"type": "string",
+						"defaultValue": "none"
+					},
+					"Encoding": {
+						"type": "string",
+						"defaultValue": "UTF-8"
+					}
+				},
+				"folder": {
+					"name": "DynamicDatasets"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().FolderName",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().FileSystemName",
+							"type": "Expression"
+						}
+					},
+					"compressionCodec": {
+						"value": "@dataset().CompressionCodec",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ingestsqldb01_DynamicDataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ingestsqldb01",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"TableName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "DynamicDatasets"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@replace(replace(split(dataset().TableName,'.')[0],'[',''),']','')",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@replace(replace(split(dataset().TableName,'.')[1],'[',''),']','')",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/nuudwsqldb01_DynamicDataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"TableName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "DynamicDatasets"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@replace(replace(split(dataset().TableName,'.')[0],'[',''),']','')",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@replace(replace(split(dataset().TableName,'.')[1],'[',''),']','')",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/BRIDGE_0_UserAccess')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1370,252 +1513,6 @@
 						"typeProperties": {
 							"pipeline": {
 								"referenceName": "DIM_1_OrderEvent_Load",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"CleanUpPartitions": {
-									"value": "@pipeline().parameters.CleanUpPartitions",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "bool",
-						"defaultValue": true
-					},
-					"CleanUpPartitions": {
-						"type": "bool",
-						"defaultValue": false
-					}
-				},
-				"folder": {
-					"name": "0.3_Dimensions"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DIM_0_PhoneDetail')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Transform",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_1_PhoneDetail_Transform",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Load",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Transform",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_1_PhoneDetail_Load",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"CleanUpPartitions": {
-									"value": "@pipeline().parameters.CleanUpPartitions",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "bool",
-						"defaultValue": true
-					},
-					"CleanUpPartitions": {
-						"type": "bool",
-						"defaultValue": false
-					}
-				},
-				"folder": {
-					"name": "0.3_Dimensions"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DIM_0_Product')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Transform",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_1_Product_Transform",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Load",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Transform",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_1_Product_Load",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"CleanUpPartitions": {
-									"value": "@pipeline().parameters.CleanUpPartitions",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "bool",
-						"defaultValue": true
-					},
-					"CleanUpPartitions": {
-						"type": "bool",
-						"defaultValue": false
-					}
-				},
-				"folder": {
-					"name": "0.3_Dimensions"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DIM_0_Quote')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Transform",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_1_Quote_Transform",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Load",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Transform",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "DIM_1_Quote_Load",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,

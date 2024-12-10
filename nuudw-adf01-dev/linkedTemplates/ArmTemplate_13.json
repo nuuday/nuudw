@@ -13,1223 +13,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_product_offering')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy_product_offering",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ParquetSource"
-							},
-							"sink": {
-								"type": "SqlSink",
-								"writeBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								},
-								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[product_offering]"
-							},
-							"enableStaging": false,
-							"dataIntegrationUnits": 0
-						},
-						"inputs": [
-							{
-								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"FileSystemName": "raw",
-									"FolderName": "netcracker_interim/poc-product_offering/",
-									"FileName": "poc-product_offering-20230330T124710Z.parquet",
-									"ColumnDelimiter": "\t",
-									"TextQualifier": "\"",
-									"IsHeaderPresent": "False"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "nuudwsqldb01_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": "sourceDataLakeNetcracker_interim.product_offering"
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "Bool",
-						"defaultValue": false
-					},
-					"WriteBatchSize": {
-						"type": "Int",
-						"defaultValue": 10000
-					}
-				},
-				"folder": {
-					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_quote')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy_quote",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ParquetSource"
-							},
-							"sink": {
-								"type": "SqlSink",
-								"writeBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								},
-								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[quote]"
-							},
-							"enableStaging": false,
-							"dataIntegrationUnits": 0
-						},
-						"inputs": [
-							{
-								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"FileSystemName": "raw",
-									"FolderName": "netcracker_interim/interim-cpq-quote/",
-									"FileName": "interim-cpq-quote-20230330T124711Z.parquet",
-									"ColumnDelimiter": "\t",
-									"TextQualifier": "\"",
-									"IsHeaderPresent": "False"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "nuudwsqldb01_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": "sourceDataLakeNetcracker_interim.quote"
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "Bool",
-						"defaultValue": false
-					},
-					"WriteBatchSize": {
-						"type": "Int",
-						"defaultValue": 10000
-					}
-				},
-				"folder": {
-					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_quote_item')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy_quote_item",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ParquetSource"
-							},
-							"sink": {
-								"type": "SqlSink",
-								"writeBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								},
-								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[quote_item]"
-							},
-							"enableStaging": false,
-							"dataIntegrationUnits": 0
-						},
-						"inputs": [
-							{
-								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"FileSystemName": "raw",
-									"FolderName": "netcracker_interim/interim-cpq-quote_item/",
-									"FileName": "interim-cpq-quote_item-20230330T124711Z.parquet",
-									"ColumnDelimiter": "\t",
-									"TextQualifier": "\"",
-									"IsHeaderPresent": "False"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "nuudwsqldb01_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": "sourceDataLakeNetcracker_interim.quote_item"
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "Bool",
-						"defaultValue": false
-					},
-					"WriteBatchSize": {
-						"type": "Int",
-						"defaultValue": 10000
-					}
-				},
-				"folder": {
-					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ExtractsourceDataLakeNetcracker_interim_soft_bundled_offering')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy_soft_bundled_offering",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ParquetSource"
-							},
-							"sink": {
-								"type": "SqlSink",
-								"writeBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								},
-								"preCopyScript": "TRUNCATE TABLE [sourceDataLakeNetcracker_interim].[soft_bundled_offering]"
-							},
-							"enableStaging": false,
-							"dataIntegrationUnits": 0
-						},
-						"inputs": [
-							{
-								"referenceName": "datalake01ingestionNetcracker_interim_Parquet_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"FileSystemName": "raw",
-									"FolderName": "netcracker_interim/poc-soft_bundled_offering/",
-									"FileName": "poc-soft_bundled_offering-20230330T124710Z.parquet",
-									"ColumnDelimiter": "\t",
-									"TextQualifier": "\"",
-									"IsHeaderPresent": "False"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "nuudwsqldb01_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": "sourceDataLakeNetcracker_interim.soft_bundled_offering"
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "Bool",
-						"defaultValue": false
-					},
-					"WriteBatchSize": {
-						"type": "Int",
-						"defaultValue": 10000
-					}
-				},
-				"folder": {
-					"name": "Extract/Extract_datalake01ingestionNetcracker_interim"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FACT_0_ActiveCustomers')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Transform",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_1_ActiveCustomers_Transform",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Load",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Transform",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_1_ActiveCustomers_Load",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"CleanUpPartitions": {
-									"value": "@pipeline().parameters.CleanUpPartitions",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "bool",
-						"defaultValue": true
-					},
-					"CleanUpPartitions": {
-						"type": "bool",
-						"defaultValue": false
-					}
-				},
-				"folder": {
-					"name": "0.4_Facts"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FACT_0_ChipperIncidentEvents')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Transform",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_1_ChipperIncidentEvents_Transform",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Load",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Transform",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_1_ChipperIncidentEvents_Load",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"CleanUpPartitions": {
-									"value": "@pipeline().parameters.CleanUpPartitions",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "bool",
-						"defaultValue": true
-					},
-					"CleanUpPartitions": {
-						"type": "bool",
-						"defaultValue": false
-					}
-				},
-				"folder": {
-					"name": "0.4_Facts"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FACT_0_ChipperIncidents')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Transform",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_1_ChipperIncidents_Transform",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Load",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Transform",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_1_ChipperIncidents_Load",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"CleanUpPartitions": {
-									"value": "@pipeline().parameters.CleanUpPartitions",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "bool",
-						"defaultValue": true
-					},
-					"CleanUpPartitions": {
-						"type": "bool",
-						"defaultValue": false
-					}
-				},
-				"folder": {
-					"name": "0.4_Facts"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FACT_0_OrderEvents')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Transform",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_1_OrderEvents_Transform",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Load",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Transform",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_1_OrderEvents_Load",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"CleanUpPartitions": {
-									"value": "@pipeline().parameters.CleanUpPartitions",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "bool",
-						"defaultValue": true
-					},
-					"CleanUpPartitions": {
-						"type": "bool",
-						"defaultValue": false
-					}
-				},
-				"folder": {
-					"name": "0.4_Facts"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FACT_0_ProductPrices')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Transform",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_1_ProductPrices_Transform",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Load",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Transform",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_1_ProductPrices_Load",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"CleanUpPartitions": {
-									"value": "@pipeline().parameters.CleanUpPartitions",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "bool",
-						"defaultValue": true
-					},
-					"CleanUpPartitions": {
-						"type": "bool",
-						"defaultValue": false
-					}
-				},
-				"folder": {
-					"name": "0.4_Facts"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FACT_0_ProductTransactions')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Transform",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_1_ProductTransactions_Transform",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Load",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Transform",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "FACT_1_ProductTransactions_Load",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"CleanUpPartitions": {
-									"value": "@pipeline().parameters.CleanUpPartitions",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "bool",
-						"defaultValue": true
-					},
-					"CleanUpPartitions": {
-						"type": "bool",
-						"defaultValue": false
-					}
-				},
-				"folder": {
-					"name": "0.4_Facts"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MAN_Compare_DimProduct')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy data1",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"preCopyScript": "TRUNCATE TABLE sourceNuudlBiz.[DimProduct_compare]",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "NuuData_Chipper_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": "lookup.DimProduct"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "nuudwsqldb01_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": "sourceNuudlBiz.[DimProduct_compare]"
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "0.0 Solutions/FAM_FaultManagement/Test"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Migrate_Columbus_AFTALE_LID')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy AFTALE_LID",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.23:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"preCopyScript": "TRUNCATE TABLE sourceNuudlColumbus.AFTALE_LID_History",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "NuuData_Columbus_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": "sourceNuudlColumbus.AFTALE_LID_History"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "nuudwsqldb01_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": "sourceNuudlColumbus.AFTALE_LID_History"
-								}
-							}
-						]
-					},
-					{
-						"name": "Set_Last_Value_Loaded",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "Copy AFTALE_LID",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[nuuMeta].[SetLastLoadedValue]",
-							"storedProcedureParameters": {
-								"SourceConnectionName": {
-									"value": "NuuDL_Columbus",
-									"type": "String"
-								},
-								"SourceSchemaName": {
-									"value": "cu",
-									"type": "String"
-								},
-								"SourceTableName": {
-									"value": "AFTALE_LID",
-									"type": "String"
-								},
-								"WatermarkIsDate": {
-									"value": "False",
-									"type": "Boolean"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "nuudwsqldb01",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "0.0 Solutions/FAM_FaultManagement/Migration"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Migrate_Columbus_PROD_LID_AFT')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy PROD_LID_AFT",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.23:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"preCopyScript": "TRUNCATE TABLE sourceNuudlColumbus.PROD_LID_AFT_History",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "NuuData_Columbus_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": "sourceNuudlColumbus.PROD_LID_AFT_History"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "nuudwsqldb01_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": "sourceNuudlColumbus.PROD_LID_AFT_History"
-								}
-							}
-						]
-					},
-					{
-						"name": "Set_Last_Value_Loaded",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "Copy PROD_LID_AFT",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[nuuMeta].[SetLastLoadedValue]",
-							"storedProcedureParameters": {
-								"SourceConnectionName": {
-									"value": "NuuDL_Columbus",
-									"type": "String"
-								},
-								"SourceSchemaName": {
-									"value": "cu",
-									"type": "String"
-								},
-								"SourceTableName": {
-									"value": "PROD_LID_AFT",
-									"type": "String"
-								},
-								"WatermarkIsDate": {
-									"value": "False",
-									"type": "Boolean"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "nuudwsqldb01",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "0.0 Solutions/FAM_FaultManagement/Migration"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Migrate_fact_ActiveCustomers')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy Fact ActiveCustomers",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "NuuData_Columbus_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": "fact.ActiveCustomers"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "nuudwsqldb01_DynamicDataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": "fact.ActiveCustomers"
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "0.0 Solutions/FAM_FaultManagement/Migration"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/EXT_0_Cubus31_PCTI')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "BUI_915_Customers_CU",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "EXT_1_Cubus31_PCTI_BUI_915_Customers_CU",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"JobIsIncremental": {
-									"value": "@pipeline().parameters.JobIsIncremental",
-									"type": "Expression"
-								},
-								"WriteBatchSize": {
-									"value": "@pipeline().parameters.WriteBatchSize",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"JobIsIncremental": {
-						"type": "Bool",
-						"defaultValue": true
-					},
-					"WriteBatchSize": {
-						"type": "Int",
-						"defaultValue": 10000
-					}
-				},
-				"folder": {
-					"name": "0.1_Extracts"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/EXT_0_Cubus_MasterData')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -2091,6 +874,1741 @@
 				"annotations": []
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EXT_0_NuuDL_NAM')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "nam",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_NuuDL_NAM_nam",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": true
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "0.1_Extracts"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EXT_0_NuuData_Chipper')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ChipperTicketsComments",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_NuuData_Chipper_ChipperTicketsComments",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "ChipperTicketsEventLog",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_NuuData_Chipper_ChipperTicketsEventLog",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "ChipperTicketsTags",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_NuuData_Chipper_ChipperTicketsTags",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "ChipperTicketsTickets",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_NuuData_Chipper_ChipperTicketsTickets",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": true
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "0.1_Extracts"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EXT_0_Nuudl_NetCracker')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "pimnrmlcustomercategory",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlcustomercategory",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "pimnrmldistributionchannel",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmldistributionchannel",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "pimnrmlprodcatprodoffering",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlprodcatprodoffering",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "pimnrmlprodofferingpricespecification",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlprodofferingpricespecification",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "pimnrmlproductcatalog",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductcatalog",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "pimnrmlproductfamily",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductfamily",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "pimnrmlproductoffering",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductoffering",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "pimnrmlproductofferingpricechargeitem",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductofferingpricechargeitem",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "pimnrmlproductofferingpricechargekey",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlproductofferingpricechargekey",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "pimnrmlpromotionprodofferingpricealteration",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_1_Nuudl_NetCracker_pimnrmlpromotionprodofferingpricealteration",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"JobIsIncremental": {
+									"value": "@pipeline().parameters.JobIsIncremental",
+									"type": "Expression"
+								},
+								"WriteBatchSize": {
+									"value": "@pipeline().parameters.WriteBatchSize",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"JobIsIncremental": {
+						"type": "Bool",
+						"defaultValue": false
+					},
+					"WriteBatchSize": {
+						"type": "Int",
+						"defaultValue": 10000
+					}
+				},
+				"folder": {
+					"name": "0.1_Extracts"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FAM_1_DIM')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FAM_ChipperIncident",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_FAM_ChipperIncident",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "FAM_ChipperStaus",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_FAM_ChipperStatus",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "FAM_Infrastructure",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_FAM_Infrastructure",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "FAM_OpenIncidentsGroup",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_FAM_OpenIncidentsGroup",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "FAM_SalesChannel",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_FAM_SalesChannel",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "FAM_Technology",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_FAM_Technology",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "0.0 Solutions/FAM_FaultManagement"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FAM_2_FACT')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ChipperIncidents",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "FACT_0_ChipperIncidents",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ChipperIncidentEvents",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "FACT_0_ChipperIncidentEvents",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "BRIDGE_0_UserAccess",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "BRIDGE_0_UserAccess",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "FACT_0_ActiveCustomers",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "FACT_0_ActiveCustomers",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "0.0 Solutions/FAM_FaultManagement"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PRX_2_FACT')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FACT_0_OrderEvents",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "FACT_0_OrderEvents",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "FACT_0_ProductPrices",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "FACT_0_ProductPrices",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "FACT_0_ProductSubscriptions",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "FACT_0_OrderEvents",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "FACT_0_ProductSubscriptions",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "0.0 Solutions/PRX_Product_Explorer"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FAM_0_Master')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FAM_1_DIM",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "FAM_1_DIM",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "FAM_2_FACT",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "FAM_1_DIM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "FAM_2_FACT",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "FAM_3_AS",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "FAM_2_FACT",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "FAM_3_AS",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "0.0 Solutions/FAM_FaultManagement"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/FAM_1_DIM')]",
+				"[concat(variables('factoryId'), '/pipelines/FAM_2_FACT')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PRX_0_Master')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PRX_2_FACT",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PRX_2_FACT",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "0.0 Solutions/PRX_Product_Explorer"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PRX_2_FACT')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FAM_MAN_Master')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FAM_0_Master",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "DIM_0_Legacy_Customer",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_Legacy_Employee",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_Legacy_Product",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "EXT_0_Cubus31_PCTI",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "EXT_0_NuuData_Chipper",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "EXT_0_NuuDL_Columbus",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "FAM_0_Master",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_Legacy_Customer",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_Linkit",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_Legacy_Customer",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_Legacy_Employee",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_Cubus_MasterData",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_Legacy_Employee",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_Legacy_Product",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_BIZ",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_Legacy_Product",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "EXT_0_Cubus31_PCTI",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_0_Cubus31_PCTI",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "EXT_0_Cubus_MasterData",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_0_Cubus_MasterData",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "EXT_0_NuuData_Chipper",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_0_NuuData_Chipper",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "EXT_0_NuuDL_BIZ",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_0_NuuDL_BIZ",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "EXT_0_NuuDL_Columbus",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_0_NuuDL_Columbus",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "EXT_0_NuuDL_Linkit",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_0_NuuDL_Linkit",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "0.0 Solutions/FAM_FaultManagement"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/FAM_0_Master')]",
+				"[concat(variables('factoryId'), '/pipelines/EXT_0_Cubus_MasterData')]",
+				"[concat(variables('factoryId'), '/pipelines/EXT_0_NuuData_Chipper')]",
+				"[concat(variables('factoryId'), '/pipelines/EXT_0_NuuDL_BIZ')]",
+				"[concat(variables('factoryId'), '/pipelines/EXT_0_NuuDL_Columbus')]",
+				"[concat(variables('factoryId'), '/pipelines/EXT_0_NuuDL_Linkit')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PRX_MAN_Master')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DIM_0_BillingAccount",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_Dawn",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_BillingAccount",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_Address",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_NAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "EXT_0_NuuDL_Dawn",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_Address",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_Customer",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_Nuudl_NetCracker",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "EXT_0_NuuDL_Dawn",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_Customer",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_HouseHold",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_Dawn",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_HouseHold",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_PhoneDetail",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_Dawn",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_PhoneDetail",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_OrderEvent",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_OrderEvent",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_Product",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_Nuudl_NetCracker",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_Product",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_Quote",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_Dawn",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_Quote",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_SalesChannel",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_Nuudl_NetCracker",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_SalesChannel",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_Subscription",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_Dawn",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_Subscription",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "PRX_0_Master",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "DIM_0_BillingAccount",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_Address",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_Customer",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_HouseHold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_PhoneDetail",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_OrderEvent",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_Product",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_Quote",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_SalesChannel",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_Subscription",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_Technology",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_Employee",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_Ticket",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DIM_0_QuoteItem",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PRX_0_Master",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "EXT_0_Nuudl_NetCracker",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_NAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_0_Nuudl_NetCracker",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_Technology",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_Dawn",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_Technology",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_Employee",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_BIZ",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_Employee",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_Ticket",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_Dawn",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_Ticket",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "EXT_0_NuuDL_NAM",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_BIZ",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_0_NuuDL_NAM",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "EXT_0_NuuDL_Dawn",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_Nuudl_NetCracker",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_0_NuuDL_Dawn",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "EXT_0_NuuDL_BIZ",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT_0_NuuDL_BIZ",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DIM_0_QuoteItem",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT_0_NuuDL_Dawn",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "DIM_0_QuoteItem",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "PElogging",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "PRX_0_Master",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[nuuMeta].[PEDataLoadLogging]"
+						},
+						"linkedServiceName": {
+							"referenceName": "nuudwsqldb01",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "0.0 Solutions/PRX_Product_Explorer"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PRX_0_Master')]",
+				"[concat(variables('factoryId'), '/pipelines/EXT_0_Nuudl_NetCracker')]",
+				"[concat(variables('factoryId'), '/pipelines/EXT_0_NuuDL_NAM')]",
+				"[concat(variables('factoryId'), '/pipelines/EXT_0_NuuDL_Dawn')]",
+				"[concat(variables('factoryId'), '/pipelines/EXT_0_NuuDL_BIZ')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PRX_Starter')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PRX_MAN_Master",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2024-08-01T06:30:00",
+						"timeZone": "Romance Standard Time"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PRX_MAN_Master')]"
+			]
 		}
 	]
 }
