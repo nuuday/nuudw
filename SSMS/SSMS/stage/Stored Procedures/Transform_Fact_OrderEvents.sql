@@ -1,6 +1,3 @@
-﻿
-
-
 
 CREATE PROCEDURE [stage].[Transform_Fact_OrderEvents]
 	@JobIsIncremental BIT			
@@ -83,11 +80,13 @@ SELECT
 		ELSE i.item_productFamilyName
 	END AS ProductType,
 	i.item_offeringName AS ProductName,
-	i.item_customerId AS CustomerKey,
+	--i.item_customerId AS CustomerKey,
+	COALESCE(i.item_customerId, npi.customer_id) AS CustomerKey,
 	ev.OrderEventKey,
 	ev.OrderEventName,
 	i.state CurrentState,
-	i.item_quoteId AS QuoteKey,
+	--i.item_quoteId AS QuoteKey,
+	COALESCE(i.item_quoteId, npi.quote_id) AS QuoteKey,
 	i.id AS QuoteItemKey,
 	i.item_distributionChannelId AS SalesChannelKey,
 	acc.account_num AS BillingAccountKey,
@@ -96,9 +95,11 @@ SELECT
 	i.item_expirationDate_CET AS expiration_date,
 	CASE WHEN po.extended_parameters_json_deviceType IS NULL THEN 0 ELSE 1 END IsHardware,
 	cha.technology AS TechnologyKey,
-	cha.international_phone_number AS PhoneDetailKey,
+	cha.phone_number AS PhoneDetailKey,
 	JSON_VALUE(quote.extended_parameters, '$."3rdPartyStoreId"[0]') ThirdPartyStoreKey
 FROM [sourceNuudlDawnView].[ibsitemshistory_History] i
+LEFT JOIN [sourceNuudlDawnView].[ibsnrmlproductinstance_History] npi
+    ON npi.id = i.id AND npi.NUUDL_IsLatest = 1
 INNER JOIN #Subscriptions sub 
 	ON sub.SubscriptionKey = COALESCE(i.item_parentId, i.id)
 LEFT JOIN sourceNuudlDawnView.[ibsitemshistorycharacteristics_History] cha ON cha.NUUDL_ID = i.NUUDL_ID
@@ -242,8 +243,8 @@ SELECT
 	COALESCE(pp.ProductParentKey, pp2.ProductParentKey) AS ProductParentKey,
 	bcd.AddressBillingKey,
 	bcd.Householdkey,
-	ISNULL(LAG( al.ProductKey ) OVER (PARTITION BY al.SubscriptionOriginalKey, IsTLO ORDER BY al.active_from_CET),'') AS  PreviousProductKey,
-	ISNULL(LAG( al.CurrentState ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.ProductKey ORDER BY al.active_from_CET),'') AS  PreviousState,
+	ISNULL(LAG( al.ProductKey ) OVER (PARTITION BY al.SubscriptionOriginalKey, IsTLO ORDER BY al.active_from_CET,al.Ordereventkey,al.ProductInstanceID),'') AS  PreviousProductKey,
+	ISNULL(LAG( al.CurrentState ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.ProductKey ORDER BY al.active_from_CET,al.Ordereventkey,al.ProductInstanceID),'') AS  PreviousState,
 	CASE 
 		WHEN LAG( cpd.start_dat_CET ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.ProductKey ORDER BY al.active_from_CET) IS NULL THEN cpd.start_dat_CET
 	END AS RGU_StartDate,
@@ -1039,12 +1040,13 @@ DROP TABLE IF EXISTS #active_lines
 SELECT al.* 
 	, LAG( al.ProductType ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.IsTLO ORDER BY al.active_from_CET) PreviousProductType
 	, LEAD( al.ProductType ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.IsTLO ORDER BY al.active_from_CET) NextProductType
-	, LAG( al.ProductName ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionOriginalKey, al.ProductType ORDER BY al.active_from_CET) PreviousProductName
-	, LEAD( al.ProductName ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionOriginalKey, al.ProductType ORDER BY al.active_from_CET) NextProductName
-	, LEAD( al.active_from_CET ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionOriginalKey, al.ProductType ORDER BY al.active_from_CET) Next_active_from_CET
-	, LEAD( al.ProductKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionOriginalKey, al.ProductType ORDER BY al.active_from_CET) NextProductKey
-	, LEAD( al.CalendarKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionOriginalKey, al.ProductType ORDER BY al.active_from_CET) NextDate
-	, LEAD( al.TimeKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionOriginalKey, al.ProductType ORDER BY al.active_from_CET) NextTime
+	, LAG( al.ProductName ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) PreviousProductName
+	, LEAD( al.ProductName ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) NextProductName
+	, LAG( al.active_from_CET ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) Previous_active_from_CET
+	, LEAD( al.active_from_CET ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) Next_active_from_CET
+	, LEAD( al.ProductKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) NextProductKey
+	, LEAD( al.CalendarKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) NextDate
+	, LEAD( al.TimeKey ) OVER (PARTITION BY al.SubscriptionGroup, al.SubscriptionKey, al.ProductType ORDER BY al.active_from_CET) NextTime
 	, LEAD( al.CalendarKey ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.IsTLO ORDER BY al.active_from_CET) NextDateTLO
 	, LEAD( al.TimeKey ) OVER (PARTITION BY al.SubscriptionOriginalKey, al.IsTLO ORDER BY al.active_from_CET) NextTimeTLO
 INTO #active_lines
@@ -1136,7 +1138,11 @@ OUTER APPLY (
 		AND s.Next_active_from_CET < ISNULL( pck.available_to_CET, '9999-12-31' )
 		AND ps.name IN ('Monthly Fee', 'Activation Fee')		
 ) new
-WHERE s.NextProductName <> s.ProductName
+WHERE s.NextProductName <> s.ProductName and s.active_from_CET< s.Next_active_from_CET
+AND NOT EXISTS (SELECT 1 FROM #all_lines_filtered_2 alf 
+where
+alf.SubscriptionKey = s.subscriptionkey and alf.ProductName = s.NextProductName and s.active_from_CET <alf.active_from_CET and s.Next_active_from_CET >alf.active_from_CET and alf.OrderEventKey='093')
+
 --	AND s.subscriptionkey = '0edb89b6-2ffa-4884-8fd6-d6e49d3dd837'
 
 
@@ -1219,7 +1225,11 @@ CROSS APPLY (
 	FROM dim.OrderEvent 
 	WHERE OrderEventName = 'Migration To'
 ) e
-WHERE s.PreviousProductName <> s.ProductName 
+WHERE s.PreviousProductName <> s.ProductName  and s.active_from_CET> s.Previous_active_from_CET
+AND NOT EXISTS (SELECT 1 FROM #all_lines_filtered_2 alf 
+where 
+alf.SubscriptionKey = s.subscriptionkey and alf.ProductName = s.Productname and s.active_from_CET >alf.active_from_CET and s.Previous_active_from_CET <alf.active_from_CET and alf.OrderEventKey='093')
+
 
 
 
@@ -1426,7 +1436,7 @@ WHERE 1=1
 		FROM #all_lines 
 		WHERE SubscriptionOriginalKey = s.SubscriptionOriginalKey 
 			AND QuoteKey = s.QuoteKey
-			AND CurrentState = 'DISCONNECTED'
+			AND CurrentState = 'DISCONNECTED' AND IsTLO=1
 		)
 
 -----------------------------------------------------------------------------------------------------------------------------
