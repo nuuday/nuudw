@@ -1702,9 +1702,9 @@ FROM #missing_planned_disconnect
 -- Truncate and insert into stage table
 -----------------------------------------------------------------------------------------------------------------------------
 
-TRUNCATE TABLE [stage].[Fact_OrderEvents2]
+TRUNCATE TABLE [stage].[Fact_OrderEvents]
 
-INSERT INTO [stage].[Fact_OrderEvents2] WITH (TABLOCK) ([CalendarKey], [TimeKey], [ProductKey], [ProductParentKey], [ProductHardwareKey], [CustomerKey], [SubscriptionKey], [QuoteKey], QuoteItemKey, [OrderEventKey], [SalesChannelKey], [BillingAccountKey], 
+INSERT INTO [stage].[Fact_OrderEvents] WITH (TABLOCK) ([CalendarKey], [TimeKey], [ProductKey], [ProductParentKey], [ProductHardwareKey], [CustomerKey], [SubscriptionKey], [QuoteKey], QuoteItemKey, [OrderEventKey], [SalesChannelKey], [BillingAccountKey], 
 	[PhoneDetailKey], [AddressBillingKey], [HouseHoldKey], TechnologyKey, EmployeeKey, TicketKey, ThirdPartyStoreKey, [IsTLO], [Quantity])
 SELECT
 	CalendarKey,
