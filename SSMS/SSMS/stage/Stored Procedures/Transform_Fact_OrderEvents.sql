@@ -1,4 +1,3 @@
-﻿
 
 CREATE PROCEDURE [stage].[Transform_Fact_OrderEvents]
 	@JobIsIncremental BIT			
