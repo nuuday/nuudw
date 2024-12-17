@@ -9,7 +9,7 @@ SELECT
 	,[SubscriptionValidFromDate] AS [SubscriptionValidFromDate]
 	,[SubscriptionValidToDate] AS [SubscriptionValidToDate]
 	,[SubscriptionIsCurrent] AS [SubscriptionIsCurrent]
-	,[BundleTypeSimpel] AS [BundleTypeSimpel]
+	,[BundleTypeSimple] AS [BundleTypeSimple]
 	,[DWIsCurrent]
 	,[DWValidFromDate]
 	,[DWValidToDate]
