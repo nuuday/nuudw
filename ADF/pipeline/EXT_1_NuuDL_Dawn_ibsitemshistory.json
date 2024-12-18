@@ -345,8 +345,17 @@
 					"secureInput": false
 				},
 				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				},
 				"typeProperties": {
-					"scripts": [],
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "DROP INDEX [CCI_ibsitemshistory] ON [sourceNuudlDawn].[ibsitemshistory]"
+						}
+					],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			},
@@ -369,8 +378,17 @@
 					"secureInput": false
 				},
 				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				},
 				"typeProperties": {
-					"scripts": [],
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "DROP INDEX [CCI_ibsitemshistory_History] ON [sourceNuudlDawn].[ibsitemshistory_History]\n"
+						}
+					],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			},
@@ -393,8 +411,17 @@
 					"secureInput": false
 				},
 				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				},
 				"typeProperties": {
-					"scripts": [],
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ibsitemshistory] ON [sourceNuudlDawn].[ibsitemshistory] WITH (DROP_EXISTING = OFF, COMPRESSION_DELAY = 0, DATA_COMPRESSION = COLUMNSTORE) ON [PRIMARY]\n\n "
+						}
+					],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			},
@@ -417,8 +444,17 @@
 					"secureInput": false
 				},
 				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				},
 				"typeProperties": {
-					"scripts": [],
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ibsitemshistory_History] ON [sourceNuudlDawn].[ibsitemshistory_History] WITH (DROP_EXISTING = OFF, COMPRESSION_DELAY = 0, DATA_COMPRESSION = COLUMNSTORE) ON [PRIMARY]"
+						}
+					],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			}
