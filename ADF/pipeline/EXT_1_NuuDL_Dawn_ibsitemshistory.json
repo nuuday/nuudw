@@ -182,7 +182,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Drop Index",
+						"activity": "Lookup_Source_Schema_Name",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -211,7 +211,10 @@
 							"value": "@pipeline().parameters.WriteBatchSize",
 							"type": "Expression"
 						},
-						"preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory]"
+						"preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory];\nDROP INDEX [CCI_ibsitemshistory] ON [sourceNuudlDawn].[ibsitemshistory]",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
 					},
 					"enableStaging": true,
 					"stagingSettings": {
@@ -324,39 +327,6 @@
 				"linkedServiceName": {
 					"referenceName": "nuudwsqldb01",
 					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "Drop Index",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Lookup_Source_Schema_Name",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "nuudwsqldb01",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": "DROP INDEX [CCI_ibsitemshistory] ON [sourceNuudlDawn].[ibsitemshistory]"
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			},
 			{
