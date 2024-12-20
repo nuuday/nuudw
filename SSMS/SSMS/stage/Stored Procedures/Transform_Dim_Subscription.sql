@@ -180,7 +180,7 @@ TRUNCATE TABLE [stage].[Dim_Subscription]
 
 )
 
-INSERT INTO stage.[Dim_Subscription] WITH (TABLOCK) (SubscriptionValidFromDate, SubscriptionValidToDate, SubscriptionIsCurrent, SubscriptionKey, SubscriptionOriginalKey, FamilyBundle, BundleType, BundleTypeSimpel)
+INSERT INTO stage.[Dim_Subscription] WITH (TABLOCK) (SubscriptionValidFromDate, SubscriptionValidToDate, SubscriptionIsCurrent, SubscriptionKey, SubscriptionOriginalKey, FamilyBundle, BundleType, BundleTypeSimple)
 SELECT 
 	ValidFromDate
 	, ISNULL(LEAD(ValidFromDate,1) OVER (PARTITION BY SubscriptionKey ORDER BY ValidFromDate),'9999-12-31') ValidToDate
@@ -193,12 +193,12 @@ SELECT
 		WHEN LOWER(BundleType) LIKE 'standalone%' OR 
 			 LOWER(BundleType) LIKE 'basis%' OR 
 			 LOWER(BundleType) LIKE 'primary%' OR
-			 BundleType = '?' OR   
+			 --BundleType = '?' OR   
 			 BundleType LIKE '#%'
 		THEN 'Basis'
 		WHEN LOWER(BundleType) LIKE 'ekstra%' OR 
 			 LOWER(BundleType) LIKE 'secondary%' 
 		THEN 'Ekstra'
 		ELSE '?' 
-	 END AS BundleTypeSimpel
+	 END AS BundleTypeSimple
 FROM daily_collapsed
