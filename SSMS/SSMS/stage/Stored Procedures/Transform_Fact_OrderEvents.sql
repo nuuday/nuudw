@@ -1,3 +1,5 @@
+﻿
+
 
 CREATE PROCEDURE [stage].[Transform_Fact_OrderEvents]
 	@JobIsIncremental BIT			
@@ -85,8 +87,8 @@ SELECT
 	ev.OrderEventKey,
 	ev.OrderEventName,
 	i.state CurrentState,
-	--i.item_quoteId AS QuoteKey,
-	COALESCE(i.item_quoteId, npi.quote_id) AS QuoteKey,
+	i.item_quoteId AS QuoteKey,
+	--COALESCE(i.item_quoteId, npi.quote_id) AS QuoteKey,
 	i.id AS QuoteItemKey,
 	i.item_distributionChannelId AS SalesChannelKey,
 	acc.account_num AS BillingAccountKey,
@@ -95,7 +97,7 @@ SELECT
 	i.item_expirationDate_CET AS expiration_date,
 	CASE WHEN po.extended_parameters_json_deviceType IS NULL THEN 0 ELSE 1 END IsHardware,
 	cha.technology AS TechnologyKey,
-	cha.phone_number AS PhoneDetailKey,
+	cha.international_phone_number AS PhoneDetailKey,
 	JSON_VALUE(quote.extended_parameters, '$."3rdPartyStoreId"[0]') ThirdPartyStoreKey
 FROM [sourceNuudlDawnView].[ibsitemshistory_History] i
 LEFT JOIN [sourceNuudlDawnView].[ibsnrmlproductinstance_History] npi
