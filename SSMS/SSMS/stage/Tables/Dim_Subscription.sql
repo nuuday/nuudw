@@ -7,8 +7,10 @@
     [SubscriptionValidToDate]   DATETIME2 (7)  NULL,
     [SubscriptionIsCurrent]     BIT            NULL,
     [DWCreatedDate]             DATETIME2 (0)  DEFAULT (sysdatetime()) NOT NULL,
-    [BundleTypeSimpel]          NVARCHAR (100) NULL
+    [BundleTypeSimple]          NVARCHAR (100) NULL
 );
+
+
 
 
 
