@@ -211,7 +211,7 @@
 							"value": "@pipeline().parameters.WriteBatchSize",
 							"type": "Expression"
 						},
-						"preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory];\nDROP INDEX [CCI_ibsitemshistory] ON [sourceNuudlDawn].[ibsitemshistory]",
+						"preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory];\n",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
@@ -356,7 +356,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "DROP INDEX [CCI_ibsitemshistory_History] ON [sourceNuudlDawn].[ibsitemshistory_History]\n"
+							"text": "DROP INDEX IF EXISTS [CCI_ibsitemshistory_History] ON [sourceNuudlDawn].[ibsitemshistory_History]\n"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -455,7 +455,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory];\nDROP INDEX [CCI_ibsitemshistory] ON [sourceNuudlDawn].[ibsitemshistory]"
+							"text": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory];\nDROP INDEX IF EXISTS [CCI_ibsitemshistory] ON [sourceNuudlDawn].[ibsitemshistory]"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
