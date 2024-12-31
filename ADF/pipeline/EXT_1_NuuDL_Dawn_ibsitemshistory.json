@@ -356,7 +356,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "DROP INDEX IF EXISTS [CCI_ibsitemshistory_History] ON [sourceNuudlDawn].[ibsitemshistory_History]\n"
+							"text": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory_History];\nDROP INDEX IF EXISTS [CCI_ibsitemshistory_History] ON [sourceNuudlDawn].[ibsitemshistory_History];\nALTER TABLE [sourceNuudlDawn].[ibsitemshistory_History] DROP CONSTRAINT [PK_ibsitemshistory_History];\n"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -389,7 +389,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ibsitemshistory] ON [sourceNuudlDawn].[ibsitemshistory] WITH (DROP_EXISTING = OFF, COMPRESSION_DELAY = 0, DATA_COMPRESSION = COLUMNSTORE) ON [PRIMARY]\n\n "
+							"text": "CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ibsitemshistory] ON [sourceNuudlDawn].[ibsitemshistory] WITH (DROP_EXISTING = OFF, COMPRESSION_DELAY = 0, DATA_COMPRESSION = COLUMNSTORE) ON [PRIMARY];\nALTER TABLE [sourceNuudlDawn].[ibsitemshistory] ADD  CONSTRAINT [PK_ibsitemshistory] PRIMARY KEY NONCLUSTERED \n(\n\t[NUUDL_ID] ASC\n)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY];\n\n "
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -422,7 +422,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ibsitemshistory_History] ON [sourceNuudlDawn].[ibsitemshistory_History] WITH (DROP_EXISTING = OFF, COMPRESSION_DELAY = 0, DATA_COMPRESSION = COLUMNSTORE) ON [PRIMARY]"
+							"text": "CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ibsitemshistory_History] ON [sourceNuudlDawn].[ibsitemshistory_History] WITH (DROP_EXISTING = OFF, COMPRESSION_DELAY = 0, DATA_COMPRESSION = COLUMNSTORE) ON [PRIMARY];\nALTER TABLE [sourceNuudlDawn].[ibsitemshistory_History] ADD  CONSTRAINT [PK_ibsitemshistory_History] PRIMARY KEY NONCLUSTERED \n(\n\t[NUUDL_ID] ASC,\n\t[DWValidFromDate] ASC\n)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY];"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -455,7 +455,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory];\nDROP INDEX IF EXISTS [CCI_ibsitemshistory] ON [sourceNuudlDawn].[ibsitemshistory]"
+							"text": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory];\nALTER TABLE [sourceNuudlDawn].[ibsitemshistory] DROP CONSTRAINT [PK_ibsitemshistory];\nDROP INDEX IF EXISTS [CCI_ibsitemshistory] ON [sourceNuudlDawn].[ibsitemshistory]"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
