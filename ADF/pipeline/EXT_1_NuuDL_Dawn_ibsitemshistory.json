@@ -182,7 +182,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Lookup_Source_Schema_Name",
+						"activity": "Drop Index",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -211,7 +211,10 @@
 							"value": "@pipeline().parameters.WriteBatchSize",
 							"type": "Expression"
 						},
-						"preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory]"
+						"preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory];\n",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
 					},
 					"enableStaging": true,
 					"stagingSettings": {
@@ -246,7 +249,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "Copy_ibsitemshistory",
+						"activity": "Drop index on history",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -284,7 +287,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "Merge_To_History",
+						"activity": "Create index on history",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -324,6 +327,138 @@
 				"linkedServiceName": {
 					"referenceName": "nuudwsqldb01",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Drop index on history",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Copy_ibsitemshistory",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory_History];\nDROP INDEX IF EXISTS [CCI_ibsitemshistory_History] ON [sourceNuudlDawn].[ibsitemshistory_History];\nALTER TABLE [sourceNuudlDawn].[ibsitemshistory_History] DROP CONSTRAINT [PK_ibsitemshistory_History];\n"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Create index",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Merge_To_History",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ibsitemshistory] ON [sourceNuudlDawn].[ibsitemshistory] WITH (DROP_EXISTING = OFF, COMPRESSION_DELAY = 0, DATA_COMPRESSION = COLUMNSTORE) ON [PRIMARY];\nALTER TABLE [sourceNuudlDawn].[ibsitemshistory] ADD  CONSTRAINT [PK_ibsitemshistory] PRIMARY KEY NONCLUSTERED \n(\n\t[NUUDL_ID] ASC\n)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY];\n\n "
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Create index on history",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Create index",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ibsitemshistory_History] ON [sourceNuudlDawn].[ibsitemshistory_History] WITH (DROP_EXISTING = OFF, COMPRESSION_DELAY = 0, DATA_COMPRESSION = COLUMNSTORE) ON [PRIMARY];\nALTER TABLE [sourceNuudlDawn].[ibsitemshistory_History] ADD  CONSTRAINT [PK_ibsitemshistory_History] PRIMARY KEY NONCLUSTERED \n(\n\t[NUUDL_ID] ASC,\n\t[DWValidFromDate] ASC\n)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY];"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Drop Index",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Lookup_Source_Schema_Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory];\nALTER TABLE [sourceNuudlDawn].[ibsitemshistory] DROP CONSTRAINT [PK_ibsitemshistory];\nDROP INDEX IF EXISTS [CCI_ibsitemshistory] ON [sourceNuudlDawn].[ibsitemshistory]"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			}
 		],
