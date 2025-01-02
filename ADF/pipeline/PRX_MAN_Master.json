@@ -132,6 +132,8 @@
 			{
 				"name": "DIM_0_OrderEvent",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -387,6 +389,8 @@
 			{
 				"name": "DIM_0_Employee",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "EXT_0_NuuDL_BIZ",
@@ -433,6 +437,8 @@
 			{
 				"name": "EXT_0_NuuDL_NAM",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "EXT_0_NuuDL_BIZ",
@@ -479,6 +485,8 @@
 			{
 				"name": "EXT_0_NuuDL_BIZ",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
