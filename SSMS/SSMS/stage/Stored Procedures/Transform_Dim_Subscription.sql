@@ -1,4 +1,6 @@
 ﻿
+
+
 CREATE PROCEDURE [stage].[Transform_Dim_Subscription]
 	@JobIsIncremental BIT			
 AS 
@@ -103,7 +105,7 @@ INNER JOIN #Subscriptions s ON s.SubscriptionKey = a.id
 LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] b
 	ON b.id = a.item_offeringId 
 WHERE  1=1
-	AND a.state IN ('ACTIVE','PLANNED')
+	AND a.state IN ('ACTIVE','PLANNED') and a.NUUDL_IsLatest=1
 --	AND a.id = '009a2514-ebec-44ee-adde-d1d920418e65'
 
 /*
@@ -178,7 +180,7 @@ TRUNCATE TABLE [stage].[Dim_Subscription]
 
 )
 
-INSERT INTO stage.[Dim_Subscription] WITH (TABLOCK) (SubscriptionValidFromDate, SubscriptionValidToDate, SubscriptionIsCurrent, SubscriptionKey, SubscriptionOriginalKey, FamilyBundle, BundleType)
+INSERT INTO stage.[Dim_Subscription] WITH (TABLOCK) (SubscriptionValidFromDate, SubscriptionValidToDate, SubscriptionIsCurrent, SubscriptionKey, SubscriptionOriginalKey, FamilyBundle, BundleType, BundleTypeSimple)
 SELECT 
 	ValidFromDate
 	, ISNULL(LEAD(ValidFromDate,1) OVER (PARTITION BY SubscriptionKey ORDER BY ValidFromDate),'9999-12-31') ValidToDate
@@ -187,4 +189,16 @@ SELECT
 	, SubscriptionOriginalKey
 	, FamilyBundle
 	, BundleType
+	, CASE
+		WHEN LOWER(BundleType) LIKE 'standalone%' OR 
+			 LOWER(BundleType) LIKE 'basis%' OR 
+			 LOWER(BundleType) LIKE 'primary%' OR
+			 --BundleType = '?' OR   
+			 BundleType LIKE '#%'
+		THEN 'Basis'
+		WHEN LOWER(BundleType) LIKE 'ekstra%' OR 
+			 LOWER(BundleType) LIKE 'secondary%' 
+		THEN 'Ekstra'
+		ELSE '?' 
+	 END AS BundleTypeSimple
 FROM daily_collapsed

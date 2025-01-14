@@ -2,8 +2,6 @@
 
 
 
-
-
 CREATE PROCEDURE [stage].[Transform_Fact_OrderEvents]
 	@JobIsIncremental BIT			
 AS
@@ -820,6 +818,7 @@ SELECT DISTINCT
 	al.IndividualServiceUserKey,
     al.IndividualBillReceiverKey, 
     al.IndividualLegalOwnerKey,
+
 	CASE 
 		WHEN e.OrderEventName= 'Offer Planned' THEN CAST(t.PlannedDate AS date)
 		WHEN e.OrderEventName ='Offer Activated Expected' THEN CAST(t.ExpectedDate AS date)
@@ -918,6 +917,7 @@ SELECT DISTINCT
 	al.IndividualServiceUserKey,
     al.IndividualBillReceiverKey, 
     al.IndividualLegalOwnerKey,
+
 	CASE 
 		WHEN e.OrderEventName= 'Offer Disconnected Planned' THEN CAST(t.PlannedDate AS date)
 		WHEN e.OrderEventName= 'Offer Disconnected Expected' THEN CAST(t.ExpectedDate AS date)
@@ -951,6 +951,7 @@ FROM (
 		al.IndividualServiceUserKey,
     al.IndividualBillReceiverKey, 
     al.IndividualLegalOwnerKey,
+
 		al.active_from_CET AS ValidFrom,
 		ISNULL( LEAD(al.active_from_CET,1) OVER (PARTITION BY SubscriptionOriginalKey ORDER BY al.active_from_CET) , '9999-12-31') ValidTo
 	FROM #all_lines_filtered_2 al
@@ -1649,7 +1650,9 @@ UNION ALL
 
 	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, TicketKey, IsTLO, Quantity 
+
 		,active_from_CET,IndividualServiceUserKey, IndividualBillReceiverKey, IndividualLegalOwnerKey
+
 	FROM #future_migrations_lines
 
 ) q
