@@ -717,6 +717,17 @@
     <Build Include="factView\Views\ProductMigrations.sql" />
     <Build Include="nuuMeta\Tables\PEDataLoadLog.sql" />
     <Build Include="nuuMeta\Stored Procedures\PEDataLoadLogging.sql" />
+    <Build Include="sourceNuudlDawn\Tables\ibsnrmlrelatedpartyref_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\ibsnrmlrelatedpartyref.sql" />
+    <Build Include="sourceNuudlDawnView\Views\ibsnrmlrelatedpartyref_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimindividualname_History.sql" />
+    <Build Include="sourceNuudlDawn\Tables\cimindividualname.sql" />
+    <Build Include="sourceNuudlDawnView\Views\cimindividualname_History.sql" />
+    <Build Include="stage\Tables\Dim_Individual.sql" />
+    <Build Include="dim\Tables\Individual.sql" />
+    <Build Include="martView_PRX\Views\DimIndividual.sql" />
+    <Build Include="dimView\Views\Individual.sql" />
+    <Build Include="stage\Stored Procedures\Transform_Dim_Individual.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
