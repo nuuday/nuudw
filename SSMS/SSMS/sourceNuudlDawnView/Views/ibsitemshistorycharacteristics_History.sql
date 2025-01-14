@@ -4,12 +4,14 @@
 
 
 
+
 CREATE VIEW [sourceNuudlDawnView].[ibsitemshistorycharacteristics_History]
 AS
 SELECT
 	a.[id],
 	a.technology,
 	a.international_phone_number,
+	a.phone_number,
 	a.[NUUDL_CuratedBatchID],
 	a.[NUUDL_IsCurrent],
 	a.[NUUDL_ValidFrom],

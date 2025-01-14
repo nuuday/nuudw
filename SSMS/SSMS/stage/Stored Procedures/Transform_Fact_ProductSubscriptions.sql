@@ -1,4 +1,6 @@
 ﻿
+
+
 CREATE PROCEDURE [stage].[Transform_Fact_ProductSubscriptions]
 	@JobIsIncremental BIT			
 AS 
@@ -43,9 +45,10 @@ INNER JOIN dimView.Product p
 	ON p.ProductKey = f.ProductKey
 WHERE
 	f.IsTLO = 1
+	AND NOT (e.OrderEventName LIKE 'Offer Planned' and f.TicketKey is not null)
 	AND f.ProductKey <> ISNULL( f.ProductHardwareKey, '' )
 	AND e.OrderEventName NOT LIKE 'Offer Commitment%'
-	--AND f.SubscriptionKey = '0ce9ec16-7f2a-46dc-9da6-59f731f0fcec' --'56b0bec5-6639-4b86-a133-814562d8bb14' --
+	--AND f.SubscriptionKey = '04e198b4-7747-42ce-8a9d-2a03bba4c673' --'56b0bec5-6639-4b86-a133-814562d8bb14' --
 	--order by 1
 	
 
