@@ -182,9 +182,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-
 						"activity": "Lookup_Source_Schema_Name",
-
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -213,9 +211,7 @@
 							"value": "@pipeline().parameters.WriteBatchSize",
 							"type": "Expression"
 						},
-
 						"preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory]"
-
 					},
 					"enableStaging": true,
 					"stagingSettings": {
@@ -250,9 +246,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-
 						"activity": "Copy_ibsitemshistory",
-
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -290,9 +284,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-
 						"activity": "Merge_To_History",
-
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -333,7 +325,6 @@
 					"referenceName": "nuudwsqldb01",
 					"type": "LinkedServiceReference"
 				}
-
 			}
 		],
 		"parameters": {
