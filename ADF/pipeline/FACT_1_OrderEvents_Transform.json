@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[stage].[Transform_Fact_OrderEvents_AR_20241227]",
+					"storedProcedureName": "[stage].[Transform_Fact_OrderEvents]",
 					"storedProcedureParameters": {
 						"JobIsIncremental": {
 							"value": {
