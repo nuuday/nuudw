@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
   workflow_dispatch:
-    inputs:
+   inputs:
       Environment:
         type: string
         description: Which Environment to deploy to (dev, test, prod)
@@ -15,29 +15,30 @@ jobs:
   Build_ADF:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
 
+    - uses: actions/checkout@v3
+# Installs Node and the npm packages saved in your package.json file in the build
     - name: Setup Node.js environment
       uses: actions/setup-node@v3.4.1
       with:
         node-version: 14.x
-
-    - name: Install ADF Utilities package
+        
+    - name: install ADF Utilities package
       run: npm install
+      working-directory: ${{github.workspace}}/ADF/build  #provide the folder location of the package.json file
+        
+# Validates all of the Data Factory resources in the repository. You'll get the same validation errors as when "Validate All" is selected.
+    - name: Validate
+      run: npm run build validate ${{github.workspace}}/ADF/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }} ${{ github.workspace }}/build-output.log 2>&1 # The validate command needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance 
       working-directory: ${{github.workspace}}/ADF/build
-
-    - name: Validate ADF Pipelines
-      run: |
-        node --max_old_space_size=4096 ${{github.workspace}}/ADF/build/node_modules/@microsoft/azure-data-factory-utilities/lib/index validate ${{github.workspace}}/ADF/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }} >> ${{github.workspace}}/build-output.log 2>&1
+ 
+    - name: Validate and Generate ARM template
+      run: npm run build export ${{github.workspace}}/ADF/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }} "ExportedArmTemplate" ${{ github.workspace }}/build-output.log 2>&1 # The build command, as validate, needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance. The 3rd parameter is the exported ARM template artifact name 
       working-directory: ${{github.workspace}}/ADF/build
-
-    - name: Validate and Generate ARM Template
-      run: |
-        node --max_old_space_size=4096 ${{github.workspace}}/ADF/build/node_modules/@microsoft/azure-data-factory-utilities/lib/index export ${{github.workspace}}/ADF/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/nuudw-adf01-${{ inputs.Environment }} "ExportedArmTemplate" >> ${{github.workspace}}/build-output.log 2>&1
-      working-directory: ${{github.workspace}}/ADF/build
-
-    - name: Upload artifact
+ 
+# In order to leverage the artifact in another job, we need to upload it with the upload action 
+    - name: upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ExportedArmTemplate
+        name: ExportedArmTemplate # use the same artifact name you used in the previous export step
         path: ${{github.workspace}}/ADF/build/ExportedArmTemplate
