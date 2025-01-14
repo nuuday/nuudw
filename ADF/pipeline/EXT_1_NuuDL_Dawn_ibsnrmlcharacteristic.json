@@ -211,6 +211,7 @@
 							"value": "@pipeline().parameters.WriteBatchSize",
 							"type": "Expression"
 						},
+						"preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsnrmlcharacteristic];\n",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
