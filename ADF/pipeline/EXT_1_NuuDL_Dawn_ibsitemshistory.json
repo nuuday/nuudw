@@ -183,7 +183,7 @@
 				"dependsOn": [
 					{
 
-						"activity": "Lookup_Source_Schema_Name"
+						"activity": "Lookup_Source_Schema_Name",
 
 						"dependencyConditions": [
 							"Succeeded"
