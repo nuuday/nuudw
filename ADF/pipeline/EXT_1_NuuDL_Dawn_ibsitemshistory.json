@@ -211,7 +211,7 @@
 							"value": "@pipeline().parameters.WriteBatchSize",
 							"type": "Expression"
 						},
-						"preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory];\nALTER INDEX ALL ON [sourceNuudlDawn].[ibsitemshistory] DISABLE;",
+						"preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory];",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
