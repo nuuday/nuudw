@@ -1,5 +1,4 @@
-﻿
-CREATE VIEW [factView].[OrderEvents] 
+﻿CREATE VIEW [factView].[OrderEvents] 
 AS
 SELECT
 	[CalendarID]
@@ -23,6 +22,9 @@ SELECT
 	,[ThirdPartyStoreID]
 	,[IsTLO]
 	,[Quantity]
+	,[IndividualServiceUserID]
+	,[IndividualBillReceiverID]
+	,[IndividualLegalOwnerID]
 	,[DWCreatedDate]
 	,[DWModifiedDate]
 	
