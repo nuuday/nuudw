@@ -1,6 +1,7 @@
 ﻿
 
 
+
 CREATE VIEW [cubeView_PRX].[FactOrderEvents]
 AS
 SELECT 
@@ -23,5 +24,8 @@ SELECT
 	TicketID,
 	ThirdPartyStoreID,
 	[IsTLO],
-	[Quantity]
+	[Quantity],
+	[IndividualServiceUserID],
+    [IndividualBillReceiverID],
+    [IndividualLegalOwnerID]
 FROM [factView].[OrderEvents]
