@@ -249,7 +249,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "Rebuild_Index",
+						"activity": "Rebuild_IN",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -330,7 +330,7 @@
 				}
 			},
 			{
-				"name": "Rebuild_Index",
+				"name": "Rebuild_IN",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
