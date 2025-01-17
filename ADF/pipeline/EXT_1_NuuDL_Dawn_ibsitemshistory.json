@@ -211,7 +211,10 @@
 							"value": "@pipeline().parameters.WriteBatchSize",
 							"type": "Expression"
 						},
-						"preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory]"
+						"preCopyScript": "TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory];\nALTER INDEX ALL ON [sourceNuudlDawn].[ibsitemshistory] DISABLE;",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": true,
+						"disableMetricsCollection": false
 					},
 					"enableStaging": true,
 					"stagingSettings": {
@@ -246,7 +249,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "Copy_ibsitemshistory",
+						"activity": "Rebuild_Index",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -325,6 +328,33 @@
 					"referenceName": "nuudwsqldb01",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "Rebuild_Index",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy_ibsitemshistory",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[RebuildIndexes]"
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"parameters": {
@@ -334,7 +364,7 @@
 			},
 			"WriteBatchSize": {
 				"type": "Int",
-				"defaultValue": 10000
+				"defaultValue": 25000
 			}
 		},
 		"folder": {
