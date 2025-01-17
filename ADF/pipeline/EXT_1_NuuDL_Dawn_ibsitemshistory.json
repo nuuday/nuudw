@@ -337,7 +337,7 @@
 			},
 			"WriteBatchSize": {
 				"type": "Int",
-				"defaultValue": 10000
+				"defaultValue": 25000
 			}
 		},
 		"folder": {
