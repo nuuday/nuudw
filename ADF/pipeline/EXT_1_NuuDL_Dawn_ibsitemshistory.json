@@ -249,7 +249,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "Copy_ibsitemshistory",
+						"activity": "Rebuild IND",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -323,6 +323,33 @@
 							"type": "Boolean"
 						}
 					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Rebuild IND",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy_ibsitemshistory",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[RebuildIndexes]"
 				},
 				"linkedServiceName": {
 					"referenceName": "nuudwsqldb01",
