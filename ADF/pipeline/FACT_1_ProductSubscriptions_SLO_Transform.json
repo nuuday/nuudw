@@ -1,5 +1,5 @@
 {
-	"name": "FACT_1_ProductSubscriptions_Transform_SLO",
+	"name": "FACT_1_ProductSubscriptions_SLO_Transform",
 	"properties": {
 		"activities": [
 			{
