@@ -1,9 +1,9 @@
 {
-	"name": "FACT_1_ProductSubscriptions_SLO_Transform",
+	"name": "MaintainDW_fact_ProductSubscriptions_SLO",
 	"properties": {
 		"activities": [
 			{
-				"name": "TRF_Fact_ProductSubscriptions_SLO",
+				"name": "MaintainDW_fact_ProductSubscriptions_SLO",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [],
 				"policy": {
@@ -15,13 +15,18 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "stage.Transform_Fact_ProductSubscriptions_SLO",
+					"storedProcedureName": "[nuuMeta].[MaintainDW]",
 					"storedProcedureParameters": {
-						"JobIsIncremental": {
-							"value": {
-								"value": "@pipeline().parameters.JobIsIncremental",
-								"type": "Expression"
-							},
+						"DestinationSchema": {
+							"value": "fact",
+							"type": "String"
+						},
+						"DestinationTable": {
+							"value": "ProductSubscriptions_SLO",
+							"type": "String"
+						},
+						"PrintSQL": {
+							"value": "false",
 							"type": "Boolean"
 						}
 					}
@@ -32,14 +37,8 @@
 				}
 			}
 		],
-		"parameters": {
-			"JobIsIncremental": {
-				"type": "Bool",
-				"defaultValue": true
-			}
-		},
 		"folder": {
-			"name": "0.4_Facts"
+			"name": "0.9_Meta"
 		},
 		"annotations": []
 	}

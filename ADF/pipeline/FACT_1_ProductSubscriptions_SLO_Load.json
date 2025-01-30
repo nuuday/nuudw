@@ -1,71 +1,73 @@
 {
-  "name": "FACT_1_ProductSubscriptions_SLO_Load",
-  "properties": {
-    "activities": [
-      {
-        "name": "Load_ProductSubscriptions_SLO",
-        "type": "SqlServerStoredProcedure",
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30,
-          "secureOutput": false,
-          "secureInput": false
-        },
-        "typeProperties": {
-          "storedProcedureName": "[nuuMeta].[LoadFact]",
-          "storedProcedureParameters": {
-            "StageTable": {
-              "value": "Fact_ProductSubscriptions_SLO",
-              "type": "String"
-            },
-            "DWTable": {
-              "value": "ProductSubscriptions_SLO",
-              "type": "String"
-            },
-            "DWSchema": {
-              "value": "fact",
-              "type": "String"
-            },
-            "LoadPattern": {
-              "value": "FactFull",
-              "type": "String"
-            },
-            "IncrementalFlag": {
-              "value": {
-                "value": "@pipeline().parameters.JobIsIncremental",
-                "type": "Expression"
-              },
-              "type": "Boolean"
-            },
-            "CleanUpPartitionsFlag": {
-              "value": {
-                "value": "@pipeline().parameters.CleanUpPartitions",
-                "type": "Expression"
-              },
-              "type": "Boolean"
-            }
-          }
-        },
-        "linkedServiceName": {
-          "referenceName": "nuudwsqldb01",
-          "type": "LinkedServiceReference"
-        }
-      }
-    ],
-    "parameters": {
-      "JobIsIncremental": {
-        "type": "Bool",
-        "defaultValue": "true"
-      },
-      "CleanUpPartitions": {
-        "type": "Bool",
-        "defaultValue": "false"
-      }
-    },
-    "folder": {
-      "name": "0.4_Facts"
-    },
-    "annotations": []
-  }
+	"name": "FACT_1_ProductSubscriptions_SLO_Load",
+	"properties": {
+		"activities": [
+			{
+				"name": "Load_ProductSubscriptions_SLO",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[nuuMeta].[LoadFact]",
+					"storedProcedureParameters": {
+						"StageTable": {
+							"value": "Fact_ProductSubscriptions_SLO",
+							"type": "String"
+						},
+						"DWTable": {
+							"value": "ProductSubscriptions_SLO",
+							"type": "String"
+						},
+						"DWSchema": {
+							"value": "fact",
+							"type": "String"
+						},
+						"LoadPattern": {
+							"value": "FactFull",
+							"type": "String"
+						},
+						"IncrementalFlag": {
+							"value": {
+								"value": "@pipeline().parameters.JobIsIncremental",
+								"type": "Expression"
+							},
+							"type": "Boolean"
+						},
+						"CleanUpPartitionsFlag": {
+							"value": {
+								"value": "@pipeline().parameters.CleanUpPartitions",
+								"type": "Expression"
+							},
+							"type": "Boolean"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "nuudwsqldb01",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"JobIsIncremental": {
+				"type": "Bool",
+				"defaultValue": true
+			},
+			"CleanUpPartitions": {
+				"type": "Bool",
+				"defaultValue": false
+			}
+		},
+		"folder": {
+			"name": "0.4_Facts"
+		},
+		"annotations": []
+	}
 }
