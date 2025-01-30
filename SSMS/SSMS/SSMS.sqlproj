@@ -122,6 +122,8 @@
     <Folder Include="masterdata\Tables\" />
     <Folder Include="troubleshooting\" />
     <Folder Include="troubleshooting\Views\" />
+    <Folder Include="SourceNuudlCubus31\" />
+    <Folder Include="SourceNuudlCubus31\Tables\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="meta\Tables\BusinessMatrixSCD2Setup.sql" />
@@ -728,6 +730,10 @@
     <Build Include="martView_PRX\Views\DimIndividual.sql" />
     <Build Include="dimView\Views\Individual.sql" />
     <Build Include="stage\Stored Procedures\Transform_Dim_Individual.sql" />
+    <Build Include="SourceNuudlCubus31\Tables\bio4648dawaadresserdwh_History.sql" />
+    <Build Include="SourceNuudlCubus31\Tables\bio4648dawaadresserdwh.sql" />
+    <Build Include="Security\SourceNuudlCubus31View.sql" />
+    <Build Include="Security\SourceNuudlCubus31.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include=".\master.dacpac">
