@@ -1,0 +1,45 @@
+{
+  "name": "MaintainDW_fact_ProductSubscriptions_SLO",
+  "properties": {
+    "activities": [
+      {
+        "name": "MaintainDW_fact_ProductSubscriptions_SLO",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [],
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[MaintainDW]",
+          "storedProcedureParameters": {
+            "DestinationSchema": {
+              "value": "fact",
+              "type": "String"
+            },
+            "DestinationTable": {
+              "value": "ProductSubscriptions_SLO",
+              "type": "String"
+            },
+            "PrintSQL": {
+              "value": "false",
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "folder": {
+      "name": "0.9_Meta"
+    },
+    "annotations": []
+  }
+}
