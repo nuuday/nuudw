@@ -1,36 +1,12 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\pawel.chudzinski\\source\\repos\\nuuday\\nuudw\\SSMS\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{F9C36A8E-B8E2-4096-AA90-AE0EA7CF5ED7}|SSMS\\SSMS.sqlproj|C:\\Users\\pawel.chudzinski\\source\\repos\\nuuday\\nuudw\\SSMS\\SSMS\\Schema Compare development with local_actual.scmp||{00E9D2E3-9044-47D1-978C-BE2825249219}",
-      "RelativeMoniker": "D:0:0:{F9C36A8E-B8E2-4096-AA90-AE0EA7CF5ED7}|SSMS\\SSMS.sqlproj|solutionrelative:SSMS\\Schema Compare development with local_actual.scmp||{00E9D2E3-9044-47D1-978C-BE2825249219}"
-    }
-  ],
+  "WorkspaceRootPath": "C:\\Git_Repos\\SSMS\\",
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Schema Compare development with local_actual.scmp",
-              "DocumentMoniker": "C:\\Users\\pawel.chudzinski\\source\\repos\\nuuday\\nuudw\\SSMS\\SSMS\\Schema Compare development with local_actual.scmp",
-              "RelativeDocumentMoniker": "SSMS\\Schema Compare development with local_actual.scmp",
-              "ToolTip": "C:\\Users\\pawel.chudzinski\\source\\repos\\nuuday\\nuudw\\SSMS\\SSMS\\Schema Compare development with local_actual.scmp",
-              "RelativeToolTip": "SSMS\\Schema Compare development with local_actual.scmp",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-10-02T15:06:29.47Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }
