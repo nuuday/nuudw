@@ -1,0 +1,328 @@
+{
+  "name": "EXT_1_Nuudl_Cubus31_bio4648dawaadresserdwh",
+  "properties": {
+    "activities": [
+      {
+        "name": "Update_Meta_Tables",
+        "type": "SqlServerStoredProcedure",
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[UpdateSourceTables]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "Nuudl_Cubus31",
+              "type": "String"
+            },
+            "SourceConnectionType": {
+              "value": "AzureDatabricksDeltaLake",
+              "type": "String"
+            },
+            "SourceCatalogName": {
+              "value": "dai",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "cubus31",
+              "type": "String"
+            },
+            "SourceObjectName": {
+              "value": "bio4648dawaadresserdwh",
+              "type": "String"
+            },
+            "DestinationSchemaName": {
+              "value": "SourceNuudlCubus31",
+              "type": "String"
+            },
+            "WatermarkColumnName": {
+              "value": "",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "False",
+              "type": "Boolean"
+            },
+            "WatermarkRollingWindowDays": {
+              "value": "0",
+              "type": "Int32"
+            },
+            "WatermarkInQuery": {
+              "value": "",
+              "type": "String"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Lookup_Last_Value_Loaded",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Update_Meta_Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderStoredProcedureName": "[nuuMeta].[GetLastValueLoaded]",
+            "storedProcedureParameters": {
+              "SourceConnectionName": {
+                "value": "Nuudl_Cubus31",
+                "type": "String"
+              },
+              "SourceCatalogName": {
+                "value": "dai",
+                "type": "String"
+              },
+              "SourceSchemaName": {
+                "value": "cubus31",
+                "type": "String"
+              },
+              "SourceTableName": {
+                "value": "bio4648dawaadresserdwh",
+                "type": "String"
+              },
+              "JobIsIncremental": {
+                "value": "@pipeline().parameters.JobIsIncremental",
+                "type": "Boolean"
+              },
+              "ConnectionType": {
+                "value": "AzureDatabricksDeltaLake",
+                "type": "String"
+              },
+              "WatermarkIsDate": {
+                "value": "False",
+                "type": "Boolean"
+              }
+            }
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjects"
+            }
+          }
+        }
+      },
+      {
+        "name": "Lookup_Source_Schema_Name",
+        "type": "Lookup",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Last_Value_Loaded",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "SqlSource",
+            "sqlReaderStoredProcedureName": "[nuuMeta].[GetSourceSchemaName]",
+            "storedProcedureParameters": {
+              "SourceConnectionName": {
+                "value": "Nuudl_Cubus31",
+                "type": "String"
+              },
+              "SourceCatalogName": {
+                "value": "dai",
+                "type": "String"
+              },
+              "SourceSchemaName": {
+                "value": "cubus31",
+                "type": "String"
+              },
+              "SourceTableName": {
+                "value": "bio4648dawaadresserdwh",
+                "type": "String"
+              }
+            }
+          },
+          "dataset": {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "nuuMeta.SourceObjects"
+            }
+          }
+        }
+      },
+      {
+        "name": "Copy_bio4648dawaadresserdwh",
+        "type": "Copy",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Source_Schema_Name",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "source": {
+            "type": "AzureDatabricksDeltaLakeSource",
+            "query": {
+              "value": "\r\nSELECT \r\n`KVHX` \r\n,`DAWA_KVHX` \r\n,`Id` \r\n,`Kommunekode` \r\n,`Vejkode` \r\n,`Vejnavn` \r\n,`Husnummer` \r\n,`Etage` \r\n,`Doer` \r\n,`Postnummer` \r\n,`Postnrnavn` \r\n,`Kommunenavn` \r\n,`Regionskode` \r\n,`Regionsnavn` \r\n,`MADID` \r\n,`Adgangsadresseid` \r\n,`Etrs89koordinat_oest` \r\n,`Etrs89koordinat_nord` \r\n,`Supplerendebynavn` \r\n,`Adgangspunkt_id` \r\n,`Esrejendomsnummer` \r\n,`Noejagtighed` \r\n,`Hoejde` \r\n,`Ejerlavkode` \r\n,`Matrikelnummer` \r\n,`Status` \r\n,`Wgs84koordinat_bredde` \r\n,`Wgs84koordinat_laengde` \r\n,`Snapshot` \r\n,`NUUDL_CuratedBatchID` \r\n,`NUUDL_CuratedProcessedTimestamp` \r\n \r\nFROM dai.@{activity('Lookup_Source_Schema_Name').output.firstRow.SourceSchemaName}.`bio4648dawaadresserdwh`\r\n",
+              "type": "Expression"
+            },
+            "exportSettings": {
+              "type": "AzureDatabricksDeltaLakeExportCommand"
+            }
+          },
+          "sink": {
+            "type": "AzureSqlSink",
+            "writeBatchSize": "@pipeline().parameters.WriteBatchSize",
+            "preCopyScript": "TRUNCATE TABLE [SourceNuudlCubus31].[bio4648dawaadresserdwh]"
+          },
+          "enableStaging": true,
+          "stagingSettings": {
+            "linkedServiceName": {
+              "referenceName": "datalakest01exploration",
+              "type": "LinkedServiceReference"
+            },
+            "path": "adfstage"
+          }
+        },
+        "inputs": [
+          {
+            "referenceName": "NuuDL_Cubus31_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "dai.cubus31.bio4648dawaadresserdwh"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "nuudwsqldb01_DynamicDataset",
+            "type": "DatasetReference",
+            "parameters": {
+              "TableName": "[SourceNuudlCubus31].[bio4648dawaadresserdwh]"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Merge_To_History",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Copy_bio4648dawaadresserdwh",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[LoadSourceObjectHistoryInherit]",
+          "storedProcedureParameters": {
+            "ExtractTable": {
+              "value": "SourceNuudlCubus31.bio4648dawaadresserdwh",
+              "type": "String"
+            },
+            "LoadIsIncremental": {
+              "value": "@pipeline().parameters.JobIsIncremental",
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "Set_Last_Value_Loaded",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Merge_To_History",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "storedProcedureName": "[nuuMeta].[SetLastLoadedValue]",
+          "storedProcedureParameters": {
+            "SourceConnectionName": {
+              "value": "Nuudl_Cubus31",
+              "type": "String"
+            },
+            "SourceCatalogName": {
+              "value": "dai",
+              "type": "String"
+            },
+            "SourceSchemaName": {
+              "value": "cubus31",
+              "type": "String"
+            },
+            "SourceTableName": {
+              "value": "bio4648dawaadresserdwh",
+              "type": "String"
+            },
+            "WatermarkIsDate": {
+              "value": "False",
+              "type": "Boolean"
+            }
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "nuudwsqldb01",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "parameters": {
+      "JobIsIncremental": {
+        "type": "Bool",
+        "defaultValue": "true",
+        "identity": "JobIsIncremental"
+      },
+      "WriteBatchSize": {
+        "type": "Int",
+        "defaultValue": 10000,
+        "identity": "WriteBatchSize"
+      }
+    },
+    "folder": {
+      "name": "0.1_Extracts"
+    }
+  }
+}
