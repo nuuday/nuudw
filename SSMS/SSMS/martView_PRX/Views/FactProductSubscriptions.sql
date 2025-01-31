@@ -1,5 +1,7 @@
 ﻿
 
+
+
 CREATE VIEW [martView_PRX].[FactProductSubscriptions] 
 AS
 SELECT
@@ -28,6 +30,7 @@ SELECT
 	,[CalendarRGUFromID]
 	,[CalendarRGUToID]
 	,[CalendarMigrationLegacyID]
+	,[CalendarChangedOwnerID]
 	,[TimePlannedID]
       ,[TimeActivatedID]
       ,[TimeCancelledID]
@@ -38,4 +41,45 @@ SELECT
       ,[TimeRGUFromID]
       ,[TimeRGUToID]
       ,[TimeMigrationLegacyID]
+	  ,[TimeChangedOwnerID]
 FROM [factView].[ProductSubscriptions]
+UNION ALL
+SELECT
+	[CalendarFromID]
+	,TimeFromID
+	,[CalendarToID]
+	,TimeToID
+	,[SubscriptionID]
+	,[ProductID]
+	,[CustomerID]
+	,[SalesChannelID]
+	,[AddressBillingID]
+	,[BillingAccountID]
+	,[PhoneDetailID]
+	,[TechnologyID]
+	,[EmployeeID]
+	,[QuoteID]
+	,[QuoteItemID]
+	,[CalendarPlannedID]
+	,[CalendarActivatedID]
+	,[CalendarCancelledID]
+	,[CalendarDisconnectedPlannedID]
+	,[CalendarDisconnectedExpectedID]
+	,[CalendarDisconnectedCancelledID]
+	,[CalendarDisconnectedID]
+	,[CalendarRGUFromID]
+	,[CalendarRGUToID]
+	,[CalendarMigrationLegacyID]
+	,[CalendarChangedOwnerID]
+	,[TimePlannedID]
+      ,[TimeActivatedID]
+      ,[TimeCancelledID]
+      ,[TimeDisconnectedPlannedID]
+      ,[TimeDisconnectedExpectedID]
+      ,[TimeDisconnectedCancelledID]
+      ,[TimeDisconnectedID]
+      ,[TimeRGUFromID]
+      ,[TimeRGUToID]
+      ,[TimeMigrationLegacyID]
+	  ,[TimeChangedOwnerID]
+FROM [factView].[ProductSubscriptions_SLO]

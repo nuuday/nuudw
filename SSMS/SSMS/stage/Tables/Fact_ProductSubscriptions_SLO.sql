@@ -1,4 +1,4 @@
-﻿CREATE TABLE [stage].[Fact_ProductSubscriptions] (
+﻿CREATE TABLE [stage].[Fact_ProductSubscriptions_SLO] (
     [CalendarFromKey]                  DATE           NULL,
     [TimeFromKey]                      TIME (0)       NULL,
     [CalendarToKey]                    DATE           NULL,
@@ -25,7 +25,7 @@
     [CalendarRGUToKey]                 DATE           NULL,
     [CalendarMigrationLegacyKey]       DATE           NULL,
     [CalendarChangedOwnerKey]          DATE           NULL,
-    [DWCreatedDate]                    DATETIME2 (0)  DEFAULT (sysdatetime()) NULL,
+    [DWCreatedDate]                    DATETIME2 (0)  NULL,
     [TimePlannedKey]                   TIME (0)       NULL,
     [TimeActivatedKey]                 TIME (0)       NULL,
     [TimeCancelledKey]                 TIME (0)       NULL,
@@ -38,12 +38,4 @@
     [TimeMigrationLegacyKey]           TIME (0)       NULL,
     [TimeChangedOwnerKey]              TIME (0)       NULL
 );
-
-
-
-
-
-
-
-
 

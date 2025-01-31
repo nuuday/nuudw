@@ -1,4 +1,4 @@
-﻿CREATE TABLE [fact].[ProductSubscriptions] (
+﻿CREATE TABLE [fact].[ProductSubscriptions_SLO_Temp] (
     [CalendarFromID]                  INT           DEFAULT ((-1)) NOT NULL,
     [TimeFromID]                      INT           DEFAULT ((-1)) NOT NULL,
     [CalendarToID]                    INT           DEFAULT ((-1)) NOT NULL,
@@ -39,25 +39,4 @@
     [DWCreatedDate]                   DATETIME2 (0) NOT NULL,
     [DWModifiedDate]                  DATETIME2 (0) NOT NULL
 );
-
-
-
-
-
-
-
-
-
-
-GO
-CREATE CLUSTERED COLUMNSTORE INDEX [CCI_ProductSubscriptions]
-    ON [fact].[ProductSubscriptions];
-
-
-
-
-
-
-
-
 

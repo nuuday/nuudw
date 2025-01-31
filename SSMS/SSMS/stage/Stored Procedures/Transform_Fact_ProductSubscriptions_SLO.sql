@@ -1,13 +1,13 @@
 ﻿
 
 
-CREATE PROCEDURE [stage].[Transform_Fact_ProductSubscriptions]
+CREATE PROCEDURE [stage].[Transform_Fact_ProductSubscriptions_SLO]
 	@JobIsIncremental BIT			
 AS 
 
 /* Taking a copy of order events that are non-hardware sales */
 
-DROP TABLE IF EXISTS #order_events
+DROP TABLE IF EXISTS #order_events_SLO
 SELECT
 	CONCAT( CONVERT( CHAR(10), f.CalendarKey, 120 ), ' ', f.TimeKey ) ActualDate,
 	f.CalendarKey,
@@ -26,13 +26,9 @@ SELECT
 	f.QuoteKey,
 	f.QuoteItemKey,
 	e.OrderEventName,
-	CASE
-		WHEN p.ProductType = 'Mobile Voice Offline' THEN 'Mobile Voice'
-		WHEN p.ProductType = 'Mobile Broadband Offline' THEN 'Mobile Broadband'
-		ELSE p.ProductType
-	END ProductType,
+	p.ProductType,
 	f.Quantity
-INTO #order_events
+INTO #order_events_SLO
 FROM stage.Fact_OrderEvents f
 INNER JOIN dimView.Subscription s
 	ON CONVERT( DATETIME2(0), CONCAT( f.[CalendarKey], ' ', [TimeKey] ) ) >= s.[SubscriptionValidFromDate]
@@ -44,58 +40,70 @@ INNER JOIN dimView.OrderEvent e
 INNER JOIN dimView.Product p
 	ON p.ProductKey = f.ProductKey
 WHERE
-	f.IsTLO = 1
+	f.IsTLO = 0
 	AND NOT (e.OrderEventName LIKE 'Offer Planned' and f.TicketKey is not null)
 	AND f.ProductKey <> ISNULL( f.ProductHardwareKey, '' )
+	AND p.ProductType = 'TV Add Ons'
 	AND e.OrderEventName NOT LIKE 'Offer Commitment%'
-	--AND f.SubscriptionKey in ('337c2abe-3be8-4501-a333-30c72111126a','3c144cd0-d9ca-46f2-a70f-b939953ed891')--( '4d923769-46f5-414a-885f-8ef08e700175','3e91d2a4-7ea8-4411-b798-dcc95bd255ae') --'56b0bec5-6639-4b86-a133-814562d8bb14' --
-	--order by 1
+--and f.SubscriptionKey='de8043ed-b5cb-4ae3-98d0-03ed445b5f05'	
+
+	--select * from #order_events_SLO  where SubscriptionKey='de8043ed-b5cb-4ae3-98d0-03ed445b5f05' order by 4,1 
+
+	--select distinct SubscriptionKey from #order_events  where ordereventname='Migration To'
+
+	
+
+/*select count(distinct SubscriptionKey)--,o.ordereventname, p.productname,p.producttype,f.* 
+from stage.Fact_OrderEvents_dupl_plan f
+left join stage.Dim_Product p on p.productkey=f.productkey
+left join stage.Dim_OrderEvent o on o.OrderEventKey= f.OrderEventKey
+where --SubscriptionKey='de8043ed-b5cb-4ae3-98d0-03ed445b5f05' and 
+p.ProductType = 'TV Add Ons' and ordereventname in ('Migration To', 'Migration From Downgrade', 'Migration From Upgrade')
+order by 5,6 */
 
 
 
-/* Setting RGU activated to same time as Offer activated so it wont overlap if its a part of a migration - it wont change the reported RGU activated date  */
+----Update quantity for migrations----
+UPDATE ra
+SET Quantity = 0
+--SELECT ra.*
+FROM #order_events_SLO ra
+WHERE 1=1
+	AND ra.OrderEventName IN ('Offer Activated','Offer Planned') 
+	AND EXISTS (
+			SELECT * 
+			FROM #order_events_SLO 
+			WHERE SubscriptionOriginalKey = ra.SubscriptionOriginalKey 
+				--AND SubscriptionGroup = ra.SubscriptionGroup
+				AND OrderEventName = ra.OrderEventName
+				--AND IsTLO = ra.IsTLO
+				AND ActualDate < ra.ActualDate
+	)
 
-UPDATE rgu
-SET ActualDate = o.ActualDate
---SELECT o.ActualDate, rgu.*
-FROM #order_events rgu
-CROSS APPLY (
-	SELECT TOP 1 ActualDate
-	FROM #order_events
-	WHERE SubscriptionKey = rgu.SubscriptionKey
-		AND ProductKey = rgu.ProductKey
-		AND OrderEventKey = '065' /* Offer Activated */ 
-		AND ActualDate >= rgu.ActualDate
-	ORDER BY ActualDate 
-	) o
-WHERE OrderEventKey = '100' /* RGU Activated */ 
-
-/*
-UPDATE rgu
-SET  ActualDate = o.ActualDate
---SELECT o.ActualDate, rgu.*
-FROM #order_events rgu
-CROSS APPLY (
-	SELECT TOP 1 ActualDate
-	FROM #order_events
-	WHERE SubscriptionKey = rgu.SubscriptionKey
-		--AND ProductKey = rgu.ProductKey
-		AND OrderEventKey = '100' /* RGU Activated */ 
-		AND ActualDate <= rgu.ActualDate
-	ORDER BY ActualDate DESC
-	) o
-WHERE OrderEventKey = '101' /* RGU Disconnected */ 
-*/
+UPDATE ra
+SET Quantity = 0
+--SELECT ra.*
+FROM #order_events_SLO ra
+WHERE 1=1
+	and quantity=1
+	AND ra.OrderEventName IN ('Offer Disconnected')
+	--and SubscriptionKey in('07a7c6f7-6d33-48ae-b294-4709c1183bc7','8405435a-5862-491b-b70e-74891f565896')
+	AND EXISTS (
+		SELECT * 
+		FROM #order_events_SLO 
+		WHERE SubscriptionOriginalKey = ra.SubscriptionOriginalKey 
+			AND SubscriptionKey = ra.SubscriptionKey
+			--AND SubscriptionGroup = ra.SubscriptionGroup
+			AND  OrderEventName = 'Offer Activated'
+			AND ActualDate >= ra.ActualDate
+			)
 
 /* Grouping the subscription into group in the event that the product type has changed. We can identify this based on Offer Planned */
-
-
-
-DROP TABLE IF EXISTS #order_events_2
+DROP TABLE IF EXISTS #order_events_SLO_2
 
 SELECT oe.*, ISNULL(sg.SubscriptionGroup,0) SubscriptionGroup
-INTO #order_events_2
-FROM #order_events oe
+INTO #order_events_SLO_2
+FROM #order_events_SLO oe
 LEFT JOIN (
 	SELECT 
 		ActualDate AS ActualDateFrom,
@@ -104,19 +112,19 @@ LEFT JOIN (
 		SubscriptionOriginalKey,
 		ProductType,
 		SUM(1) OVER (PARTITION BY SubscriptionOriginalKey ORDER BY CalendarKey, TimeKey) AS SubscriptionGroup
-	FROM #order_events
+	FROM #order_events_SLO
 	WHERE 1=1
-		AND OrderEventName IN ('Offer Planned')
+		AND OrderEventName IN ('Offer Planned') and quantity=1
 	) sg 
 	ON sg.SubscriptionKey = oe.SubscriptionKey 
 		AND sg.ProductType = oe.ProductType
 		AND oe.ActualDate BETWEEN sg.ActualDateFrom AND sg.ActualDateTo
 
-	
+--select * from #order_events_SLO_2	order by 1
 
 /* Get all relevant dates to an subscription */
 
-DROP TABLE IF EXISTS #subscription_dates
+DROP TABLE IF EXISTS #subscription_dates_SLO
 
 SELECT DISTINCT 
 	cast(actualdate as date) as CalendarKey,
@@ -126,8 +134,8 @@ SELECT DISTINCT
 	SubscriptionOriginalKey,
 	SubscriptionGroup,
 	ProductKey
-INTO #subscription_dates
-FROM #order_events_2 f
+INTO #subscription_dates_SLO
+FROM #order_events_SLO_2 f
 WHERE 1=1
 	AND OrderEventName IN (
 		'Offer Planned',
@@ -151,7 +159,7 @@ WHERE 1=1
 
 /* Setting the whole date interval */ 
 
-DROP TABLE IF EXISTS #subscription_dates_type2
+DROP TABLE IF EXISTS #subscription_dates_type2_SLO
 SELECT 
 	CalendarKey AS CalendarFromKey,
 	TimeKey as TimeFromKey,
@@ -166,16 +174,16 @@ SELECT
 	SubscriptionOriginalKey,
 	SubscriptionGroup,
 	ProductKey
-INTO #subscription_dates_type2
-FROM #subscription_dates
+INTO #subscription_dates_type2_SLO
+FROM #subscription_dates_SLO
 
 
 
 /* For each date interval we fetch relevant dates and keys, and insert the result into the stage table. */
 
-TRUNCATE TABLE [stage].[Fact_ProductSubscriptions]
+TRUNCATE TABLE [stage].[Fact_ProductSubscriptions_SLO]
 
-INSERT INTO stage.[Fact_ProductSubscriptions] WITH (TABLOCK) ([CalendarFromKey],[TimeFromKey], [CalendarToKey],[TimeToKey], [SubscriptionKey], [ProductKey], [CustomerKey], [SalesChannelKey], [AddressBillingKey], [BillingAccountKey], [PhoneDetailKey], [TechnologyKey], [EmployeeKey], [QuoteKey], [QuoteItemKey], [CalendarPlannedKey], [CalendarActivatedKey], [CalendarCancelledKey], [CalendarDisconnectedPlannedKey], [CalendarDisconnectedExpectedKey], [CalendarDisconnectedCancelledKey], [CalendarDisconnectedKey], [CalendarRGUFromKey], [CalendarRGUToKey], [CalendarMigrationLegacyKey],[CalendarChangedOwnerKey],
+INSERT INTO stage.[Fact_ProductSubscriptions_SLO] WITH (TABLOCK) ([CalendarFromKey],[TimeFromKey], [CalendarToKey],[TimeToKey], [SubscriptionKey], [ProductKey], [CustomerKey], [SalesChannelKey], [AddressBillingKey], [BillingAccountKey], [PhoneDetailKey], [TechnologyKey], [EmployeeKey], [QuoteKey], [QuoteItemKey], [CalendarPlannedKey], [CalendarActivatedKey], [CalendarCancelledKey], [CalendarDisconnectedPlannedKey], [CalendarDisconnectedExpectedKey], [CalendarDisconnectedCancelledKey], [CalendarDisconnectedKey], [CalendarRGUFromKey], [CalendarRGUToKey], [CalendarMigrationLegacyKey],[CalendarChangedOwnerKey],
 [TimePlannedKey],[TimeActivatedKey],[TimeCancelledKey],[TimeDisconnectedPlannedKey],[TimeDisconnectedExpectedKey],[TimeDisconnectedCancelledKey],[TimeDisconnectedKey],[TimeRGUFromKey],[TimeRGUTokey],[TimeMigrationLegacyKey],[TimeChangedOwnerKey])
 SELECT
 	sdt.CalendarFromKey,
@@ -216,7 +224,7 @@ SELECT
 	dates.[TimeMigrationLegacyKey],
 	dates.[TimeChangedOwnerKey]
 --select *
-FROM #subscription_dates_type2 sdt
+FROM #subscription_dates_type2_SLO sdt
 /*INNER JOIN dim.Subscription s 
 	ON s.SubscriptionKey = sdt.SubscriptionKey
 		AND s.SubscriptionValidFromDate <= DATEADD(ss,60*60*24-1,CAST(sdt.CalendarFromKey as datetime2(0))) -- end of day
@@ -246,7 +254,7 @@ OUTER APPLY (
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Migration Legacy' THEN TimeKey ELSE NULL END),'00:00:00') TimeMigrationLegacyKey,
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Changed Owner' THEN CalendarKey ELSE NULL END),'1900-01-01') CalendarChangedOwnerKey,
 		ISNULL(MAX(CASE WHEN OrderEventName = 'Offer Changed Owner' THEN TimeKey ELSE NULL END),'00:00:00') TimeChangedOwnerKey
-	FROM #order_events_2
+	FROM #order_events_SLO_2
 	WHERE 1=1
 		AND SubscriptionOriginalKey = sdt.SubscriptionOriginalKey
 		AND SubscriptionGroup = sdt.SubscriptionGroup
@@ -270,7 +278,7 @@ OUTER APPLY (
 ) dates
 OUTER APPLY (
 	SELECT TOP 1 CustomerKey, SalesChannelKey, AddressBillingKey, BillingAccountKey, PhoneDetailKey, TechnologyKey, EmployeeKey, QuoteKey, QuoteItemKey
-	FROM #order_events_2
+	FROM #order_events_SLO_2
 	WHERE 1=1
 		AND OrderEventName = 'Offer Planned'
 		AND SubscriptionKey = sdt.SubscriptionKey
@@ -300,7 +308,7 @@ Keys we expect to be in at the latest in event.
 */ 
 OUTER APPLY (
 	SELECT TOP 1 PhoneDetailKey
-	FROM #order_events_2
+	FROM #order_events_SLO_2
 	WHERE 1=1
 		AND OrderEventName IN ('Offer Planned','Offer Activated','Offer Disconnected')
 		AND SubscriptionOriginalKey = sdt.SubscriptionOriginalKey
