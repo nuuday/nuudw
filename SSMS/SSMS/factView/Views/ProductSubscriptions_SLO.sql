@@ -1,4 +1,4 @@
-﻿CREATE VIEW [factView].[ProductSubscriptions] 
+﻿CREATE VIEW [factView].[ProductSubscriptions_SLO] 
 AS
 SELECT
 	[CalendarFromID]
@@ -41,4 +41,4 @@ SELECT
 	,[DWCreatedDate]
 	,[DWModifiedDate]
 	
-FROM [fact].[ProductSubscriptions]
+FROM [fact].[ProductSubscriptions_SLO]

@@ -59,6 +59,16 @@ WHERE
 		'Accessories'
 	)
 
+INSERT INTO #ids (id)
+SELECT DISTINCT  i.id
+from [sourceNuudlDawnView].[ibsitemshistory_History] i
+where i.item_productFamilyName in 
+('Coax Broadband','DSL Broadband','Fiber Broadband','IPTV Fixed','IPTV YouSee Play','TV COAX Fixed','TV COAX YouSee Play','TV OTT Only Fixed',
+'TV OTT Only YouSee Play',' Free Weekend','Fixed Mini','Fixed','Free Talktime','Free Landline','Fixed IP','Free Telephony',
+'BBTLF Telephony Consumption','Telephony Fixed Price Extra','Telephony Fixed Price','Telephony Consumption' )
+and CAST(i.active_from_CET AS Date) < '2025-01-13'  
+
+
 TRUNCATE TABLE [sourceNuudlDawn].[ibsitemshistory_History_Filter]
 INSERT INTO [sourceNuudlDawn].[ibsitemshistory_History_Filter] (id)
 SELECT DISTINCT id FROM #ids

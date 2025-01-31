@@ -56,6 +56,29 @@
 					},
 					"waitOnCompletion": true
 				}
+			},
+			{
+				"name": "FACT_0_ProductSubscriptions_SLO",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "FACT_0_OrderEvents",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "FACT_0_ProductSubscriptions_SLO",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"folder": {

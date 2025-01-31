@@ -1,7 +1,4 @@
 ﻿
-
-
-
 CREATE PROCEDURE [stage].[Transform_Fact_OrderEvents]
 	@JobIsIncremental BIT			
 AS
@@ -76,11 +73,7 @@ SELECT
 	CAST(i.active_from_CET AS Date) AS CalendarKey,
 	LEFT( CONVERT( VARCHAR, CAST(i.active_from_CET AS datetime2(0)), 108 ), 8 ) AS TimeKey,
 	i.item_offeringId AS ProductKey,		
-	CASE
-		WHEN i.item_productFamilyName = 'Mobile Voice Offline' THEN 'Mobile Voice'
-		WHEN i.item_productFamilyName = 'Mobile Broadband Offline' THEN 'Mobile Broadband'
-		ELSE i.item_productFamilyName
-	END AS ProductType,
+	coalesce(pt.producttype, i.item_productFamilyName) as ProductType,
 	i.item_offeringName AS ProductName,
 	--i.item_customerId AS CustomerKey,
 	COALESCE(i.item_customerId, npi.customer_id) AS CustomerKey,
@@ -102,6 +95,7 @@ SELECT
 FROM [sourceNuudlDawnView].[ibsitemshistory_History] i
 LEFT JOIN [sourceNuudlDawnView].[ibsnrmlproductinstance_History] npi
     ON npi.id = i.id AND npi.NUUDL_IsLatest = 1
+LEFT JOIN [masterdata].[ProductTypeMapping] pt on pt.Producttype_org = i.item_productFamilyName
 INNER JOIN #Subscriptions sub 
 	ON sub.SubscriptionKey = COALESCE(i.item_parentId, i.id)
 LEFT JOIN sourceNuudlDawnView.[ibsitemshistorycharacteristics_History] cha ON cha.NUUDL_ID = i.NUUDL_ID
@@ -118,6 +112,7 @@ LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] po
 WHERE 1=1
 	AND i.NUUDL_IsLatest = 1
 --	AND COALESCE(i.item_parentId, i.id) = '22654a4a-7078-45a2-a356-9064d7db6e76'
+ 
 
 
 CREATE CLUSTERED INDEX CLIX ON #all_lines (SubscriptionOriginalKey, QuoteKey, IsTLO, active_from_CET)	
@@ -725,12 +720,7 @@ SELECT
 	--qa.quote_id ,qa.creation_time, 
 	po.name as ProductName, 
 	po.id as ProductKey,
-	CASE
-		WHEN pf.name = 'Mobile Voice Offline' THEN 'Mobile Voice'
-		WHEN pf.name = 'Mobile Broadband Offline' THEN 'Mobile Broadband'
-		ELSE pf.name
-	END AS ProductType
-	
+	COALESCE(pt.producttype, pf.name)  AS ProductType
 INTO #future_migrations
 FROM [sourceNuudlDawnView].[cpmnrmltroubleticket_History] a
 INNER JOIN [sourceNuudlDawnView].[cpmnrmltroubleticketrelatedentityref_History] b
@@ -743,6 +733,7 @@ LEFT JOIN [sourceNuudlNetCrackerView].[pimnrmlproductoffering_History] po
 	ON  po.name=b.name
 LEFT JOIN  [sourceNuudlNetCracker].[pimnrmlproductfamily]  pf 
 	ON po.product_family_id = pf.id 
+LEFT JOIN [masterdata].[ProductTypeMapping] pt on pt.Producttype_org = pf.name
 WHERE 1=1
 	AND a.NUUDL_IsLatest =1
 	AND a.ticket_type IN ('FUTURE_DATE_CHANGE')
@@ -818,7 +809,6 @@ SELECT DISTINCT
 	al.IndividualServiceUserKey,
     al.IndividualBillReceiverKey, 
     al.IndividualLegalOwnerKey,
-
 	CASE 
 		WHEN e.OrderEventName= 'Offer Planned' THEN CAST(t.PlannedDate AS date)
 		WHEN e.OrderEventName ='Offer Activated Expected' THEN CAST(t.ExpectedDate AS date)
@@ -917,7 +907,6 @@ SELECT DISTINCT
 	al.IndividualServiceUserKey,
     al.IndividualBillReceiverKey, 
     al.IndividualLegalOwnerKey,
-
 	CASE 
 		WHEN e.OrderEventName= 'Offer Disconnected Planned' THEN CAST(t.PlannedDate AS date)
 		WHEN e.OrderEventName= 'Offer Disconnected Expected' THEN CAST(t.ExpectedDate AS date)
@@ -951,7 +940,6 @@ FROM (
 		al.IndividualServiceUserKey,
     al.IndividualBillReceiverKey, 
     al.IndividualLegalOwnerKey,
-
 		al.active_from_CET AS ValidFrom,
 		ISNULL( LEAD(al.active_from_CET,1) OVER (PARTITION BY SubscriptionOriginalKey ORDER BY al.active_from_CET) , '9999-12-31') ValidTo
 	FROM #all_lines_filtered_2 al
@@ -1276,7 +1264,7 @@ CROSS APPLY (
 		END
 ) e
 WHERE 1=1
---	AND IsTLO = 1
+	AND IsTLO = 1
 --	AND SubscriptionKey = 'b5f00442-6c45-4c82-93fe-b5394ee207ee'
 
 -- Create Migration To lines
@@ -1321,6 +1309,7 @@ WHERE s.PreviousProductName <> s.ProductName  and s.active_from_CET> s.Previous_
 AND NOT EXISTS (SELECT 1 FROM #all_lines_filtered_2 alf 
 where 
 alf.SubscriptionKey = s.subscriptionkey and alf.ProductName = s.Productname and s.active_from_CET >alf.active_from_CET and s.Previous_active_from_CET <alf.active_from_CET and alf.OrderEventKey='093')
+AND IsTLO = 1
 
 
 
@@ -1650,9 +1639,7 @@ UNION ALL
 
 	SELECT CalendarKey, TimeKey, ProductKey, ProductParentKey, null AS ProductHardwareKey, CustomerKey, SubscriptionGroup, SubscriptionKey, SubscriptionOriginalKey, QuoteKey, QuoteItemKey, OrderEventKey, OrderEventName, 
 		ProductType, ProductName, SalesChannelKey, BillingAccountKey, PhoneDetailKey, AddressBillingKey, HouseHoldKey, TechnologyKey, EmployeeKey, ThirdPartyStoreKey, TicketKey, IsTLO, Quantity 
-
 		,active_from_CET,IndividualServiceUserKey, IndividualBillReceiverKey, IndividualLegalOwnerKey
-
 	FROM #future_migrations_lines
 
 ) q
@@ -1773,7 +1760,7 @@ OUTER APPLY (
 			AND SubscriptionKey = r.SubscriptionKey 
 			AND IsTLO=1 
 			AND OrderEventName = 'Offer Activated'
-			AND active_from_CET < r.active_from_CET
+			AND active_from_CET <= r.active_from_CET
 ) a
 WHERE 1=1
 	AND OrderEventName = 'Offer Disconnected' 
