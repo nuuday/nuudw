@@ -12,8 +12,8 @@ SET NOCOUNT ON
 
 /*
 DECLARE 
-	@ExtractTable NVARCHAR(200) = 'sourceNuudlDawn.cimcontactmedium',	
-	@LoadIsIncremental BIT = 1,
+	@ExtractTable NVARCHAR(200) = 'sourceNuudlDawn.ibsitemshistory',	
+	@LoadIsIncremental BIT = 0,
 	@PrintSQL BIT = 1
 --*/
 
