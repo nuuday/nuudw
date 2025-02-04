@@ -198,7 +198,7 @@
 					"source": {
 						"type": "AzureDatabricksDeltaLakeSource",
 						"query": {
-							"value": "",
+							"value": "\nSELECT \n`id` \n,`name` \n,`product_instance_id` \n,`ref_id` \n,`ref_type` \n,`role` \n,`ts_ms` \n,`lsn` \n,`op` \n,`NUUDL_IsCurrent` \n,`NUUDL_ValidFrom` \n,`NUUDL_ValidTo` \n,`NUUDL_CuratedBatchID` \n,`NUUDL_CuratedProcessedTimestamp` \n,`NUUDL_IsDeleted` \n,`NUUDL_DeleteType` \n,`NUUDL_IsLatest` \n,`NUUDL_ID` \n \nFROM dai.@{activity('Lookup_Source_Schema_Name').output.firstRow.SourceSchemaName}.`ibsrealizingserviceref`\n WHERE NUUDL_CuratedBatchID > '@{activity('Lookup_Last_Value_Loaded').output.firstRow.LastValueLoaded}'",
 							"type": "Expression"
 						},
 						"exportSettings": {
